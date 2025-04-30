@@ -2,6 +2,7 @@ import os
 
 import git
 
+from pipelineMigration.GithubSubtreeConverter import GithubSubTreeConverter
 from pipelineMigration.GitlabCIImporter import GitlabCIImporter
 from pipelineMigration.GithubConverter import GithubActionConverter
 
@@ -45,6 +46,32 @@ def GitlabToGithub(gitlabFilePath: str, githubFilePath: str, name: str = "pipeli
 
     repo.git.add(all=True)
     repo.index.commit("Migrated pipeline from Gitlab to Github")
+
+
+def GitlabToGithubSubtree(gitlabRepos, githubFilePath, githubRepoPrefix,secrets):
+    subTreeRepo = git.Repo(githubFilePath)
+    file_path_base = f"{githubFilePath}/.github/workflows/"
+    folder_path = os.path.dirname(file_path_base)
+
+
+
+    # Ordner erstellen, falls sie nicht existieren
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+        print(f"Ordner '{folder_path}' wurde erstellt.")
+    for repo in gitlabRepos:
+        path, id = repo
+        file = open(path + "/.gitlab-ci.yml", 'r')
+        name = path.split("/")[-1]
+        pipeline = GitlabCIImporter().getPipeline(file)
+        file.close()
+        pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name], id)
+        convertedPipeline = pipelineConverter.parsePipeline(name, secrets[name])
+
+        file_path = file_path_base + name + ".yml"
+        writeStringToFile(file_path, convertedPipeline)
+        subTreeRepo.git.add(all=True)
+        subTreeRepo.index.commit(f"Migrated pipeline of {name} from Gitlab to Github")
 
 
 if __name__ == '__main__':

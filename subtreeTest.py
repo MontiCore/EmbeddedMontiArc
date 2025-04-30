@@ -7,7 +7,7 @@ import sourceAnalysis
 from repoMigration import GithubUploader
 #from UploaderTest import architecture
 from sourceAnalysis import findLargeFilesInHistory
-from pipelineMigration import GitlabToGithub
+from pipelineMigration import GitlabToGithub, GitlabToGithubSubtree
 from sourceAnalysis import run_git_filter_repo, split_large_files
 
 import yaml
@@ -40,8 +40,7 @@ data = yaml.safe_load(open("architecture.yaml"))
 #input()
 print()
 print("Starting migration")
-architecture = yaml.safe_load(open("architecture.yaml"))
-data = architecture
+data = yaml.safe_load(open("architecture.yaml"))
 for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     repo = git.Repo("./repos/" + data[repoID]["Name"])
     gitlabRepoPath = "repos/" + data[repoID]["Name"]
@@ -63,7 +62,6 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
         print(repoID)
         remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
 
-        GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
         #input("WAIT")
 
 
@@ -76,3 +74,15 @@ Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 #Uploader.addSubtree("subtreeTest", "EMADL2CPP", "generator")
 #Uploader.addSubtree("subtreeTest", "MNISTCalculator", "application")
 Uploader.addReposAsSubtree("subtreeTest", data.keys())
+
+gitlabRepoPath = [("./repos/"+ data[repoID]["Name"],repoID) for repoID in data.keys()]
+
+prefix = {}
+for repoID in data.keys():
+    prefix[data[repoID]["Name"]] = data[repoID]["Namespace"]+"/"+data[repoID]["Name"]
+
+secrets = {}
+for repoID in data.keys():
+    secrets[data[repoID]["Name"]] = ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"]
+
+GitlabToGithubSubtree(gitlabRepoPath, "./repos/subtreeTest",prefix , secrets)

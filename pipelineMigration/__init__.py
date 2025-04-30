@@ -1,1 +1,2 @@
-from  pipelineMigration.Migration import GitlabToGithub
+from pipelineMigration.Migration import GitlabToGithub
+from pipelineMigration.Migration import GitlabToGithubSubtree

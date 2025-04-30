@@ -23,6 +23,7 @@ class GithubActionConverter(Converter):
         self.timeout = 60
 
     def parsePipeline(self, name : str, secrets : list[str]) -> str:
+        self.fileChangeJobNeeded = False
         pipelineString = ""
         pipelineString += f"name: {name}\n"
         pipelineString += "on:\n"
@@ -39,9 +40,10 @@ class GithubActionConverter(Converter):
         pipelineString += "jobs:\n"
         for _,job in self.pipeline.jobs.items():
             if job.only and type(job.only) == dict and "changes" in job.only:
-                pipelineString += self.__createFileChangeJob()
+                pipelineString += self.createFileChangeJob()
+                self.fileChangeJobNeeded = True
                 break
-        pipelineString += self.__createStageJobs()
+        pipelineString += self.createStageJobs()
 
         for job in self.pipeline.jobs:
             pipelineString += self.parseJob(self.pipeline.jobs[job],secrets)
@@ -71,9 +73,10 @@ class GithubActionConverter(Converter):
             if i > 0:
                 jobString += f"\t\tneeds: {self.pipeline.schedule[i-1].replace('/','_').replace(' ','_')+"_phase"}\n"
             else:
-                jobString += f"\t\tneeds: FileChanges\n"
+                if self.fileChangeJobNeeded:
+                    jobString += f"\t\tneeds: FileChanges\n"
 
-        jobString +=    self.__ifCondition(job)
+        jobString +=    self.ifCondition(job)
 
         jobString += f"\t\truns-on: ubuntu-latest\n"
 
@@ -82,17 +85,17 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\timage: {job.image}\n"
         jobString += f"\t\ttimeout-minutes: {self.timeout}\n"
         jobString += f"\t\tsteps:\n"
-        jobString += GithubActionConverter.__addCheckoutStep()
+        jobString += GithubActionConverter.addCheckoutStep()
         #jobString += GithubActionConverter.__addCheckoutStep("DavidBlm/MNISTPipeline")
         #jobString += self.__addCheckoutStepManual("DavidBlm/MNISTPipeline")
-        jobString += GithubActionConverter.__restoreLargeFilesStep()
+        jobString += GithubActionConverter.restoreLargeFilesStep()
         #jobString += GithubActionConverter.__restoreH5()
         if job.needs:
             for need in job.needs:
                 if self.pipeline.jobs[need].artifacts:
-                    jobString += GithubActionConverter.__downloadArtifacts(self.pipeline.jobs[need].artifacts["paths"], need.replace("/","_").replace(" ","_"))
+                    jobString += GithubActionConverter.downloadArtifacts(self.pipeline.jobs[need].artifacts["paths"], need.replace("/", "_").replace(" ", "_"))
         if not native:
-            jobString += GithubActionConverter.__startDockerContainer(job.image, secrets, "")
+            jobString += GithubActionConverter.startDockerContainer(job.image, secrets, "")
         if native:
             jobString += f"\t\t\t- name: Script\n"
             if job.allowFailure == True:
@@ -101,7 +104,8 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\t\trun: |\n"
             #jobString += f"\t\t\t\t\tcd repo\n"    #For manual clone
             for command in job.script:
-                jobString += self.scriptParser(command)
+                command = self.scriptParser(command)
+                jobString += f"\t\t\t\t\t{command}\n"
         else:
             jobString += f"\t\t\t- name: Script\n"
             if job.allowFailure == True:
@@ -110,20 +114,19 @@ class GithubActionConverter(Converter):
             jobString += f"\t\t\t\t\tSCRIPT: |\n"
             jobString += f"\t\t\t\t\t\tcd /workspace\n"
 
-            for command in job.script:  #ToDo: ADD function to implement changes for selected commands like below
-                if "mvn" in command:
-                    command += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=60000000"
+            for command in job.script:
+                command = self.scriptParser(command)
                 jobString += f"\t\t\t\t\t\t{command}\n"
             jobString += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
         if job.artifacts:
             if job.artifacts["paths"] == ["public"] and job.name == "pages":
-                jobString += GithubActionConverter.__deployPages(job.artifacts["paths"][0])
+                jobString += GithubActionConverter.deployPages(job.artifacts["paths"][0])
             else:
-                jobString += GithubActionConverter.__uploadArtifacs(job.artifacts["paths"],job.name.replace("/","_").replace(" ","_"))
+                jobString += GithubActionConverter.uploadArtifacs(job.artifacts["paths"], job.name.replace("/", "_").replace(" ", "_"))
         return Converter.set_indentation_to_two_spaces(jobString)
 
     @staticmethod
-    def __addCheckoutStep(repo : str ="", depth = 1) -> str:
+    def addCheckoutStep(repo : str = "", depth = 1) -> str:
         checkout =""
         checkout += f"\t\t\t- name: Checkout latest commit\n"
         checkout += f"\t\t\t\tuses: actions/checkout@v4\n"
@@ -135,7 +138,7 @@ class GithubActionConverter(Converter):
         return checkout
 
     @staticmethod
-    def __addCheckoutStepManual(repo : str ="${{ github.repository }}") -> str:
+    def addCheckoutStepManual(repo : str = "${{ github.repository }}") -> str:
         checkout =""
         checkout += f"\t\t\t- name: Checkout latest commit\n"
         checkout += f"\t\t\t\trun: |\n"
@@ -145,7 +148,7 @@ class GithubActionConverter(Converter):
         return checkout
 
     @staticmethod
-    def __restoreLargeFilesStep() -> str:
+    def restoreLargeFilesStep() -> str:
         restore =""
         restore += f"\t\t\t- name: Restore large files\n"
         restore += f"\t\t\t\trun: |\n"
@@ -160,7 +163,7 @@ class GithubActionConverter(Converter):
         return restore
 
     @staticmethod
-    def __restoreH5() -> str:
+    def restoreH5() -> str:
         restore =""
         restore += f"\t\t\t- name: Restore large files\n"
         restore += f"\t\t\t\trun: |\n"
@@ -174,7 +177,7 @@ class GithubActionConverter(Converter):
         return restore
 
     @staticmethod
-    def __startDockerContainer(image : str, secrets : list[str], options : str) -> str:
+    def startDockerContainer(image : str, secrets : list[str], options : str) -> str:
         start = ""
         start += f"\t\t\t- name: Start Docker Container\n"
         start += f"\t\t\t\trun: |\n"
@@ -186,7 +189,7 @@ class GithubActionConverter(Converter):
         return start
 
     @staticmethod
-    def __uploadArtifacs(paths : list[str], name, expiration : int = 7) -> str:
+    def uploadArtifacs(paths : list[str], name, expiration : int = 7) -> str:
         upload = ""
         upload += f"\t\t\t- name: Upload artifacts\n"
         upload += f"\t\t\t\tuses: actions/upload-artifact@v4\n"
@@ -200,7 +203,7 @@ class GithubActionConverter(Converter):
         return upload
 
     @staticmethod
-    def __downloadArtifacts(paths: list[str], name) -> str:
+    def downloadArtifacts(paths: list[str], name) -> str:
         download = ""
         download += f"\t\t\t- name: Download artifacts\n"
         download += f"\t\t\t\tuses: actions/download-artifact@v4\n"
@@ -212,7 +215,7 @@ class GithubActionConverter(Converter):
         return download
 
     @staticmethod
-    def __deployPages(path : str) -> str:   #ToDo: Add special rights for token for this job
+    def deployPages(path : str) -> str:   #ToDo: Add special rights for token for this job
         deploy = ""
         deploy += "\t\t\t- name: Upload Pages\n"
         deploy += "\t\t\t\tuses: actions/upload-pages-artifact@v3\n"
@@ -222,7 +225,7 @@ class GithubActionConverter(Converter):
         deploy += "\t\t\t\tuses: actions/deploy-pages@v4\n"
         return deploy
 
-    def __ifCondition(self, job : Job) -> str:
+    def ifCondition(self, job : Job) -> str:
         ifString = ""
         if self.pipeline.stages.index(job.stage) != 0:
             ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'failure') "
@@ -270,7 +273,7 @@ class GithubActionConverter(Converter):
             ifString += "}}\n"
         return ifString
 
-    def __createStageJobs(self):
+    def createStageJobs(self):
         lastStage = ""
         jobString = ""
         for stage in self.pipeline.schedule[:-1]:
@@ -301,7 +304,7 @@ class GithubActionConverter(Converter):
         jobString += "\n"
         return jobString
 
-    def __createFileChangeJob(self):
+    def createFileChangeJob(self):
         jobString = "\tFileChanges:\n"
         jobString += f"\t\truns-on: ubuntu-latest\n"
         for _,job in self.pipeline.jobs.items():
@@ -312,7 +315,7 @@ class GithubActionConverter(Converter):
             if job.only and type(job.only) == dict and "changes" in job.only:
                 jobString += f"\t\t\trun{job.name}: " + "${{" + f"steps.{job.name.replace('/','_').replace(' ','_')}.outputs.run" + "}}\n"
         jobString += "\t\tsteps:\n"
-        jobString += self.__addCheckoutStep(depth = 2)
+        jobString += self.addCheckoutStep(depth = 2)
         jobString += f"\t\t\t- name: Check for file changes\n"
         jobString += f"\t\t\t\trun: |\n"
         jobString += f"\t\t\t\t\tCHANGES=$(git diff --name-only HEAD^ HEAD)\n"
@@ -342,5 +345,6 @@ class GithubActionConverter(Converter):
         """
         if "mvn" in script:
             script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
-            return f"\t\t\t\t\t{script}\n"
+        script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
+        script = script.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
         return script
