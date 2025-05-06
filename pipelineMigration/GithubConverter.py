@@ -84,6 +84,11 @@ class GithubActionConverter(Converter):
             jobString += f"\t\tcontainer:\n"
             jobString += f"\t\t\timage: {job.image}\n"
         jobString += f"\t\ttimeout-minutes: {self.timeout}\n"
+        if job.artifacts:
+            if job.artifacts["paths"] == ["public"] and job.name == "pages":
+                jobString += f"\t\tpermissions:\n"
+                jobString += f"\t\t\tpages: write\n"
+                jobString += f"\t\t\tid-token: write\n"
         jobString += f"\t\tsteps:\n"
         jobString += GithubActionConverter.addCheckoutStep()
         #jobString += GithubActionConverter.__addCheckoutStep("DavidBlm/MNISTPipeline")
@@ -154,7 +159,7 @@ class GithubActionConverter(Converter):
         restore += f"\t\t\t\trun: |\n"
         #restore +=  "\t\t\t\t\tcd repo\n"   #For manual clone
         restore +=  "\t\t\t\t\tls\n"
-        restore += f"\t\t\t\t\tfind . -type f -name '*.part*' | while read part; do\n"
+        restore += f"\t\t\t\t\tfind . -type f -name '*.part*' | sort | while read part; do\n"
         restore += f"\t\t\t\t\techo \"Restoring $part\"\n"
         restore += f"\t\t\t\t\tbase=$(echo \"$part\" | sed 's/.part.*//')\n"
         restore += f"\t\t\t\t\tcat \"$part\" >> \"$base\"\n"

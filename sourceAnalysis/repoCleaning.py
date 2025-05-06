@@ -28,8 +28,8 @@ def split_large_files2(directory, size="90M"):
 
 def split_large_files(directory, size="90M"):
     try:
-        command = f"find {directory} -type f -size +{size} -exec sh -c 'split -b {size} \"$0\" \"$0.part\"' {{}} \\;"
-        command = f"find {directory} -path {directory}/.git -prune -o -type f -size +{size} -exec sh -c 'split -b {size} \"$0\" \"$0.part\"' {{}} \\;"
+        command = f"find {directory} -type f -size +{size} -exec sh -c 'split -b {size} --suffix-length=1 \"$0\" \"$0.part\"' {{}} \\;"
+        command = f"find {directory} -path {directory}/.git -prune -o -type f -size +{size} -exec sh -c 'split -b {size} --suffix-length=1 \"$0\" \"$0.part\"' {{}} \\;"
         result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         print("Split command output:", result.stdout.decode())
 

@@ -52,8 +52,9 @@ def GitlabToGithubSubtree(gitlabRepos, githubFilePath, githubRepoPrefix,secrets)
     subTreeRepo = git.Repo(githubFilePath)
     file_path_base = f"{githubFilePath}/.github/workflows/"
     folder_path = os.path.dirname(file_path_base)
-
-
+    GithubActionConverter.process_settings_files(githubFilePath)
+    subTreeRepo.git.add(all=True)
+    subTreeRepo.index.commit(f"Changed maven settings to private token")
 
     # Ordner erstellen, falls sie nicht existieren
     if not os.path.exists(folder_path):
@@ -61,8 +62,8 @@ def GitlabToGithubSubtree(gitlabRepos, githubFilePath, githubRepoPrefix,secrets)
         print(f"Ordner '{folder_path}' wurde erstellt.")
     for repo in gitlabRepos:
         path, id = repo
-        file = open(path + "/.gitlab-ci.yml", 'r')
         name = path.split("/")[-1]
+        file = open(path + "/.gitlab-ci.yml", 'r')
         pipeline = GitlabCIImporter().getPipeline(file)
         file.close()
         pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name], id)
