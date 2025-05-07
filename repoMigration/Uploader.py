@@ -78,7 +78,7 @@ class Uploader(ABC):
         repo.git.fetch(subtreeRepoName, branch)
         repo.git.subtree("add", "--prefix", prefix +"/" + subtreeRepoName, subtreeRepoName, branch)
 
-    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs, ):
+    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs, ): #ToDo multiple branches
         """
         Add repositories as subtrees to the target repository.
         :param targetRepoName: Name of the target GitHub repository

@@ -24,14 +24,16 @@ def find_env_vars_in_repo(repo_path):
     return env_vars_found
 
 if __name__ == "__main__":
-    repo_path = '../repos/EMADL2CPP'  # Path to the git repository
-    print(repo_path)
-    env_vars = find_env_vars_in_repo(repo_path)
-    env_All = set()
-    for file_path, env_vars in env_vars.items():
-        print(f"Environment variables found in {file_path}:")
-        for env_var in env_vars:
-            print(f"  {env_var}")
-        env_All.update(env_vars)
-    print("--------------------------")
-    print(env_All)
+    repos = ["../repos/EMADL2CPP", "../repos/MNISTCalculator"]
+    for repo_path in repos:
+        #repo_path = '../repos/EMADL2CPP'  # Path to the git repository
+        print(repo_path)
+        env_vars = find_env_vars_in_repo(repo_path)
+        env_All = set()
+        for file_path, env_vars in env_vars.items():
+            print(f"Environment variables found in {file_path}:")
+            for env_var in env_vars:
+                print(f"  {env_var}")
+            env_All.update(env_vars)
+        print("--------------------------")
+        print(env_All)

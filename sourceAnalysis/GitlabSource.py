@@ -21,6 +21,7 @@ class Gitlab(Git):
         self.gl = gitlab.Gitlab(url=sourceURL, private_token=self.__privateToken)
         self.gl.auth()
 
+    #ToDo: Scan for secrets/ env. variables and add to architecture
     def scanRepos(self):
         architecture = {}
         for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
@@ -150,7 +151,7 @@ class Gitlab(Git):
 
         print(f"Cloning {repo_id} finished")
         lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
-        if lfs_check.stdout and False: #Todo: Activate
+        if lfs_check.stdout and True: #Todo: Activate
             print("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
             process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, text=True)

@@ -25,15 +25,19 @@ class GithubSubTreeConverter(GithubActionConverter):
         pipelineString += "\t\tpaths:\n"
         pipelineString += "\t\t\t- '" + self.repoPath+ "/**'\n"
         pipelineString += "\tworkflow_dispatch:\n"
-        pipelineString += "concurrency:\n"
-        pipelineString += '\tgroup: "${{ github.ref }}"\n'
-        pipelineString += '\tcancel-in-progress: true\n'
+        #pipelineString += "concurrency:\n"
+        #pipelineString += '\tgroup: "${{ github.ref }}"\n'
+        #pipelineString += '\tcancel-in-progress: true\n'
         pipelineString += "env:\n"
         pipelineString += f"\tCI_PROJECT_ID : {self.repoID}\n"
         if secrets:
             for secret in secrets:
-                if secret != "CI_PROJECT_ID":
-                    pipelineString += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
+                if type(secret) == tuple:
+                    if secret[0] != "CI_PROJECT_ID":
+                        pipelineString += f"\t{secret[0]} : " + f"{secret[1]}\n"
+                else:
+                    if secret != "CI_PROJECT_ID":
+                        pipelineString += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
 
 
         pipelineString += "jobs:\n"
@@ -60,12 +64,9 @@ class GithubSubTreeConverter(GithubActionConverter):
         patternRepo = r"(- name: Script\s+run: \|)"
         repoCD = r"\1\n" + f"          cd {self.repoPath}"
         jobString = re.sub(patternRepo, repoCD, jobString)
-        jobString = jobString.replace('${{ secrets.CI_PROJECT_ID }}', self.repoID)
-        #ToDo: Artifact upload to different path
-        # Regex-Muster
+        #jobString = jobString.replace('${{ secrets.CI_PROJECT_ID }}', self.repoID)
         artifactUploadPattern = r"(- name: .*\n\s+uses: actions/upload-artifact@v4\n(?:\s+if: .*\n)?\s+with:\n(?:\s+.+\n)*\s+path: \|\n((?:\s+.+\n?)+))"
 
-        # Präfix für die Pfade
         prefix = f"{self.repoPath}/"
 
         def replace_paths_with_prefix(match):

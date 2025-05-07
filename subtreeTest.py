@@ -55,11 +55,10 @@ Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 #Uploader.addSubtree("subtreeTest", "EMADL2CPP", "generator")
 #Uploader.addSubtree("subtreeTest", "MNISTCalculator", "application")
 Uploader.addReposAsSubtree("subtreeTest", data.keys())
-split_large_files("./repos/subtreeTest")
-#ToDo: Why are the files being recreated being concatenated in the wrong order partab + partaa?
-run_git_filter_repo("./repos/subtreeTest")
+#split_large_files("./repos/subtreeTest")
+#run_git_filter_repo("./repos/subtreeTest")
 
-gitlabRepoPath = [("./repos/"+ data[repoID]["Name"],repoID) for repoID in data.keys()]
+#gitlabRepoPath = [("./repos/"+ data[repoID]["Name"],repoID) for repoID in data.keys()]
 
 prefix = {}
 for repoID in data.keys():
@@ -67,6 +66,6 @@ for repoID in data.keys():
 
 secrets = {}
 for repoID in data.keys():
-    secrets[data[repoID]["Name"]] = ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"]
+    secrets[data[repoID]["Name"]] = ["GITLABTOKEN", ("CI_API_V4_URL", "https://git.rwth-aachen.de/api/v4"), "CI_PROJECT_ID"]
 
-GitlabToGithubSubtree(gitlabRepoPath, "./repos/subtreeTest",prefix , secrets)
+GitlabToGithubSubtree(data.keys(), data, config,  "./repos/subtreeTest",prefix , secrets)

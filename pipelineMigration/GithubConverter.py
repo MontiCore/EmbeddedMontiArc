@@ -29,13 +29,13 @@ class GithubActionConverter(Converter):
         pipelineString += "on:\n"
         pipelineString += "\tpush:\n"
         pipelineString += "\tworkflow_dispatch:\n"
-        pipelineString += "concurrency:\n"
-        pipelineString += '\tgroup: "${{ github.ref }}"\n'
-        pipelineString += '\tcancel-in-progress: true\n'
+        pipelineString += "env:\n"
         if secrets:
-            pipelineString += "env:\n"
             for secret in secrets:
-                pipelineString += f"\t{secret} : " + "${{ secrets."+ f"{secret}"+" }}\n"
+                if type(secret) == tuple:
+                    pipelineString += f"\t{secret[0]} : " + f"{secret[1]}\n"
+                else:
+                    pipelineString += f"\t{secret} : " + "${{ secrets."+ f"{secret}"+" }}\n"
 
         pipelineString += "jobs:\n"
         for _,job in self.pipeline.jobs.items():
@@ -186,10 +186,18 @@ class GithubActionConverter(Converter):
         start = ""
         start += f"\t\t\t- name: Start Docker Container\n"
         start += f"\t\t\t\trun: |\n"
+        if "ghcr.io" in image:
+            start += '\t\t\t\t\techo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
         start += f"\t\t\t\t\tdocker pull {image}\n"
         start += f"\t\t\t\t\tdocker run --name build-container -d -v $(pwd):/workspace --network=host {options}"
         for secret in secrets:
-            start += f" -e {secret}=$"+"{{ secrets."+f"{secret}"+" }}"
+            if type(secret) == str:
+                if secret != "CI_PROJECT_ID":
+                    start += f" -e {secret}=$"+"{{ secrets."+f"{secret}"+" }}"
+                else:
+                    start += f" -e {secret}=${secret}"
+            else:
+                start += f" -e {secret[0]}=${secret[0]}"
         start += f" {image} tail -f /dev/null\n"
         return start
 
@@ -352,4 +360,7 @@ class GithubActionConverter(Converter):
             script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
         script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
+        script = script.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
+        #ToDo: Add docker, user replacement
+
         return script

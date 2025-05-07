@@ -1,6 +1,7 @@
 import logging
 import os
 
+import requests
 from git import RemoteProgress
 from tqdm import tqdm
 
@@ -69,6 +70,27 @@ class GithubUploader(Uploader):
                 raise
         return repo
 
+    def getOrCreateRepo(self, repoName):
+        """
+        Get or create a repository on the target Git instance.
+        :param repoName: Name of the repository to be created
+        :return: Repository object
+        """
+        try:
+            repo = self.g.get_user().get_repo(repoName)
+            logger.info(f"Repository '{repoName}' already exists.")
+        except GithubException as e:
+            if e.status == 404:
+                logger.info(f"Repository '{repoName}' does not exist.")
+                visibility = input("Create public repository? (y/n): ").lower()
+                if visibility == 'y':
+                    repo = self.createPublicRepo(repoName)
+                else:
+                    repo = self.createPrivateRepo(repoName)
+            else:
+                raise
+        return repo
+
     def createSecrets(self, github_repo, secrets):
         """
         Create secrets for the repository on the target Git instance.
@@ -76,6 +98,7 @@ class GithubUploader(Uploader):
         :param secrets:
         :return:
         """
+        #ToDo: check if secrets already exist
         for name,secret in secrets.items():
             github_repo.create_secret(name, secret)
 
@@ -121,6 +144,79 @@ class GithubUploader(Uploader):
 
         newRepo.edit(default_branch="master")
 
+    def uploadMonoRepo(self, githubRepoName ,path = "./repos/MonoRepo", disableScanning = False):
+        localRepo = git.Repo(path)
+        logger.info(f"Uploading {githubRepoName} to the {githubRepoName}...")
+        githubRepo = self.getOrCreateRepo(githubRepoName)
+        if disableScanning or True:
+            self.deactivatePushProtection(githubRepo)
+        secrets = {"GITLABTOKEN": self.__gitlabToken}
+        self.createSecrets(githubRepo,secrets)
+        remote_url = githubRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
+        self.reset_remote_origin(localRepo, remote_url)
+        existingBranches = [b.name for b in githubRepo.get_branches()]
+        for branch in localRepo.branches:
+            if branch.name in existingBranches:
+                logger.info(f"Branch {branch.name} already exists in the target repository.")
+            else:
+                logger.info(f"Uploading {branch.name} branch...")
+                with (PushProgress() as progress):
+                    a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True, progress=progress)
+                    print(a[0].summary)
+                    print(a[0].flags)
+                    print(a[0].remote_ref_string)
+                    print()
+                logger.info(f"Branch {branch.name} uploaded successfully.")
+        githubRepo.edit(default_branch="master")
+        if disableScanning or True:
+            self.activatePushProtection(githubRepo)
+
+    def deactivatePushProtection(self,repo):
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {self.__githubToken}",
+            "X-GitHub-Api-Version": "2022-11-28"
+        }
+        payload = {
+            "security_and_analysis": {
+                "secret_scanning_push_protection": {"status": "disabled"},
+            }
+        }
+
+        url = repo.url
+        response = requests.patch(
+            url,
+            headers=headers,
+            json=payload
+        )
+        if response.status_code == 200:
+            logger.info("Push protection deactivated successfully.")
+        else:
+            logger.warning("Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually and remove blocked blobs.")
+
+    def activatePushProtection(self,repo):
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {self.__githubToken}",
+            "X-GitHub-Api-Version": "2022-11-28"
+        }
+        payload = {
+            "security_and_analysis": {
+                "secret_scanning_push_protection": {"status": "enabled"},
+            }
+        }
+
+        url = repo.url
+        response = requests.patch(
+            url,
+            headers=headers,
+            json=payload
+        )
+        if response.status_code == 200:
+            logger.info("Push protection activated successfully.")
+        else:
+            logger.warning("Push protection activation failed.")
+
     def reset_remote_origin(self, repo, new_remote_url):
         """
         Entfernt das Remote-Repository 'origin' und setzt es mit einem neuen Wert zurück.
@@ -160,7 +256,6 @@ class GithubUploader(Uploader):
             print(f"Fehler beim Setzen der Upstream-Branches: {e}")
 
     def dockerImageMigration(self,namespace,reponame,images):
-
         images = ",".join(images)
         action ="name: Migrate Docker Images\n"
         action+="on:\n"
@@ -172,7 +267,7 @@ class GithubUploader(Uploader):
         action+='      GITLAB_USERNAME: "David.Blum"\n' #TODO: make this dynamic
         action+="      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
         action+=f'      GITLAB_REPO: "{(namespace+"/" + reponame).lower()}"\n'
-        action+=f'      IMAGES_LIST: "{images}"\n' #TODO: add versions
+        action+=f'      IMAGES_LIST: "{images}"\n'
         action+="      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
         action+='      GHCR_REPO_OWNER: "davidblm"\n'
         action+="    steps:\n"
@@ -214,6 +309,62 @@ class GithubUploader(Uploader):
         repo = git.Repo("./repos/" + reponame)
         repo.git.add(all=True)
         repo.index.commit("Added Docker image migration workflow")
+
+    def dockerImageMigrationMonorepo(self, architecture, targetRepo):
+        action = "name: Migrate Docker Images\n"
+        action += "on:\n"
+        action += "  workflow_dispatch:\n"
+        action += "jobs:\n"
+        action += "  docker-migration:\n"
+        action += "    runs-on: ubuntu-latest\n"
+        action += "    env:\n"
+        action += '      GITLAB_USERNAME: "David.Blum"\n'  # TODO: make this dynamic
+        action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
+        action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
+        action += '      GHCR_REPO_OWNER: "davidblm"\n'
+        action += "    steps:\n"
+        action += "      - name: Log in to GitLab\n"
+        action += "        run: |\n"
+        action += '          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
+        action += "      - name: Log in to GitHub\n"
+        action += "        run: |\n"
+        action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
+        for repoId in architecture.keys():
+            images = ",".join(architecture[repoId]["DockerImages"])
+            GITLAB_REPO = (architecture[repoId]["Namespace"] + "/" + architecture[repoId]["Name"]).lower()
+            action += f"      - name: Migrate Docker images from {architecture[repoId]["Name"]}\n"
+            action += "        run: |\n"
+            action += f'          IFS="," read -ra IMAGES <<< "{images}"\n'
+            action += '          for IMAGE in "${IMAGES[@]}"; do\n'
+            action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{GITLAB_REPO}/$IMAGE"\n'
+            action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
+            action += '            GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/$LOWERCASE_IMAGE"\n'
+            action += '            echo "Pulling image from GitLab: $GITLAB_IMAGE"\n'
+            action += '            docker pull "$GITLAB_IMAGE"\n'
+            action += '            echo "Tagging image for GHCR: $GHCR_IMAGE"\n'
+            action += '            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"\n'
+            action += '            echo "Pushing image to GHCR: $GHCR_IMAGE"\n'
+            action += '            docker push "$GHCR_IMAGE"\n'
+            action += '            echo "Removing local image: $GHCR_IMAGE"\n'
+            action += '            docker rmi -f $(docker images -q) || true\n'
+            action += '          done\n'
+
+        file_path = f"repos/{targetRepo}/.github/workflows/image.yml"
+        folder_path = os.path.dirname(file_path)
+
+        # Ordner erstellen, falls sie nicht existieren
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"Ordner '{folder_path}' wurde erstellt.")
+
+        # Datei schreiben
+        with open(file_path, 'w') as file:
+            file.write(action)
+            print(f"Datei '{file_path}' wurde erfolgreich geschrieben.")
+        repo = git.Repo("./repos/" + targetRepo)
+        repo.git.add(all=True)
+        repo.index.commit("Added Docker image migration workflow")
+
 
 class PushProgress(RemoteProgress):
     def __init__(self):

@@ -17,9 +17,11 @@ def find_env_vars_in_pipeline(file_path):
     return env_vars_filtered
 
 if __name__ == "__main__":
-    file_path = '../.gitlab-ci.yml'  # Path to the GitLab CI configuration file
-    env_vars = find_env_vars_in_pipeline(file_path)
+    for file_path in ['../repos/EMADL2CPP/.gitlab-ci.yml', '../repos/MNISTCalculator/.gitlab-ci.yml']:
 
-    print("Environment variables found:")
-    for env_var in env_vars:
-        print(f"  {env_var}")
+        #file_path = '../.gitlab-ci.yml'  # Path to the GitLab CI configuration file
+        env_vars = find_env_vars_in_pipeline(file_path)
+
+        print("Environment variables found:")
+        for env_var in env_vars:
+            print(f"  {env_var}")

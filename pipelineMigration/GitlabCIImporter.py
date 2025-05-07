@@ -40,7 +40,7 @@ class GitlabCIImporter(Importer):
                 else:
                     needs = parameter.get("needs", [])
 
-                jobs[name] = Job(   #ToDo: Include tags (at least in a way that handles shell), when
+                jobs[name] = Job(
                     name=name,
                     image=parameter.get("image", ""),
                     stage=parameter.get("stage", ""),

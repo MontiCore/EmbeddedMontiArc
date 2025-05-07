@@ -6,5 +6,7 @@ class Config:
         data = yaml.safe_load(open(path))
         self.url = data['URL']
         self.sourceToken = data['SourceToken']
+        self.sourceUser = data['SourceUser']
         self.targetToken = data['TargetToken']
+        self.targetUser = data['TargetRepoOwner']
         self.repoIDS = [str(i) for i in data['Repos']]

@@ -5,10 +5,10 @@ from tqdm import tqdm
 import Config
 import sourceAnalysis
 #from UploaderTest import architecture
-from sourceAnalysis import findLargeFilesInHistory
-from pipelineMigration import GitlabToGithub
-from sourceAnalysis import run_git_filter_repo, split_large_files
-
+#rom sourceAnalysis import findLargeFilesInHistory
+#import pipelineMigration
+#from sourceAnalysis import run_git_filter_repo, split_large_files
+from pipelineMigration import *
 import yaml
 import git
 
@@ -53,17 +53,18 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd="repos/" + data[repoID]["Name"], capture_output=True,
                                text=True)
     if lfs_check.stdout:
-        remove_lfs("./repos/" + data[repoID]["Name"])
+        pass
+        #remove_lfs("./repos/" + data[repoID]["Name"])
     for branch in branches:
         repo.git.checkout(branch)
-        split_large_files("./repos/" + data[repoID]["Name"])
+        #split_large_files("./repos/" + data[repoID]["Name"])
         print("Migrating branch: " + branch)
         print(repoID)
-        remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
+        #remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
 
-        GitlabToGithub(gitlabRepoPath, githubRepoPath, "pipeline", ["GITLABTOKEN", "CI_API_V4_URL", "CI_PROJECT_ID"])
+        GitlabToGithub(repoID, architecture, config,"pipeline", ["GITLABTOKEN", ("CI_API_V4_URL","https://git.rwth-aachen.de/api/v4"), ("CI_PROJECT_ID",repoID)])
         #input("WAIT")
 
 
     repo.git.checkout("master")
-    run_git_filter_repo("repos/" + data[repoID]["Name"])
+    #run_git_filter_repo("repos/" + data[repoID]["Name"])
