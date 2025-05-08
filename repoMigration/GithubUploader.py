@@ -110,6 +110,7 @@ class GithubUploader(Uploader):
         repos = self.g.get_user().get_repos()
         return [repo.name for repo in repos if repo.private]
 
+    #ToDo: Secrets from architecture
     def uploadRepo(self, repoID):
         """
         Upload a repository to the target Git instance.
@@ -144,6 +145,7 @@ class GithubUploader(Uploader):
 
         newRepo.edit(default_branch="master")
 
+    #ToDo: Secrets from architecture
     def uploadMonoRepo(self, githubRepoName ,path = "./repos/MonoRepo", disableScanning = False):
         localRepo = git.Repo(path)
         logger.info(f"Uploading {githubRepoName} to the {githubRepoName}...")

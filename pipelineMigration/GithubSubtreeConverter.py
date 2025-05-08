@@ -25,9 +25,6 @@ class GithubSubTreeConverter(GithubActionConverter):
         pipelineString += "\t\tpaths:\n"
         pipelineString += "\t\t\t- '" + self.repoPath+ "/**'\n"
         pipelineString += "\tworkflow_dispatch:\n"
-        #pipelineString += "concurrency:\n"
-        #pipelineString += '\tgroup: "${{ github.ref }}"\n'
-        #pipelineString += '\tcancel-in-progress: true\n'
         pipelineString += "env:\n"
         pipelineString += f"\tCI_PROJECT_ID : {self.repoID}\n"
         if secrets:

@@ -39,6 +39,7 @@ data = yaml.safe_load(open("architecture.yaml"))
 
 print()
 print("Starting migration")
+#ToDo: Verify new secert handling for repo migration, same for script parser
 architecture = yaml.safe_load(open("architecture.yaml"))
 for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     repo = git.Repo("./repos/" + data[repoID]["Name"])

@@ -20,9 +20,8 @@ print("Starting scan and clone")
 config = Config.Config("config.yaml")
 dr = sourceAnalysis.scanAndCloneRepos(config)
 print()
-print("Starting migration")
 data = yaml.safe_load(open("architecture.yaml"))
-for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
+for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
     repo = git.Repo("./repos/" + data[repoID]["Name"])
     gitlabRepoPath = "repos/" + data[repoID]["Name"]
     githubRepoPath = "repos/" + data[repoID]["Name"]
@@ -39,8 +38,8 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     for branch in branches:
         repo.git.checkout(branch)
         #split_large_files("./repos/" + data[repoID]["Name"])
-        print("Migrating branch: " + branch)
-        print(repoID)
+        #print("Migrating branch: " + branch)
+        #print(repoID)
         remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
 
         #input("WAIT")
@@ -50,15 +49,7 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     #run_git_filter_repo("repos/" + data[repoID]["Name"])
 
 Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
-
-#Uploader.initRepo("subtreeTest")
-#Uploader.addSubtree("subtreeTest", "EMADL2CPP", "generator")
-#Uploader.addSubtree("subtreeTest", "MNISTCalculator", "application")
 Uploader.addReposAsSubtree("subtreeTest", data.keys())
-#split_large_files("./repos/subtreeTest")
-#run_git_filter_repo("./repos/subtreeTest")
-
-#gitlabRepoPath = [("./repos/"+ data[repoID]["Name"],repoID) for repoID in data.keys()]
 
 prefix = {}
 for repoID in data.keys():
@@ -66,6 +57,14 @@ for repoID in data.keys():
 
 secrets = {}
 for repoID in data.keys():
-    secrets[data[repoID]["Name"]] = ["GITLABTOKEN", ("CI_API_V4_URL", "https://git.rwth-aachen.de/api/v4"), "CI_PROJECT_ID"]
-
+    secrets[data[repoID]["Name"]] = []
+    for name,secret in data[repoID]["Secrets"].items():
+        if secret["Value"] == "Please add a value":
+            continue
+        if secret["Secret"].lower() == "y":
+            secrets[data[repoID]["Name"]].append(name)
+        elif secret["Secret"].lower() == "e":
+            secrets[data[repoID]["Name"]].append((name, "${{ secrets."+ str(secret["Value"]) +" }}"))
+        else:
+            secrets[data[repoID]["Name"]].append((name, secret["Value"]))
 GitlabToGithubSubtree(data.keys(), data, config,  "./repos/subtreeTest",prefix , secrets)

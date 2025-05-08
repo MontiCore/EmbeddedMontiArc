@@ -14,7 +14,6 @@ def get_git_root(repo_path):
         root = subprocess.check_output(['git', '-C', repo_path, 'rev-parse', '--show-toplevel']).strip().decode()
         return root
     except subprocess.CalledProcessError:
-        print(f"❌ Error: '{repo_path}' is not a valid Git repository.")
         return None
 
 

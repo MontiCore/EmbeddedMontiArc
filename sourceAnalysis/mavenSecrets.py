@@ -13,15 +13,15 @@ def find_env_vars_in_file(file_path):
     return env_vars
 
 def find_env_vars_in_repo(repo_path):
-    env_vars_found = {}
+    envVars = set()
     for root, _, files in os.walk(repo_path):
         for file in files:
             if file.endswith('.xml'):
                 file_path = os.path.join(root, file)
-                env_vars = find_env_vars_in_file(file_path)
-                if env_vars:
-                    env_vars_found[file_path] = env_vars
-    return env_vars_found
+                found = find_env_vars_in_file(file_path)
+                if found:
+                    envVars.update(found)
+    return envVars
 
 if __name__ == "__main__":
     repos = ["../repos/EMADL2CPP", "../repos/MNISTCalculator"]

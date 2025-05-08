@@ -64,7 +64,6 @@ def remove_lfs_from_gitattributes(directory):
                     for line in lines:
                         if "filter=lfs" not in line:
                             f.write(line)
-                print(f"Bereinigt: {file_path}")
                 changes = True
     if changes:
         repo = git.Repo(directory)

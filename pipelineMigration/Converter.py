@@ -68,9 +68,6 @@ class Converter(ABC):
             # Datei mit den Änderungen speichern
             with open(file_path, 'w') as file:
                 file.write(updated_content)
-            print(f"'Job-Token' ersetzt in Datei: {file_path}")
-        else:
-            print(f"Kein 'Job-Token' gefunden in: {file_path}")
 
     @staticmethod
     def process_settings_files(repo_path):

@@ -10,7 +10,7 @@ from tqdm import tqdm
 import git
 
 from sourceAnalysis.Git import Git
-
+from sourceAnalysis.mavenSecrets import find_env_vars_in_repo
 
 
 class Gitlab(Git):
@@ -21,7 +21,6 @@ class Gitlab(Git):
         self.gl = gitlab.Gitlab(url=sourceURL, private_token=self.__privateToken)
         self.gl.auth()
 
-    #ToDo: Scan for secrets/ env. variables and add to architecture
     def scanRepos(self):
         architecture = {}
         for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
@@ -33,6 +32,16 @@ class Gitlab(Git):
             staleBranches = self.getStaleBranches(repo)
             repoData['Branches'] = []
             repoData['StaleBranches'] = []
+            repoData['Secrets'] = {}
+            envVariables = find_env_vars_in_repo("./repos/" + repoData['Name'])
+            repoData['Secrets']["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
+            repoData['Secrets']["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
+            if envVariables:
+                for secret in envVariables:
+                    if secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID":
+                        continue
+                    else:
+                        repoData['Secrets'][secret]= {"Value":"Please add a value", "Secret":"Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
             for b in branches:
                 if b not in staleBranches:
                     repoData['Branches'].append(b)
@@ -50,6 +59,7 @@ class Gitlab(Git):
             if mavenArtifacts:
                 repoData['MavenArtifacts'] = mavenArtifacts
             architecture[repoID] = repoData
+
 
         yaml.dump(architecture, open("architecture.yaml", 'w'))
 
@@ -113,7 +123,10 @@ class Gitlab(Git):
                 try:
                     tags = image.tags.list(all=True)
                     for tag in tags:
-                        data.append(image.name+":" + tag.name)
+                        if image.name:
+                            data.append(image.name+":" + tag.name)
+                        else:
+                            data.append(self.getRepoName(repo).lower()+":"+tag.name)
                         #image_data["tags"].append(tag.name)
                 except gitlab.exceptions.GitlabListError:
                     pass
