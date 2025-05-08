@@ -13,5 +13,5 @@ def cloneRepos(config):
 
 def scanAndCloneRepos(config):
     gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
-    gitlab.scanRepos()
     gitlab.cloneRepos()
+    gitlab.scanRepos()

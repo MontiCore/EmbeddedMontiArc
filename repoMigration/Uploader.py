@@ -21,16 +21,7 @@ class Uploader(ABC):
                 self.branchesToBeMigrated[str(repoID)] = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
             self.repoNames[str(repoID)] = data[repoID]["Name"]
             self.namespaces[str(repoID)] = data[repoID]["Namespace"]
-
-        print(self.branchesToBeMigrated)
-
         self.repoIDS = data.keys()
-
-
-
-
-
-        print(self.repoNames)
 
 
     def delete_local_branch(self, repoPath, branch_name):
@@ -84,6 +75,8 @@ class Uploader(ABC):
         :param targetRepoName: Name of the target GitHub repository
         :param subtreeRepoIDs: IDs of the repositories to be uploaded as subtrees
         """
+        #ToDo: Add for multiple branches for one repo
+        #ToDo: Verify how it works with existing repo
         targetRepo = self.initRepo(targetRepoName)
         for repoID in subtreeRepoIDs:
             repoName = self.repoNames[repoID]

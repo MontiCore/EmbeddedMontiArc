@@ -72,9 +72,6 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
     for _, job in pipeline.jobs.items():
         if job.image in newNames.keys():
             job.image = newNames[job.image]
-            #job.image = job.image.replace("registry." + config.url.replace("https://", ""),
-            #                              f"ghcr.io/{config.targetUser.lower()}/dockerimages")
-
     return pipeline
 
 def GitlabToGithubSubtree(repoIDS, architecture, config : Config, githubFilePath, githubRepoPrefix,secrets):
