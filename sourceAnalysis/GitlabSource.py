@@ -79,6 +79,7 @@ class Gitlab(Git):
         for repo in self.repoIDS:
             print("-------------------------------")
             self.cloneRepo(repo, "./repos/")
+            self.removeRemoteOrigin("./repos/" + self.getRepoName(self.getRepo(repo)))
 
     def getRepo(self,repoID : str):
         """

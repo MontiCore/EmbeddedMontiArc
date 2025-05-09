@@ -37,7 +37,7 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
         remove_lfs("./repos/" + data[repoID]["Name"])
     for branch in branches:
         repo.git.checkout(branch)
-        #split_large_files("./repos/" + data[repoID]["Name"])
+        split_large_files("./repos/" + data[repoID]["Name"])
         #print("Migrating branch: " + branch)
         #print(repoID)
         remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
@@ -46,7 +46,7 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
 
 
     repo.git.checkout("master")
-    #run_git_filter_repo("repos/" + data[repoID]["Name"])
+    run_git_filter_repo("repos/" + data[repoID]["Name"])
 
 Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 Uploader.addReposAsSubtree("subtreeTest", data.keys())

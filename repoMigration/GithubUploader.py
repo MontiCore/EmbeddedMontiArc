@@ -77,7 +77,7 @@ class GithubUploader(Uploader):
         :return: Repository object
         """
         try:
-            repo = self.g.get_user().get_repo(repoName)
+            repo = self.g.get_user().get_repo(repoName)  #ToDo: Clone if yes
             logger.info(f"Repository '{repoName}' already exists.")
         except GithubException as e:
             if e.status == 404:
@@ -110,8 +110,7 @@ class GithubUploader(Uploader):
         repos = self.g.get_user().get_repos()
         return [repo.name for repo in repos if repo.private]
 
-    #ToDo: Secrets from architecture
-    def uploadRepo(self, repoID):
+    def uploadRepo(self, repoID, secrets = {}, disableScanning = False):
         """
         Upload a repository to the target Git instance.
         :param repoID: RepositoryID to be uploaded
@@ -123,8 +122,10 @@ class GithubUploader(Uploader):
 
         # Create a new private repository on the target Git instance
         #newRepo = self.createPrivateRepo(self.repoNames[repoID])
-        newRepo = self.createPublicRepo(self.repoNames[repoID])
-        secrets = {"GITLABTOKEN": self.__gitlabToken, "CI_API_V4_URL": "https://git.rwth-aachen.de/api/v4", "CI_PROJECT_ID": repoID}
+        newRepo = self.getOrCreateRepo(self.repoNames[repoID])
+        if disableScanning or True:
+            self.deactivatePushProtection(newRepo)
+        #secrets = {"GITLABTOKEN": self.__gitlabToken, "CI_API_V4_URL": "https://git.rwth-aachen.de/api/v4", "CI_PROJECT_ID": repoID}
         self.createSecrets(newRepo,secrets)
 
         existingBranches = [b.name for b in newRepo.get_branches()]
@@ -142,21 +143,21 @@ class GithubUploader(Uploader):
                     print(a[0].remote_ref_string)
                     print()
                 logger.info(f"Branch {branch} uploaded successfully.")
-
+        if disableScanning or True:
+            self.activatePushProtection(newRepo)
         newRepo.edit(default_branch="master")
 
-    #ToDo: Secrets from architecture
-    def uploadMonoRepo(self, githubRepoName ,path = "./repos/MonoRepo", disableScanning = False):
+    def uploadMonoRepo(self, githubRepoName, secrets = {} ,path = "./repos/MonoRepo", disableScanning = False):
         localRepo = git.Repo(path)
         logger.info(f"Uploading {githubRepoName} to the {githubRepoName}...")
         githubRepo = self.getOrCreateRepo(githubRepoName)
         if disableScanning or True:
             self.deactivatePushProtection(githubRepo)
-        secrets = {"GITLABTOKEN": self.__gitlabToken}
         self.createSecrets(githubRepo,secrets)
         remote_url = githubRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(localRepo, remote_url)
         existingBranches = [b.name for b in githubRepo.get_branches()]
+        '''
         for branch in localRepo.branches:
             if branch.name in existingBranches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
@@ -169,10 +170,80 @@ class GithubUploader(Uploader):
                     print(a[0].remote_ref_string)
                     print()
                 logger.info(f"Branch {branch.name} uploaded successfully.")
+        '''
+
+        """
+        for branch in localRepo.branches:
+            if branch.name in existingBranches:
+                logger.info(f"Branch {branch.name} already exists in the target repository.")
+            else:
+                logger.info(f"Uploading {branch.name} branch commit by commit...")
+                commits = list(
+                    localRepo.iter_commits(branch.name, reverse=True))  # Commits in chronologischer Reihenfolge
+
+                for commit in tqdm(commits):
+                    localRepo.git.checkout(branch.name)
+                    localRepo.git.reset("--hard", commit.hexsha)  # Setze den Branch auf den aktuellen Commit
+                    with PushProgress() as progress:
+                        a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
+                                                                 force=True, progress=progress)
+                        print(a[0].summary)
+                        logger.info(f"Pushed commit {commit.hexsha} to branch {branch.name}.")
+
+                logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
+
+                logger.info(f"Branch {branch.name} uploaded successfully in chunks.")
+"""
+        for branch in localRepo.branches:
+            if branch.name in existingBranches:
+                logger.info(f"Branch {branch.name} already exists in the target repository.")
+            else:
+                logger.info(f"Uploading {branch.name} branch commit by commit...")
+                commits = list(localRepo.iter_commits(branch.name, reverse=True))  # Commits in chronologischer Reihenfolge
+
+                with tqdm(total=len(commits), desc=f"Commits in {branch.name}", unit="commit") as commit_pbar:
+                    for commit in commits:
+                        localRepo.git.checkout(branch.name)
+                        localRepo.git.reset("--hard", commit.hexsha)  # Setze den Branch auf den aktuellen Commit
+
+                        #with PushProgress() as push_pbar:  # Fortschrittsbalken für den Push
+                            #push_pbar.pbar.position = 1  # Setze den Push-Fortschrittsbalken in eine andere Zeile
+                            #a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True, progress=push_pbar)
+                        a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True)
+                            #print(a[0].summary)
+                            #logger.info(f"Pushed commit {commit.hexsha} to branch {branch.name}.")
+                        commit_pbar.update(1)
+
+                #logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
+        """
+        chunk_size = 100  # Anzahl der Commits pro Push
+
+        for branch in localRepo.branches:
+            if branch.name in existingBranches:
+                logger.info(f"Branch {branch.name} already exists in the target repository.")
+            else:
+                logger.info(f"Uploading {branch.name} branch in chunks of {chunk_size} commits...")
+                commits = list(
+                    localRepo.iter_commits(branch.name, reverse=True))  # Commits in chronologischer Reihenfolge
+
+                for i in range(0, len(commits), chunk_size):
+                    chunk_commits = commits[i:i + chunk_size]
+                    temp_branch_name = f"temp-{branch.name}-{i}"
+                    localRepo.git.checkout(branch.name, b=temp_branch_name)
+                    localRepo.git.reset("--soft", chunk_commits[-1].hexsha)
+                    localRepo.git.commit("--amend", "--no-edit")
+                    with PushProgress() as progress:
+                        a = localRepo.remote(name="origin").push(refspec=f"{temp_branch_name}:{branch.name}",
+                                                                 force=True, progress=progress)
+                        print(a[0].summary)
+                    localRepo.git.checkout(branch.name)
+                    localRepo.git.branch("-D", temp_branch_name)  # Lösche den temporären Branch lokal
+
+                logger.info(f"Branch {branch.name} uploaded successfully in chunks.")
         githubRepo.edit(default_branch="master")
         if disableScanning or True:
             self.activatePushProtection(githubRepo)
-
+    """
     def deactivatePushProtection(self,repo):
         headers = {
             "Accept": "application/vnd.github+json",
@@ -257,8 +328,8 @@ class GithubUploader(Uploader):
         except Exception as e:
             print(f"Fehler beim Setzen der Upstream-Branches: {e}")
 
-    def dockerImageMigration(self,namespace,reponame,images):
-        images = ",".join(images)
+    def dockerImageMigration(self, architecture, repoID):
+        images = ",".join(architecture[repoID]["DockerImages"])
         action ="name: Migrate Docker Images\n"
         action+="on:\n"
         action+="  workflow_dispatch:\n"
@@ -268,7 +339,7 @@ class GithubUploader(Uploader):
         action+="    env:\n"
         action+='      GITLAB_USERNAME: "David.Blum"\n' #TODO: make this dynamic
         action+="      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
-        action+=f'      GITLAB_REPO: "{(namespace+"/" + reponame).lower()}"\n'
+        action+=f'      GITLAB_REPO: "{(architecture[repoID]["Namespace"]+"/" + architecture[repoID]["Name"]).lower()}"\n'
         action+=f'      IMAGES_LIST: "{images}"\n'
         action+="      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
         action+='      GHCR_REPO_OWNER: "davidblm"\n'
@@ -296,7 +367,7 @@ class GithubUploader(Uploader):
         action+='            docker rmi -f $(docker images -q) || true\n'
         action+='          done\n'
 
-        file_path = f"repos/{reponame}/.github/workflows/image.yml"
+        file_path = f"repos/{architecture[repoID]["Name"]}/.github/workflows/image.yml"
         folder_path = os.path.dirname(file_path)
 
         # Ordner erstellen, falls sie nicht existieren
@@ -308,7 +379,7 @@ class GithubUploader(Uploader):
         with open(file_path, 'w') as file:
             file.write(action)
             print(f"Datei '{file_path}' wurde erfolgreich geschrieben.")
-        repo = git.Repo("./repos/" + reponame)
+        repo = git.Repo("./repos/" + architecture[repoID]["Name"])
         repo.git.add(all=True)
         repo.index.commit("Added Docker image migration workflow")
 

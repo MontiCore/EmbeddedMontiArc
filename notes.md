@@ -126,9 +126,9 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
 
 - [x] Add on file change
 
-- [ ] **Can I run arbitraty pipelines in GitLab to compare results?**
+- [x] **Can I run arbitraty pipelines in GitLab to compare results?**
 
-- [ ] Add function to change docker image in action if they are to be migrated
+- [x] Add function to change docker image in action if they are to be migrated
 
 - [ ] Add function that scans script line and if necessary implements changes
     - Change CI_Token to GITLAB_TOKEN
@@ -137,11 +137,11 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
     - Change docker tag to github
     - Change docker push to github
   
-- [ ] Add secrets from GitLab and variables to architecture.yaml, then manual input of values required there
+- [x] Add secrets from GitLab and variables to architecture.yaml, then manual input of values required there
 
-- [ ] Scan for secrets and Variables in Maven files
+- [x] Scan for secrets and Variables in Maven files
 
-- [ ] Verify LFS 
+- [x] Verify LFS 
 
 - [ ] Implement usage as CLI, implement adaptability in the script
 
@@ -149,10 +149,16 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
 
 - [ ] Implement retry mechanism for migration, so that no double commits
 
-- [ ] Maybe local secret scanning with 3rd party tool?
+- [x] Maybe local secret scanning with 3rd party tool? Will not be implemented
 
-- [ ] Need organization acces to Monticore -> Create extra repos, as no folder structure as in GitLab
+- [x] Need organization acces to Monticore -> Create extra repos, as no folder structure as in GitLab: Only monorepo
 
 - [ ] Change tool to be independent of user Namespace, currently only works for David.Blum
 
 - [ ] Add pre-commit hook to check for file siz -> if yes split? Add pull-hook to rebuild those large files
+
+- [ ] Make sure user push protection is set to false
+
+- [x] Enable /disable Push protection in Repo
+
+- [ ] Push in multiple steps, so that 2GB limit is not hit

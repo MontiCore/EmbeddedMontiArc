@@ -57,7 +57,10 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
     :param repoID: The ID of the repository
     """
     # Get the full image names from the architecture
+    #ToDo: Does not work alqways, see MNIST TestTensorflow
     newNames = {}
+    if type(repoIDS) == str:
+        repoIDS = [repoIDS]
     for repoID in repoIDS:
         for image in architecture[repoID]["DockerImages"]:
             if not image.startswith(":"):
