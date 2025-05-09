@@ -19,6 +19,20 @@ class GitlabCIImporter(Importer):
         """
         return self.yamlData['stages']
 
+    def __flattenList(self,nestedList):
+        """
+        Flattens a nested list.
+        :param nested_list: List with normal entries and lists
+        :return: Flattened list
+        """
+        flattened = []
+        for item in nestedList:
+            if isinstance(item, list):
+                flattened.extend(self.__flattenList(item))
+            else:
+                flattened.append(item)
+        return flattened
+
     def __readJobs(self) -> dict[str, Job]:
         """
         Reads the jobs from the YAML data.
@@ -30,9 +44,9 @@ class GitlabCIImporter(Importer):
             if "script" in parameter or "trigger" in parameter:
                 #Add before script infront of normal script
                 if "before_script" in parameter:
-                    sc = parameter.get("before_script", []) + parameter.get("script", [])
+                    sc = self.__flattenList(parameter.get("before_script", [])) + self.__flattenList(parameter.get("script", []))
                 else:
-                    sc = parameter.get("script", [])
+                    sc = self.__flattenList(parameter.get("script", []))
 
                 #Handle dependencies
                 if "dependencies" in parameter:

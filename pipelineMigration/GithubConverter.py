@@ -356,6 +356,8 @@ class GithubActionConverter(Converter):
         :param script: Script to be parsed
         :return: Parsed script
         """
+        if type (script) == list:
+            print("JDDJ")
         if "mvn" in script:
             script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
         script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
