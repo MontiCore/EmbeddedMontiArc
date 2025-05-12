@@ -46,10 +46,11 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
 
 
     repo.git.checkout("master")
-    run_git_filter_repo("repos/" + data[repoID]["Name"])
+    #run_git_filter_repo("repos/" + data[repoID]["Name"])
 
-Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
-Uploader.addReposAsSubtree("subtreeTest", data.keys())
+input("WAIT")
+Uploader = GithubUploader.GithubUploader(config)
+Uploader.addReposAsSubtree(config.monorepoName, data.keys())
 
 prefix = {}
 for repoID in data.keys():
@@ -67,4 +68,4 @@ for repoID in data.keys():
             secrets[data[repoID]["Name"]].append((name, "${{ secrets."+ str(secret["Value"]) +" }}"))
         else:
             secrets[data[repoID]["Name"]].append((name, secret["Value"]))
-GitlabToGithubSubtree(data.keys(), data, config,  "./repos/subtreeTest",prefix , secrets)
+GitlabToGithubSubtree(data.keys(), data, config,  "./repos/"+ config.monorepoName,prefix , secrets)

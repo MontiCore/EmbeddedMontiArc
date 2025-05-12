@@ -48,15 +48,14 @@ class Uploader(ABC):
         repo.index.commit("Initial commit")
         return repo
 
-    #ToDo: Add for multiple branches for one repo
-    #ToDo: Add new branch for each repo, automatic merge in the end
-    def addSubtree(self,repoName, subtreeRepoName ,prefix = "" , branch = "master"):
+    def addSubtree(self,repoName, subtreeRepoName ,prefix = ""):
         """
         Add a subtree to the repository.
         :param repoName: Repository name
         :param subtreeRepoName: Name of the repository to be added as a subtree
         :param branch: Branch of the subtree to be added
         """
+        branch = "master" #Default branch is master
         repo = git.Repo("./repos/" + repoName)
         # Check if the subtree already exists
         subtree_path = prefix + "/" + subtreeRepoName
@@ -65,30 +64,58 @@ class Uploader(ABC):
             return
         #repo.remotes.add(subtreeRepoName, "./repos/" + subtreeRepoName)
         #repo.remotes[0].set_url(subtreeRepoName, "./repos/" + subtreeRepoName)
-        #repo.create_head(subtreeRepoName)
-        #repo.heads[subtreeRepoName].checkout()
+        """
+        repo.create_head(subtreeRepoName)
+        repo.heads[subtreeRepoName].checkout()
+        """
         if subtreeRepoName in repo.remotes:
             repo.delete_remote(subtreeRepoName)
         repo.create_remote(subtreeRepoName, "../" + subtreeRepoName)
         repo.git.fetch(subtreeRepoName, branch)
         repo.git.subtree("add", "--prefix", prefix +"/" + subtreeRepoName, subtreeRepoName, branch)
-        #repo.heads["master"].checkout()
+        """
+        repo.heads["master"].checkout()
+        repo.git.merge("master", subtreeRepoName)
+        repo.git.branch("-d", subtreeRepoName)
+        """
+        #repo.git.subtree("merge", "--prefix", prefix +"/" + subtreeRepoName, subtreeRepoName, branch)
+
+    def addSubtreeBranch(self,repoName, subtreeRepoName , branch, prefix = ""):
+        """
+        Add a subtree to the repository.
+        :param repoName: Repository name
+        :param subtreeRepoName: Name of the repository to be added as a subtree
+        :param branch: Branch of the subtree to be added
+        """
+        repo = git.Repo("./repos/" + repoName)
+        # Check if the subtree already exists
+        subtree_path = prefix + "/" + subtreeRepoName + "/" + branch
+        if subtree_path in [item.path for item in repo.tree().traverse()]:
+            print(f"Subtree '{subtreeRepoName}' already exists at '{subtree_path}'.")
+            return
+        if subtreeRepoName in repo.remotes:
+            repo.delete_remote(subtreeRepoName)
+        repo.create_remote(subtreeRepoName, "../" + subtreeRepoName)
+        repo.git.fetch(subtreeRepoName, branch)
+        repo.git.subtree("add", "--prefix", subtree_path, subtreeRepoName, branch)
 
 
-    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs, ): #ToDo multiple branches
+    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs): #ToDo multiple branches
         """
         Add repositories as subtrees to the target repository.
         :param targetRepoName: Name of the target GitHub repository
         :param subtreeRepoIDs: IDs of the repositories to be uploaded as subtrees
         """
-        #ToDo: A
-        # ,0
-        # erify how it works with existing repo
         targetRepo = self.initRepo(targetRepoName)
         for repoID in subtreeRepoIDs:
             repoName = self.repoNames[repoID]
             logger.info(f"Uploading {repoName} as a subtree to {targetRepoName}...")
             namespace = self.namespaces[repoID]
-
-            self.addSubtree(targetRepoName, repoName, prefix=namespace)
+            multipleBranches = len(self.branchesToBeMigrated[repoID]) > 1
+            for branch in self.branchesToBeMigrated[repoID]:
+                if multipleBranches:
+                    self.addSubtreeBranch(targetRepoName, repoName, prefix=namespace, branch=branch)
+                    logger.info(f"Branch {branch} uploaded as a subtree.")
+                else:
+                    self.addSubtree(targetRepoName, repoName, prefix=namespace)
             logger.info(f"Repository {repoName} uploaded as a subtree to {targetRepoName}.")
