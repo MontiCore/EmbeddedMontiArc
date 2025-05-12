@@ -157,22 +157,53 @@ class GithubUploader(Uploader):
         remote_url = githubRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(localRepo, remote_url)
         existingBranches = [b.name for b in githubRepo.get_branches()]
-        '''
+
+        for branch in localRepo.branches:
+            if branch.name in existingBranches:
+                logger.info(f"Branch {branch.name} already exists in the target repository.")
+                if input("Still try to upload? (y/n): ").lower() == 'n':
+                    logger.info(f"Skipping branch {branch.name}.")
+                    continue
+            commits = list(localRepo.iter_commits(branch))
+            pushList = []
+            for commit in commits:
+                if "subtree" in commit.message.lower():
+                    pushList.append(commit)
+            for i, push in enumerate(pushList):
+                logger.info(f"Pushing SHA:{push.hexsha}")
+                with (PushProgress() as progress):
+                    a = localRepo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/head/{branch.name}", progress=progress, force=True)
+                    if a:
+                        print(a[0].summary)
+                        print(a[0].flags)
+                        print(a[0].remote_ref_string)
+                        print()
+                    logger.info(f"Pushed {i+1} / {len(pushList)} subtreea")
+            with (PushProgress() as progress):
+                a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
+                                                     force=True, progress=progress)
+            logger.info(f"Sucessfully pushed {branch.name} branch")
+        #self.branchWiseUpload(existingBranches, localRepo)
+        #self.commitWiseUpload(existingBranches, localRepo)
+        if disableScanning or True:
+            self.activatePushProtection(githubRepo)
+
+    def branchWiseUpload(self, existingBranches, localRepo):
         for branch in localRepo.branches:
             if branch.name in existingBranches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
             else:
                 logger.info(f"Uploading {branch.name} branch...")
                 with (PushProgress() as progress):
-                    a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True, progress=progress)
+                    a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True,
+                                                             progress=progress)
                     print(a[0].summary)
                     print(a[0].flags)
                     print(a[0].remote_ref_string)
                     print()
                 logger.info(f"Branch {branch.name} uploaded successfully.")
-        '''
 
-        """
+    def commitWiseUpload(self, existingBranches, localRepo):
         for branch in localRepo.branches:
             if branch.name in existingBranches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
@@ -180,70 +211,22 @@ class GithubUploader(Uploader):
                 logger.info(f"Uploading {branch.name} branch commit by commit...")
                 commits = list(
                     localRepo.iter_commits(branch.name, reverse=True))  # Commits in chronologischer Reihenfolge
-
-                for commit in tqdm(commits):
-                    localRepo.git.checkout(branch.name)
-                    localRepo.git.reset("--hard", commit.hexsha)  # Setze den Branch auf den aktuellen Commit
-                    with PushProgress() as progress:
-                        a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
-                                                                 force=True, progress=progress)
-                        print(a[0].summary)
-                        logger.info(f"Pushed commit {commit.hexsha} to branch {branch.name}.")
-
-                logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
-
-                logger.info(f"Branch {branch.name} uploaded successfully in chunks.")
-"""
-        for branch in localRepo.branches:
-            if branch.name in existingBranches:
-                logger.info(f"Branch {branch.name} already exists in the target repository.")
-            else:
-                logger.info(f"Uploading {branch.name} branch commit by commit...")
-                commits = list(localRepo.iter_commits(branch.name, reverse=True))  # Commits in chronologischer Reihenfolge
 
                 with tqdm(total=len(commits), desc=f"Commits in {branch.name}", unit="commit") as commit_pbar:
                     for commit in commits:
                         localRepo.git.checkout(branch.name)
                         localRepo.git.reset("--hard", commit.hexsha)  # Setze den Branch auf den aktuellen Commit
 
-                        #with PushProgress() as push_pbar:  # Fortschrittsbalken für den Push
-                            #push_pbar.pbar.position = 1  # Setze den Push-Fortschrittsbalken in eine andere Zeile
-                            #a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True, progress=push_pbar)
+                        # with PushProgress() as push_pbar:  # Fortschrittsbalken für den Push
+                        # push_pbar.pbar.position = 1  # Setze den Push-Fortschrittsbalken in eine andere Zeile
+                        # a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True, progress=push_pbar)
                         a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True)
-                            #print(a[0].summary)
-                            #logger.info(f"Pushed commit {commit.hexsha} to branch {branch.name}.")
+                        # print(a[0].summary)
+                        # logger.info(f"Pushed commit {commit.hexsha} to branch {branch.name}.")
                         commit_pbar.update(1)
 
-                #logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
-        """
-        chunk_size = 100  # Anzahl der Commits pro Push
+                # logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
 
-        for branch in localRepo.branches:
-            if branch.name in existingBranches:
-                logger.info(f"Branch {branch.name} already exists in the target repository.")
-            else:
-                logger.info(f"Uploading {branch.name} branch in chunks of {chunk_size} commits...")
-                commits = list(
-                    localRepo.iter_commits(branch.name, reverse=True))  # Commits in chronologischer Reihenfolge
-
-                for i in range(0, len(commits), chunk_size):
-                    chunk_commits = commits[i:i + chunk_size]
-                    temp_branch_name = f"temp-{branch.name}-{i}"
-                    localRepo.git.checkout(branch.name, b=temp_branch_name)
-                    localRepo.git.reset("--soft", chunk_commits[-1].hexsha)
-                    localRepo.git.commit("--amend", "--no-edit")
-                    with PushProgress() as progress:
-                        a = localRepo.remote(name="origin").push(refspec=f"{temp_branch_name}:{branch.name}",
-                                                                 force=True, progress=progress)
-                        print(a[0].summary)
-                    localRepo.git.checkout(branch.name)
-                    localRepo.git.branch("-D", temp_branch_name)  # Lösche den temporären Branch lokal
-
-                logger.info(f"Branch {branch.name} uploaded successfully in chunks.")
-        githubRepo.edit(default_branch="master")
-        if disableScanning or True:
-            self.activatePushProtection(githubRepo)
-    """
     def deactivatePushProtection(self,repo):
         headers = {
             "Accept": "application/vnd.github+json",

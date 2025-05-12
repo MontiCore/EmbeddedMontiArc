@@ -16,4 +16,4 @@ for reopId in architecture.keys():
 
 Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 Uploader.dockerImageMigrationMonorepo(architecture,"subtreeTest")
-Uploader.uploadMonoRepo("subtreeUploader",secrets ,"./repos/subtreeTest")
+Uploader.uploadMonoRepo("subtreeManual3",secrets ,"./repos/subtreeTest")
