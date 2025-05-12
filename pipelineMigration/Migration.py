@@ -57,7 +57,6 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
     :param repoID: The ID of the repository
     """
     # Get the full image names from the architecture
-    #ToDo: Does not work alqways, see MNIST TestTensorflow
     newNames = {}
     if type(repoIDS) == str:
         repoIDS = [repoIDS]
@@ -90,20 +89,39 @@ def GitlabToGithubSubtree(repoIDS, architecture, config : Config, githubFilePath
         os.makedirs(folder_path)
         print(f"Ordner '{folder_path}' wurde erstellt.")
     for repoID in repoIDS :
+        branchesToBeMigrated = {}
+        if architecture[repoID]["Branches"] is None:
+            branchesToBeMigrated[str(repoID)] = architecture[repoID]["StaleBranches"]
+        elif architecture[repoID]["StaleBranches"] is None:
+            branchesToBeMigrated[str(repoID)] = architecture[repoID]["Branches"]
+        else:
+            branchesToBeMigrated[str(repoID)] = list(
+                set(architecture[repoID]["Branches"]).union(set(architecture[repoID]["StaleBranches"])))
+        repo = git.Repo("./repos/" + architecture[repoID]["Name"])
+        for branch in branchesToBeMigrated[str(repoID)]:
+            repo.git.checkout(branch)
+            #ToDo: Maybe change to subtrees?
+            path = "./repos/" + architecture[repoID]["Name"]
+            name = path.split("/")[-1]
+            file = open(path + "/.gitlab-ci.yml", 'r')
+            pipeline = GitlabCIImporter().getPipeline(file)
+            file.close()
+            pipeline = changeToUpdatedImages(pipeline, architecture, config, repoIDS)
 
-        path = "./repos/" + architecture[repoID]["Name"]
-        name = path.split("/")[-1]
-        file = open(path + "/.gitlab-ci.yml", 'r')
-        pipeline = GitlabCIImporter().getPipeline(file)
-        file.close()
-        pipeline = changeToUpdatedImages(pipeline, architecture, config, repoIDS)
-        pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name], repoID)
-        convertedPipeline = pipelineConverter.parsePipeline(name, secrets[name])
 
-        file_path = file_path_base + name + ".yml"
-        writeStringToFile(file_path, convertedPipeline)
-        subTreeRepo.git.add(all=True)
-        subTreeRepo.index.commit(f"Migrated pipeline of {name} from Gitlab to Github")
+            if len(branchesToBeMigrated[str(repoID)])<=1:
+                pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name], repoID)
+                convertedPipeline = pipelineConverter.parsePipeline(name, secrets[name])
+                file_path = file_path_base + name + ".yml"
+            else:
+                pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name]+"/"+branch, repoID)
+                convertedPipeline = pipelineConverter.parsePipeline(name +"_"+ branch, secrets[name])
+                file_path = file_path_base + name + "_"+ branch + ".yml"
+
+
+            writeStringToFile(file_path, convertedPipeline)
+            subTreeRepo.git.add(all=True)
+            subTreeRepo.index.commit(f"Migrated pipeline of {name} and branch {branch} from Gitlab to Github")
 
 
 if __name__ == '__main__':

@@ -15,10 +15,11 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class GithubUploader(Uploader):
-    def __init__(self, githubToken, gitlabToken, sourceURL: str = "https://api.github.com/"):
+    def __init__(self, config, sourceURL: str = "https://api.github.com/"):
         super().__init__()
-        self.__githubToken = githubToken
-        self.__gitlabToken = gitlabToken
+        self.__githubToken = config.targetToken
+        self.__gitlabToken = config.sourceToken
+        self.config = config
         auth = Auth.Token(self.__githubToken)
         self.g = Github(auth=auth, base_url=sourceURL)
 
@@ -77,8 +78,23 @@ class GithubUploader(Uploader):
         :return: Repository object
         """
         try:
-            repo = self.g.get_user().get_repo(repoName)  #ToDo: Clone if yes
-            logger.info(f"Repository '{repoName}' already exists.")
+            repo = self.g.get_user().get_repo(repoName)
+            logger.info(f"Repository '{repoName}' already exists on remote.")
+            if input("Delete existing repository? (y/n): ").lower() == 'y':
+                repo.delete()
+                logger.info(f"Repository '{repoName}' deleted.")
+                visibility = input("Create public repository? (y/n): ").lower()
+                if visibility == 'y':
+                    repo = self.createPublicRepo(repoName)
+                else:
+                    repo = self.createPrivateRepo(repoName)
+                logger.info(f"New repository '{repoName}' created.")
+            #else:
+            #    if os.path.exists("./repos/" + repoName):
+            #        logger.info(f"Repository '{repoName}' already exists locally.")
+            #    else:
+            #        logger.info(f"Cloning repository '{repoName}'.")
+            #        repo = git.Repo.clone_from(repo.clone_url, "./repos/" + repoName)
         except GithubException as e:
             if e.status == 404:
                 logger.info(f"Repository '{repoName}' does not exist.")
@@ -99,8 +115,18 @@ class GithubUploader(Uploader):
         :return:
         """
         #ToDo: check if secrets already exist
-        for name,secret in secrets.items():
-            github_repo.create_secret(name, secret)
+        #for name,secret in secrets.items():
+        #    github_repo.create_secret(name, secret)
+
+        existingSecrets = list(github_repo.get_secrets("actions"))
+        existingSecrets = [secret.name for secret in existingSecrets]
+        for name, secret in secrets.items():
+            if name in existingSecrets:
+                logger.info(f"Secret '{name}' already exists. Skipping creation.")
+                continue
+            else:
+                github_repo.create_secret(name, secret)
+                logger.info(f"Secret '{name}' created successfully.")
 
     def listPrivateRepos(self):
         """
@@ -138,17 +164,19 @@ class GithubUploader(Uploader):
                 logger.info(f"Uploading {branch} branch...")
                 with (PushProgress() as progress):
                     a = repo.remote(name="origin").push(refspec=f"{branch}:{branch}", force=True, progress=progress)
-                    print(a[0].summary)
-                    print(a[0].flags)
-                    print(a[0].remote_ref_string)
-                    print()
+                    if a:
+                        print(a[0].summary)
+                        print(a[0].flags)
+                        print(a[0].remote_ref_string)
+                        print()
                 logger.info(f"Branch {branch} uploaded successfully.")
         if disableScanning or True:
             self.activatePushProtection(newRepo)
         newRepo.edit(default_branch="master")
 
-    def uploadMonoRepo(self, githubRepoName, secrets = {} ,path = "./repos/MonoRepo", disableScanning = False):
-        localRepo = git.Repo(path)
+    def uploadMonoRepo(self, githubRepoName, secrets = {} ,disableScanning = False):
+        localRepo = git.Repo("./repos/" + self.config.monorepoName)
+        localRepo.git.config('http.postBuffer', '524288000', local=True)
         logger.info(f"Uploading {githubRepoName} to the {githubRepoName}...")
         githubRepo = self.getOrCreateRepo(githubRepoName)
         if disableScanning or True:
@@ -164,7 +192,9 @@ class GithubUploader(Uploader):
                 if input("Still try to upload? (y/n): ").lower() == 'n':
                     logger.info(f"Skipping branch {branch.name}.")
                     continue
+            localRepo.git.checkout(branch.name)
             commits = list(localRepo.iter_commits(branch))
+            commits.reverse()
             pushList = []
             for commit in commits:
                 if "subtree" in commit.message.lower():
@@ -178,13 +208,14 @@ class GithubUploader(Uploader):
                         print(a[0].flags)
                         print(a[0].remote_ref_string)
                         print()
-                    logger.info(f"Pushed {i+1} / {len(pushList)} subtreea")
+                logger.info(f"Pushed {i+1} / {len(pushList)} subtrees")
             with (PushProgress() as progress):
                 a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
                                                      force=True, progress=progress)
             logger.info(f"Sucessfully pushed {branch.name} branch")
         #self.branchWiseUpload(existingBranches, localRepo)
         #self.commitWiseUpload(existingBranches, localRepo)
+        localRepo.git.checkout("master")
         if disableScanning or True:
             self.activatePushProtection(githubRepo)
 
@@ -197,10 +228,11 @@ class GithubUploader(Uploader):
                 with (PushProgress() as progress):
                     a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True,
                                                              progress=progress)
-                    print(a[0].summary)
-                    print(a[0].flags)
-                    print(a[0].remote_ref_string)
-                    print()
+                    if a:
+                        print(a[0].summary)
+                        print(a[0].flags)
+                        print(a[0].remote_ref_string)
+                        print()
                 logger.info(f"Branch {branch.name} uploaded successfully.")
 
     def commitWiseUpload(self, existingBranches, localRepo):
@@ -366,7 +398,8 @@ class GithubUploader(Uploader):
         repo.git.add(all=True)
         repo.index.commit("Added Docker image migration workflow")
 
-    def dockerImageMigrationMonorepo(self, architecture, targetRepo):
+    def dockerImageMigrationMonorepo(self, architecture):
+        targetRepo = self.config.monorepoName
         action = "name: Migrate Docker Images\n"
         action += "on:\n"
         action += "  workflow_dispatch:\n"

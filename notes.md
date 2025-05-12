@@ -155,10 +155,12 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
 
 - [ ] Change tool to be independent of user Namespace, currently only works for David.Blum
 
-- [ ] Add pre-commit hook to check for file siz -> if yes split? Add pull-hook to rebuild those large files
+- [x] Add pre-commit hook to check for file siz -> if yes split? Add pull-hook to rebuild those large files
 
-- [ ] Make sure user push protection is set to false
+- [x] Make sure user push protection is set to false -> Has to be done manually, no API access
 
 - [x] Enable /disable Push protection in Repo
 
-- [ ] Push in multiple steps, so that 2GB limit is not hit
+- [x] Push in multiple steps, so that 2GB limit is not hit
+
+- [ ] Implement multiple branches in monorepo

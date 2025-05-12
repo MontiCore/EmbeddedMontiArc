@@ -228,7 +228,7 @@ class GithubActionConverter(Converter):
         return download
 
     @staticmethod
-    def deployPages(path : str) -> str:   #ToDo: Add special rights for token for this job
+    def deployPages(path : str) -> str:
         deploy = ""
         deploy += "\t\t\t- name: Upload Pages\n"
         deploy += "\t\t\t\tuses: actions/upload-pages-artifact@v3\n"
@@ -356,10 +356,11 @@ class GithubActionConverter(Converter):
         :param script: Script to be parsed
         :return: Parsed script
         """
-        if type (script) == list:
-            print("JDDJ")
         if "mvn" in script:
             script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
+        #ToDo: Delete for production
+        if "deploy" in script:
+            return
         script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")

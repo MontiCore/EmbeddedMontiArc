@@ -204,7 +204,7 @@ class Gitlab(Git):
             repo.delete_remote(origin)
             print("Remote 'origin' wurde erfolgreich entfernt.")
         except Exception as e:
-            print(f"Fehler beim Entfernen des Remote 'origin': {e}")
+            pass
 
 class CloneProgress(RemoteProgress):
     def __init__(self):

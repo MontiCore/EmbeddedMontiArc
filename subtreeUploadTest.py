@@ -14,6 +14,6 @@ for reopId in architecture.keys():
             if secretName not in secrets.keys() and secretValues["Value"] != "Please add a value":
                 secrets[secretName] = secretValues["Value"]
 
-Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
-Uploader.dockerImageMigrationMonorepo(architecture,"subtreeTest")
-Uploader.uploadMonoRepo("subtreeManual3",secrets ,"./repos/subtreeTest")
+Uploader = GithubUploader.GithubUploader(config)
+Uploader.dockerImageMigrationMonorepo(architecture)
+Uploader.uploadMonoRepo("subtreeManual3",secrets ,)
