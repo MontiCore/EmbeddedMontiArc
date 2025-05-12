@@ -48,6 +48,8 @@ class Uploader(ABC):
         repo.index.commit("Initial commit")
         return repo
 
+    #ToDo: Add for multiple branches for one repo
+    #ToDo: Add new branch for each repo, automatic merge in the end
     def addSubtree(self,repoName, subtreeRepoName ,prefix = "" , branch = "master"):
         """
         Add a subtree to the repository.
@@ -63,11 +65,15 @@ class Uploader(ABC):
             return
         #repo.remotes.add(subtreeRepoName, "./repos/" + subtreeRepoName)
         #repo.remotes[0].set_url(subtreeRepoName, "./repos/" + subtreeRepoName)
+        #repo.create_head(subtreeRepoName)
+        #repo.heads[subtreeRepoName].checkout()
         if subtreeRepoName in repo.remotes:
             repo.delete_remote(subtreeRepoName)
         repo.create_remote(subtreeRepoName, "../" + subtreeRepoName)
         repo.git.fetch(subtreeRepoName, branch)
         repo.git.subtree("add", "--prefix", prefix +"/" + subtreeRepoName, subtreeRepoName, branch)
+        #repo.heads["master"].checkout()
+
 
     def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs, ): #ToDo multiple branches
         """
@@ -75,8 +81,9 @@ class Uploader(ABC):
         :param targetRepoName: Name of the target GitHub repository
         :param subtreeRepoIDs: IDs of the repositories to be uploaded as subtrees
         """
-        #ToDo: Add for multiple branches for one repo
-        #ToDo: Verify how it works with existing repo
+        #ToDo: A
+        # ,0
+        # erify how it works with existing repo
         targetRepo = self.initRepo(targetRepoName)
         for repoID in subtreeRepoIDs:
             repoName = self.repoNames[repoID]
