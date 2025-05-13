@@ -14,52 +14,56 @@ from sourceAnalysis.mavenSecrets import find_env_vars_in_repo
 
 
 class Gitlab(Git):
-    def __init__(self, sourceURL: str, privateToken, repoIDS):
-        self.__privateToken = privateToken
+    def __init__(self, source_url: str, private_token, repoIDS):
+        self.__privateToken = private_token
         self.repoIDS = repoIDS
 
-        self.gl = gitlab.Gitlab(url=sourceURL, private_token=self.__privateToken)
+        self.gl = gitlab.Gitlab(url=source_url, private_token=self.__privateToken)
         self.gl.auth()
 
-    def scanRepos(self):
+    def scan(self):
+        """
+        Scans all repositories and create a yaml file with the architecture of the repositories.
+        """
         architecture = {}
         for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
-            repoData = {}
+            repo_data = {}
             repo = self.getRepo(repoID)
-            repoData['Name'] = self.getRepoName(repo)
-            repoData['Namespace'] = self.getNamespace(repo)
+            repo_data['Name'] = self.getRepoName(repo)
+            repo_data['Namespace'] = self.getNamespace(repo)
             branches = self.getBranches(repo)
-            staleBranches = self.getStaleBranches(repo)
-            repoData['Branches'] = []
-            repoData['StaleBranches'] = []
-            repoData['Secrets'] = {}
-            envVariables = find_env_vars_in_repo("./repos/" + repoData['Name'])
-            repoData['Secrets']["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
-            repoData['Secrets']["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
-            if envVariables:
-                for secret in envVariables:
+            stale_branches = self.getStaleBranches(repo)
+            repo_data['Branches'] = []
+            repo_data['StaleBranches'] = []
+            repo_data['Secrets'] = {}
+            # Get env variables used by maven. Should be recreated in the new repo
+            env_variables = find_env_vars_in_repo("./repos/" + repo_data['Name'])
+            repo_data['Secrets']["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
+            repo_data['Secrets']["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
+            if env_variables:
+                for secret in env_variables:
                     if secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID":
                         continue
                     else:
-                        repoData['Secrets'][secret] = {"Value": "Please add a value",
-                                                       "Secret": "Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
+                        repo_data['Secrets'][secret] = {"Value": "Please add a value",
+                                                        "Secret": "Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
             for b in branches:
-                if b not in staleBranches:
-                    repoData['Branches'].append(b)
+                if b not in stale_branches:
+                    repo_data['Branches'].append(b)
                 else:
-                    repoData['StaleBranches'].append(b)
-            if repoData['Branches'] == []:
-                repoData['Branches'] = None
-            if repoData['StaleBranches'] == []:
-                repoData['StaleBranches'] = None
+                    repo_data['StaleBranches'].append(b)
+            if not repo_data['Branches']:
+                repo_data['Branches'] = None
+            if not repo_data['StaleBranches']:
+                repo_data['StaleBranches'] = None
 
-            dockerImages = self.getDockerImages(repo)
-            if dockerImages:
-                repoData['DockerImages'] = dockerImages
-            mavenArtifacts = self.getMavenArtifacts(repo)
-            if mavenArtifacts and False:
-                repoData['MavenArtifacts'] = mavenArtifacts
-            architecture[repoID] = repoData
+            docker_images = self.getDockerImages(repo)
+            if docker_images:
+                repo_data['DockerImages'] = docker_images
+            maven_artifacts = self.getMavenArtifacts(repo)
+            if maven_artifacts and False:
+                repo_data['MavenArtifacts'] = maven_artifacts
+            architecture[repoID] = repo_data
 
         yaml.dump(architecture, open("architecture.yaml", 'w'))
 
@@ -71,15 +75,15 @@ class Gitlab(Git):
         """
         return repo.name
 
-    def cloneRepos(self):
+    def clone(self):
         """
         Clone repositories from GitLab to the local machine.
         """
         print("Cloning Repositories...")
         for repo in self.repoIDS:
             print("-------------------------------")
-            self.cloneRepo(repo, "./repos/")
-            self.removeRemoteOrigin("./repos/" + self.getRepoName(self.getRepo(repo)))
+            self.clone_repo(repo, "./repos/")
+            self.remove_remote_origin("./repos/" + self.getRepoName(self.getRepo(repo)))
 
     def getRepo(self, repoID: str):
         """
@@ -91,6 +95,11 @@ class Gitlab(Git):
         return repo
 
     def getBranches(self, repo):
+        """
+        Get all branches from the repository.
+        :param repo: GitLab Repo object
+        :return: list - List of branches
+        """
         data = []
         branches = repo.branches.list(all=True)
         for branch in branches:
@@ -98,6 +107,11 @@ class Gitlab(Git):
         return data
 
     def getStaleBranches(self, repo):
+        """
+        Get all branches that are older than 90 days.
+        :param repo: GitLab  Repo object
+        :return: list - List of stale branches
+        """
         cutoff_date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=90)
         stale_branches = []
         branches = repo.branches.list(all=True)
@@ -109,14 +123,11 @@ class Gitlab(Git):
         return stale_branches
 
     def getDockerImages(self, repo):
-        # data = []
-        # try:
-        #    images =repo.repositories.list(all=True)
-        #    for image in images:
-        #        data.append(image.name)
-        # except gitlab.exceptions.GitlabListError:
-        #    pass
-        # return data
+        """
+        Get all docker images from the repository.
+        :param repo: GitLab Repo object
+        :return: list - List of docker images
+        """
         data = []
         try:
             images = repo.repositories.list(all=True)
@@ -138,6 +149,11 @@ class Gitlab(Git):
         return data
 
     def getMavenArtifacts(self, repo):
+        """
+        Get all maven artifacts from the repository.
+        :param repo: GitLab Repo object
+        :return: list - List of maven artifacts
+        """
         data = []
         try:
             artifacts = repo.packages.list(all=True)
@@ -148,37 +164,49 @@ class Gitlab(Git):
         return data
 
     def getNamespace(self, repo):
+        """
+        Get the namespace of the repository.
+        :param repo: GitLab Repo object
+        :return: Str - Namespace of the repository
+        """
         return repo.namespace['full_path']
 
-    def cloneRepo(self, repo_id, clone_path):
+    def clone_repo(self, repo_id, clone_path):
+        """
+        Clone a repository from GitLab to the local machine. Additionally it checks out all branches and removes the remote origin.
+        :param repo_id: Repository ID in GitLab
+        :param clone_path: Path to clone the repository to
+        """
         repo = self.getRepo(repo_id)
         name = self.getRepoName(repo)
         clone_path = os.path.join(clone_path, name)
+        # Create authorized URL with private token for cloning
         repo_url = repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.__privateToken}@")
         print(f"Cloning {repo_id} to {clone_path}")
+        # If a folder with the repos name already exists, skip cloning
         if not os.path.exists(clone_path):
             os.makedirs(clone_path)
         else:
             print(f"Directory {clone_path} already exists, skipping clone.")
             return
-
+        # Clone
         git.Repo.clone_from(repo_url, clone_path, branch='master', progress=CloneProgress())
-
         print(f"Cloning {repo_id} finished")
+
+        # Check if LFS is used and download LFS objects if necessary
         lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
-        if lfs_check.stdout and True:  # Todo: Activate
+        if lfs_check.stdout:
             print("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
             process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, text=True)
             for line in process.stdout:
                 print(line.strip())
             rc = process.poll()
-        else:
-            print("LFS-Objekte nicht gefunden, keine weiteren Schritte erforderlich.")
-        self.chekoutBranches(name)
-        # self.removeRemoteOrigin(clone_path)
 
-    def chekoutBranches(self, repoName):
+        self.chekout_branches(name)
+        self.remove_remote_origin(clone_path)
+
+    def chekout_branches(self, repoName):
         """
         Checkout all branches available in the remote repository.
         :param repoName: Name of the repository to be checked out
@@ -199,7 +227,7 @@ class Gitlab(Git):
                 print(f"Error checking out branch {branch_name}: {e}")
             repo.git.checkout('master')  # Checkout the master branch
 
-    def removeRemoteOrigin(self, repo_path):
+    def remove_remote_origin(self, repo_path):
         try:
             repo = git.Repo(repo_path)
             origin = repo.remote(name='origin')
@@ -222,5 +250,5 @@ class CloneProgress(RemoteProgress):
 
 if __name__ == '__main__':
     dr = Gitlab("repos.yaml")
-    dr.scanRepos()
-    dr.cloneRepos()
+    dr.scan()
+    dr.clone()

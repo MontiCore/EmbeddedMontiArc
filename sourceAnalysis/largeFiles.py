@@ -9,7 +9,11 @@ SIZE_LIMIT = 100 * 1024 * 1024  # 100MB in bytes
 
 
 def get_git_root(repo_path):
-    """Check if the provided path is a Git repository and return its root."""
+    """
+    heck if the provided path is a Git repository and return its root.
+    :param repo_path: Path to the repository
+    :return: Path to the root of the Git repository or None if not a Git repository.
+    """
     try:
         root = subprocess.check_output(['git', '-C', repo_path, 'rev-parse', '--show-toplevel']).strip().decode()
         return root
@@ -18,7 +22,11 @@ def get_git_root(repo_path):
 
 
 def find_large_files_in_repo(repo_path):
-    """Find large files in the working directory (latest commit)."""
+    """
+    Find large files in the working directory (latest commit).
+    :param repo_path: Path to the repository
+    """
+
     print("\nScanning for large files in the current working directory...")
     try:
         result = subprocess.check_output(['git', '-C', repo_path, 'ls-files', '-s']).decode()
@@ -51,7 +59,7 @@ def findLargeFilesInHistory(repo_path):
                     ['git', '-C', repo_path, 'cat-file', '-s', blob_hash]).decode().strip()
                 size = int(size_output)
                 if size > SIZE_LIMIT:
-                    output+=(f"   -  {file_path} ({size / (1024 * 1024):.2f} MB)\n")
+                    output += (f"   -  {file_path} ({size / (1024 * 1024):.2f} MB)\n")
 
         if output:
             print("Large files found in history:")
@@ -71,4 +79,3 @@ if __name__ == "__main__":
         print(f"Git Repository: {repo_root}")
         find_large_files_in_repo(repo_root)
         findLargeFilesInHistory(repo_root)
-    print("✅ Scan completed.")
