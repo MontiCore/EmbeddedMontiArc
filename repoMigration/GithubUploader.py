@@ -185,7 +185,6 @@ class GithubUploader(Uploader):
         remote_url = githubRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(localRepo, remote_url)
         existingBranches = [b.name for b in githubRepo.get_branches()]
-
         for branch in localRepo.branches:
             if branch.name in existingBranches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
@@ -202,7 +201,7 @@ class GithubUploader(Uploader):
             for i, push in enumerate(pushList):
                 logger.info(f"Pushing SHA:{push.hexsha}")
                 with (PushProgress() as progress):
-                    a = localRepo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/head/{branch.name}", progress=progress, force=True)
+                    a = localRepo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}", progress=progress, force=True)
                     if a:
                         print(a[0].summary)
                         print(a[0].flags)

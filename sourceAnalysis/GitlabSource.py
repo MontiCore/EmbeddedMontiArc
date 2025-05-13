@@ -20,7 +20,7 @@ class Gitlab(Git):
 
         self.gl = gitlab.Gitlab(url=sourceURL, private_token=self.__privateToken)
         self.gl.auth()
-
+    #ToDo: Maybe list existing secrets
     def scanRepos(self):
         architecture = {}
         for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
