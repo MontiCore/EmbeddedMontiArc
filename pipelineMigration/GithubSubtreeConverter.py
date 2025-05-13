@@ -15,7 +15,7 @@ class GithubSubTreeConverter(GithubActionConverter):
         self.repoPath = repoPath
         self.repoID = repoID
 
-    def parsePipeline(self, name: str, secrets: list[str]) -> str:
+    def parse_pipeline(self, name: str, secrets: list[str]) -> str:
         self.fileChangeJobNeeded = False
         pipelineString = ""
         pipelineString += f"name: {name}\n"
@@ -43,18 +43,18 @@ class GithubSubTreeConverter(GithubActionConverter):
                 break
         pipelineString += self.createStageJobs()
         for job in self.pipeline.jobs:
-            pipelineString += self.parseJob(self.pipeline.jobs[job], secrets)
+            pipelineString += self.parse_job(self.pipeline.jobs[job], secrets)
             pipelineString += "\n"
         return self.set_indentation_to_two_spaces(pipelineString)
 
-    def parseJob(self, job: Job, secrets: list[str] = []) -> str:
+    def parse_job(self, job: Job, secrets: list[str] = []) -> str:
         """
         Parses a job and returns it in the converted form as a string.
         :param job: Job object
         :param secrets: List of secrets to be used in the job
         :return: Converted job
         """
-        jobString = super().parseJob(job, secrets)
+        jobString = super().parse_job(job, secrets)
         jobString = jobString.replace("            cd /workspace\n",
                                       "            cd /workspace\n" + "            cd " + f"{self.repoPath}" + "\n")
         patternRepo = r"(- name: Script\s+run: \|)"

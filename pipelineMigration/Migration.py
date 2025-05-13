@@ -34,7 +34,7 @@ def GitlabToGithub(repoID: str, architecture, config: Config, name: str = "pipel
     repo.index.commit("Changed maven settings to private token")
 
     pipelineConverter = GithubActionConverter(pipeline)
-    convertedPipeline = pipelineConverter.parsePipeline(name, secrets)
+    convertedPipeline = pipelineConverter.parse_pipeline(name, secrets)
 
     file_path = f"{"./repos/" + architecture[repoID]["Name"]}/.github/workflows/main.yml"
     folder_path = os.path.dirname(file_path)
@@ -115,11 +115,11 @@ def GitlabToGithubSubtree(repoIDS, architecture, config: Config, githubFilePath,
 
             if len(branchesToBeMigrated[str(repoID)]) <= 1:
                 pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name], repoID)
-                convertedPipeline = pipelineConverter.parsePipeline(name, secrets[name])
+                convertedPipeline = pipelineConverter.parse_pipeline(name, secrets[name])
                 file_path = file_path_base + name + ".yml"
             else:
                 pipelineConverter = GithubSubTreeConverter(pipeline, githubRepoPrefix[name] + "/" + branch, repoID)
-                convertedPipeline = pipelineConverter.parsePipeline(name + "_" + branch, secrets[name])
+                convertedPipeline = pipelineConverter.parse_pipeline(name + "_" + branch, secrets[name])
                 file_path = file_path_base + name + "_" + branch + ".yml"
 
             writeStringToFile(file_path, convertedPipeline)
