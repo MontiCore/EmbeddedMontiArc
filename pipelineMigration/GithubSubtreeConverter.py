@@ -5,18 +5,26 @@ from pipelineMigration.GithubConverter import GithubActionConverter
 
 
 class GithubSubTreeConverter(GithubActionConverter):
-    def __init__(self, pipeline, repoPath, repoID, compatibleImages: set = None):
+    # Specialized converter for Monorepo variant"
+    def __init__(self, pipeline, repoPath, repoID, compatible_images: set = None):
         """
+        Initializes the GithubSubTreeConverter class.
         :param pipeline: Pipeline object
         :param repoNames: IDs mapped to names of the repository
         :param repoPath: IDs mapped to paths to the repository
         """
-        super().__init__(pipeline, compatibleImages)
+        super().__init__(pipeline, compatible_images)
         self.repoPath = repoPath
         self.repoID = repoID
 
-    def parsePipeline(self, name: str, secrets: list[str]) -> str:
-        self.fileChangeJobNeeded = False
+    def parse_pipeline(self, name: str, secrets: list[str]) -> str:
+        """
+            Parses the pipeline of a subtree Repo and returns it in the converted form as a string.
+        :param name: Name of the pipeline
+        :param secrets: Secrets to be used in the pipeline
+        :return: String of the pipeline
+        """
+        self.file_change_job_needed = False
         pipelineString = ""
         pipelineString += f"name: {name}\n"
         pipelineString += "on:\n"
@@ -37,32 +45,40 @@ class GithubSubTreeConverter(GithubActionConverter):
 
         pipelineString += "jobs:\n"
         for _, job in self.pipeline.jobs.items():
+            # Check whether a job is only run if a file changes
             if job.only and type(job.only) == dict and "changes" in job.only:
-                self.fileChangeJobNeeded = True
-                pipelineString += self.createFileChangeJob()
+                # If yes, add job to check
+                self.file_change_job_needed = True
+                pipelineString += self.create_file_change_job()
                 break
-        pipelineString += self.createStageJobs()
+        # Create jobs for the stages
+        pipelineString += self.create_stage_jobs()
+        # Parse all the normal jobs
         for job in self.pipeline.jobs:
-            pipelineString += self.parseJob(self.pipeline.jobs[job], secrets)
+            pipelineString += self.parse_job(self.pipeline.jobs[job], secrets)
             pipelineString += "\n"
         return self.set_indentation_to_two_spaces(pipelineString)
 
-    def parseJob(self, job: Job, secrets: list[str] = []) -> str:
+    def parse_job(self, job: Job, secrets: list[str] = []) -> str:
         """
-        Parses a job and returns it in the converted form as a string.
+        Parses a job in a subtree repo pipeline and returns it in the converted form as a string.
         :param job: Job object
         :param secrets: List of secrets to be used in the job
         :return: Converted job
         """
-        jobString = super().parseJob(job, secrets)
+        # Uses the normal githubaction converter to parse the job
+        jobString = super().parse_job(job, secrets)
+        # Add to the cd command in the begining of the commands, so that the job is run in the correct directory
+        # Non native job
         jobString = jobString.replace("            cd /workspace\n",
                                       "            cd /workspace\n" + "            cd " + f"{self.repoPath}" + "\n")
+        # Native job, match with begining of run block and prepend cd to folder
         patternRepo = r"(- name: Script\s+run: \|)"
         repoCD = r"\1\n" + f"          cd {self.repoPath}"
         jobString = re.sub(patternRepo, repoCD, jobString)
-        # jobString = jobString.replace('${{ secrets.CI_PROJECT_ID }}', self.repoID)
-        artifactUploadPattern = r"(- name: .*\n\s+uses: actions/upload-artifact@v4\n(?:\s+if: .*\n)?\s+with:\n(?:\s+.+\n)*\s+path: \|\n((?:\s+.+\n?)+))"
 
+        # Add the prefix to the paths in the artifact upload bloxks
+        artifactUploadPattern = r"(- name: .*\n\s+uses: actions/upload-artifact@v4\n(?:\s+if: .*\n)?\s+with:\n(?:\s+.+\n)*\s+path: \|\n((?:\s+.+\n?)+))"
         prefix = f"{self.repoPath}/"
 
         def replace_paths_with_prefix(match):
@@ -75,10 +91,11 @@ class GithubSubTreeConverter(GithubActionConverter):
 
         jobString = re.sub(artifactUploadPattern, replace_paths_with_prefix, jobString)
 
+        # Add the prefix to the paths in the artifact download blocks
         artifactDownloadPattern = r"(- name: .*\n\s+uses: actions/download-artifact@v4\n(?:\s+.+\n)*?\s+path: \|\n)((?:\s+.+\n?)+?)"
-
         jobString = re.sub(artifactDownloadPattern, replace_paths_with_prefix, jobString)
 
+        # Add the prefix to the paths in the upload pages blocks
         uploadPagesPattern = r"(- name: Upload Pages\s+uses: actions/upload-pages-artifact@v3\s+with:\s+path: )(.+)"
 
         def add_prefix_to_upload_pages_path(match):

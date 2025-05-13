@@ -1,5 +1,5 @@
 from typing import TextIO
-import  yaml
+import yaml
 
 from pipelineMigration.Importer import Importer
 from pipelineMigration.Pipeline import Pipeline
@@ -17,38 +17,39 @@ class GitlabCIImporter(Importer):
         :rtype: list[str]
         :return: Stages in the pipeline
         """
-        return self.yamlData['stages']
+        return self.yaml_data['stages']
 
-    def __flattenList(self,nestedList):
+    def __flattenList(self, nested_list):
         """
         Flattens a nested list.
         :param nested_list: List with normal entries and lists
         :return: Flattened list
         """
         flattened = []
-        for item in nestedList:
+        for item in nested_list:
             if isinstance(item, list):
                 flattened.extend(self.__flattenList(item))
             else:
                 flattened.append(item)
         return flattened
 
-    def __readJobs(self) -> dict[str, Job]:
+    def __read_jobs(self) -> dict[str, Job]:
         """
         Reads the jobs from the YAML data.
         :rtype: dict[str, Job]
         :return: Jobs in the pipeline
         """
         jobs = {}
-        for name,parameter in self.yamlData.items():
+        for name, parameter in self.yaml_data.items():
             if "script" in parameter or "trigger" in parameter:
-                #Add before script infront of normal script
+                # Add before script in front of the normal script
                 if "before_script" in parameter:
-                    sc = self.__flattenList(parameter.get("before_script", [])) + self.__flattenList(parameter.get("script", []))
+                    sc = self.__flattenList(parameter.get("before_script", [])) + self.__flattenList(
+                        parameter.get("script", []))
                 else:
                     sc = self.__flattenList(parameter.get("script", []))
 
-                #Handle dependencies
+                # Handle dependencies
                 if "dependencies" in parameter:
                     needs = parameter.get("dependencies", []) + parameter.get("needs", [])
                 else:
@@ -68,55 +69,54 @@ class GitlabCIImporter(Importer):
                 )
         return jobs
 
-
-    def __readDependencies(self) -> tuple[dict[str,set[str]], dict[str, set[str]]]:
+    def __read_dependencies(self) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
         """
         Reads the dependencies between jobs in the pipeline.
         :rtype: tuple[dict[str,set[str]], dict[str, set[str]]]
         :return:
-        - stageJobs: Dictionary mapping each stage to its jobs
-        - jobNeeds: Dictionary mapping each job to its immediate dependencies
+        - stage_jobs: Dictionary mapping each stage to its jobs
+        - job_needs: Dictionary mapping each job to its immediate dependencies
         """
-        stageJobs = {s : set() for s in self.stages}
-        for jobName,jobParameter in self.jobs.items():
-            stageJobs[jobParameter.stage].add(jobName)
+        stage_jobs = {s: set() for s in self.stages}
+        for jobName, jobParameter in self.jobs.items():
+            stage_jobs[jobParameter.stage].add(jobName)
 
-        jobNeeds = {}
+        job_needs = {}
         for stage in self.stages:
-            for jobName in stageJobs[stage]:
+            for jobName in stage_jobs[stage]:
                 if self.jobs[jobName].needs != []:
                     for j in self.jobs[jobName].needs:
-                        if jobName in jobNeeds:
-                            jobNeeds[jobName].add(j)
+                        if jobName in job_needs:
+                            job_needs[jobName].add(j)
                         else:
-                            jobNeeds[jobName] = {j}
-        return stageJobs, jobNeeds
+                            job_needs[jobName] = {j}
+        return stage_jobs, job_needs
 
-    def __getSchedule(self) -> list[str]:
+    def __get_schedule(self) -> list[str]:
         """
-        Creates a schedule for the stages in the pipeline based on their dependencies.
+        Creates a schedule for the stages in the pipeline based on their dependencies and stages.
         :rtype: list[str]
         :return: List with stage names in the order of execution
         """
-        stageSchedule = []
-        while len(stageSchedule) != len(self.stages):
-            for stage, tasks in self.stageDependencies.items():
-                if stage not in stageSchedule:
-                    needsFullfilled = True
+        stage_schedule = []
+        while len(stage_schedule) != len(self.stages):
+            for stage, tasks in self.stage_dependencies.items():
+                if stage not in stage_schedule:
+                    needs_fulfilled = True
                     for job in tasks:
                         if job in self.needs:
                             for need in self.needs[job]:
-                                if self.jobs[need].stage not in stageSchedule and need not in tasks:
-                                    needsFullfilled = False
+                                if self.jobs[need].stage not in stage_schedule and need not in tasks:
+                                    needs_fulfilled = False
                                     break
-                        if not needsFullfilled:
+                        if not needs_fulfilled:
                             break
                     else:
-                        stageSchedule.append(stage)
+                        stage_schedule.append(stage)
                         break
-        return stageSchedule
+        return stage_schedule
 
-    def getPipeline(self,file : TextIO) -> Pipeline:
+    def getPipeline(self, file: TextIO) -> Pipeline:
         """
         Imports a pipeline from a GitLab CI YAML file and returns it as a Pipeline object.
         :param file: Path to the YAML file
@@ -124,8 +124,8 @@ class GitlabCIImporter(Importer):
         :rtype : Pipeline
         :return: Object representing the imported pipeline
         """
-        self.yamlData = yaml.safe_load(file)
+        self.yaml_data = yaml.safe_load(file)
         self.stages = self.__readStages()
-        self.jobs = self.__readJobs()
-        self.stageDependencies, self.needs = self.__readDependencies()
-        return Pipeline(self.stages, self.jobs, self.stageDependencies, self.needs, self.__getSchedule())
+        self.jobs = self.__read_jobs()
+        self.stage_dependencies, self.needs = self.__read_dependencies()
+        return Pipeline(self.stages, self.jobs, self.stage_dependencies, self.needs, self.__get_schedule())
