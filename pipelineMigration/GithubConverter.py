@@ -8,132 +8,188 @@ class GithubActionConverter(Converter):
     This class converts a pipeline Object to GitHub Actions.
     """
 
-    def __init__(self, pipeline: Pipeline, compatibleImages: set = None):
+    def __init__(self, pipeline: Pipeline, compatible_images: set = None):
+        """
+        :param pipeline: Pipeline object
+        :param compatible_images: Optional set of compatible images, that don't need to be run in a seperate docker container
+        """
         self.pipeline = pipeline
+        self.compatible_images = compatible_images
 
-        self.compatibleImages = {"maven:3.6-jdk-8",
-                                 "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1",
-                                 "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest",
-                                 "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/tensorflow",
-                                 "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2",
-                                 "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1"
-                                 }
-        self.compatibleImages = {"maven:3.6-jdk-8"}
-        self.timeout = 60
+        # ToDo: Delete for production
+        self.compatible_images = {"maven:3.6-jdk-8",
+                                  "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1",
+                                  "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest",
+                                  "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/tensorflow",
+                                  "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2",
+                                  "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1"
+                                  }
+        self.compatible_images = {"maven:3.6-jdk-8"}
 
-    def parsePipeline(self, name: str, secrets: list[str]) -> str:
-        self.fileChangeJobNeeded = False
-        pipelineString = ""
-        pipelineString += f"name: {name}\n"
-        pipelineString += "on:\n"
-        pipelineString += "\tpush:\n"
-        pipelineString += "\tworkflow_dispatch:\n"
-        pipelineString += "env:\n"
+        self.timeout = 60  # Default timeout in minutes
+
+    def parse_pipeline(self, name: str, secrets: list[str]) -> str:
+        """
+
+        :param name: Name of the pipeline
+        :param secrets: Secrets to be used in the pipeline, please see architecture.yaml for more information
+        :return: String of the converted pipeline
+        """
+        self.file_change_job_needed = False  # Whether some jobs are only run if some files changed
+        pipeline_string = ""
+        pipeline_string += f"name: {name}\n"
+        pipeline_string += "on:\n"
+        pipeline_string += "\tpush:\n"
+        pipeline_string += "\tworkflow_dispatch:\n"
+        pipeline_string += "env:\n"
         if secrets:
             for secret in secrets:
                 if type(secret) == tuple:
-                    pipelineString += f"\t{secret[0]} : " + f"{secret[1]}\n"
+                    pipeline_string += f"\t{secret[0]} : " + f"{secret[1]}\n"
                 else:
-                    pipelineString += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
+                    pipeline_string += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
 
-        pipelineString += "jobs:\n"
+        pipeline_string += "jobs:\n"
+        # Check if job(s) exist that are only run if certain files changed
         for _, job in self.pipeline.jobs.items():
             if job.only and type(job.only) == dict and "changes" in job.only:
-                pipelineString += self.createFileChangeJob()
-                self.fileChangeJobNeeded = True
+                pipeline_string += self.create_file_change_job()
+                self.file_change_job_needed = True
                 break
-        pipelineString += self.createStageJobs()
 
+        # Create jobs representing each stage
+        pipeline_string += self.create_stage_jobs()
+
+        # Parse each regular job of the pipeline
         for job in self.pipeline.jobs:
-            pipelineString += self.parseJob(self.pipeline.jobs[job], secrets)
-            pipelineString += "\n"
-        return self.set_indentation_to_two_spaces(pipelineString)
+            pipeline_string += self.parse_job(self.pipeline.jobs[job], secrets)
+            pipeline_string += "\n"
+        return self.set_indentation_to_two_spaces(pipeline_string)
 
-    def parseJob(self, job: Job, secrets: list[str] = []) -> str:
-        if job.image in self.compatibleImages or not job.image:
+    def parse_job(self, job: Job, secrets: list[str] = []) -> str:
+        """
+            Converts a single job as part of a whole pipeline to a string.
+        :param job: Job object
+        :param secrets: Secrets to be used in the job, please see architecture.yaml for more information
+        :return: String of this job block
+        """
+        # Check if the job is native or needs to be run in a separate docker container
+        if job.image in self.compatible_images or not job.image:
             native = True
         else:
             native = False
-        jobString = ""
-        jobString += f"\t{job.name.replace("/", "_").replace(" ", "_")}:\n"
+
+        job_string = ""
+        job_string += f"\t{job.name.replace("/", "_").replace(" ", "_")}:\n"
+        # Checks the needs of the job and sets the needs of the job accordingly
         if job.needs:
-            jobString += (f"\t\tneeds: ")
+            # If needs exist add them
+            job_string += (f"\t\tneeds: ")
             if len(job.needs) == 1:
-                jobString += f"{job.needs[0].replace("/", "_").replace(" ", "_")}\n"
+                job_string += f"{job.needs[0].replace("/", "_").replace(" ", "_")}\n"
             else:
                 for i, j in enumerate(job.needs):
                     if i == 0:
-                        jobString += (f"[ {j.replace("/", "_").replace(" ", "_")} ")
+                        job_string += (f"[ {j.replace("/", "_").replace(" ", "_")} ")
                     else:
-                        jobString += (f", {j.replace("/", "_").replace(" ", "_")}")
-                jobString += (f"]\n")
+                        job_string += (f", {j.replace("/", "_").replace(" ", "_")}")
+                job_string += (f"]\n")
         else:
+            # If no needs exist, check if the job is the first in the pipeline
             i = self.pipeline.stages.index(job.stage)
             if i > 0:
-                jobString += f"\t\tneeds: {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}\n"
+                # If not the first job, add the previous stage as a need
+                job_string += f"\t\tneeds: {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}\n"
             else:
-                if self.fileChangeJobNeeded:
-                    jobString += f"\t\tneeds: FileChanges\n"
+                # If first job, check if the file change job is needed and add it as need
+                if self.file_change_job_needed:
+                    job_string += f"\t\tneeds: FileChanges\n"
 
-        jobString += self.ifCondition(job)
+        # Construct the if condition for whether this job should be run
+        job_string += self.if_condition(job)
 
-        jobString += f"\t\truns-on: ubuntu-latest\n"
+        # Per default all jobs run on an ubuntu runner
+        job_string += f"\t\truns-on: ubuntu-latest\n"
 
+        # If image can be run natively and a special docker image was provided add the container block
         if native and job.image:
-            jobString += f"\t\tcontainer:\n"
-            jobString += f"\t\t\timage: {job.image}\n"
-        jobString += f"\t\ttimeout-minutes: {self.timeout}\n"
+            job_string += f"\t\tcontainer:\n"
+            job_string += f"\t\t\timage: {job.image}\n"
+
+        job_string += f"\t\ttimeout-minutes: {self.timeout}\n"
+
+        # If the job publishes to pages it needs special permissions
         if job.artifacts:
             if job.artifacts["paths"] == ["public"] and job.name == "pages":
-                jobString += f"\t\tpermissions:\n"
-                jobString += f"\t\t\tpages: write\n"
-                jobString += f"\t\t\tid-token: write\n"
-        jobString += f"\t\tsteps:\n"
-        jobString += GithubActionConverter.addCheckoutStep()
-        # jobString += GithubActionConverter.__addCheckoutStep("DavidBlm/MNISTPipeline")
-        # jobString += self.__addCheckoutStepManual("DavidBlm/MNISTPipeline")
-        jobString += GithubActionConverter.restoreLargeFilesStep()
-        # jobString += GithubActionConverter.__restoreH5()
+                job_string += f"\t\tpermissions:\n"
+                job_string += f"\t\t\tpages: write\n"
+                job_string += f"\t\t\tid-token: write\n"
+
+        # Add the steps block
+        job_string += f"\t\tsteps:\n"
+        # First chekout only latest version of the repo
+        job_string += GithubActionConverter.add_checkout_step()
+
+        # If necessary restore the splitted large files
+        job_string += GithubActionConverter.restore_large_files_step()
+
+        # If the job has needs, which uploaded artifacts download them
         if job.needs:
             for need in job.needs:
                 if self.pipeline.jobs[need].artifacts:
-                    jobString += GithubActionConverter.downloadArtifacts(self.pipeline.jobs[need].artifacts["paths"],
-                                                                         need.replace("/", "_").replace(" ", "_"))
-        if not native:
-            jobString += GithubActionConverter.startDockerContainer(job.image, secrets, "")
-        if native:
-            jobString += f"\t\t\t- name: Script\n"
-            if job.allowFailure == True:
-                jobString += "\t\t\t\tcontinue-on-error: true\n"
-            # jobString += f"\t\t\t\tshell: bash\n"
-            jobString += f"\t\t\t\trun: |\n"
-            # jobString += f"\t\t\t\t\tcd repo\n"    #For manual clone
-            for command in job.script:
-                command = self.scriptParser(command)
-                jobString += f"\t\t\t\t\t{command}\n"
-        else:
-            jobString += f"\t\t\t- name: Script\n"
-            if job.allowFailure == True:
-                jobString += "\t\t\t\tcontinue-on-error: true\n"
-            jobString += f"\t\t\t\tenv:\n"
-            jobString += f"\t\t\t\t\tSCRIPT: |\n"
-            jobString += f"\t\t\t\t\t\tcd /workspace\n"
+                    job_string += GithubActionConverter.download_artifacts(self.pipeline.jobs[need].artifacts["paths"],
+                                                                           need.replace("/", "_").replace(" ", "_"))
 
+        # If the job is not native, start the separate docker container
+        if not native:
+            job_string += GithubActionConverter.start_docker_container(job.image, secrets, "")
+
+        # Add the script the job should run
+        if native:
+            # If native the script can be run directly
+            job_string += f"\t\t\t- name: Script\n"
+            if job.allowFailure == True:
+                job_string += "\t\t\t\tcontinue-on-error: true\n"
+            job_string += f"\t\t\t\trun: |\n"
             for command in job.script:
-                command = self.scriptParser(command)
-                jobString += f"\t\t\t\t\t\t{command}\n"
-            jobString += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
+                command = self.script_parser(command)
+                job_string += f"\t\t\t\t\t{command}\n"
+        else:
+            # If not native, the script needs to be run in the docker container using docker exec
+            job_string += f"\t\t\t- name: Script\n"
+            if job.allowFailure == True:
+                job_string += "\t\t\t\tcontinue-on-error: true\n"
+            # Create a SCRIPT variable that contains the script
+            job_string += f"\t\t\t\tenv:\n"
+            job_string += f"\t\t\t\t\tSCRIPT: |\n"
+            job_string += f"\t\t\t\t\t\tcd /workspace\n"
+            for command in job.script:
+                command = self.script_parser(command)
+                job_string += f"\t\t\t\t\t\t{command}\n"
+            # Run this script in the docker container
+            job_string += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
+
+        # Once the script is done and the job was successful, upload the artifacts
         if job.artifacts:
             if job.artifacts["paths"] == ["public"] and job.name == "pages":
-                jobString += GithubActionConverter.deployPages(job.artifacts["paths"][0])
+                # If the job is a pages job, deploy the pages
+                job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
             else:
-                jobString += GithubActionConverter.uploadArtifacs(job.artifacts["paths"],
-                                                                  job.name.replace("/", "_").replace(" ", "_"),
-                                                                  job.artifacts["expire_in"])
-        return Converter.set_indentation_to_two_spaces(jobString)
+                # If the job is not a pages job, upload the artifacts normally
+                job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
+                                                                    job.name.replace("/", "_").replace(" ",
+                                                                                                       "_"))  # ToDo: Add expiration time
+                # job.artifacts["expire_in"])
+        return Converter.set_indentation_to_two_spaces(job_string)
 
     @staticmethod
-    def addCheckoutStep(repo: str = "", depth=1) -> str:
+    def add_checkout_step(repo: str = "", depth=1) -> str:
+        """
+            Returns the block for the Github Actions checkout step.
+        :param repo: Name of the repo to be checked out. If empty, the current repo is checked out
+        :param depth: Number of commits to be checked out. Default 1 = only the latest commit
+        :return: String of the checkout step
+        """
         checkout = ""
         checkout += f"\t\t\t- name: Checkout latest commit\n"
         checkout += f"\t\t\t\tuses: actions/checkout@v4\n"
@@ -145,7 +201,12 @@ class GithubActionConverter(Converter):
         return checkout
 
     @staticmethod
-    def addCheckoutStepManual(repo: str = "${{ github.repository }}") -> str:
+    def add_checkout_step_manual(repo: str = "${{ github.repository }}") -> str:
+        """
+            Experimental function: Checkout the repo manually using git clone. Should not be used
+        :param repo: Name of the repo to be checked out. If empty, the current repo is checked out
+        :return: String of the manual checkout step
+        """
         checkout = ""
         checkout += f"\t\t\t- name: Checkout latest commit\n"
         checkout += f"\t\t\t\trun: |\n"
@@ -155,11 +216,14 @@ class GithubActionConverter(Converter):
         return checkout
 
     @staticmethod
-    def restoreLargeFilesStep() -> str:
+    def restore_large_files_step() -> str:
+        """
+            Returns the block for restoring large files that were split into parts.
+        :return: String of the restore step
+        """
         restore = ""
         restore += f"\t\t\t- name: Restore large files\n"
         restore += f"\t\t\t\trun: |\n"
-        # restore +=  "\t\t\t\t\tcd repo\n"   #For manual clone
         restore += "\t\t\t\t\tls\n"
         restore += f"\t\t\t\t\tfind . -type f -name '*.part*' | sort | while read part; do\n"
         restore += f"\t\t\t\t\techo \"Restoring $part\"\n"
@@ -170,21 +234,14 @@ class GithubActionConverter(Converter):
         return restore
 
     @staticmethod
-    def restoreH5() -> str:
-        restore = ""
-        restore += f"\t\t\t- name: Restore large files\n"
-        restore += f"\t\t\t\trun: |\n"
-        # restore +=  "\t\t\t\t\tcd repo\n"    #For manual clone
-        restore += "\t\t\t\t\tls\n"
-        restore += "\t\t\t\t\tfind . -type f -name 'train_*' | while read file; do\n"
-        restore += '\t\t\t\t\tdir=$(dirname "$file")\n'
-        restore += '\t\t\t\t\t(cd "$dir" && cat train_* > train.h5)\n'
-        restore += '\t\t\t\t\techo "Created train.h5 in $dir"\n'
-        restore += "\t\t\t\t\tdone\n"
-        return restore
-
-    @staticmethod
-    def startDockerContainer(image: str, secrets: list[str], options: str) -> str:
+    def start_docker_container(image: str, secrets: list[str], options: str) -> str:
+        """
+            Returns the block for starting a separate docker container.
+        :param image: URL to Image to be used. If the image is in the ghcr.io registry, the GITHUB_TOKEN is used to authenticate
+        :param secrets: Secrets to be passed into the container.
+        :param options: Additional options to be passed to the docker run command
+        :return: String of the start block
+        """
         start = ""
         start += f"\t\t\t- name: Start Docker Container\n"
         start += f"\t\t\t\trun: |\n"
@@ -195,16 +252,25 @@ class GithubActionConverter(Converter):
         for secret in secrets:
             if type(secret) == str:
                 if secret != "CI_PROJECT_ID":
+                    # Add Github secret as environment variable
                     start += f" -e {secret}=$" + "{{ secrets." + f"{secret}" + " }}"
                 else:
                     start += f" -e {secret}=${secret}"
             else:
+                # Add environment variable for a variable that is not a secret
                 start += f" -e {secret[0]}=${secret[0]}"
         start += f" {image} tail -f /dev/null\n"
         return start
 
     @staticmethod
-    def uploadArtifacs(paths: list[str], name, expiration: int = 7) -> str:
+    def upload_artifacs(paths: list[str], name, expiration: int = 7) -> str:
+        """
+            Creates the string for the upload artifacts action block.
+        :param paths: Paths to the artifacts to be uploaded
+        :param name: Name of the artifact. Must be unique in the workflow
+        :param expiration: Optional expiration time in days. Default is 7 days
+        :return: String of the upload block
+        """
         upload = ""
         upload += f"\t\t\t- name: Upload artifacts\n"
         upload += f"\t\t\t\tuses: actions/upload-artifact@v4\n"
@@ -218,7 +284,13 @@ class GithubActionConverter(Converter):
         return upload
 
     @staticmethod
-    def downloadArtifacts(paths: list[str], name) -> str:
+    def download_artifacts(paths: list[str], name) -> str:
+        """
+            Creates the string for the download artifacts action block.
+        :param paths: Paths where the artifacts shall be downloaded to
+        :param name: Name of the artifact to be downloaded
+        :return: String of the download block
+        """
         download = ""
         download += f"\t\t\t- name: Download artifacts\n"
         download += f"\t\t\t\tuses: actions/download-artifact@v4\n"
@@ -230,7 +302,12 @@ class GithubActionConverter(Converter):
         return download
 
     @staticmethod
-    def deployPages(path: str) -> str:
+    def deploy_pages(path: str) -> str:
+        """
+            Creates the string for the deploy pages action block.
+        :param path: Path to the pages to be deployed
+        :return: String of the deploy block
+        """
         deploy = ""
         deploy += "\t\t\t- name: Upload Pages\n"
         deploy += "\t\t\t\tuses: actions/upload-pages-artifact@v3\n"
@@ -240,21 +317,31 @@ class GithubActionConverter(Converter):
         deploy += "\t\t\t\tuses: actions/deploy-pages@v4\n"
         return deploy
 
-    def ifCondition(self, job: Job) -> str:
+    def if_condition(self, job: Job) -> str:
+        """
+        Creates the if condition for the job.
+        :param job: Job object
+        :return: String of the if condition
+        """
         ifString = ""
         if self.pipeline.stages.index(job.stage) != 0:
+            # If the job is not the first job in the pipeline, check if the previous stage was successful
             ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'failure') "
 
-        # Handle only
+        # Handle only keyword
         if job.only:
             if type(job.only) == dict:
+                # Job is only to be run if certain files changed
                 if "changes" in job.only:
                     if ifString == "":
                         ifString += "\t\tif: ${{"
                     else:
                         ifString += " && "
+                    # Check output of fileChangeJob whether it should be run or skipped
                     ifString += f"needs.FileChanges.outputs.run{job.name.replace('/', '_').replace(' ', '_')} == 'true'"
+
             if type(job.only) == list:
+                # Job is only to be run if certain branches are pushed
                 if ifString == "":
                     ifString += "\t\tif: ${{"
                 else:
@@ -264,12 +351,15 @@ class GithubActionConverter(Converter):
                         ifString += f" github.ref == 'refs/heads/{branch}'"
                     else:
                         ifString += f" && github.ref == 'refs/heads/{branch}'"
-        # Handle except
+
+        # Handle except keyword
         if job.exc:
             if type(job.exc) == dict:
                 if ifString == "":
                     ifString += "\t\tif: ${{"
+                # ToDo: Check if this is correct
                 if "changes" in job.exc:
+                    # Job is not to be run if certain files not changed
                     ifString += f" && !contains(github.event.head_commit.message, '"
                     for i, p in enumerate(job.exc['changes']):
                         if i == 0:
@@ -279,6 +369,7 @@ class GithubActionConverter(Converter):
                     ifString += "')"
 
             if type(job.exc) == list:
+                # Job is not to be run if certain branches are pushed
                 for i, branch in enumerate(job.exc):
                     if i == 0 and not ifString:
                         ifString += f"\t\tif: github.ref != 'refs/heads/{branch}'"
@@ -288,25 +379,33 @@ class GithubActionConverter(Converter):
             ifString += "}}\n"
         return ifString
 
-    def createStageJobs(self):
+    def create_stage_jobs(self):
+        """
+            Creates a job for each stage in the pipeline.
+        :return: String of the stage jobs
+        """
         lastStage = ""
         jobString = ""
+        # Create a job for each stage in the pipeline, except the last one
         for stage in self.pipeline.schedule[:-1]:
+
             jobString += f"\t{stage + "_phase:"}\n"
 
             jobString += f"\t\tneeds: ["
             if lastStage:
+                # Add the last stage as need
                 jobString += f'{lastStage + "_phase, "}'
             lastStage = stage
+
+            # Add all jobs of the stage as needs
             for i, job in enumerate(self.pipeline.stageJobs[stage]):
                 if i == 0:
                     jobString += f"{job.replace('/', '_').replace(' ', '_')}"
                 else:
                     jobString += f", {job.replace('/', '_').replace(' ', '_')}"
             jobString += f"]\n"
-            jobString += "\t\tif: ${{ !cancelled()"
-            # jobString += " && !contains(needs.*.result, 'failure')}}\n"
-            jobString += "}}\n"
+            jobString += "\t\tif: ${{ !cancelled()}}\n"
+            # jobString += "}}\n"
             jobString += f"\t\truns-on: ubuntu-latest\n"
             jobString += "\t\tsteps:\n"
             jobString += f"\t\t\t\t- run: |\n"
@@ -319,7 +418,11 @@ class GithubActionConverter(Converter):
         jobString += "\n"
         return jobString
 
-    def createFileChangeJob(self):
+    def create_file_change_job(self):
+        """
+            Creates a job that checks if certain files changed and sets the output of the job accordingly.
+        :return: String of the file change job
+        """
         jobString = "\tFileChanges:\n"
         jobString += f"\t\truns-on: ubuntu-latest\n"
         for _, job in self.pipeline.jobs.items():
@@ -327,17 +430,22 @@ class GithubActionConverter(Converter):
                 jobString += f"\t\toutputs:\n"
                 break
         for _, job in self.pipeline.jobs.items():
+            # Add an output for each job that is only run if certain files changed
             if job.only and type(job.only) == dict and "changes" in job.only:
                 jobString += f"\t\t\trun{job.name}: " + "${{" + f"steps.{job.name.replace('/', '_').replace(' ', '_')}.outputs.run" + "}}\n"
+
         jobString += "\t\tsteps:\n"
-        jobString += self.addCheckoutStep(depth=2)
+        # Checkout the last 2 commits
+        jobString += self.add_checkout_step(depth=2)
         jobString += f"\t\t\t- name: Check for file changes\n"
         jobString += f"\t\t\t\trun: |\n"
+        # Get git diff
         jobString += f"\t\t\t\t\tCHANGES=$(git diff --name-only HEAD^ HEAD)\n"
         jobString += '\t\t\t\t\techo "$CHANGES"\n'
         jobString += '\t\t\t\t\techo "$CHANGES" > diff.txt\n'
         for _, job in self.pipeline.jobs.items():
             if job.only and type(job.only) == dict and "changes" in job.only:
+                # Create a step for each job, whose run condition needs to be checked
                 jobString += f"\t\t\t- name: Check {job.name}\n"
                 jobString += f"\t\t\t\tid: {job.name.replace('/', '_').replace(' ', '_')}\n"
                 jobString += f"\t\t\t\trun: |\n"
@@ -352,9 +460,9 @@ class GithubActionConverter(Converter):
                 jobString += '\t\t\t\t\techo "run=$run" >> $GITHUB_OUTPUT\n'
         return jobString
 
-    def scriptParser(self, script: str) -> str:
+    def script_parser(self, script: str) -> str:
         """
-        Parses the script of a job and returns it as a string.
+        Parses the script of a job and returns it as a string. Can be overridden by subclasses to individualize the parsing.
         :param script: Script to be parsed
         :return: Parsed script
         """
@@ -362,7 +470,7 @@ class GithubActionConverter(Converter):
             script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
         # ToDo: Delete for production
         if "deploy" in script:
-            return
+            return ""
         script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")

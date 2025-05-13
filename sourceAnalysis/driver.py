@@ -1,17 +1,21 @@
 from sourceAnalysis.GitlabSource import Gitlab
 
-def createMigrationConfig():
-    Gitlab.createConfigFile()
 
-def scanRepos(config):
-    gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
-    gitlab.scanRepos()
+def create_migration_config():
+    Gitlab.create_config_file()
 
-def cloneRepos(config):
-    gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
-    gitlab.cloneRepos()
 
-def scanAndCloneRepos(config):
+def scan(config):
     gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
-    gitlab.cloneRepos()
-    gitlab.scanRepos()
+    gitlab.scan()
+
+
+def clone(config):
+    gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
+    gitlab.clone()
+
+
+def clone_and_scan(config):
+    gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
+    gitlab.clone()
+    gitlab.scan()

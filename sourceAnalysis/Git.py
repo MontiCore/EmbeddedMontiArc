@@ -2,12 +2,14 @@ from abc import ABC
 import yaml
 import os
 
+
 class Git(ABC):
     def __init__(self):
-       pass
+        pass
 
+    # ToDo: Move implementation
     @staticmethod
-    def createConfigFile():
+    def create_config_file():
         """
         Creates a configuration file for the Migration Tool
         """

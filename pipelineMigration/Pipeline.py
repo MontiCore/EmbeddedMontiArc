@@ -3,7 +3,7 @@ class Pipeline:
     Class representing a CI/CD pipeline.
     """
 
-    def __init__(self, stages, jobs, stageJobs, jobNeeds,schedule):
+    def __init__(self, stages, jobs, stageJobs, jobNeeds, schedule):
         """
         Initializes the pipeline with the given stages, jobs, and their dependencies.
         :param stages: List of stages in the pipeline
@@ -19,7 +19,6 @@ class Pipeline:
         self.jobNeeds = jobNeeds
         self.schedule = schedule
 
-
     def __str__(self):
         string = f"Stages: {self.stages}\n"
 
@@ -28,15 +27,15 @@ class Pipeline:
             string += str(job)
         return string
 
-    def getPreviousStageJobs(self,job):
+    def get_previous_stage_jobs(self, job):
         """
         Returns the names of the jobs that have to be finished before the given job can start.
         :param job: Name of job
         :return: Previous jobs
         """
-        jobsFinished = []
-        sequenceNumber = self.schedule.index(job.stage)
-        for i in range(sequenceNumber):
+        jobs_finished = []
+        sequence_number = self.schedule.index(job.stage)
+        for i in range(sequence_number):
             for j in self.stageJobs[self.schedule[i]]:
-                jobsFinished.append(j)
-        return jobsFinished
+                jobs_finished.append(j)
+        return jobs_finished

@@ -5,7 +5,7 @@ from tqdm import tqdm
 import Config
 import sourceAnalysis
 from repoMigration import GithubUploader
-#from UploaderTest import architecture
+# from UploaderTest import architecture
 from sourceAnalysis import findLargeFilesInHistory
 from pipelineMigration import GitlabToGithub, GitlabToGithubSubtree
 from sourceAnalysis import run_git_filter_repo, split_large_files
@@ -18,15 +18,15 @@ from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattribute
 print("Starting scan and clone")
 
 config = Config.Config("config.yaml")
-dr = sourceAnalysis.scanAndCloneRepos(config)
-print()
+dr = sourceAnalysis.clone_and_scan(config)
+input("WAIT")
 data = yaml.safe_load(open("architecture.yaml"))
 for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
     repo = git.Repo("./repos/" + data[repoID]["Name"])
     gitlabRepoPath = "repos/" + data[repoID]["Name"]
     githubRepoPath = "repos/" + data[repoID]["Name"]
     if data[repoID]["Branches"] is None:
-        branches= data[repoID]["StaleBranches"]
+        branches = data[repoID]["StaleBranches"]
     elif data[repoID]["StaleBranches"] is None:
         branches = data[repoID]["Branches"]
     else:
@@ -38,34 +38,31 @@ for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
     for branch in branches:
         repo.git.checkout(branch)
         split_large_files("./repos/" + data[repoID]["Name"])
-        #print("Migrating branch: " + branch)
-        #print(repoID)
+        # print("Migrating branch: " + branch)
+        # print(repoID)
         remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
 
-        #input("WAIT")
-
+        # input("WAIT")
 
     repo.git.checkout("master")
-    #run_git_filter_repo("repos/" + data[repoID]["Name"])
-
-input("WAIT")
+    # run_git_filter_repo("repos/" + data[repoID]["Name"])
 Uploader = GithubUploader.GithubUploader(config)
-Uploader.addReposAsSubtree(config.monorepoName, data.keys())
+Uploader.add_repos_as_subtree(config.monorepoName, data.keys())
 
 prefix = {}
 for repoID in data.keys():
-    prefix[data[repoID]["Name"]] = data[repoID]["Namespace"]+"/"+data[repoID]["Name"]
+    prefix[data[repoID]["Name"]] = data[repoID]["Namespace"] + "/" + data[repoID]["Name"]
 
 secrets = {}
 for repoID in data.keys():
     secrets[data[repoID]["Name"]] = []
-    for name,secret in data[repoID]["Secrets"].items():
+    for name, secret in data[repoID]["Secrets"].items():
         if secret["Value"] == "Please add a value":
             continue
         if secret["Secret"].lower() == "y":
             secrets[data[repoID]["Name"]].append(name)
         elif secret["Secret"].lower() == "e":
-            secrets[data[repoID]["Name"]].append((name, "${{ secrets."+ str(secret["Value"]) +" }}"))
+            secrets[data[repoID]["Name"]].append((name, "${{ secrets." + str(secret["Value"]) + " }}"))
         else:
             secrets[data[repoID]["Name"]].append((name, secret["Value"]))
-GitlabToGithubSubtree(data.keys(), data, config,  "./repos/"+ config.monorepoName,prefix , secrets)
+GitlabToGithubSubtree(data.keys(), data, config, "./repos/" + config.monorepoName, prefix, secrets)

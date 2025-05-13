@@ -1,10 +1,16 @@
 import os
 import re
 
-# Define the pattern to search for environment variables in Maven files
+# Pattern for env variaboles in maven
 env_var_pattern = re.compile(r'\$\{env\.(\w+)\}')
 
+
 def find_env_vars_in_file(file_path):
+    """
+    Find environment variables in a given file.
+    :param file_path: Path to file
+    :return: set - Set of environment variables found in the file
+    """
     env_vars = set()
     with open(file_path, 'r', errors='ignore') as file:
         content = file.read()
@@ -12,7 +18,13 @@ def find_env_vars_in_file(file_path):
         env_vars.update(matches)
     return env_vars
 
+
 def find_env_vars_in_repo(repo_path):
+    """
+    Find environment variables in all XML files in a given repository.
+    :param repo_path: Path to the repository
+    :return: set - Set of environment variables found in the repository
+    """
     envVars = set()
     for root, _, files in os.walk(repo_path):
         for file in files:
@@ -23,10 +35,11 @@ def find_env_vars_in_repo(repo_path):
                     envVars.update(found)
     return envVars
 
+
 if __name__ == "__main__":
     repos = ["../repos/EMADL2CPP", "../repos/MNISTCalculator"]
     for repo_path in repos:
-        #repo_path = '../repos/EMADL2CPP'  # Path to the git repository
+        # repo_path = '../repos/EMADL2CPP'  # Path to the git repository
         print(repo_path)
         env_vars = find_env_vars_in_repo(repo_path)
         env_All = set()
