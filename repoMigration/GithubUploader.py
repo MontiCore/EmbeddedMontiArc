@@ -2,7 +2,7 @@ import logging
 import os
 
 import requests
-from git import RemoteProgress
+from git import RemoteProgress, GitCommandError
 from tqdm import tqdm
 
 from repoMigration.Uploader import Uploader
@@ -16,7 +16,16 @@ logger = logging.getLogger(__name__)
 
 
 class GithubUploader(Uploader):
+    """
+    Class to upload repositories to GitHub.
+    """
+
     def __init__(self, config, sourceURL: str = "https://api.github.com/"):
+        """
+        Initialize the GithubUploader with the given configuration and source URL.
+        :param config: Config object
+        :param sourceURL: API URL of the Git instance
+        """
         super().__init__()
         self.__githubToken = config.targetToken
         self.__gitlabToken = config.sourceToken
@@ -24,108 +33,102 @@ class GithubUploader(Uploader):
         auth = Auth.Token(self.__githubToken)
         self.g = Github(auth=auth, base_url=sourceURL)
 
-    def createPrivateRepo(self, repoName):
+    def create_private_repo(self, name):
         """
         Create a private repository on the target Git instance.
-        :param repoName: Name of the repository to be created
+        :param name: Name of the repository to be created
         :return: Repository object
         """
         try:
-            repo = self.g.get_user().create_repo(repoName, private=True)
+            repo = self.g.get_user().create_repo(name, private=True)
         except GithubException as e:
             if e.status == 422:
-                logger.info(f"Repository '{repoName}' already exists.")
-                repo = self.g.get_user().get_repo(repoName)
+                logger.info(f"Repository '{name}' already exists.")
+                repo = self.g.get_user().get_repo(name)
                 if input("Delete existing repository? (y/n): ").lower() == 'y':
                     repo.delete()
-                    logger.info(f"Repository '{repoName}' deleted.")
-                    repo = self.g.get_user().create_repo(repoName, private=True)
-                    logger.info(f"New repository '{repoName}' created.")
+                    logger.info(f"Repository '{name}' deleted.")
+                    repo = self.g.get_user().create_repo(name, private=True)
+                    logger.info(f"New repository '{name}' created.")
                 else:
-                    logger.info(f"Keeping existing repository '{repoName}'.")
-                    repo = self.g.get_user().get_repo(repoName)
+                    logger.info(f"Keeping existing repository '{name}'.")
+                    repo = self.g.get_user().get_repo(name)
             else:
                 raise
         return repo
 
-    def createPublicRepo(self, repoName):
+    def create_public_repo(self, name):
         """
         Create a public repository on the target Git instance.
-        :param repoName: Name of the repository to be created
+        :param name: Name of the repository to be created
         :return: Repository object
         """
         try:
-            repo = self.g.get_user().create_repo(repoName, private=False)
+            repo = self.g.get_user().create_repo(name, private=False)
         except GithubException as e:
             if e.status == 422:
-                logger.info(f"Repository '{repoName}' already exists.")
-                repo = self.g.get_user().get_repo(repoName)
+                logger.info(f"Repository '{name}' already exists.")
+                repo = self.g.get_user().get_repo(name)
                 if input("Delete existing repository? (y/n): ").lower() == 'y':
                     repo.delete()
-                    logger.info(f"Repository '{repoName}' deleted.")
-                    repo = self.g.get_user().create_repo(repoName, private=False)
-                    logger.info(f"New repository '{repoName}' created.")
+                    logger.info(f"Repository '{name}' deleted.")
+                    repo = self.g.get_user().create_repo(name, private=False)
+                    logger.info(f"New repository '{name}' created.")
                 else:
-                    logger.info(f"Keeping existing repository '{repoName}'.")
-                    repo = self.g.get_user().get_repo(repoName)
+                    logger.info(f"Keeping existing repository '{name}'.")
+                    repo = self.g.get_user().get_repo(name)
             else:
                 raise
         return repo
 
-    def getOrCreateRepo(self, repoName):
+    def get_or_create_repo(self, name):
         """
         Get or create a repository on the target Git instance.
-        :param repoName: Name of the repository to be created
+        :param name: Name of the repository to be created
         :return: Repository object
         """
         try:
-            repo = self.g.get_user().get_repo(repoName)
-            logger.info(f"Repository '{repoName}' already exists on remote.")
+            repo = self.g.get_user().get_repo(name)
+            logger.info(f"Repository '{name}' already exists on remote.")
             if input("Delete existing repository? (y/n): ").lower() == 'y':
                 repo.delete()
-                logger.info(f"Repository '{repoName}' deleted.")
+                logger.info(f"Repository '{name}' deleted.")
                 visibility = input("Create public repository? (y/n): ").lower()
                 if visibility == 'y':
-                    repo = self.createPublicRepo(repoName)
+                    repo = self.create_public_repo(name)
                 else:
-                    repo = self.createPrivateRepo(repoName)
-                logger.info(f"New repository '{repoName}' created.")
-            # else:
-            #    if os.path.exists("./repos/" + repoName):
-            #        logger.info(f"Repository '{repoName}' already exists locally.")
-            #    else:
-            #        logger.info(f"Cloning repository '{repoName}'.")
-            #        repo = git.Repo.clone_from(repo.clone_url, "./repos/" + repoName)
+                    repo = self.create_private_repo(name)
+                logger.info(f"New repository '{name}' created.")
         except GithubException as e:
             if e.status == 404:
-                logger.info(f"Repository '{repoName}' does not exist.")
+                logger.info(f"Repository '{name}' does not exist.")
                 visibility = input("Create public repository? (y/n): ").lower()
                 if visibility == 'y':
-                    repo = self.createPublicRepo(repoName)
+                    repo = self.create_public_repo(name)
                 else:
-                    repo = self.createPrivateRepo(repoName)
+                    repo = self.create_private_repo(name)
             else:
                 raise
         return repo
 
-    def createSecrets(self, github_repo, secrets):
+    def create_secrets(self, github_repo, secrets):
         """
-        Create secrets for the repository on the target Git instance.
-        :param repoID:
-        :param secrets:
+        Create secrets for the repository on the target Git instance. If a secret already exists, it is not changed.
+        :param github_repo: Github repo object
+        :param secrets: secrets to be created
         :return:
         """
-        existingSecrets = list(github_repo.get_secrets("actions"))
-        existingSecrets = [secret.name for secret in existingSecrets]
+        existing_secrets = list(github_repo.get_secrets("actions"))
+        existing_secrets = [secret.name for secret in existing_secrets]
         for name, secret in secrets.items():
-            if name in existingSecrets:
+            if name in existing_secrets:
                 logger.info(f"Secret '{name}' already exists. Skipping creation.")
                 continue
             else:
                 github_repo.create_secret(name, secret)
                 logger.info(f"Secret '{name}' created successfully.")
 
-    def listPrivateRepos(self):
+    def list_private_repos(self):
         """
         List all private repositories on the target Git instance.
         :return: List of repository names
@@ -133,29 +136,26 @@ class GithubUploader(Uploader):
         repos = self.g.get_user().get_repos()
         return [repo.name for repo in repos if repo.private]
 
-    def uploadRepo(self, repoID, secrets={}, disableScanning=False):
+    def upload_repo(self, repoID, secrets={}, disable_scanning=False):
         """
         Upload a repository to the target Git instance.
         :param repoID: RepositoryID to be uploaded
+        :param secrets: secrets to be created
+        :param disable_scanning: Whether to disable push protection in this repo
         """
         repo = git.Repo("./repos/" + self.repoNames[repoID])
         logger.info(f"Uploading {self.repoNames[repoID]} to the target Git instance...")
-        print(repo.branches)
         # self.set_upstream_for_branches(repo)
+        github_repo = self.get_or_create_repo(self.repoNames[repoID])
+        if disable_scanning or True:
+            self.deactivate_push_protection(github_repo)
+        self.create_secrets(github_repo, secrets)
 
-        # Create a new private repository on the target Git instance
-        # newRepo = self.createPrivateRepo(self.repoNames[repoID])
-        newRepo = self.getOrCreateRepo(self.repoNames[repoID])
-        if disableScanning or True:
-            self.deactivatePushProtection(newRepo)
-        # secrets = {"GITLABTOKEN": self.__gitlabToken, "CI_API_V4_URL": "https://git.rwth-aachen.de/api/v4", "CI_PROJECT_ID": repoID}
-        self.createSecrets(newRepo, secrets)
-
-        existingBranches = [b.name for b in newRepo.get_branches()]
-        remote_url = newRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
+        existing_branches = [b.name for b in github_repo.get_branches()]
+        remote_url = github_repo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(repo, remote_url)
         for branch in self.branchesToBeMigrated[repoID]:
-            if branch in existingBranches:
+            if branch in existing_branches:
                 logger.info(f"Branch {branch} already exists in the target repository.")
             else:
                 logger.info(f"Uploading {branch} branch...")
@@ -167,56 +167,110 @@ class GithubUploader(Uploader):
                         print(a[0].remote_ref_string)
                         print()
                 logger.info(f"Branch {branch} uploaded successfully.")
-        if disableScanning or True:
-            self.activatePushProtection(newRepo)
-        newRepo.edit(default_branch="master")
+        if disable_scanning or True:
+            self.activate_push_protection(github_repo)
+        github_repo.edit(default_branch="master")
 
-    def uploadMonoRepo(self, githubRepoName, secrets={}, disableScanning=False):
-        localRepo = git.Repo("./repos/" + self.config.monorepoName)
-        localRepo.git.config('http.postBuffer', '524288000', local=True)
-        logger.info(f"Uploading {githubRepoName} to the {githubRepoName}...")
-        githubRepo = self.getOrCreateRepo(githubRepoName)
-        if disableScanning or True:
-            self.deactivatePushProtection(githubRepo)
-        self.createSecrets(githubRepo, secrets)
-        remote_url = githubRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
-        self.reset_remote_origin(localRepo, remote_url)
-        existingBranches = [b.name for b in githubRepo.get_branches()]
-        for branch in localRepo.branches:
-            if branch.name in existingBranches:
+    def upload_mono_repo(self, github_repo_name, secrets={}, disable_scanning=False):
+        """
+        Upload a monorepo with multiple subtreesa to the target Git instance.
+        :param github_repo_name: Name of the target GitHub repository and local repository folder
+        :param secrets: Secrets to be created
+        :param disable_scanning: Whether to disable push protection in this repo
+        """
+        local_repo = git.Repo("./repos/" + self.config.monorepoName)
+        # Config needed to push large files
+        # local_repo.git.config('http.postBuffer', '524288000', local=True)
+        logger.info(f"Uploading {github_repo_name} to the {github_repo_name}...")
+        github_repo = self.get_or_create_repo(github_repo_name)
+        if disable_scanning or True:
+            self.deactivate_push_protection(github_repo)
+        self.create_secrets(github_repo, secrets)
+        remote_url = github_repo.clone_url.replace("https://", f"https://{self.__githubToken}@")
+        self.reset_remote_origin(local_repo, remote_url)
+
+        existing_branches = [b.name for b in github_repo.get_branches()]
+        for branch in local_repo.branches:
+            if branch.name in existing_branches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
                 if input("Still try to upload? (y/n): ").lower() == 'n':
                     logger.info(f"Skipping branch {branch.name}.")
                     continue
-            localRepo.git.checkout(branch.name)
-            commits = list(localRepo.iter_commits(branch))
+            local_repo.git.checkout(branch.name)
+            # Commit one subtree after another
+            commits = list(local_repo.iter_commits(branch))
             commits.reverse()
             pushList = []
             for commit in commits:
+                # Get all commits in which a subtree was added
                 if "subtree" in commit.message.lower():
                     pushList.append(commit)
             for i, push in enumerate(pushList):
+                # Push all those commits in chronological order
                 logger.info(f"Pushing SHA:{push.hexsha}")
                 with (PushProgress() as progress):
-                    a = localRepo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
-                                                             progress=progress, force=True)
-                    if a:
-                        print(a[0].summary)
-                        print(a[0].flags)
-                        print(a[0].remote_ref_string)
-                        print()
+                    a = None
+                    try:
+                        a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
+                                                                  progress=progress)  # , force=True)
+                    except GitCommandError as e:
+                        print(e)
+                # a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}")
+                if a:
+                    print(a[0].summary)
+                    print(a[0].flags)
+                    print(a[0].remote_ref_string)
+                    print()
                 logger.info(f"Pushed {i + 1} / {len(pushList)} subtrees")
             with (PushProgress() as progress):
-                a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
-                                                         force=True, progress=progress)
+                a = local_repo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
+                                                          force=True, progress=progress)
             logger.info(f"Sucessfully pushed {branch.name} branch")
-        # self.branchWiseUpload(existingBranches, localRepo)
-        # self.commitWiseUpload(existingBranches, localRepo)
-        localRepo.git.checkout("master")
-        if disableScanning or True:
-            self.activatePushProtection(githubRepo)
 
-    def branchWiseUpload(self, existingBranches, localRepo):
+        # Different upload strategies
+        # self.branchWiseUpload(existing_branches, local_repo)
+        # self.commitWiseUpload(existing_branches, local_repo)
+        local_repo.git.checkout("master")
+        if disable_scanning or True:
+            self.activate_push_protection(github_repo)
+
+    def push_subtree_wise(self, branch, local_repo):
+        """
+            Upload one subtree after another in chronological order.
+        :param branch: Branch to be uploaded
+        :param local_repo: local repository object
+        """
+        commits = list(local_repo.iter_commits(branch))
+        commits.reverse()
+        pushList = []
+        for commit in commits:
+            # Get all commits in which a subtree was added
+            if "subtree" in commit.message.lower():
+                pushList.append(commit)
+        for i, push in enumerate(pushList):
+            # Push all those commits in chronological order
+            logger.info(f"Pushing SHA:{push.hexsha}")
+            with (PushProgress() as progress):
+                a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
+                                                          progress=progress, force=True)
+            # a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}")
+            if a:
+                print(a[0].summary)
+                print(a[0].flags)
+                print(a[0].remote_ref_string)
+                print()
+            logger.info(f"Pushed {i + 1} / {len(pushList)} subtrees")
+        with (PushProgress() as progress):
+            a = local_repo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
+                                                      force=True, progress=progress)
+        logger.info(f"Sucessfully pushed {branch.name} branch")
+
+    def push_branch_wise(self, existingBranches, localRepo):
+        """
+            Push whole branches after one another
+        :param existingBranches: Branches already existing in github repo, are skipped
+        :param localRepo: local repository object
+        """
         for branch in localRepo.branches:
             if branch.name in existingBranches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
@@ -232,7 +286,12 @@ class GithubUploader(Uploader):
                         print()
                 logger.info(f"Branch {branch.name} uploaded successfully.")
 
-    def commitWiseUpload(self, existingBranches, localRepo):
+    def push_commit_wise(self, existingBranches, localRepo):
+        """
+            Push all commits of a branch in chronological order
+        :param existingBranches: Branches existing in the github repo are skipped
+        :param localRepo: local repository object
+        """
         for branch in localRepo.branches:
             if branch.name in existingBranches:
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
@@ -245,18 +304,15 @@ class GithubUploader(Uploader):
                     for commit in commits:
                         localRepo.git.checkout(branch.name)
                         localRepo.git.reset("--hard", commit.hexsha)  # Setze den Branch auf den aktuellen Commit
-
-                        # with PushProgress() as push_pbar:  # Fortschrittsbalken für den Push
-                        # push_pbar.pbar.position = 1  # Setze den Push-Fortschrittsbalken in eine andere Zeile
-                        # a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True, progress=push_pbar)
                         a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True)
-                        # print(a[0].summary)
-                        # logger.info(f"Pushed commit {commit.hexsha} to branch {branch.name}.")
                         commit_pbar.update(1)
 
-                # logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
-
-    def deactivatePushProtection(self, repo):
+    def deactivate_push_protection(self, repo):
+        """
+            Deactivates push protection for the given GitHub repository.
+        :param repo: Github repo object
+        :return:
+        """
         headers = {
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {self.__githubToken}",
@@ -280,7 +336,11 @@ class GithubUploader(Uploader):
             logger.warning(
                 "Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually and remove blocked blobs.")
 
-    def activatePushProtection(self, repo):
+    def activate_push_protection(self, repo):
+        """
+            Activates Push Protection for the given GitHub repository.
+        :param repo: Github repository object
+        """
         headers = {
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {self.__githubToken}",
@@ -305,18 +365,18 @@ class GithubUploader(Uploader):
 
     def reset_remote_origin(self, repo, new_remote_url):
         """
-        Entfernt das Remote-Repository 'origin' und setzt es mit einem neuen Wert zurück.
-        :param repo: Repo Objekt, das das Remote-Repository enthält
-        :param new_remote_url: Neue URL für das Remote-Repository
+        Removes the remote origin and replaces it with a new one.
+        :param repo: Repo object
+        :param new_remote_url: New remote URL
         """
         try:
-            # Entferne das Remote-Repository 'origin', falls vorhanden
+            # Remove remote origin if it exists
             if 'origin' in repo.remotes:
                 origin = repo.remote(name='origin')
                 repo.delete_remote(origin)
                 logger.info("Remote 'origin' wurde erfolgreich entfernt.")
 
-            # Füge das neue Remote-Repository hinzu
+            # Add new remote origin
             repo.create_remote('origin', new_remote_url)
             logger.info(f"Remote 'origin' wurde erfolgreich auf '{new_remote_url}' gesetzt.")
         except Exception as e:
@@ -324,15 +384,13 @@ class GithubUploader(Uploader):
 
     def set_upstream_for_branches(self, repo, remote_name="origin"):
         """
-        Setzt den Upstream-Branch für alle lokalen Branches, die keinen Upstream haben.
-
-        :param repo_path: Pfad zum lokalen Git-Repository
-        :param remote_name: Name des Remote-Repositories (Standard: 'origin')
+        Adds upstream branches to all local branches in the given repository.
+        :param repo: Repo object
+        :param remote_name: Name of remote origin. Default is origin
         """
         try:
-            # Über alle lokalen Branches iterieren
             for branch in repo.branches:
-                if branch.tracking_branch() is None:  # Prüfen, ob kein Upstream-Branch gesetzt ist
+                if branch.tracking_branch() is None:  # Check if the branch has an upstream branch
                     remote_branch = f"{remote_name}/{branch.name}"
                     repo.git.branch("--set-upstream-to", remote_branch, branch.name)
                     print(f"Upstream-Branch für '{branch.name}' auf '{remote_branch}' gesetzt.")
@@ -399,10 +457,16 @@ class GithubUploader(Uploader):
         repo.index.commit("Added Docker image migration workflow")
     """
 
-    def dockerImageMigrationMonorepo(self, architecture, reposToBeMigrated=None):
-        targetRepo = self.config.monorepoName
-        if reposToBeMigrated is None:
-            reposToBeMigrated = architecture.keys()
+    def docker_image_migration_monorepo(self, architecture, repos_to_be_migrated=None):
+        """
+            Adds a new GitHub action to migrate Docker images from GitLab to GitHub.
+        :param architecture: Architecture object
+        :param repos_to_be_migrated: List of repositories to be migrated. If None, all repositories are migrated.
+        :return:
+        """
+        target_repo = self.config.monorepoName
+        if repos_to_be_migrated is None:
+            repos_to_be_migrated = architecture.keys()
         action = "name: Migrate Docker Images\n"
         action += "on:\n"
         action += "  workflow_dispatch:\n"
@@ -422,14 +486,14 @@ class GithubUploader(Uploader):
         action += "      - name: Log in to GitHub\n"
         action += "        run: |\n"
         action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
-        for repoId in reposToBeMigrated:
+        for repoId in repos_to_be_migrated:
             images = ",".join(architecture[repoId]["DockerImages"])
-            GITLAB_REPO = (architecture[repoId]["Namespace"] + "/" + architecture[repoId]["Name"]).lower()
+            gitlab_repo = (architecture[repoId]["Namespace"] + "/" + architecture[repoId]["Name"]).lower()
             action += f"      - name: Migrate Docker images from {architecture[repoId]["Name"]}\n"
             action += "        run: |\n"
             action += f'          IFS="," read -ra IMAGES <<< "{images}"\n'
             action += '          for IMAGE in "${IMAGES[@]}"; do\n'
-            action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{GITLAB_REPO}/$IMAGE"\n'
+            action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
             action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
             action += '            GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/$LOWERCASE_IMAGE"\n'
             action += '            echo "Pulling image from GitLab: $GITLAB_IMAGE"\n'
@@ -442,19 +506,15 @@ class GithubUploader(Uploader):
             action += '            docker rmi -f $(docker images -q) || true\n'
             action += '          done\n'
 
-        file_path = f"repos/{targetRepo}/.github/workflows/image.yml"
+        file_path = f"repos/{target_repo}/.github/workflows/image.yml"
         folder_path = os.path.dirname(file_path)
-
-        # Ordner erstellen, falls sie nicht existieren
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
             print(f"Ordner '{folder_path}' wurde erstellt.")
-
-        # Datei schreiben
         with open(file_path, 'w') as file:
             file.write(action)
             print(f"Datei '{file_path}' wurde erfolgreich geschrieben.")
-        repo = git.Repo("./repos/" + targetRepo)
+        repo = git.Repo("./repos/" + target_repo)
         repo.git.add(all=True)
         repo.index.commit("Added Docker image migration workflow")
 
@@ -480,8 +540,9 @@ class PushProgress(RemoteProgress):
 
     def new_message_handler__disabled(self):
         """
+        Can be used to print the output of the git push command directly for debugging. To do so remove the __disabled from the name
         :return:
-            a progress handler suitable for handle_process_output(), passing lines on to this Progress
+            A progress handler suitable for handle_process_output(), passing lines on to this Progress
             handler in a suitable format"""
 
         def handler(line):

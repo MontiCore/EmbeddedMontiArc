@@ -15,5 +15,5 @@ for reopId in architecture.keys():
                 secrets[secretName] = secretValues["Value"]
 
 Uploader = GithubUploader.GithubUploader(config)
-Uploader.dockerImageMigrationMonorepo(architecture)
-Uploader.uploadMonoRepo("subtreeManual3",secrets ,)
+Uploader.docker_image_migration_monorepo(architecture)
+Uploader.upload_mono_repo("subtreeManual4", secrets, )
