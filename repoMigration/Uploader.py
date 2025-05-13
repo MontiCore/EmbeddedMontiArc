@@ -82,7 +82,7 @@ class Uploader(ABC):
 
     def addSubtreeBranch(self,repoName, subtreeRepoName , branch, prefix = ""):
         """
-        Add a subtree to the repository.
+        Adds (multiple) branches of a repo as subtree to the repository.
         :param repoName: Repository name
         :param subtreeRepoName: Name of the repository to be added as a subtree
         :param branch: Branch of the subtree to be added
@@ -100,9 +100,9 @@ class Uploader(ABC):
         repo.git.subtree("add", "--prefix", subtree_path, subtreeRepoName, branch)
 
 
-    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs): #ToDo multiple branches
+    def addReposAsSubtree(self, targetRepoName, subtreeRepoIDs):
         """
-        Add repositories as subtrees to the target repository.
+        Adds only master branch as subtree to the target repository.
         :param targetRepoName: Name of the target GitHub repository
         :param subtreeRepoIDs: IDs of the repositories to be uploaded as subtrees
         """
