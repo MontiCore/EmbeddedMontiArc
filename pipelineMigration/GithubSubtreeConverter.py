@@ -24,7 +24,7 @@ class GithubSubTreeConverter(GithubActionConverter):
         :param secrets: Secrets to be used in the pipeline
         :return: String of the pipeline
         """
-        self.fileChangeJobNeeded = False
+        self.file_change_job_needed = False
         pipelineString = ""
         pipelineString += f"name: {name}\n"
         pipelineString += "on:\n"
@@ -48,7 +48,7 @@ class GithubSubTreeConverter(GithubActionConverter):
             # Check whether a job is only run if a file changes
             if job.only and type(job.only) == dict and "changes" in job.only:
                 # If yes, add job to check
-                self.fileChangeJobNeeded = True
+                self.file_change_job_needed = True
                 pipelineString += self.create_file_change_job()
                 break
         # Create jobs for the stages
