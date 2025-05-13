@@ -177,8 +177,9 @@ class GithubActionConverter(Converter):
             else:
                 # If the job is not a pages job, upload the artifacts normally
                 job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
-                                                                    job.name.replace("/", "_").replace(" ", "_"),
-                                                                    job.artifacts["expire_in"])
+                                                                    job.name.replace("/", "_").replace(" ",
+                                                                                                       "_"))  # ToDo: Add expiration time
+                # job.artifacts["expire_in"])
         return Converter.set_indentation_to_two_spaces(job_string)
 
     @staticmethod
