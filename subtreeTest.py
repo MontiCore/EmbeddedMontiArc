@@ -18,7 +18,7 @@ from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattribute
 print("Starting scan and clone")
 
 config = Config.Config("config.yaml")
-dr = sourceAnalysis.scanAndCloneRepos(config)
+dr = sourceAnalysis.clone_and_scan(config)
 input("WAIT")
 data = yaml.safe_load(open("architecture.yaml"))
 for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):

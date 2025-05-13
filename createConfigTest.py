@@ -1,2 +1,3 @@
 from sourceAnalysis import driver
-driver.createMigrationConfig()
+
+driver.create_migration_config()
