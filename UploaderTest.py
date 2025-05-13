@@ -1,6 +1,6 @@
 import yaml
 
-#from combinedTest import architecture
+# from combinedTest import architecture
 from repoMigration import GithubUploader
 import Config
 
@@ -9,7 +9,7 @@ Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 
 architecture = yaml.safe_load(open("architecture.yaml"))
 
-print(Uploader.listPrivateRepos())
+print(Uploader.list_private_repos())
 for repoID in config.repoIDS:
     secrets = {}
     for secretName, secretValues in architecture[repoID]["Secrets"].items():
@@ -18,5 +18,5 @@ for repoID in config.repoIDS:
                 secrets[secretName] = secretValues["Value"]
     print("----------------")
     print("Uploading repo: " + repoID)
-    Uploader.uploadRepo(repoID,secrets)
-    Uploader.dockerImageMigration(architecture,repoID)
+    Uploader.upload_repo(repoID, secrets)
+    Uploader.dockerImageMigration(architecture, repoID)

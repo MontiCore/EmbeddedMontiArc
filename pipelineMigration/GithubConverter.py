@@ -470,7 +470,7 @@ class GithubActionConverter(Converter):
             script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
         # ToDo: Delete for production
         if "deploy" in script:
-            return
+            return ""
         script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
         script = script.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
