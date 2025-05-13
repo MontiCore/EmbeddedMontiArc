@@ -21,7 +21,7 @@ class GithubActionConverter(Converter):
         self.compatibleImages = {"maven:3.6-jdk-8"}
         self.timeout = 60
 
-    def parsePipeline(self, name: str, secrets: list[str]) -> str:
+    def parse_pipeline(self, name: str, secrets: list[str]) -> str:
         self.fileChangeJobNeeded = False
         pipelineString = ""
         pipelineString += f"name: {name}\n"
@@ -45,11 +45,11 @@ class GithubActionConverter(Converter):
         pipelineString += self.createStageJobs()
 
         for job in self.pipeline.jobs:
-            pipelineString += self.parseJob(self.pipeline.jobs[job], secrets)
+            pipelineString += self.parse_job(self.pipeline.jobs[job], secrets)
             pipelineString += "\n"
         return self.set_indentation_to_two_spaces(pipelineString)
 
-    def parseJob(self, job: Job, secrets: list[str] = []) -> str:
+    def parse_job(self, job: Job, secrets: list[str] = []) -> str:
         if job.image in self.compatibleImages or not job.image:
             native = True
         else:
