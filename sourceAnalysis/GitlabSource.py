@@ -2,10 +2,10 @@ import datetime
 import os
 import subprocess
 
-
 import gitlab
 import yaml
 from git import RemoteProgress
+from pygments.lexer import inherit
 from tqdm import tqdm
 import git
 
@@ -20,11 +20,11 @@ class Gitlab(Git):
 
         self.gl = gitlab.Gitlab(url=sourceURL, private_token=self.__privateToken)
         self.gl.auth()
-    #ToDo: Maybe list existing secrets
+
     def scanRepos(self):
         architecture = {}
         for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
-            repoData= {}
+            repoData = {}
             repo = self.getRepo(repoID)
             repoData['Name'] = self.getRepoName(repo)
             repoData['Namespace'] = self.getNamespace(repo)
@@ -41,7 +41,8 @@ class Gitlab(Git):
                     if secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID":
                         continue
                     else:
-                        repoData['Secrets'][secret]= {"Value":"Please add a value", "Secret":"Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
+                        repoData['Secrets'][secret] = {"Value": "Please add a value",
+                                                       "Secret": "Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
             for b in branches:
                 if b not in staleBranches:
                     repoData['Branches'].append(b)
@@ -56,14 +57,13 @@ class Gitlab(Git):
             if dockerImages:
                 repoData['DockerImages'] = dockerImages
             mavenArtifacts = self.getMavenArtifacts(repo)
-            if mavenArtifacts:
+            if mavenArtifacts and False:
                 repoData['MavenArtifacts'] = mavenArtifacts
             architecture[repoID] = repoData
 
-
         yaml.dump(architecture, open("architecture.yaml", 'w'))
 
-    def getRepoName(self,repo):
+    def getRepoName(self, repo):
         """
         Get the name of the repository.
         :param repo: Repository object
@@ -81,7 +81,7 @@ class Gitlab(Git):
             self.cloneRepo(repo, "./repos/")
             self.removeRemoteOrigin("./repos/" + self.getRepoName(self.getRepo(repo)))
 
-    def getRepo(self,repoID : str):
+    def getRepo(self, repoID: str):
         """
         Get the repository object from GitLab by its id.
         :param repoID: GitLab repository ID
@@ -92,7 +92,7 @@ class Gitlab(Git):
 
     def getBranches(self, repo):
         data = []
-        branches =repo.branches.list(all=True)
+        branches = repo.branches.list(all=True)
         for branch in branches:
             data.append(branch.name)
         return data
@@ -102,36 +102,37 @@ class Gitlab(Git):
         stale_branches = []
         branches = repo.branches.list(all=True)
         for branch in branches:
-            commit_date = datetime.datetime.fromisoformat(branch.commit['committed_date']).replace(tzinfo=datetime.timezone.utc)
+            commit_date = datetime.datetime.fromisoformat(branch.commit['committed_date']).replace(
+                tzinfo=datetime.timezone.utc)
             if commit_date < cutoff_date:
                 stale_branches.append(branch.name)
         return stale_branches
 
-    def getDockerImages(self,repo):
-        #data = []
-        #try:
+    def getDockerImages(self, repo):
+        # data = []
+        # try:
         #    images =repo.repositories.list(all=True)
         #    for image in images:
         #        data.append(image.name)
-        #except gitlab.exceptions.GitlabListError:
+        # except gitlab.exceptions.GitlabListError:
         #    pass
-        #return data
+        # return data
         data = []
         try:
             images = repo.repositories.list(all=True)
             for image in images:
-                #image_data = {"name": image.name, "tags": []}
+                # image_data = {"name": image.name, "tags": []}
                 try:
                     tags = image.tags.list(all=True)
                     for tag in tags:
                         if image.name:
-                            data.append(image.name+":" + tag.name)
+                            data.append(image.name + ":" + tag.name)
                         else:
-                            data.append(self.getRepoName(repo).lower()+":"+tag.name)
-                        #image_data["tags"].append(tag.name)
+                            data.append(self.getRepoName(repo).lower() + ":" + tag.name)
+                        # image_data["tags"].append(tag.name)
                 except gitlab.exceptions.GitlabListError:
                     pass
-                #data.append(image_data)
+                # data.append(image_data)
         except gitlab.exceptions.GitlabListError:
             pass
         return data
@@ -139,7 +140,7 @@ class Gitlab(Git):
     def getMavenArtifacts(self, repo):
         data = []
         try:
-            artifacts =repo.packages.list(all=True)
+            artifacts = repo.packages.list(all=True)
             for artifact in artifacts:
                 data.append(artifact.name)
         except gitlab.exceptions.GitlabListError:
@@ -165,7 +166,7 @@ class Gitlab(Git):
 
         print(f"Cloning {repo_id} finished")
         lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
-        if lfs_check.stdout and True: #Todo: Activate
+        if lfs_check.stdout and True:  # Todo: Activate
             print("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
             process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, text=True)
@@ -175,7 +176,7 @@ class Gitlab(Git):
         else:
             print("LFS-Objekte nicht gefunden, keine weiteren Schritte erforderlich.")
         self.chekoutBranches(name)
-        #self.removeRemoteOrigin(clone_path)
+        # self.removeRemoteOrigin(clone_path)
 
     def chekoutBranches(self, repoName):
         """
@@ -191,7 +192,8 @@ class Gitlab(Git):
             if branch_name == "HEAD":
                 continue
             try:
-                repo.git.checkout('-B', branch_name, branch.name)  # Create and checkout local branch tracking the remote
+                repo.git.checkout('-B', branch_name,
+                                  branch.name)  # Create and checkout local branch tracking the remote
                 print(f"Checked out branch {branch_name}.")
             except Exception as e:
                 print(f"Error checking out branch {branch_name}: {e}")
@@ -206,6 +208,7 @@ class Gitlab(Git):
         except Exception as e:
             pass
 
+
 class CloneProgress(RemoteProgress):
     def __init__(self):
         super().__init__()
@@ -215,7 +218,6 @@ class CloneProgress(RemoteProgress):
         self.pbar.total = max_count
         self.pbar.n = cur_count
         self.pbar.refresh()
-
 
 
 if __name__ == '__main__':

@@ -14,6 +14,7 @@ import git
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+
 class GithubUploader(Uploader):
     def __init__(self, config, sourceURL: str = "https://api.github.com/"):
         super().__init__()
@@ -89,7 +90,7 @@ class GithubUploader(Uploader):
                 else:
                     repo = self.createPrivateRepo(repoName)
                 logger.info(f"New repository '{repoName}' created.")
-            #else:
+            # else:
             #    if os.path.exists("./repos/" + repoName):
             #        logger.info(f"Repository '{repoName}' already exists locally.")
             #    else:
@@ -114,10 +115,6 @@ class GithubUploader(Uploader):
         :param secrets:
         :return:
         """
-        #ToDo: check if secrets already exist
-        #for name,secret in secrets.items():
-        #    github_repo.create_secret(name, secret)
-
         existingSecrets = list(github_repo.get_secrets("actions"))
         existingSecrets = [secret.name for secret in existingSecrets]
         for name, secret in secrets.items():
@@ -136,7 +133,7 @@ class GithubUploader(Uploader):
         repos = self.g.get_user().get_repos()
         return [repo.name for repo in repos if repo.private]
 
-    def uploadRepo(self, repoID, secrets = {}, disableScanning = False):
+    def uploadRepo(self, repoID, secrets={}, disableScanning=False):
         """
         Upload a repository to the target Git instance.
         :param repoID: RepositoryID to be uploaded
@@ -144,15 +141,15 @@ class GithubUploader(Uploader):
         repo = git.Repo("./repos/" + self.repoNames[repoID])
         logger.info(f"Uploading {self.repoNames[repoID]} to the target Git instance...")
         print(repo.branches)
-        #self.set_upstream_for_branches(repo)
+        # self.set_upstream_for_branches(repo)
 
         # Create a new private repository on the target Git instance
-        #newRepo = self.createPrivateRepo(self.repoNames[repoID])
+        # newRepo = self.createPrivateRepo(self.repoNames[repoID])
         newRepo = self.getOrCreateRepo(self.repoNames[repoID])
         if disableScanning or True:
             self.deactivatePushProtection(newRepo)
-        #secrets = {"GITLABTOKEN": self.__gitlabToken, "CI_API_V4_URL": "https://git.rwth-aachen.de/api/v4", "CI_PROJECT_ID": repoID}
-        self.createSecrets(newRepo,secrets)
+        # secrets = {"GITLABTOKEN": self.__gitlabToken, "CI_API_V4_URL": "https://git.rwth-aachen.de/api/v4", "CI_PROJECT_ID": repoID}
+        self.createSecrets(newRepo, secrets)
 
         existingBranches = [b.name for b in newRepo.get_branches()]
         remote_url = newRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
@@ -174,14 +171,14 @@ class GithubUploader(Uploader):
             self.activatePushProtection(newRepo)
         newRepo.edit(default_branch="master")
 
-    def uploadMonoRepo(self, githubRepoName, secrets = {} ,disableScanning = False):
+    def uploadMonoRepo(self, githubRepoName, secrets={}, disableScanning=False):
         localRepo = git.Repo("./repos/" + self.config.monorepoName)
         localRepo.git.config('http.postBuffer', '524288000', local=True)
         logger.info(f"Uploading {githubRepoName} to the {githubRepoName}...")
         githubRepo = self.getOrCreateRepo(githubRepoName)
         if disableScanning or True:
             self.deactivatePushProtection(githubRepo)
-        self.createSecrets(githubRepo,secrets)
+        self.createSecrets(githubRepo, secrets)
         remote_url = githubRepo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(localRepo, remote_url)
         existingBranches = [b.name for b in githubRepo.get_branches()]
@@ -201,19 +198,20 @@ class GithubUploader(Uploader):
             for i, push in enumerate(pushList):
                 logger.info(f"Pushing SHA:{push.hexsha}")
                 with (PushProgress() as progress):
-                    a = localRepo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}", progress=progress, force=True)
+                    a = localRepo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
+                                                             progress=progress, force=True)
                     if a:
                         print(a[0].summary)
                         print(a[0].flags)
                         print(a[0].remote_ref_string)
                         print()
-                logger.info(f"Pushed {i+1} / {len(pushList)} subtrees")
+                logger.info(f"Pushed {i + 1} / {len(pushList)} subtrees")
             with (PushProgress() as progress):
                 a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
-                                                     force=True, progress=progress)
+                                                         force=True, progress=progress)
             logger.info(f"Sucessfully pushed {branch.name} branch")
-        #self.branchWiseUpload(existingBranches, localRepo)
-        #self.commitWiseUpload(existingBranches, localRepo)
+        # self.branchWiseUpload(existingBranches, localRepo)
+        # self.commitWiseUpload(existingBranches, localRepo)
         localRepo.git.checkout("master")
         if disableScanning or True:
             self.activatePushProtection(githubRepo)
@@ -258,7 +256,7 @@ class GithubUploader(Uploader):
 
                 # logger.info(f"Branch {branch.name} uploaded successfully commit by commit.")
 
-    def deactivatePushProtection(self,repo):
+    def deactivatePushProtection(self, repo):
         headers = {
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {self.__githubToken}",
@@ -279,9 +277,10 @@ class GithubUploader(Uploader):
         if response.status_code == 200:
             logger.info("Push protection deactivated successfully.")
         else:
-            logger.warning("Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually and remove blocked blobs.")
+            logger.warning(
+                "Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually and remove blocked blobs.")
 
-    def activatePushProtection(self,repo):
+    def activatePushProtection(self, repo):
         headers = {
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {self.__githubToken}",
@@ -323,7 +322,7 @@ class GithubUploader(Uploader):
         except Exception as e:
             logger.error(f"Fehler beim Zurücksetzen des Remote 'origin': {e}")
 
-    def set_upstream_for_branches(self,repo, remote_name="origin"):
+    def set_upstream_for_branches(self, repo, remote_name="origin"):
         """
         Setzt den Upstream-Branch für alle lokalen Branches, die keinen Upstream haben.
 
@@ -342,44 +341,46 @@ class GithubUploader(Uploader):
         except Exception as e:
             print(f"Fehler beim Setzen der Upstream-Branches: {e}")
 
+    # ToDo: Remove once MonoRepo variant is tested
+    """
     def dockerImageMigration(self, architecture, repoID):
         images = ",".join(architecture[repoID]["DockerImages"])
-        action ="name: Migrate Docker Images\n"
-        action+="on:\n"
-        action+="  workflow_dispatch:\n"
-        action+="jobs:\n"
-        action+="  docker-migration:\n"
-        action+="    runs-on: ubuntu-latest\n"
-        action+="    env:\n"
-        action+='      GITLAB_USERNAME: "David.Blum"\n' #TODO: make this dynamic
-        action+="      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
-        action+=f'      GITLAB_REPO: "{(architecture[repoID]["Namespace"]+"/" + architecture[repoID]["Name"]).lower()}"\n'
-        action+=f'      IMAGES_LIST: "{images}"\n'
-        action+="      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
-        action+='      GHCR_REPO_OWNER: "davidblm"\n'
-        action+="    steps:\n"
-        action+="      - name: Log in to GitLab\n"
-        action+="        run: |\n"
-        action+='          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
-        action+="      - name: Log in to GitHub\n"
-        action+="        run: |\n"
-        action+='          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
-        action+="      - name: Migrate Docker images\n"
-        action+="        run: |\n"
-        action+='          IFS="," read -ra IMAGES <<< "$IMAGES_LIST"\n'
-        action+='          for IMAGE in "${IMAGES[@]}"; do\n'
-        action+='            GITLAB_IMAGE="registry.git.rwth-aachen.de/$GITLAB_REPO/$IMAGE"\n'
-        action+='            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
-        action+='            GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/$LOWERCASE_IMAGE"\n'
-        action+='            echo "Pulling image from GitLab: $GITLAB_IMAGE"\n'
-        action+='            docker pull "$GITLAB_IMAGE"\n'
-        action+='            echo "Tagging image for GHCR: $GHCR_IMAGE"\n'
-        action+='            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"\n'
-        action+='            echo "Pushing image to GHCR: $GHCR_IMAGE"\n'
-        action+='            docker push "$GHCR_IMAGE"\n'
-        action+='            echo "Removing local image: $GHCR_IMAGE"\n'
-        action+='            docker rmi -f $(docker images -q) || true\n'
-        action+='          done\n'
+        action = "name: Migrate Docker Images\n"
+        action += "on:\n"
+        action += "  workflow_dispatch:\n"
+        action += "jobs:\n"
+        action += "  docker-migration:\n"
+        action += "    runs-on: ubuntu-latest\n"
+        action += "    env:\n"
+        action += f'      GITLAB_USERNAME: "{self.config.sourceUser}"\n'
+        action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
+        action += f'      GITLAB_REPO: "{(architecture[repoID]["Namespace"] + "/" + architecture[repoID]["Name"]).lower()}"\n'
+        action += f'      IMAGES_LIST: "{images}"\n'
+        action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
+        action += '      GHCR_REPO_OWNER: "davidblm"\n'
+        action += "    steps:\n"
+        action += "      - name: Log in to GitLab\n"
+        action += "        run: |\n"
+        action += '          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
+        action += "      - name: Log in to GitHub\n"
+        action += "        run: |\n"
+        action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
+        action += "      - name: Migrate Docker images\n"
+        action += "        run: |\n"
+        action += '          IFS="," read -ra IMAGES <<< "$IMAGES_LIST"\n'
+        action += '          for IMAGE in "${IMAGES[@]}"; do\n'
+        action += '            GITLAB_IMAGE="registry.git.rwth-aachen.de/$GITLAB_REPO/$IMAGE"\n'
+        action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
+        action += '            GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/$LOWERCASE_IMAGE"\n'
+        action += '            echo "Pulling image from GitLab: $GITLAB_IMAGE"\n'
+        action += '            docker pull "$GITLAB_IMAGE"\n'
+        action += '            echo "Tagging image for GHCR: $GHCR_IMAGE"\n'
+        action += '            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"\n'
+        action += '            echo "Pushing image to GHCR: $GHCR_IMAGE"\n'
+        action += '            docker push "$GHCR_IMAGE"\n'
+        action += '            echo "Removing local image: $GHCR_IMAGE"\n'
+        action += '            docker rmi -f $(docker images -q) || true\n'
+        action += '          done\n'
 
         file_path = f"repos/{architecture[repoID]["Name"]}/.github/workflows/image.yml"
         folder_path = os.path.dirname(file_path)
@@ -396,9 +397,12 @@ class GithubUploader(Uploader):
         repo = git.Repo("./repos/" + architecture[repoID]["Name"])
         repo.git.add(all=True)
         repo.index.commit("Added Docker image migration workflow")
+    """
 
-    def dockerImageMigrationMonorepo(self, architecture):
+    def dockerImageMigrationMonorepo(self, architecture, reposToBeMigrated=None):
         targetRepo = self.config.monorepoName
+        if reposToBeMigrated is None:
+            reposToBeMigrated = architecture.keys()
         action = "name: Migrate Docker Images\n"
         action += "on:\n"
         action += "  workflow_dispatch:\n"
@@ -406,10 +410,11 @@ class GithubUploader(Uploader):
         action += "  docker-migration:\n"
         action += "    runs-on: ubuntu-latest\n"
         action += "    env:\n"
-        action += '      GITLAB_USERNAME: "David.Blum"\n'  # TODO: make this dynamic
+        action += f'      GITLAB_USERNAME: "{self.config.sourceUser}"\n'
         action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
         action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
-        action += '      GHCR_REPO_OWNER: "davidblm"\n'
+        # action += '      GHCR_REPO_OWNER: "davidblm"\n'
+        action += "      GHCR_REPO_OWNER: ${{ github.actor }}\n"
         action += "    steps:\n"
         action += "      - name: Log in to GitLab\n"
         action += "        run: |\n"
@@ -417,7 +422,7 @@ class GithubUploader(Uploader):
         action += "      - name: Log in to GitHub\n"
         action += "        run: |\n"
         action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
-        for repoId in architecture.keys():
+        for repoId in reposToBeMigrated:
             images = ",".join(architecture[repoId]["DockerImages"])
             GITLAB_REPO = (architecture[repoId]["Namespace"] + "/" + architecture[repoId]["Name"]).lower()
             action += f"      - name: Migrate Docker images from {architecture[repoId]["Name"]}\n"
@@ -473,13 +478,14 @@ class PushProgress(RemoteProgress):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
-
     def new_message_handler__disabled(self):
         """
         :return:
             a progress handler suitable for handle_process_output(), passing lines on to this Progress
             handler in a suitable format"""
+
         def handler(line):
             print(line.rstrip())
             return self._parse_progress_line(line.rstrip())
+
         return handler

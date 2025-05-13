@@ -5,25 +5,24 @@ from pipelineMigration.GithubConverter import GithubActionConverter
 
 
 class GithubSubTreeConverter(GithubActionConverter):
-    def __init__(self, pipeline, repoPath, repoID ):
+    def __init__(self, pipeline, repoPath, repoID, compatibleImages: set = None):
         """
         :param pipeline: Pipeline object
         :param repoNames: IDs mapped to names of the repository
         :param repoPath: IDs mapped to paths to the repository
         """
-        super().__init__(pipeline)
+        super().__init__(pipeline, compatibleImages)
         self.repoPath = repoPath
         self.repoID = repoID
 
-
-    def parsePipeline(self, name : str, secrets : list[str]) -> str:
+    def parsePipeline(self, name: str, secrets: list[str]) -> str:
         self.fileChangeJobNeeded = False
         pipelineString = ""
         pipelineString += f"name: {name}\n"
         pipelineString += "on:\n"
         pipelineString += "\tpush:\n"
         pipelineString += "\t\tpaths:\n"
-        pipelineString += "\t\t\t- '" + self.repoPath+ "/**'\n"
+        pipelineString += "\t\t\t- '" + self.repoPath + "/**'\n"
         pipelineString += "\tworkflow_dispatch:\n"
         pipelineString += "env:\n"
         pipelineString += f"\tCI_PROJECT_ID : {self.repoID}\n"
@@ -35,7 +34,6 @@ class GithubSubTreeConverter(GithubActionConverter):
                 else:
                     if secret != "CI_PROJECT_ID":
                         pipelineString += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
-
 
         pipelineString += "jobs:\n"
         for _, job in self.pipeline.jobs.items():
@@ -57,11 +55,12 @@ class GithubSubTreeConverter(GithubActionConverter):
         :return: Converted job
         """
         jobString = super().parseJob(job, secrets)
-        jobString = jobString.replace("            cd /workspace\n", "            cd /workspace\n"+"            cd "+ f"{self.repoPath}"+"\n")
+        jobString = jobString.replace("            cd /workspace\n",
+                                      "            cd /workspace\n" + "            cd " + f"{self.repoPath}" + "\n")
         patternRepo = r"(- name: Script\s+run: \|)"
         repoCD = r"\1\n" + f"          cd {self.repoPath}"
         jobString = re.sub(patternRepo, repoCD, jobString)
-        #jobString = jobString.replace('${{ secrets.CI_PROJECT_ID }}', self.repoID)
+        # jobString = jobString.replace('${{ secrets.CI_PROJECT_ID }}', self.repoID)
         artifactUploadPattern = r"(- name: .*\n\s+uses: actions/upload-artifact@v4\n(?:\s+if: .*\n)?\s+with:\n(?:\s+.+\n)*\s+path: \|\n((?:\s+.+\n?)+))"
 
         prefix = f"{self.repoPath}/"
@@ -86,7 +85,7 @@ class GithubSubTreeConverter(GithubActionConverter):
             full_block = match.group(1)  # Der Block bis einschließlich `path:`
             path_value = match.group(2).strip()  # Der ursprüngliche `path`-Wert
             return full_block + prefix + path_value  # Präfix hinzufügen
-        jobString = re.sub(uploadPagesPattern, add_prefix_to_upload_pages_path, jobString)
 
+        jobString = re.sub(uploadPagesPattern, add_prefix_to_upload_pages_path, jobString)
 
         return jobString
