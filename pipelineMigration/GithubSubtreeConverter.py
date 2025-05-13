@@ -5,13 +5,13 @@ from pipelineMigration.GithubConverter import GithubActionConverter
 
 
 class GithubSubTreeConverter(GithubActionConverter):
-    def __init__(self, pipeline, repoPath, repoID, compatibleImages: set = None):
+    def __init__(self, pipeline, repoPath, repoID, compatible_images: set = None):
         """
         :param pipeline: Pipeline object
         :param repoNames: IDs mapped to names of the repository
         :param repoPath: IDs mapped to paths to the repository
         """
-        super().__init__(pipeline, compatibleImages)
+        super().__init__(pipeline, compatible_images)
         self.repoPath = repoPath
         self.repoID = repoID
 
@@ -39,9 +39,9 @@ class GithubSubTreeConverter(GithubActionConverter):
         for _, job in self.pipeline.jobs.items():
             if job.only and type(job.only) == dict and "changes" in job.only:
                 self.fileChangeJobNeeded = True
-                pipelineString += self.createFileChangeJob()
+                pipelineString += self.create_file_change_job()
                 break
-        pipelineString += self.createStageJobs()
+        pipelineString += self.create_stage_jobs()
         for job in self.pipeline.jobs:
             pipelineString += self.parse_job(self.pipeline.jobs[job], secrets)
             pipelineString += "\n"
