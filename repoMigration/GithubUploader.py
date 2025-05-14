@@ -11,7 +11,6 @@ from github import Auth
 import git
 
 # Logger konfigurieren
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
@@ -143,7 +142,8 @@ class GithubUploader(Uploader):
         :param secrets: secrets to be created
         :param disable_scanning: Whether to disable push protection in this repo
         """
-        repo = git.Repo("./repos/" + self.repoNames[repoID])
+        path = os.path.join(os.getcwd(), "repos", self.repoNames[repoID])
+        repo = git.Repo(path)
         logger.info(f"Uploading {self.repoNames[repoID]} to the target Git instance...")
         # self.set_upstream_for_branches(repo)
         github_repo = self.get_or_create_repo(self.repoNames[repoID])
@@ -155,7 +155,7 @@ class GithubUploader(Uploader):
         remote_url = github_repo.clone_url.replace("https://", f"https://{self.__githubToken}@")
         self.reset_remote_origin(repo, remote_url)
         for branch in self.branchesToBeMigrated[repoID]:
-            if branch in existing_branches:
+            if branch in existing_branches and branch != "master":
                 logger.info(f"Branch {branch} already exists in the target repository.")
             else:
                 logger.info(f"Uploading {branch} branch...")
@@ -171,6 +171,7 @@ class GithubUploader(Uploader):
             self.activate_push_protection(github_repo)
         github_repo.edit(default_branch="master")
 
+    # Create a branch for each repo that is added as a subtree. Push all those branches separately. Then create and approve pull requests
     def upload_mono_repo(self, github_repo_name, secrets={}, disable_scanning=False):
         """
         Upload a monorepo with multiple subtreesa to the target Git instance.
@@ -178,7 +179,7 @@ class GithubUploader(Uploader):
         :param secrets: Secrets to be created
         :param disable_scanning: Whether to disable push protection in this repo
         """
-        local_repo = git.Repo("./repos/" + self.config.monorepoName)
+        local_repo = git.Repo(os.path.join(os.getcwd(), "repos", self.config.monorepoName))
         # Config needed to push large files
         # local_repo.git.config('http.postBuffer', '524288000', local=True)
         logger.info(f"Uploading {github_repo_name} to the {github_repo_name}...")
@@ -191,46 +192,19 @@ class GithubUploader(Uploader):
 
         existing_branches = [b.name for b in github_repo.get_branches()]
         for branch in local_repo.branches:
-            if branch.name in existing_branches:
+            if branch.name in existing_branches and branch != "master":
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
-                if input("Still try to upload? (y/n): ").lower() == 'n':
+                if input("Still try to upload? This will override the existing history (y/n): ").lower() == 'n':
                     logger.info(f"Skipping branch {branch.name}.")
                     continue
             local_repo.git.checkout(branch.name)
-            # Commit one subtree after another
-            commits = list(local_repo.iter_commits(branch))
-            commits.reverse()
-            pushList = []
-            for commit in commits:
-                # Get all commits in which a subtree was added
-                if "subtree" in commit.message.lower():
-                    pushList.append(commit)
-            for i, push in enumerate(pushList):
-                # Push all those commits in chronological order
-                logger.info(f"Pushing SHA:{push.hexsha}")
-                with (PushProgress() as progress):
-                    a = None
-                    try:
-                        a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
-                                                                  progress=progress)  # , force=True)
-                    except GitCommandError as e:
-                        print(e)
-                # a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}")
-                if a:
-                    print(a[0].summary)
-                    print(a[0].flags)
-                    print(a[0].remote_ref_string)
-                    print()
-                logger.info(f"Pushed {i + 1} / {len(pushList)} subtrees")
-            with (PushProgress() as progress):
-                a = local_repo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
-                                                          force=True, progress=progress)
-            logger.info(f"Sucessfully pushed {branch.name} branch")
+            self.push_subtree_wise(branch, local_repo)
+            if branch == "master":
+                github_repo.edit(default_branch="master")
 
         # Different upload strategies
         # self.branchWiseUpload(existing_branches, local_repo)
         # self.commitWiseUpload(existing_branches, local_repo)
-        local_repo.git.checkout("master")
         if disable_scanning or True:
             self.activate_push_protection(github_repo)
 
@@ -240,6 +214,7 @@ class GithubUploader(Uploader):
         :param branch: Branch to be uploaded
         :param local_repo: local repository object
         """
+        # Commit one subtree after another
         commits = list(local_repo.iter_commits(branch))
         commits.reverse()
         pushList = []
@@ -251,8 +226,12 @@ class GithubUploader(Uploader):
             # Push all those commits in chronological order
             logger.info(f"Pushing SHA:{push.hexsha}")
             with (PushProgress() as progress):
-                a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
-                                                          progress=progress, force=True)
+                a = None
+                try:
+                    a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
+                                                              progress=progress, force=True)
+                except GitCommandError as e:
+                    print(e)
             # a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}")
             if a:
                 print(a[0].summary)
@@ -477,8 +456,8 @@ class GithubUploader(Uploader):
         action += f'      GITLAB_USERNAME: "{self.config.sourceUser}"\n'
         action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
         action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
-        # action += '      GHCR_REPO_OWNER: "davidblm"\n'
-        action += "      GHCR_REPO_OWNER: ${{ github.actor }}\n"
+        action += '      GHCR_REPO_OWNER: "davidblm"\n'
+        # action += "      GHCR_REPO_OWNER: ${{ github.actor | toLowerCase}}\n" #ToDo: Add automatic username
         action += "    steps:\n"
         action += "      - name: Log in to GitLab\n"
         action += "        run: |\n"
@@ -493,9 +472,19 @@ class GithubUploader(Uploader):
             action += "        run: |\n"
             action += f'          IFS="," read -ra IMAGES <<< "{images}"\n'
             action += '          for IMAGE in "${IMAGES[@]}"; do\n'
-            action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
+            # action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
+            action += "            if [[ $IMAGE == :* ]]; then\n"
+            action += f'              GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}$IMAGE"\n'
+            action += "            else\n"
+            action += f'              GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
+            action += "            fi\n"
             action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
-            action += '            GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/$LOWERCASE_IMAGE"\n'
+            action += "            if [[ $IMAGE == :* ]]; then\n"
+            action += f'              GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/{architecture[repoId]["Name"].lower()}$LOWERCASE_IMAGE"\n'
+            action += "            else\n"
+            action += f'               GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/{architecture[repoId]["Name"].lower()}$LOWERCASE_IMAGE"\n'
+            action += "            fi\n"
+
             action += '            echo "Pulling image from GitLab: $GITLAB_IMAGE"\n'
             action += '            docker pull "$GITLAB_IMAGE"\n'
             action += '            echo "Tagging image for GHCR: $GHCR_IMAGE"\n'
@@ -505,8 +494,7 @@ class GithubUploader(Uploader):
             action += '            echo "Removing local image: $GHCR_IMAGE"\n'
             action += '            docker rmi -f $(docker images -q) || true\n'
             action += '          done\n'
-
-        file_path = f"repos/{target_repo}/.github/workflows/image.yml"
+        file_path = os.path.join(os.getcwd(), "repos", target_repo, ".github", "workflows", "image.yml")
         folder_path = os.path.dirname(file_path)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
@@ -514,7 +502,7 @@ class GithubUploader(Uploader):
         with open(file_path, 'w') as file:
             file.write(action)
             print(f"Datei '{file_path}' wurde erfolgreich geschrieben.")
-        repo = git.Repo("./repos/" + target_repo)
+        repo = git.Repo(os.path.join(os.getcwd(), "repos", target_repo))
         repo.git.add(all=True)
         repo.index.commit("Added Docker image migration workflow")
 

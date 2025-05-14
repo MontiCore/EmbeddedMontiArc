@@ -8,7 +8,7 @@ class GithubActionConverter(Converter):
     This class converts a pipeline Object to GitHub Actions.
     """
 
-    def __init__(self, pipeline: Pipeline, compatible_images: set = None):
+    def __init__(self, pipeline: Pipeline, compatible_images: set = None, rebuild: bool = False):
         """
         :param pipeline: Pipeline object
         :param compatible_images: Optional set of compatible images, that don't need to be run in a seperate docker container
@@ -16,7 +16,7 @@ class GithubActionConverter(Converter):
         self.pipeline = pipeline
         self.compatible_images = compatible_images
 
-        # ToDo: Delete for production
+        # ToDo: Delete for production, implement their impoert
         self.compatible_images = {"maven:3.6-jdk-8",
                                   "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1",
                                   "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest",
@@ -25,7 +25,7 @@ class GithubActionConverter(Converter):
                                   "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1"
                                   }
         self.compatible_images = {"maven:3.6-jdk-8"}
-
+        self.rebuild = rebuild
         self.timeout = 60  # Default timeout in minutes
 
     def parse_pipeline(self, name: str, secrets: list[str]) -> str:
@@ -131,7 +131,8 @@ class GithubActionConverter(Converter):
         job_string += GithubActionConverter.add_checkout_step()
 
         # If necessary restore the splitted large files
-        job_string += GithubActionConverter.restore_large_files_step()
+        if self.rebuild:
+            job_string += GithubActionConverter.restore_large_files_step()
 
         # If the job has needs, which uploaded artifacts download them
         if job.needs:
@@ -175,11 +176,25 @@ class GithubActionConverter(Converter):
                 # If the job is a pages job, deploy the pages
                 job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
             else:
+                if "expire_in" in job.artifacts:
+                    retention_time = job.artifacts["expire_in"].replace("day", "")
+                else:
+                    retention_time = 7
+                if "when" in job.artifacts:
+                    if job.artifacts["when"] == "always":
+                        # Upload the artifacts always
+                        when = "always()"
+                    else:
+                        # Upload only if successful
+                        when = "success()"
+                else:
+                    when = "success()"
+
                 # If the job is not a pages job, upload the artifacts normally
                 job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
-                                                                    job.name.replace("/", "_").replace(" ",
-                                                                                                       "_"))  # ToDo: Add expiration time
-                # job.artifacts["expire_in"])
+                                                                    job.name.replace("/", "_").replace(" ", "_"),
+                                                                    when,
+                                                                    retention_time)
         return Converter.set_indentation_to_two_spaces(job_string)
 
     @staticmethod
@@ -263,7 +278,7 @@ class GithubActionConverter(Converter):
         return start
 
     @staticmethod
-    def upload_artifacs(paths: list[str], name, expiration: int = 7) -> str:
+    def upload_artifacs(paths: list[str], name, when="success()", expiration: int = 7) -> str:
         """
             Creates the string for the upload artifacts action block.
         :param paths: Paths to the artifacts to be uploaded
@@ -274,10 +289,10 @@ class GithubActionConverter(Converter):
         upload = ""
         upload += f"\t\t\t- name: Upload artifacts\n"
         upload += f"\t\t\t\tuses: actions/upload-artifact@v4\n"
-        upload += f"\t\t\t\tif: success()\n"
+        upload += f"\t\t\t\tif: {when}\n"
         upload += f"\t\t\t\twith:\n"
         upload += f'\t\t\t\t\tname: {name}\n'
-        upload += f"\t\t\t\t\tretention-days: {expiration}\n"  # Todo: Change to expiration, needs to be tested
+        upload += f"\t\t\t\t\tretention-days: {expiration}\n"
         upload += f"\t\t\t\t\tpath: |\n"
         for path in paths:
             upload += f"\t\t\t\t\t\t{path}\n"
@@ -354,6 +369,8 @@ class GithubActionConverter(Converter):
 
         # Handle except keyword
         if job.exc:
+            # Exclude for single files is not supported automatically
+            """
             if type(job.exc) == dict:
                 if ifString == "":
                     ifString += "\t\tif: ${{"
@@ -367,7 +384,8 @@ class GithubActionConverter(Converter):
                         else:
                             ifString += f", {p}"
                     ifString += "')"
-
+            """
+            # Job is not to be run if certain branches are pushed
             if type(job.exc) == list:
                 # Job is not to be run if certain branches are pushed
                 for i, branch in enumerate(job.exc):
@@ -405,7 +423,6 @@ class GithubActionConverter(Converter):
                     jobString += f", {job.replace('/', '_').replace(' ', '_')}"
             jobString += f"]\n"
             jobString += "\t\tif: ${{ !cancelled()}}\n"
-            # jobString += "}}\n"
             jobString += f"\t\truns-on: ubuntu-latest\n"
             jobString += "\t\tsteps:\n"
             jobString += f"\t\t\t\t- run: |\n"

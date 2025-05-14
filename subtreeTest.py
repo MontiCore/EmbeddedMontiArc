@@ -1,3 +1,5 @@
+import logging
+import os.path
 import subprocess
 
 from tqdm import tqdm
@@ -15,44 +17,78 @@ import git
 
 from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattributes
 
-print("Starting scan and clone")
+SPLIT_LARGE_FILES = True
+REMOVE_LFS = True
+REMOVE_LARGE_FILES = True
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S')
+logger = logging.getLogger(__name__)
+
+logger.info("Starting scan and clone")
 config = Config.Config("config.yaml")
 dr = sourceAnalysis.clone_and_scan(config)
-input("WAIT")
+
+input("Please adapt the architecture.yaml file and press enter to continue")
+
 data = yaml.safe_load(open("architecture.yaml"))
-for repoID in tqdm(data.keys(), desc="Migrating pipelines", ):
-    repo = git.Repo("./repos/" + data[repoID]["Name"])
-    gitlabRepoPath = "repos/" + data[repoID]["Name"]
-    githubRepoPath = "repos/" + data[repoID]["Name"]
+# Get number of iterations for progress bar
+numberIterations = 0
+for repoID in data.keys():
     if data[repoID]["Branches"] is None:
-        branches = data[repoID]["StaleBranches"]
+        numberIterations += len(data[repoID]["StaleBranches"])
     elif data[repoID]["StaleBranches"] is None:
-        branches = data[repoID]["Branches"]
+        numberIterations[str(repoID)] = len(data[repoID]["Branches"])
     else:
-        branches = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
-    lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd="repos/" + data[repoID]["Name"], capture_output=True,
-                               text=True)
-    if lfs_check.stdout:
-        remove_lfs("./repos/" + data[repoID]["Name"])
-    for branch in branches:
-        repo.git.checkout(branch)
-        split_large_files("./repos/" + data[repoID]["Name"])
-        # print("Migrating branch: " + branch)
-        # print(repoID)
-        remove_lfs_from_gitattributes("./repos/" + data[repoID]["Name"])
+        numberIterations += len(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
 
-        # input("WAIT")
+with tqdm(total=numberIterations, desc="Migrating repository branches", unit="branches") as progress:
+    for repoID in data.keys():
+        repo_path = os.path.join(os.getcwd(), "repos", data[repoID]["Name"])
+        repo = git.Repo(repo_path)
 
-    repo.git.checkout("master")
-    # run_git_filter_repo("repos/" + data[repoID]["Name"])
+        # Check, which branches have to be migrated for the repo
+        if data[repoID]["Branches"] is None:
+            branches = data[repoID]["StaleBranches"]
+        elif data[repoID]["StaleBranches"] is None:
+            branches = data[repoID]["Branches"]
+        else:
+            branches = list(set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
+
+        if REMOVE_LFS:
+            # Check if the repo uses LFS
+
+            lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=repo_path,
+                                       capture_output=True,
+                                       text=True)
+            # If yes remove LFS
+            if lfs_check.stdout:
+                remove_lfs(repo_path)
+
+        for branch in branches:
+            repo.git.checkout(branch)
+            if SPLIT_LARGE_FILES:
+                split_large_files(repo_path)
+
+            if REMOVE_LFS:
+                remove_lfs_from_gitattributes(repo_path)
+            progress.update(1)
+        repo.git.checkout("master")
+
+if REMOVE_LARGE_FILES:
+    for repoID in tqdm(data.keys(), desc="Cleaning large files, this may take a while", unit="repos"):
+        repo_path = os.path.join(os.getcwd(), "repos", data[repoID]["Name"])
+        run_git_filter_repo(repo_path)
+
+# Build monorepo from cleaned repos
 Uploader = GithubUploader.GithubUploader(config)
 Uploader.add_repos_as_subtree(config.monorepoName, data.keys())
 
-prefix = {}
+# Convert pipelines
+prefix = {}  # Path to each subtree in the monorepo
 for repoID in data.keys():
-    prefix[data[repoID]["Name"]] = data[repoID]["Namespace"] + "/" + data[repoID]["Name"]
+    prefix[data[repoID]["Name"]] = os.path.join(data[repoID]["Namespace"], data[repoID]["Name"])
 
+# Get secrets
 secrets = {}
 for repoID in data.keys():
     secrets[data[repoID]["Name"]] = []
@@ -65,4 +101,6 @@ for repoID in data.keys():
             secrets[data[repoID]["Name"]].append((name, "${{ secrets." + str(secret["Value"]) + " }}"))
         else:
             secrets[data[repoID]["Name"]].append((name, secret["Value"]))
-GitlabToGithubSubtree(data.keys(), data, config, "./repos/" + config.monorepoName, prefix, secrets)
+monorepo_path = os.path.join(os.getcwd(), "repos", config.monorepoName)
+
+GitlabToGithubSubtree(data.keys(), data, config, monorepo_path, prefix, secrets, rebuild=SPLIT_LARGE_FILES)

@@ -3,22 +3,23 @@ import subprocess
 import git
 
 
-def run_git_filter_repo(path="."):
+def run_git_filter_repo(path=".", size="100M", output=False):
     """
         Runs the git filter-repo command to remove large files from the git history.
-    :param path:
+    :param path: path to the repository
+    :param size: size of the files to be filtered must end with M
     :return:
     """
-    # ToDo: Mayve add choosable size
     try:
         result = subprocess.run(
-            ['git', 'filter-repo', '--strip-blobs-bigger-than', '100M', '--force'],
+            ['git', 'filter-repo', '--strip-blobs-bigger-than', size, '--force'],
             check=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             cwd=path
         )
-        print("Command output:", result.stdout.decode())
+        if output:
+            print("Git filter repo output:", result.stdout.decode())
     except subprocess.CalledProcessError as e:
         print("Error:", e.stderr.decode(errors='replace'))
 
@@ -36,18 +37,20 @@ def split_large_files2(directory, size="90M"):
     repo.index.commit("Split large files into smaller parts")
 
 
-def split_large_files(directory, size="90M"):
+def split_large_files(directory, size="90M", output=False):
     """
-        Splits files in the repository greater than size into parts. The changes are then committed.
+        Splits files in the repository greater than size into parts. The changes are then committed. Works only on Linux.
     :param directory: Directory of the repository
     :param size: Size of the files to be split
     """
+    # ToDo: Rewrite for windows, very low priority
     try:
         # command = f"find {directory} -type f -size +{size} -exec sh -c 'split -b {size} --suffix-length=1 \"$0\" \"$0.part\"' {{}} \\;"
         command = f"find {directory} -path {directory}/.git -prune -o -type f -size +{size} -exec sh -c 'split -b {size} --suffix-length=1 \"$0\" \"$0.part\"' {{}} \\;"
         result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print("Split command output:", result.stdout.decode())
-
+        if output:
+            print("Split command output:", result.stdout.decode())
+        """
         # Print all files that have been split
         # find_command = f"find {directory} -type f -size +{size}"
         find_command = f"find {directory} -path {directory}/.git -prune -o -type f -size +{size} -print"
@@ -57,6 +60,7 @@ def split_large_files(directory, size="90M"):
         print("Files that have been split:")
         for file in files:
             print(f" - {file}")
+        """
     except subprocess.CalledProcessError as e:
         print("Error:", e.stderr.decode(errors='replace'))
     repo = git.Repo(directory)
