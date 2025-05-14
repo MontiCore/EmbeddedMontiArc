@@ -1,16 +1,18 @@
 import datetime
+import logging
 import os
 import subprocess
 
 import gitlab
 import yaml
 from git import RemoteProgress
-from pygments.lexer import inherit
 from tqdm import tqdm
 import git
 
 from sourceAnalysis.Git import Git
 from sourceAnalysis.mavenSecrets import find_env_vars_in_repo
+
+logger = logging.getLogger(__name__)
 
 
 class Gitlab(Git):
@@ -37,7 +39,7 @@ class Gitlab(Git):
             repo_data['StaleBranches'] = []
             repo_data['Secrets'] = {}
             # Get env variables used by maven. Should be recreated in the new repo
-            env_variables = find_env_vars_in_repo("./repos/" + repo_data['Name'])
+            env_variables = find_env_vars_in_repo(os.path.join(os.getcwd(), "repos", repo_data['Name']))
             repo_data['Secrets']["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
             repo_data['Secrets']["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
             if env_variables:
@@ -65,7 +67,7 @@ class Gitlab(Git):
                 repo_data['MavenArtifacts'] = maven_artifacts
             architecture[repoID] = repo_data
 
-        yaml.dump(architecture, open("architecture.yaml", 'w'))
+        yaml.dump(architecture, open(os.path.join(os.getcwd(), "architecture.yaml"), 'w'))
 
     def getRepoName(self, repo):
         """
@@ -79,11 +81,11 @@ class Gitlab(Git):
         """
         Clone repositories from GitLab to the local machine.
         """
-        print("Cloning Repositories...")
+        logger.info("Cloning Repositories...")
         for repo in self.repoIDS:
-            print("-------------------------------")
-            self.clone_repo(repo, "./repos/")
-            self.remove_remote_origin("./repos/" + self.getRepoName(self.getRepo(repo)))
+            logger.info("-------------------------------")
+            self.clone_repo(repo, os.path.join(os.getcwd(), "repos"))
+            self.remove_remote_origin(os.path.join(os.getcwd(), "repos", self.getRepoName(self.getRepo(repo))))
 
     def getRepo(self, repoID: str):
         """
@@ -136,10 +138,10 @@ class Gitlab(Git):
                 try:
                     tags = image.tags.list(all=True)
                     for tag in tags:
-                        if image.name:
-                            data.append(image.name + ":" + tag.name)
-                        else:
-                            data.append(self.getRepoName(repo).lower() + ":" + tag.name)
+                        # if image.name:
+                        data.append(image.name + ":" + tag.name)
+                        # else:
+                        #    data.append(self.getRepoName(repo).lower() + ":" + tag.name)
                         # image_data["tags"].append(tag.name)
                 except gitlab.exceptions.GitlabListError:
                     pass
@@ -182,21 +184,21 @@ class Gitlab(Git):
         clone_path = os.path.join(clone_path, name)
         # Create authorized URL with private token for cloning
         repo_url = repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.__privateToken}@")
-        print(f"Cloning {repo_id} to {clone_path}")
+        logging.info(f"Cloning {repo_id} to {clone_path}")
         # If a folder with the repos name already exists, skip cloning
         if not os.path.exists(clone_path):
             os.makedirs(clone_path)
         else:
-            print(f"Directory {clone_path} already exists, skipping clone.")
+            logging.info(f"Directory {clone_path} already exists, skipping clone.")
             return
         # Clone
         git.Repo.clone_from(repo_url, clone_path, branch='master', progress=CloneProgress())
-        print(f"Cloning {repo_id} finished")
+        logging.info(f"Cloning {repo_id} finished")
 
         # Check if LFS is used and download LFS objects if necessary
         lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
         if lfs_check.stdout:
-            print("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
+            logging.info("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
             process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, text=True)
             for line in process.stdout:
@@ -211,10 +213,11 @@ class Gitlab(Git):
         Checkout all branches available in the remote repository.
         :param repoName: Name of the repository to be checked out
         """
-        repo = git.Repo("./repos/" + repoName)
-        print(f"Fetching all branches for {repoName}...")
+        path = os.path.join(os.getcwd(), "repos", repoName)
+        repo = git.Repo(path)
+        logging.info(f"Fetching all branches for {repoName}...")
         repo.remotes.origin.fetch()  # Fetch all branches from the remote
-        print(f"Checking out branches for {repoName}...")
+        logging.info(f"Checking out branches for {repoName}...")
         for branch in repo.remotes.origin.refs:  # Iterate over all remote branches
             branch_name = branch.name.split('/')[-1]  # Extract branch name
             if branch_name == "HEAD":
@@ -222,9 +225,9 @@ class Gitlab(Git):
             try:
                 repo.git.checkout('-B', branch_name,
                                   branch.name)  # Create and checkout local branch tracking the remote
-                print(f"Checked out branch {branch_name}.")
+                logging.info(f"Checked out branch {branch_name}.")
             except Exception as e:
-                print(f"Error checking out branch {branch_name}: {e}")
+                logging.warning(f"Error checking out branch {branch_name}: {e}")
             repo.git.checkout('master')  # Checkout the master branch
 
     def remove_remote_origin(self, repo_path):
@@ -232,7 +235,7 @@ class Gitlab(Git):
             repo = git.Repo(repo_path)
             origin = repo.remote(name='origin')
             repo.delete_remote(origin)
-            print("Remote 'origin' wurde erfolgreich entfernt.")
+            logging.info("Remote 'origin' wurde erfolgreich entfernt.")
         except Exception as e:
             pass
 

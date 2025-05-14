@@ -1,7 +1,9 @@
+import logging
 import os
 from platform import architecture
 
 import git
+from tqdm import tqdm
 
 from Config import Config
 from pipelineMigration.GithubSubtreeConverter import GithubSubTreeConverter
@@ -23,9 +25,9 @@ def GitlabToGithub(repoID: str, architecture, config: Config, name: str = "pipel
     :param name: The name of the pipeline.
     :param secrets: A list of names for secrets to be used in the pipeline.
     """
-
+    repo_path = os.path.join(os.getcwd(), "repos", architecture[repoID]["Name"], )
     # Open the Gitlab CI file and parse it
-    file = open("./repos/" + architecture[repoID]["Name"] + "/.gitlab-ci.yml", 'r')
+    file = open(os.path.join(repo_path, "/.gitlab-ci.yml"), 'r')
     pipeline = GitlabCIImporter().getPipeline(file)
     file.close()
 
@@ -33,16 +35,16 @@ def GitlabToGithub(repoID: str, architecture, config: Config, name: str = "pipel
     pipeline = changeToUpdatedImages(pipeline, architecture, config, repoID)
 
     # Open the git repository
-    repo = git.Repo("./repos/" + architecture[repoID]["Name"])
+    repo = git.Repo(repo_path)
     # Converts the maven files to be compatible with the private token and commit changes
-    GithubActionConverter.process_settings_files("./repos/" + architecture[repoID]["Name"])
+    GithubActionConverter.process_settings_files(repo_path)
     repo.git.add(all=True)
     repo.index.commit("Changed maven settings to private token")
 
     # Convert the pipeline to Github Actions format
     pipelineConverter = GithubActionConverter(pipeline)
     convertedPipeline = pipelineConverter.parse_pipeline(name, secrets)
-    file_path = f"{"./repos/" + architecture[repoID]["Name"]}/.github/workflows/main.yml"
+    file_path = os.path.join(repo_path, f"./.github/workflows/{name}.yml")
     folder_path = os.path.dirname(file_path)
     # Ordner erstellen, falls sie nicht existieren
     if not os.path.exists(folder_path):
@@ -70,13 +72,16 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
             if not image.startswith(":"):
                 url = ("registry." + config.url.replace("https://", "") + architecture[repoID][
                     "Namespace"] + "/" + architecture[repoID]["Name"] + "/" + image).lower()
-                newNames[url] = "ghcr.io/" + config.targetUser.lower() + "/" + image
+                newNames[url] = "ghcr.io/" + config.targetUser.lower() + "/" + architecture[repoID][
+                    "Name"] + "/" + image
             else:
-                # ToDo: Whats with the weird image?
-
                 # fullImageNames.append(("registry." + config.url.replace("https://", "") + architecture[repoID][
                 #    "Namespace"] + "/" + architecture[repoID]["Name"] + image).lower())
-                pass
+
+                url = ("registry." + config.url.replace("https://", "") + architecture[repoID][
+                    "Namespace"] + "/" + architecture[repoID]["Name"] + image).lower()
+                newNames[url] = "ghcr.io/" + config.targetUser.lower() + "/" + architecture[repoID][
+                    "Name"] + "/" + image
 
     # Change the image names in the pipeline object
     for _, job in pipeline.jobs.items():
@@ -85,7 +90,8 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
     return pipeline
 
 
-def GitlabToGithubSubtree(repoIDS, architecture, config: Config, github_file_path, github_repo_prefix, secrets):
+def GitlabToGithubSubtree(repoIDS, architecture, config: Config, github_file_path, github_repo_prefix, secrets,
+                          rebuild=False):
     """
         Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits the changes.
     :param repoIDS: RepoIDS of the contained repos
@@ -95,10 +101,11 @@ def GitlabToGithubSubtree(repoIDS, architecture, config: Config, github_file_pat
     :param github_repo_prefix: Path to each repo in the monorepo
     :param secrets: Secrets to be used in the pipeline
     """
+    logger = logging.getLogger(__name__)
 
     subtree_repo = git.Repo(github_file_path)
 
-    file_path_base = f"{github_file_path}/.github/workflows/"
+    file_path_base = os.path.join(github_file_path, ".github", "workflows")
     folder_path = os.path.dirname(file_path_base)
     # Converts the maven files to be compatible with the private token and commit changes
     GithubActionConverter.process_settings_files(github_file_path)
@@ -106,49 +113,74 @@ def GitlabToGithubSubtree(repoIDS, architecture, config: Config, github_file_pat
     subtree_repo.index.commit(f"Changed maven settings to private token")
 
     # Create Github action folder
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-        print(f"Ordner '{folder_path}' wurde erstellt.")
-    # Migrate all contained repos
-    for repoID in repoIDS:
-        # Check, which branches were migrated for the repo
-        branchesToBeMigrated = {}
-        if architecture[repoID]["Branches"] is None:
-            branchesToBeMigrated[str(repoID)] = architecture[repoID]["StaleBranches"]
-        elif architecture[repoID]["StaleBranches"] is None:
-            branchesToBeMigrated[str(repoID)] = architecture[repoID]["Branches"]
-        else:
-            branchesToBeMigrated[str(repoID)] = list(
-                set(architecture[repoID]["Branches"]).union(set(architecture[repoID]["StaleBranches"])))
-        multiple = len(branchesToBeMigrated[str(repoID)]) > 1
-        # Iterate over all migrated branches
-        for branch in branchesToBeMigrated[str(repoID)]:
-            # Chose path to gitlab pipeline according to structure
-            if multiple:
-                path = github_file_path + "/" + architecture[repoID]["Namespace"] + "/" + architecture[repoID][
-                    "Name"] + "/" + branch
-            else:
-                path = "./repos/" + architecture[repoID]["Name"]
-            name = architecture[repoID]["Name"]
+    if not os.path.exists(file_path_base):
+        os.makedirs(file_path_base)
+        logger.info(f"Ordner '{file_path_base}' wurde erstellt.")
 
-            # Impoer gitlab pipeline
-            file = open(path + "/.gitlab-ci.yml", 'r')
-            pipeline = GitlabCIImporter().getPipeline(file)
-            file.close()
-            pipeline = changeToUpdatedImages(pipeline, architecture, config, repoIDS)
-            # Convert the pipeline to Github Actions format, depending on the number of branches
-            if len(branchesToBeMigrated[str(repoID)]) <= 1:
-                pipelineConverter = GithubSubTreeConverter(pipeline, github_repo_prefix[name], repoID)
-                convertedPipeline = pipelineConverter.parse_pipeline(name, secrets[name])
-                file_path = file_path_base + name + ".yml"
-            else:
-                pipelineConverter = GithubSubTreeConverter(pipeline, github_repo_prefix[name] + "/" + branch, repoID)
-                convertedPipeline = pipelineConverter.parse_pipeline(name + "_" + branch, secrets[name])
-                file_path = file_path_base + name + "_" + branch + ".yml"
-            # Write and commit action
-            writeStringToFile(file_path, convertedPipeline)
-            subtree_repo.git.add(all=True)
-            subtree_repo.index.commit(f"Migrated pipeline of {name} and branch {branch} from Gitlab to Github")
+    branches_to_be_migrated = {}
+    iterations = 0
+    for repoID in repoIDS:
+        if architecture[repoID]["Branches"] is None:
+            branches_to_be_migrated[str(repoID)] = architecture[repoID]["StaleBranches"]
+        elif architecture[repoID]["StaleBranches"] is None:
+            branches_to_be_migrated[str(repoID)] = architecture[repoID]["Branches"]
+        else:
+            branches_to_be_migrated[str(repoID)] = list(
+                set(architecture[repoID]["Branches"]).union(set(architecture[repoID]["StaleBranches"])))
+        iterations += len(branches_to_be_migrated[str(repoID)])
+
+    with tqdm(total=iterations, desc="Migrating pipelines", unit="branch") as progress:
+        # Migrate all contained repos
+        for repoID in repoIDS:
+            # Check, which branches were migrated for the repo
+
+            multiple = len(branches_to_be_migrated[str(repoID)]) > 1
+            # Iterate over all migrated branches
+            for branch in branches_to_be_migrated[str(repoID)]:
+                # Chose path to gitlab pipeline according to structure
+                if multiple:
+                    path = os.path.join(github_file_path, architecture[repoID]["Namespace"], architecture[repoID][
+                        "Name"], branch)
+                else:
+                    path = os.path.join(os.getcwd(), "repos", architecture[repoID]["Name"])
+                name = architecture[repoID]["Name"]
+
+                # Import gitlab pipeline
+                file = open(os.path.join(path, '.gitlab-ci.yml'), 'r')
+                pipeline = GitlabCIImporter().getPipeline(file)
+                file.close()
+
+                jobs_to_delete = []
+                for job in pipeline.jobs.values():
+                    if job.only:
+                        if type(job.only) == list:
+                            if branch not in job.only:
+                                jobs_to_delete.append(job.name)
+                    if job.exc:
+                        if type(job.exc) == list:
+                            if branch in job.exc:
+                                jobs_to_delete.append(job.name)
+                for job in jobs_to_delete:
+                    pipeline.delete_job(job)
+
+                pipeline = changeToUpdatedImages(pipeline, architecture, config, repoIDS)
+                # Convert the pipeline to Github Actions format, depending on the number of branches
+                if len(branches_to_be_migrated[str(repoID)]) <= 1:
+                    pipelineConverter = GithubSubTreeConverter(pipeline, github_repo_prefix[name], repoID,
+                                                               rebuild=rebuild)
+                    convertedPipeline = pipelineConverter.parse_pipeline(name, secrets[name])
+                    file_path = os.path.join(file_path_base, name + ".yml")
+                else:
+                    pipelineConverter = GithubSubTreeConverter(pipeline, github_repo_prefix[name] + "/" + branch,
+                                                               repoID,
+                                                               rebuild=rebuild)
+                    convertedPipeline = pipelineConverter.parse_pipeline(name + "_" + branch, secrets[name])
+                    file_path = os.path.join(file_path_base, name + "_" + branch + ".yml")
+                # Write and commit action
+                writeStringToFile(file_path, convertedPipeline)
+                subtree_repo.git.add(all=True)
+                subtree_repo.index.commit(f"Migrated pipeline of {name} and branch {branch} from Gitlab to Github")
+                progress.update(1)
 
 
 if __name__ == '__main__':
