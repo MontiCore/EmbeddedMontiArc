@@ -39,3 +39,19 @@ class Pipeline:
             for j in self.stageJobs[self.schedule[i]]:
                 jobs_finished.append(j)
         return jobs_finished
+
+    def delete_job(self, delete_job):
+        """
+        Deletes a job from the pipeline.
+        :param delete_job: Name of job
+        """
+        del self.jobs[delete_job]
+        for stage in self.stageJobs:
+            if delete_job in self.stageJobs[stage]:
+                self.stageJobs[stage].remove(delete_job)
+        for jobName in self.jobNeeds:
+            if delete_job in self.jobNeeds[jobName]:
+                self.jobNeeds[jobName].remove(delete_job)
+        for job in self.jobs.values():
+            if delete_job in job.needs:
+                job.needs.remove(delete_job)

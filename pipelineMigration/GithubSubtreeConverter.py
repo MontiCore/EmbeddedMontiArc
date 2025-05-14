@@ -6,16 +6,20 @@ from pipelineMigration.GithubConverter import GithubActionConverter
 
 class GithubSubTreeConverter(GithubActionConverter):
     # Specialized converter for Monorepo variant"
-    def __init__(self, pipeline, repoPath, repoID, compatible_images: set = None):
+    def __init__(self, pipeline, repoPath, repoID, compatible_images: set = None, rebuild: bool = False):
         """
         Initializes the GithubSubTreeConverter class.
         :param pipeline: Pipeline object
         :param repoNames: IDs mapped to names of the repository
         :param repoPath: IDs mapped to paths to the repository
         """
-        super().__init__(pipeline, compatible_images)
+        super().__init__(pipeline, compatible_images, rebuild)
         self.repoPath = repoPath
         self.repoID = repoID
+
+    def check_branch(self, pipeline):
+        for job in pipeline.jobs:
+            pass
 
     def parse_pipeline(self, name: str, secrets: list[str]) -> str:
         """
