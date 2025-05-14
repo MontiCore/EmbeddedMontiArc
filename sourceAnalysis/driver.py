@@ -18,4 +18,5 @@ def clone(config):
 def clone_and_scan(config):
     gitlab = Gitlab(config.url, config.sourceToken, config.repoIDS)
     gitlab.clone()
+    print()
     gitlab.scan()
