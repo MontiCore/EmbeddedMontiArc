@@ -1,0 +1,49 @@
+FROM maven:3-jdk-8
+
+RUN apt-get update
+RUN apt-get install -y build-essential git ninja-build ccache 
+RUN apt-get install -y libopenblas-dev libblas-dev 
+RUN apt-get install -y liblapack-dev libopencv-dev 
+RUN apt-get install -y libarmadillo-dev cmake 
+RUN apt-get install -y libboost-all-dev
+
+RUN apt-get install -y python3.9 python-dev python-tk
+RUN apt-get install -y python3-pip
+
+ADD armadillo-9.600.6.zip /root/armadillo.zip
+RUN unzip /root/armadillo.zip -d /root/armadillo
+RUN cd /root/armadillo/armadillo-9.600.6 && cmake . && make && make install
+
+RUN pip3 install torch==1.12.0+cpu torchvision==0.13.0+cpu torchaudio==0.12.0 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install opencv-python h5py numpy matplotlib scipy Pillow
+RUN pip3 install dgl==0.6.1
+
+RUN pip3 install --user --upgrade "cmake>=3.13.2"
+
+ENV DGLBACKEND=pytorch
+RUN wget https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.12.0%2Bcpu.zip -O /usr/lib/libtorch.zip && \
+    unzip /usr/lib/libtorch.zip -d /usr/lib && \
+    rm /usr/lib/libtorch.zip
+# Add a test program to verify libtorch install
+# Add test program
+RUN echo '#include <torch/torch.h>\n'\
+'#include <iostream>\n'\
+'int main() {\n'\
+'  std::cout << "LibTorch version: " << TORCH_VERSION << std::endl;\n'\
+'  return 0;\n'\
+'}' > /usr/lib/test_libtorch.cpp
+
+RUN cat <<EOF > /usr/lib/CMakeLists.txt
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
+project(test_libtorch)
+find_package(Torch REQUIRED)
+add_executable(test_libtorch /usr/lib/test_libtorch.cpp)
+target_link_libraries(test_libtorch \${TORCH_LIBRARIES})
+set_property(TARGET test_libtorch PROPERTY CXX_STANDARD 14)
+EOF
+
+# Compile and run the test program via CMake
+RUN mkdir /usr/lib/build && cd /usr/lib/build && \
+    cmake -DCMAKE_PREFIX_PATH=/usr/lib/libtorch .. && \
+    cmake --build . && \
+    ./test_libtorch
