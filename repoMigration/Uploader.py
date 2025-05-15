@@ -111,7 +111,7 @@ class Uploader(ABC):
         repo.git.fetch(subtree_repo_name, branch)
         repo.git.subtree("add", "--prefix", subtree_path, subtree_repo_name, branch)
 
-    def add_repos_as_subtree(self, target_repo_name, subtree_repo_IDS):
+    def add_repos_as_subtree(self, target_repo_name, target_repo_namespace, subtree_repo_IDS):
         """
         Adds only master branch as subtree to the target repository.
         :param target_repo_name: Name of the target GitHub repository
@@ -127,14 +127,13 @@ class Uploader(ABC):
         target_repo.heads[branch_name].checkout()
         for repoID in subtree_repo_IDS:
             repo_name = self.repoNames[repoID]
-            logger.info(f"Uploading {repo_name} as a subtree to {target_repo_name}...")
-            namespace = self.namespaces[repoID]
+            repoNamespace = ",".join([i for i in self.namespaces[repoID].split("/") if i not in target_repo_namespace])
             multiple_branches = len(self.branchesToBeMigrated[repoID]) > 1
-
+            logger.info(f"Uploading {repo_name} as a subtree to {repoNamespace}...")
             for branch in self.branchesToBeMigrated[repoID]:
                 if multiple_branches:
-                    self.add_subtree_branch(target_repo, repo_name, prefix=namespace, branch=branch)
+                    self.add_subtree_branch(target_repo, repo_name, prefix=repoNamespace, branch=branch)
                 else:
-                    self.add_subtree(target_repo, repo_name, prefix=namespace)
+                    self.add_subtree(target_repo, repo_name, prefix=repoNamespace)
             # logger.info(f"Repository {repo_name} uploaded as a subtree to {target_repo_name}.")
         # target_repo.heads["master"].checkout()

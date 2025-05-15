@@ -1,6 +1,11 @@
+import logging
+
+import yaml
 from pipelineMigration.Converter import Converter
 from pipelineMigration.Job import Job
 from pipelineMigration.Pipeline import Pipeline
+
+logger = logging.getLogger(__name__)
 
 
 class GithubActionConverter(Converter):
@@ -8,15 +13,23 @@ class GithubActionConverter(Converter):
     This class converts a pipeline Object to GitHub Actions.
     """
 
-    def __init__(self, pipeline: Pipeline, compatible_images: set = None, rebuild: bool = False):
+    # ToDo: Read secrets directly from architecture.yaml
+    def __init__(self, pipeline: Pipeline, rebuild: bool = False):
         """
         :param pipeline: Pipeline object
         :param compatible_images: Optional set of compatible images, that don't need to be run in a seperate docker container
         """
-        self.pipeline = pipeline
-        self.compatible_images = compatible_images
 
-        # ToDo: Delete for production, implement their impoert
+        self.pipeline = pipeline
+        self.rebuild = rebuild
+        self.timeout = 60  # Default timeout in minutes
+        try:
+            self.architecture = yaml.safe_load(open("architecture.yaml"))
+        except:
+            logger.error("Error: Could not open architecture.yaml")
+            exit(1)
+
+        # ToDo: Delete for production, implement their import
         self.compatible_images = {"maven:3.6-jdk-8",
                                   "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1",
                                   "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest",
@@ -25,8 +38,15 @@ class GithubActionConverter(Converter):
                                   "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1"
                                   }
         self.compatible_images = {"maven:3.6-jdk-8"}
-        self.rebuild = rebuild
-        self.timeout = 60  # Default timeout in minutes
+
+        self.migrated_docker_images = {}
+        for repoID in self.architecture.keys():
+            if self.architecture[repoID]["DockerImages"]:
+                for image in self.architecture[repoID]["DockerImages"]:
+                    if self.architecture[repoID]["Name"] not in self.migrated_docker_images:
+                        self.migrated_docker_images[self.architecture[repoID]["Name"]] = [image]
+                    else:
+                        self.migrated_docker_images[self.architecture[repoID]["Name"]].append(image)
 
     def parse_pipeline(self, name: str, secrets: list[str]) -> str:
         """
@@ -152,9 +172,9 @@ class GithubActionConverter(Converter):
             if job.allowFailure == True:
                 job_string += "\t\t\t\tcontinue-on-error: true\n"
             job_string += f"\t\t\t\trun: |\n"
+            job.script = self.script_parser(job.script)
             for command in job.script:
-                command = self.script_parser(command)
-                job_string += f"\t\t\t\t\t{command}\n"
+                job_string += f"\t\t\t\t\t\t{command}\n"
         else:
             # If not native, the script needs to be run in the docker container using docker exec
             job_string += f"\t\t\t- name: Script\n"
@@ -164,8 +184,8 @@ class GithubActionConverter(Converter):
             job_string += f"\t\t\t\tenv:\n"
             job_string += f"\t\t\t\t\tSCRIPT: |\n"
             job_string += f"\t\t\t\t\t\tcd /workspace\n"
+            job.script = self.script_parser(job.script)
             for command in job.script:
-                command = self.script_parser(command)
                 job_string += f"\t\t\t\t\t\t{command}\n"
             # Run this script in the docker container
             job_string += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
@@ -477,20 +497,56 @@ class GithubActionConverter(Converter):
                 jobString += '\t\t\t\t\techo "run=$run" >> $GITHUB_OUTPUT\n'
         return jobString
 
-    def script_parser(self, script: str) -> str:
+    def script_parser(self, script: list[str]) -> list[str]:
         """
         Parses the script of a job and returns it as a string. Can be overridden by subclasses to individualize the parsing.
         :param script: Script to be parsed
         :return: Parsed script
         """
-        if "mvn" in script:
-            script += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
-        # ToDo: Delete for production
-        if "deploy" in script:
-            return ""
-        script = script.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
-        script = script.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
-        script = script.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
-        # ToDo: Add docker, user replacement
 
+        login_indices = [i for i, command in enumerate(script) if "docker login" in command]
+        build_indices = [i for i, command in enumerate(script) if "docker build" in command]
+        push_indices = [i for i, command in enumerate(script) if "docker push" in command]
+
+        if login_indices and build_indices and push_indices:
+            if login_indices[0] < build_indices[0] and build_indices[0] < push_indices[0]:
+                # If the login command is before the build command, add the login command to the script
+                docker_path = script[push_indices[0]].split(" ")[2]
+                if ":" not in docker_path:
+                    docker_path += ":latest"
+                image_migrated = False
+                for repo in self.migrated_docker_images:
+                    for image in self.migrated_docker_images[repo]:
+                        if docker_path.endswith(image):
+                            image_migrated = True
+                            break
+                    if image_migrated:
+                        break
+
+                if image_migrated:
+                    script[login_indices[
+                        0]] = 'echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin'
+                    build_command = script[build_indices[0]].split(" ")[4:]
+                    script[build_indices[
+                        0]] = 'docker build -t ghcr.io/$LOWERCASE_OWNER/' + repo.lower() + '/' + image.lower() + " " + " ".join(
+                        build_command)
+                    script[push_indices[
+                        0]] = 'docker push ghcr.io/$LOWERCASE_OWNER/' + repo.lower() + '/' + image.lower()
+                    script.insert(build_indices[0],
+                                  'LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")')
+        delete = []
+        for i, command in enumerate(script):
+            if "mvn" in command:
+                command += " -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000"
+            # ToDo: Delete for production
+            if "deploy" in command:
+                delete.append(i)
+                continue
+            command = command.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
+            command = command.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
+            command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
+            # ToDo: Add docker, user replacement
+            script[i] = command
+        for i in delete:
+            script.pop(i)
         return script

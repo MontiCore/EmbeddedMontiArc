@@ -19,7 +19,7 @@ from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattribute
 
 SPLIT_LARGE_FILES = True
 REMOVE_LFS = True
-REMOVE_LARGE_FILES = True
+REMOVE_LARGE_FILES = False
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
@@ -81,12 +81,14 @@ if REMOVE_LARGE_FILES:
 
 # Build monorepo from cleaned repos
 Uploader = GithubUploader.GithubUploader(config)
-Uploader.add_repos_as_subtree(config.monorepoName, data.keys())
+Uploader.add_repos_as_subtree(config.monorepoName, config.monorepoNamespace, data.keys())
 
 # Convert pipelines
 prefix = {}  # Path to each subtree in the monorepo
+monorepoNamespace = config.monorepoNamespace.split("/")
 for repoID in data.keys():
-    prefix[data[repoID]["Name"]] = os.path.join(data[repoID]["Namespace"], data[repoID]["Name"])
+    repoNamespace = ",".join([i for i in data[repoID]["Namespace"].split("/") if i not in monorepoNamespace])
+    prefix[data[repoID]["Name"]] = os.path.join(repoNamespace, data[repoID]["Name"])
 
 # Get secrets
 secrets = {}

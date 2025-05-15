@@ -199,7 +199,7 @@ class GithubUploader(Uploader):
                     continue
             local_repo.git.checkout(branch.name)
             self.push_subtree_wise(branch, local_repo)
-            if branch == "master":
+            if branch.name == "master":
                 github_repo.edit(default_branch="master")
 
         # Different upload strategies
@@ -470,6 +470,7 @@ class GithubUploader(Uploader):
             gitlab_repo = (architecture[repoId]["Namespace"] + "/" + architecture[repoId]["Name"]).lower()
             action += f"      - name: Migrate Docker images from {architecture[repoId]["Name"]}\n"
             action += "        run: |\n"
+            action += '          LOWERCASE_OWNER =$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")'
             action += f'          IFS="," read -ra IMAGES <<< "{images}"\n'
             action += '          for IMAGE in "${IMAGES[@]}"; do\n'
             # action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
@@ -480,11 +481,10 @@ class GithubUploader(Uploader):
             action += "            fi\n"
             action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
             action += "            if [[ $IMAGE == :* ]]; then\n"
-            action += f'              GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/{architecture[repoId]["Name"].lower()}$LOWERCASE_IMAGE"\n'
+            action += f'              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/{architecture[repoId]["Name"].lower()}/$LOWERCASE_IMAGE"\n'
             action += "            else\n"
-            action += f'               GHCR_IMAGE="ghcr.io/$GHCR_REPO_OWNER/{architecture[repoId]["Name"].lower()}$LOWERCASE_IMAGE"\n'
+            action += f'               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/{architecture[repoId]["Name"].lower()}/$LOWERCASE_IMAGE"\n'
             action += "            fi\n"
-
             action += '            echo "Pulling image from GitLab: $GITLAB_IMAGE"\n'
             action += '            docker pull "$GITLAB_IMAGE"\n'
             action += '            echo "Tagging image for GHCR: $GHCR_IMAGE"\n'

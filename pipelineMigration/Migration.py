@@ -138,15 +138,19 @@ def GitlabToGithubSubtree(repoIDS, architecture, config: Config, github_file_pat
             # Iterate over all migrated branches
             for branch in branches_to_be_migrated[str(repoID)]:
                 # Chose path to gitlab pipeline according to structure
-                if multiple:
-                    path = os.path.join(github_file_path, architecture[repoID]["Namespace"], architecture[repoID][
-                        "Name"], branch)
-                else:
-                    path = os.path.join(os.getcwd(), "repos", architecture[repoID]["Name"])
                 name = architecture[repoID]["Name"]
+                if multiple:
+                    path = os.path.join(github_file_path, github_repo_prefix[name], branch)
+                else:
+                    path = os.path.join(github_file_path, github_repo_prefix[name])
 
                 # Import gitlab pipeline
-                file = open(os.path.join(path, '.gitlab-ci.yml'), 'r')
+                try:
+                    file = open(os.path.join(path, '.gitlab-ci.yml'), 'r')
+                except FileNotFoundError:
+                    logger.info(f"No .gitlab-ci.yml found for repo {name} in branch {branch}. Skipping.")
+                    progress.update(1)
+                    continue
                 pipeline = GitlabCIImporter().getPipeline(file)
                 file.close()
 

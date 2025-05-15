@@ -6,14 +6,14 @@ from pipelineMigration.GithubConverter import GithubActionConverter
 
 class GithubSubTreeConverter(GithubActionConverter):
     # Specialized converter for Monorepo variant"
-    def __init__(self, pipeline, repoPath, repoID, compatible_images: set = None, rebuild: bool = False):
+    def __init__(self, pipeline, repoPath, repoID, rebuild: bool = False):
         """
         Initializes the GithubSubTreeConverter class.
         :param pipeline: Pipeline object
         :param repoNames: IDs mapped to names of the repository
         :param repoPath: IDs mapped to paths to the repository
         """
-        super().__init__(pipeline, compatible_images, rebuild)
+        super().__init__(pipeline, rebuild)
         self.repoPath = repoPath
         self.repoID = repoID
 
@@ -78,7 +78,7 @@ class GithubSubTreeConverter(GithubActionConverter):
                                       "            cd /workspace\n" + "            cd " + f"{self.repoPath}" + "\n")
         # Native job, match with begining of run block and prepend cd to folder
         patternRepo = r"(- name: Script\s+run: \|)"
-        repoCD = r"\1\n" + f"          cd {self.repoPath}"
+        repoCD = r"\1\n" + f"            cd {self.repoPath}"
         jobString = re.sub(patternRepo, repoCD, jobString)
 
         # Add the prefix to the paths in the artifact upload bloxks
