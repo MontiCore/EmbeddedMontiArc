@@ -179,7 +179,11 @@ class GithubUploader(Uploader):
         :param secrets: Secrets to be created
         :param disable_scanning: Whether to disable push protection in this repo
         """
-        local_repo = git.Repo(os.path.join(os.getcwd(), "repos", self.config.monorepoName))
+        try:
+            local_repo = git.Repo(os.path.join(os.getcwd(), "repos", self.config.monorepoName))
+        except git.exc.InvalidGitRepositoryError:
+            logger.error(f"The monorepo '{self.config.monorepoName}' does not exist.")
+            exit(1)
         # Config needed to push large files
         # local_repo.git.config('http.postBuffer', '524288000', local=True)
         logger.info(f"Uploading {github_repo_name} to the {github_repo_name}...")
@@ -470,7 +474,7 @@ class GithubUploader(Uploader):
             gitlab_repo = (architecture[repoId]["Namespace"] + "/" + architecture[repoId]["Name"]).lower()
             action += f"      - name: Migrate Docker images from {architecture[repoId]["Name"]}\n"
             action += "        run: |\n"
-            action += '          LOWERCASE_OWNER =$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")'
+            action += '          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")\n'
             action += f'          IFS="," read -ra IMAGES <<< "{images}"\n'
             action += '          for IMAGE in "${IMAGES[@]}"; do\n'
             # action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
@@ -496,6 +500,10 @@ class GithubUploader(Uploader):
             action += '          done\n'
         file_path = os.path.join(os.getcwd(), "repos", target_repo, ".github", "workflows", "image.yml")
         folder_path = os.path.dirname(file_path)
+        if not os.path.exists(os.path.join(os.getcwd(), "repos", target_repo)):
+            logger.error(f"Repository '{target_repo}' nicht gefunden.")
+            exit(1)
+
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
             print(f"Ordner '{folder_path}' wurde erstellt.")

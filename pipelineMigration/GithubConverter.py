@@ -282,7 +282,7 @@ class GithubActionConverter(Converter):
         start += f"\t\t\t\trun: |\n"
         if "ghcr.io" in image:
             start += '\t\t\t\t\techo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
-        start += f"\t\t\t\t\tdocker pull {image}\n"
+        start += f"\t\t\t\t\tdocker pull {image.lower()}\n"
         start += f"\t\t\t\t\tdocker run --name build-container -d -v $(pwd):/workspace --network=host {options}"
         for secret in secrets:
             if type(secret) == str:
@@ -488,7 +488,7 @@ class GithubActionConverter(Converter):
                 jobString += f"\t\t\t\trun: |\n"
                 jobString += "\t\t\t\t\trun=false\n"
                 for path in job.only["changes"]:
-                    jobString += "\t\t\t\t\tif cat diff.txt | grep" + f" '^{path.replace("/**/*", "")}'" + "; then\n"
+                    jobString += "\t\t\t\t\tif cat diff.txt | grep" + f" '^.*{path.replace("/**/*", "")}'" + "; then\n"
                     jobString += '\t\t\t\t\t\techo "RUN"\n'
                     jobString += "\t\t\t\t\t\trun=true\n"
                     jobString += "\t\t\t\t\telse\n"
