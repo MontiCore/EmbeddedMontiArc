@@ -19,7 +19,7 @@ from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattribute
 
 SPLIT_LARGE_FILES = True
 REMOVE_LFS = True
-REMOVE_LARGE_FILES = False
+REMOVE_LARGE_FILES = True
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
