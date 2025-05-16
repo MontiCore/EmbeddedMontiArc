@@ -192,7 +192,8 @@ class Gitlab(Git):
             logging.info(f"Directory {clone_path} already exists, skipping clone.")
             return
         # Clone
-        git.Repo.clone_from(repo_url, clone_path, branch='master', progress=CloneProgress())
+        default_branch = repo.default_branch
+        git.Repo.clone_from(repo_url, clone_path, branch=default_branch, progress=CloneProgress())
         logging.info(f"Cloning {repo_id} finished")
 
         # Check if LFS is used and download LFS objects if necessary
@@ -228,7 +229,11 @@ class Gitlab(Git):
                 logging.info(f"Checked out branch {branch_name}.")
             except Exception as e:
                 logging.warning(f"Error checking out branch {branch_name}: {e}")
-            repo.git.checkout('master')  # Checkout the master branch
+
+            if "master" in repo.branches:
+                repo.git.checkout('master')  # Checkout the master branch
+            elif "main" in repo.branches:
+                repo.git.checkout('main')  # Checkout the main branch
 
     def remove_remote_origin(self, repo_path):
         try:

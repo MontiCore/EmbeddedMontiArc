@@ -40,14 +40,31 @@ class GitlabCIImporter(Importer):
         :return: Jobs in the pipeline
         """
         jobs = {}
+        general_image = ""
+        general_before_script = []
+        if "image" in self.yaml_data:
+            general_image = self.yaml_data["image"]
+
+        if "before_script" in self.yaml_data:
+            general_before_script = self.__flattenList(self.yaml_data["before_script"])
+
         for name, parameter in self.yaml_data.items():
             if "script" in parameter or "trigger" in parameter:
                 # Add before script in front of the normal script
+
                 if "before_script" in parameter:
-                    sc = self.__flattenList(parameter.get("before_script", [])) + self.__flattenList(
-                        parameter.get("script", []))
+                    if general_before_script:
+                        sc = general_before_script + self.__flattenList(
+                            parameter.get("before_script", [])) + self.__flattenList(
+                            parameter.get("script", []))
+                    else:
+                        sc = self.__flattenList(parameter.get("before_script", [])) + self.__flattenList(
+                            parameter.get("script", []))
                 else:
-                    sc = self.__flattenList(parameter.get("script", []))
+                    if general_before_script:
+                        sc = general_before_script + self.__flattenList(parameter.get("script", []))
+                    else:
+                        sc = self.__flattenList(parameter.get("script", []))
 
                 # Handle dependencies
                 if "dependencies" in parameter:
@@ -57,7 +74,7 @@ class GitlabCIImporter(Importer):
 
                 jobs[name] = Job(
                     name=name,
-                    image=parameter.get("image", ""),
+                    image=parameter.get("image", general_image),
                     stage=parameter.get("stage", ""),
                     script=sc,
                     needs=needs,

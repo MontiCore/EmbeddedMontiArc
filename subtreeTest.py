@@ -17,7 +17,7 @@ import git
 
 from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattributes
 
-SPLIT_LARGE_FILES = True
+SPLIT_LARGE_FILES = False
 REMOVE_LFS = True
 REMOVE_LARGE_FILES = True
 
@@ -72,7 +72,10 @@ with tqdm(total=numberIterations, desc="Migrating repository branches", unit="br
             if REMOVE_LFS:
                 remove_lfs_from_gitattributes(repo_path)
             progress.update(1)
-        repo.git.checkout("master")
+        if "master" in repo.branches:
+            repo.git.checkout("master")
+        elif "main" in repo.branches:
+            repo.git.checkout("main")
 
 if REMOVE_LARGE_FILES:
     for repoID in tqdm(data.keys(), desc="Cleaning large files, this may take a while", unit="repos"):
@@ -87,7 +90,7 @@ Uploader.add_repos_as_subtree(config.monorepoName, config.monorepoNamespace, dat
 prefix = {}  # Path to each subtree in the monorepo
 monorepoNamespace = config.monorepoNamespace.split("/")
 for repoID in data.keys():
-    repoNamespace = ",".join([i for i in data[repoID]["Namespace"].split("/") if i not in monorepoNamespace])
+    repoNamespace = "/".join([i for i in data[repoID]["Namespace"].split("/") if i not in monorepoNamespace])
     prefix[data[repoID]["Name"]] = os.path.join(repoNamespace, data[repoID]["Name"])
 
 # Get secrets
