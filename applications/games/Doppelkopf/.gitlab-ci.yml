@@ -1,0 +1,17 @@
+image: gradle:7.1.0-jdk11
+
+stages:
+  - test
+
+before_script:
+  - apt-get update
+  - apt-get install -y software-properties-common
+  - apt-add-repository -y ppa:swi-prolog/stable
+  - apt-get update
+  - apt-get install -y swi-prolog
+
+
+test:
+  stage: test
+  script:
+    - gradle test --info

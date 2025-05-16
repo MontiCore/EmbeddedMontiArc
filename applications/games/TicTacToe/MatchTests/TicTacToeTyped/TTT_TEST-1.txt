@@ -1,0 +1,17 @@
+TicTacToeTyped/TicTacToeTyped.gdl
+
+COMMAND
+x (mark 1 1)
+COMMAND
+o (mark 2 2)
+COMMAND
+x (mark 1 2)
+COMMAND
+o (mark 2 3)
+COMMAND
+x (mark 3 1)
+COMMAND
+o (mark 2 1)
+GOAL
+(goal x 0)
+(goal o 100)
