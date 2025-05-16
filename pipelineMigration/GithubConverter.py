@@ -41,7 +41,7 @@ class GithubActionConverter(Converter):
 
         self.migrated_docker_images = {}
         for repoID in self.architecture.keys():
-            if self.architecture[repoID]["DockerImages"]:
+            if "DockerImages" in self.architecture[repoID] and self.architecture[repoID]["DockerImages"]:
                 for image in self.architecture[repoID]["DockerImages"]:
                     if self.architecture[repoID]["Name"] not in self.migrated_docker_images:
                         self.migrated_docker_images[self.architecture[repoID]["Name"]] = [image]
@@ -281,6 +281,7 @@ class GithubActionConverter(Converter):
         start += f"\t\t\t- name: Start Docker Container\n"
         start += f"\t\t\t\trun: |\n"
         if "ghcr.io" in image:
+            # ToDo: Change to github repo owner
             start += '\t\t\t\t\techo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
         start += f"\t\t\t\t\tdocker pull {image.lower()}\n"
         start += f"\t\t\t\t\tdocker run --name build-container -d -v $(pwd):/workspace --network=host {options}"
@@ -294,7 +295,7 @@ class GithubActionConverter(Converter):
             else:
                 # Add environment variable for a variable that is not a secret
                 start += f" -e {secret[0]}=${secret[0]}"
-        start += f" {image} tail -f /dev/null\n"
+        start += f" {image.lower()} tail -f /dev/null\n"
         return start
 
     @staticmethod

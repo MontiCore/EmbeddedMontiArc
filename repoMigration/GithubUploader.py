@@ -87,9 +87,13 @@ class GithubUploader(Uploader):
         :return: Repository object
         """
         try:
-            repo = self.g.get_user().get_repo(name)
+            if "/" in name:
+                repo = self.g.get_repo(name)
+            else:
+                repo = self.g.get_user().get_repo(name)
             logger.info(f"Repository '{name}' already exists on remote.")
-            if input("Delete existing repository? (y/n): ").lower() == 'y':
+            if input("Delete existing repository? (y/n): ").lower() == 'y' and input(
+                    "Are you sure? (y/n): ").lower() == 'y':
                 repo.delete()
                 logger.info(f"Repository '{name}' deleted.")
                 visibility = input("Create public repository? (y/n): ").lower()
@@ -196,7 +200,7 @@ class GithubUploader(Uploader):
 
         existing_branches = [b.name for b in github_repo.get_branches()]
         for branch in local_repo.branches:
-            if branch.name in existing_branches and branch != "master":
+            if branch.name in existing_branches and branch.name != "master":
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
                 if input("Still try to upload? This will override the existing history (y/n): ").lower() == 'n':
                     logger.info(f"Skipping branch {branch.name}.")
@@ -460,7 +464,7 @@ class GithubUploader(Uploader):
         action += f'      GITLAB_USERNAME: "{self.config.sourceUser}"\n'
         action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
         action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
-        action += '      GHCR_REPO_OWNER: "davidblm"\n'
+        # action += '      GHCR_REPO_OWNER: "davidblm"\n'
         # action += "      GHCR_REPO_OWNER: ${{ github.actor | toLowerCase}}\n" #ToDo: Add automatic username
         action += "    steps:\n"
         action += "      - name: Log in to GitLab\n"
@@ -485,7 +489,7 @@ class GithubUploader(Uploader):
             action += "            fi\n"
             action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
             action += "            if [[ $IMAGE == :* ]]; then\n"
-            action += f'              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/{architecture[repoId]["Name"].lower()}/$LOWERCASE_IMAGE"\n'
+            action += f'              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/{architecture[repoId]["Name"].lower()}$LOWERCASE_IMAGE"\n'
             action += "            else\n"
             action += f'               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/{architecture[repoId]["Name"].lower()}/$LOWERCASE_IMAGE"\n'
             action += "            fi\n"

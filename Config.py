@@ -33,3 +33,24 @@ class Config:
             yaml.safe_dump(data, open("config.yaml", 'w'))
         else:
             print("config.yaml already exists.")
+
+    def write_migrated_docker_images(self, dockerImages):
+        """
+        Write the migrated docker images to the config file
+        :param dockerImages: List of migrated docker images
+        """
+        data = yaml.safe_load(open("config.yaml"))
+        data["MigratedDockerImages"] = dockerImages
+        yaml.safe_dump(data, open("config.yaml", 'w'))
+
+    def read_migrated_docker_images(self):
+        """
+        Read the migrated docker images from the config file
+        :return: List of migrated docker image URLs
+        """
+
+        data = yaml.safe_load(open("config.yaml"))
+        if "MigratedDockerImages" in data.keys():
+            return data["MigratedDockerImages"]
+        else:
+            return []

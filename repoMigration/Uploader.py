@@ -60,14 +60,13 @@ class Uploader(ABC):
             repo.heads["master"].checkout()
         return repo
 
-    def add_subtree(self, repo, subtree_repo_name, prefix=""):
+    def add_subtree(self, repo, subtree_repo_name, prefix="", branch="master"):
         """
         Add a subtree to the repository.
         :param name: Repository name
         :param subtree_repo_name: Name of the repository to be added as a subtree
         :param branch: Branch of the subtree to be added
         """
-        branch = "master"  # Default branch is master
         # Check if the subtree already exists
         subtree_path = os.path.join(prefix, subtree_repo_name)
         if subtree_path in [item.path for item in repo.tree().traverse()]:
@@ -124,16 +123,17 @@ class Uploader(ABC):
             if user_input.lower() == "y":
                 target_repo.delete_head(branch_name)
         target_repo.create_head(branch_name)
+        # target_repo.git.symbolic_ref(f"refs/heads/{branch_name}", "refs/heads/empty")  # ToDO: Test
         target_repo.heads[branch_name].checkout()
         for repoID in subtree_repo_IDS:
             repo_name = self.repoNames[repoID]
-            repoNamespace = ",".join([i for i in self.namespaces[repoID].split("/") if i not in target_repo_namespace])
+            repoNamespace = "/".join([i for i in self.namespaces[repoID].split("/") if i not in target_repo_namespace])
             multiple_branches = len(self.branchesToBeMigrated[repoID]) > 1
             logger.info(f"Uploading {repo_name} as a subtree to {repoNamespace}...")
             for branch in self.branchesToBeMigrated[repoID]:
                 if multiple_branches:
                     self.add_subtree_branch(target_repo, repo_name, prefix=repoNamespace, branch=branch)
                 else:
-                    self.add_subtree(target_repo, repo_name, prefix=repoNamespace)
+                    self.add_subtree(target_repo, repo_name, prefix=repoNamespace, branch=branch)
             # logger.info(f"Repository {repo_name} uploaded as a subtree to {target_repo_name}.")
         # target_repo.heads["master"].checkout()

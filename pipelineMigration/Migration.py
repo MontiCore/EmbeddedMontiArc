@@ -64,10 +64,14 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
     :param repoID: The ID of the repository
     """
     # Get the full image names from the architecture
+    # ToDo: Save already migrated images in config so that they are changed later on
     newNames = {}
     if type(repoIDS) == str:
         repoIDS = [repoIDS]
     for repoID in repoIDS:
+        if "DockerImages" not in architecture[repoID] or architecture[repoID]["DockerImages"] is None:
+            continue
+
         for image in architecture[repoID]["DockerImages"]:
             if not image.startswith(":"):
                 url = ("registry." + config.url.replace("https://", "") + architecture[repoID][
