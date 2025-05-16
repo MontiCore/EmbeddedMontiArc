@@ -107,7 +107,7 @@ jobs:
           fi
           echo "run=$run" >> $GITHUB_OUTPUT
   docker_phase:
-    needs: [buildDockerDGLQD, buildDockerMXNet150, buildDockerPyTorch, buildDockerMXNet170, buildDockerMXNet170onnx, buildDockerMXNet170DGL, buildDockerTensorflowONNX]
+    needs: [buildDockerPyTorch, buildDockerDGLQD, buildDockerMXNet170, buildDockerTensorflowONNX, buildDockerMXNet170DGL, buildDockerMXNet170onnx, buildDockerMXNet150]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -119,7 +119,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   linux_phase:
-    needs: [docker_phase, integrationMXNetJobLinux, integrationCaffe2JobLinux, UnitTestJobLinux, artifact-extraction, integrationGluonJobLinux, modularityTest, integrationPyTorchJobLinux, integrationTensorflowJobLinux, integrationPythonWrapperTest]
+    needs: [docker_phase, integrationTensorflowJobLinux, integrationGluonJobLinux, modularityTest, integrationPyTorchJobLinux, integrationPythonWrapperTest, integrationMXNetJobLinux, artifact-extraction, integrationCaffe2JobLinux, UnitTestJobLinux]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -209,9 +209,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet150:v0.0.5
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet150:v0.0.5 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet150:v0.0.5
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet150:v0.0.5 tail -f /dev/null
       - name: Script
         continue-on-error: true
         env:
@@ -233,9 +232,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/integrationtests/caffe2:v0.0.5
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/integrationtests/caffe2:v0.0.5 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/caffe2:v0.0.5
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/integrationtests/caffe2:v0.0.5 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -256,9 +254,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170:v0.0.1
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -471,10 +468,9 @@ jobs:
         run: |
             cd generators/EMADL2CPP
             cd src/test/resources/docker/tensorflow
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/tensorflow-onnx:latest -f Dockerfile-onnx .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/tensorflow-onnx:latest
+            docker login registry.git.rwth-aachen.de -u someUserName -p glpat--9siQV_pCkA2wFRqeDhf
+            docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx -f Dockerfile-onnx .
+            docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx
 
   buildDockerMXNet170DGL:
     needs: FileChanges
@@ -490,10 +486,9 @@ jobs:
         run: |
             cd generators/EMADL2CPP
             cd src/test/resources/docker/mxnet170
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1 -f Dockerfile-dgl .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1
+            docker login registry.git.rwth-aachen.de -u someUserName -p glpat--9siQV_pCkA2wFRqeDhf
+            docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1 -f Dockerfile-dgl .
+            docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1
 
   buildDockerDGLQD:
     needs: FileChanges
@@ -509,10 +504,9 @@ jobs:
         run: |
             cd generators/EMADL2CPP
             cd src/test/resources/docker/dglqd
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/dgl-qd:latest -f Dockerfile .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/dgl-qd:latest
+            docker login registry.git.rwth-aachen.de -u someUserName -p ${{ secrets.GITLABTOKEN }}
+            docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/dgl-qd -f Dockerfile .
+            docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/dgl-qd
 
   buildDockerPyTorch:
     needs: FileChanges
@@ -528,10 +522,9 @@ jobs:
         run: |
             cd generators/EMADL2CPP
             cd src/test/resources/docker/pytorch
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/pytorch:latest -f Dockerfile .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/pytorch:latest
+            docker login registry.git.rwth-aachen.de -u someUserName -p ${{ secrets.GITLABTOKEN }}
+            docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch -f Dockerfile .
+            docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/pytorch
 
   artifact-extraction:
     needs: docker_phase

@@ -22,7 +22,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   test_phase:
-    needs: [prebuild_phase, TestMavenStreamtestPlugin, TrainHexadecimal_MnistCalculatorTL, TrainTensorflowONNX, DeployDecompositionResNetArtifact, TestMNISTwithCustomLayer, TestGluonONNX, TestTENSORFLOW, TestEMADLMavenPlugin, TrainOperator_MnistCalculatorTL, TrainOperator_MnistCalculator, TestMnistWithAdaNet, TrainHexadecimal_MnistCalculator]
+    needs: [prebuild_phase, TrainOperator_MnistCalculator, TrainHexadecimal_MnistCalculatorTL, TrainHexadecimal_MnistCalculator, TestMNISTwithCustomLayer, TestGluonONNX, DeployDecompositionResNetArtifact, TrainOperator_MnistCalculatorTL, TestMavenStreamtestPlugin, TestMnistWithAdaNet, TestTENSORFLOW, TestEMADLMavenPlugin, TrainTensorflowONNX]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -34,7 +34,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   testmodular_phase:
-    needs: [test_phase, TestDecompositionResNet, TestModularModels, TestTransfer, TestDecomposition]
+    needs: [test_phase, TestTransfer, TestDecompositionResNet, TestModularModels, TestDecomposition]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -84,9 +84,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -111,9 +110,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -148,9 +146,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -186,9 +183,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -236,9 +232,8 @@ jobs:
             applications/MNISTCalculator/emadl-maven-plugin/output/*
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -267,9 +262,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -298,9 +292,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170:v0.0.1
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -323,9 +316,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170:v0.0.1
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -362,9 +354,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/dockerimages/tensorflow-onnx:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/dockerimages/tensorflow-onnx:latest tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/tensorflow-onnx:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -400,9 +391,8 @@ jobs:
             applications/MNISTCalculator/onnx/tensorflow-pretrained/model/
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -459,9 +449,8 @@ jobs:
             applications/MNISTCalculator/emadl-maven-plugin/output/*
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -491,9 +480,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -522,9 +510,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -554,9 +541,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -584,9 +570,8 @@ jobs:
           fetch-depth: 1
       - name: Start Docker Container
         run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
+          docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
