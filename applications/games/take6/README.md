@@ -20,4 +20,3 @@ Es wird zu Trainingszwecken jeweils nur ein Match gespielt anstatt zu spielen bi
 
 < Spieler > (put < Stapel > < Position >): Anlegen einer ausgespielten Karte an einen Stapel (a-d) 
 
-TMP
