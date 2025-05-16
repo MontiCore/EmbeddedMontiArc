@@ -1,0 +1,25 @@
+name: Chess
+on:
+  push:
+    paths:
+      - 'applications/games/Chess/**'
+  workflow_dispatch:
+env:
+  CI_PROJECT_ID : 69050
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        run: |
+            cd applications/games/Chess
+            gradle test --info
+
