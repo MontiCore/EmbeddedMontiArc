@@ -13,3 +13,5 @@ Das Projekt beinhaltelt die Schachmodelle sowie eine Testinfrastruktur.
 ## Spielregeln
 
 Siehe [Schach](https://de.wikipedia.org/wiki/Schach)
+
+TMP
