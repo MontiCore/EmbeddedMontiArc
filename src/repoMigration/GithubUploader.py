@@ -5,7 +5,7 @@ import requests
 from git import RemoteProgress, GitCommandError
 from tqdm import tqdm
 
-from repoMigration.Uploader import Uploader
+from src.repoMigration.Uploader import Uploader
 from github import Github, GithubException
 from github import Auth
 import git

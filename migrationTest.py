@@ -1,4 +1,4 @@
-from pipelineMigration import GitlabToGithub
+from src.pipelineMigration import GitlabToGithub
 
 gitlabFilePath = ".gitlab-ci.yml"
 githubFilePath = ".main.yml"

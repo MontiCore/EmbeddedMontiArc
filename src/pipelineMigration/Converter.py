@@ -1,6 +1,6 @@
 import os
 from abc import ABC, abstractmethod
-from pipelineMigration.Pipeline import Pipeline
+from src.pipelineMigration.Pipeline import Pipeline
 import shutil
 import re
 

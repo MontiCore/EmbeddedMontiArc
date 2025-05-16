@@ -2,22 +2,18 @@ import subprocess
 
 from tqdm import tqdm
 
-import Config
-import sourceAnalysis
+from src import gitMigrationOld, Config
 # from UploaderTest import architecture
 # rom sourceAnalysis import findLargeFilesInHistory
 # import pipelineMigration
 # from sourceAnalysis import run_git_filter_repo, split_large_files
-from pipelineMigration import *
 import yaml
 import git
-
-from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattributes
 
 print("Starting scan and clone")
 
 config = Config.Config("config.yaml")
-dr = sourceAnalysis.clone_and_scan(config)
+dr = gitMigrationOld.clone_and_scan(config)
 
 data = yaml.safe_load(open("architecture.yaml"))
 # for repoID in data.keys():

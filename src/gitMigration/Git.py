@@ -1,32 +1,62 @@
 import logging
-import os
 from abc import ABC
-from datetime import time, datetime
 
-import yaml
 import git
+import yaml
+import os
 
 logger = logging.getLogger(__name__)
 
-
-class Uploader(ABC):
+class Git(ABC):
     def __init__(self):
-        data = yaml.safe_load(open(os.path.join(os.getcwd(), "architecture.yaml")))
+        pass
 
-        self.namespaces = {}
-        self.repoNames = {}
-        self.branchesToBeMigrated = {}
-        for repoID in data.keys():
-            if data[repoID]["Branches"] is None:
-                self.branchesToBeMigrated[str(repoID)] = data[repoID]["StaleBranches"]
-            elif data[repoID]["StaleBranches"] is None:
-                self.branchesToBeMigrated[str(repoID)] = data[repoID]["Branches"]
-            else:
-                self.branchesToBeMigrated[str(repoID)] = list(
-                    set(data[repoID]["Branches"]).union(set(data[repoID]["StaleBranches"])))
-            self.repoNames[str(repoID)] = data[repoID]["Name"]
-            self.namespaces[str(repoID)] = data[repoID]["Namespace"]
-        self.repoIDS = data.keys()
+    def reset_remote_origin(self, repo, new_remote_url):
+        """
+        Removes the remote origin and replaces it with a new one.
+        :param repo: Repo object
+        :param new_remote_url: New remote URL
+        """
+        try:
+            # Remove remote origin if it exists
+            self.remove_remote_origin(repo)
+
+            # Add new remote origin
+            repo.create_remote('origin', new_remote_url)
+            logger.info(f"Remote 'origin' wurde erfolgreich auf '{new_remote_url}' gesetzt.")
+        except Exception as e:
+            logger.error(f"Fehler beim Zurücksetzen des Remote 'origin': {e}")
+
+    def remove_remote_origin(self, repo):
+        """
+        Remove the remote origin from the repository.
+        :param repo: Repo Object
+        :return:
+        """
+        try:
+            if 'origin' in repo.remotes:
+                origin = repo.remote(name='origin')
+                repo.delete_remote(origin)
+                logging.info("Remote 'origin' wurde erfolgreich entfernt.")
+        except Exception as e:
+            logger.error(f"Fehler beim Zurücksetzen des Remote 'origin': {e}")
+
+    def set_upstream_for_branches(self, repo, remote_name="origin"):
+        """
+        Adds upstream branches to all local branches in the given repository.
+        :param repo: Repo object
+        :param remote_name: Name of remote origin. Default is origin
+        """
+        try:
+            for branch in repo.branches:
+                if branch.tracking_branch() is None:  # Check if the branch has an upstream branch
+                    remote_branch = f"{remote_name}/{branch.name}"
+                    repo.git.branch("--set-upstream-to", remote_branch, branch.name)
+                    print(f"Upstream-Branch für '{branch.name}' auf '{remote_branch}' gesetzt.")
+                else:
+                    print(f"Upstream-Branch für '{branch.name}' ist bereits gesetzt.")
+        except Exception as e:
+            print(f"Fehler beim Setzen der Upstream-Branches: {e}")
 
     def delete_local_branch(self, repoPath, branch_name):
         """
@@ -73,22 +103,13 @@ class Uploader(ABC):
             logger.warning(f"Subtree '{subtree_repo_name}' already exists at '{subtree_path}'.")
             return
         # Creates new branch in which the subtree is added
-        """
-        repo.create_head(subtreeRepoName)
-        repo.heads[subtreeRepoName].checkout()
-        """
         if subtree_repo_name in repo.remotes:
             repo.delete_remote(subtree_repo_name)
-        repo.create_remote(subtree_repo_name, os.path.join("..", subtree_repo_name))
+        repo.create_remote(subtree_repo_name, os.path.join("../..", subtree_repo_name))
         repo.git.fetch(subtree_repo_name, branch)
         repo.git.subtree("add", "--prefix", prefix + "/" + subtree_repo_name, subtree_repo_name, branch)
         logger.info(f"Branch {branch} uploaded as a subtree.")
-        # Merges extra branch for subtree with master
-        """
-        repo.heads["master"].checkout()
-        repo.git.merge("master", subtreeRepoName)
-        repo.git.branch("-d", subtreeRepoName)
-        """
+
 
     def add_subtree_branch(self, repo, subtree_repo_name, branch, prefix=""):
         """
@@ -106,7 +127,7 @@ class Uploader(ABC):
             return
         if subtree_repo_name in repo.remotes:
             repo.delete_remote(subtree_repo_name)
-        repo.create_remote(subtree_repo_name, os.path.join("..", subtree_repo_name))
+        repo.create_remote(subtree_repo_name, os.path.join("../..", subtree_repo_name))
         repo.git.fetch(subtree_repo_name, branch)
         repo.git.subtree("add", "--prefix", subtree_path, subtree_repo_name, branch)
 
@@ -135,5 +156,3 @@ class Uploader(ABC):
                     self.add_subtree_branch(target_repo, repo_name, prefix=repoNamespace, branch=branch)
                 else:
                     self.add_subtree(target_repo, repo_name, prefix=repoNamespace, branch=branch)
-            # logger.info(f"Repository {repo_name} uploaded as a subtree to {target_repo_name}.")
-        # target_repo.heads["master"].checkout()

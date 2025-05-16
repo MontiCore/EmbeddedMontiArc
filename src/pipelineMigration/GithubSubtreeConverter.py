@@ -1,7 +1,7 @@
 import re
 
-from pipelineMigration import Job
-from pipelineMigration.GithubConverter import GithubActionConverter
+from src.pipelineMigration import Job
+from src.pipelineMigration.GithubConverter import GithubActionConverter
 
 
 class GithubSubTreeConverter(GithubActionConverter):
