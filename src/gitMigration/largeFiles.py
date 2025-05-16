@@ -71,7 +71,7 @@ def findLargeFilesInHistory(repo_path):
 
 
 if __name__ == "__main__":
-    repo_path = '../repos/MNISTCalculator'
+    repo_path = '../../repos/MNISTCalculator'
 
     # Validate the repository
     repo_root = get_git_root(repo_path)

@@ -1,4 +1,4 @@
-from sourceAnalysis.GitlabSource import Gitlab
+from src.gitMigrationOld.GitlabSource import Gitlab
 
 
 def create_migration_config():

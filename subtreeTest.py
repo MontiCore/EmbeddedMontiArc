@@ -4,18 +4,16 @@ import subprocess
 
 from tqdm import tqdm
 
-import Config
-import sourceAnalysis
-from repoMigration import GithubUploader
+from src import gitMigrationOld, Config
+from src.repoMigration import GithubUploader
 # from UploaderTest import architecture
-from sourceAnalysis import findLargeFilesInHistory
-from pipelineMigration import GitlabToGithub, GitlabToGithubSubtree
-from sourceAnalysis import run_git_filter_repo, split_large_files
+from src.pipelineMigration import GitlabToGithubSubtree
+from src.gitMigrationOld import run_git_filter_repo, split_large_files
 
 import yaml
 import git
 
-from sourceAnalysis.repoCleaning import remove_lfs, remove_lfs_from_gitattributes
+from src.gitMigrationOld.repoCleaning import remove_lfs, remove_lfs_from_gitattributes
 
 SPLIT_LARGE_FILES = False
 REMOVE_LFS = True
@@ -26,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 logger.info("Starting scan and clone")
 config = Config.Config("config.yaml")
-dr = sourceAnalysis.clone_and_scan(config)
+dr = gitMigrationOld.clone_and_scan(config)
 
 input("Please adapt the architecture.yaml file and press enter to continue")
 

@@ -1,8 +1,8 @@
 import yaml
 
 # from combinedTest import architecture
-from repoMigration import GithubUploader
-import Config
+from src.repoMigration import GithubUploader
+from src import Config
 
 config = Config.Config("config.yaml")
 Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)

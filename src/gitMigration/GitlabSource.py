@@ -4,88 +4,81 @@ import os
 import subprocess
 
 import gitlab
-import yaml
 from git import RemoteProgress
 from tqdm import tqdm
 import git
 
-from sourceAnalysis.Git import Git
-from sourceAnalysis.mavenSecrets import find_env_vars_in_repo
+from src.gitMigration.Downloader import Downloader
+from src.gitMigration.Git import Git
+from src.gitMigration.mavenSecrets import find_env_vars_in_repo
 
 logger = logging.getLogger(__name__)
 
+from src.Config import Config
+from src.Architecture import Architecture
+from src.Repo import Repo
 
-class Gitlab(Git):
-    def __init__(self, source_url: str, private_token, repoIDS):
-        self.__privateToken = private_token
-        self.repoIDS = repoIDS
+class Gitlab(Git, Downloader):
+    def __init__(self, config : Config):
+        super().__init__()
+        Downloader.__init__(config)
 
-        self.gl = gitlab.Gitlab(url=source_url, private_token=self.__privateToken)
+
+        self.__privateToken = config.sourceToken
+        self.repoIDS = config.repoIDS
+
+        self.gl = gitlab.Gitlab(url=config.url, private_token=self.__privateToken)
         self.gl.auth()
 
     def scan(self):
         """
         Scans all repositories and create a yaml file with the architecture of the repositories.
         """
-        architecture = {}
+        architecture = Architecture("architecture.yaml")
         for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
-            repo_data = {}
             repo = self.getRepo(repoID)
-            repo_data['Name'] = self.getRepoName(repo)
-            repo_data['Namespace'] = self.getNamespace(repo)
-            branches = self.getBranches(repo)
-            stale_branches = self.getStaleBranches(repo)
-            repo_data['Branches'] = []
-            repo_data['StaleBranches'] = []
-            repo_data['Secrets'] = {}
+
+            repo_name = repo.name
+            repo_namespace = self.getNamespace(repo)
+            repo_all_branches = self.getBranches(repo)
+            repo_active_branches = []
+            repo_stale_branches = self.getStaleBranches(repo)
+            repo_path = os.path.join(os.getcwd(), "repos", repo_name)
+
+
+
+            repo_secrets = {}
+
             # Get env variables used by maven. Should be recreated in the new repo
-            env_variables = find_env_vars_in_repo(os.path.join(os.getcwd(), "repos", repo_data['Name']))
-            repo_data['Secrets']["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
-            repo_data['Secrets']["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
+            env_variables = find_env_vars_in_repo(repo_path)
+            repo_secrets["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
+            repo_secrets["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
             if env_variables:
                 for secret in env_variables:
                     if secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID":
                         continue
                     else:
-                        repo_data['Secrets'][secret] = {"Value": "Please add a value",
+                        repo_secrets['Secrets'][secret] = {"Value": "Please add a value",
                                                         "Secret": "Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
-            for b in branches:
-                if b not in stale_branches:
-                    repo_data['Branches'].append(b)
-                else:
-                    repo_data['StaleBranches'].append(b)
-            if not repo_data['Branches']:
-                repo_data['Branches'] = None
-            if not repo_data['StaleBranches']:
-                repo_data['StaleBranches'] = None
+            for b in repo_all_branches:
+                if b not in repo_stale_branches:
+                    repo_active_branches.append(b)
 
-            docker_images = self.getDockerImages(repo)
-            if docker_images:
-                repo_data['DockerImages'] = docker_images
-            maven_artifacts = self.getMavenArtifacts(repo)
-            if maven_artifacts and False:
-                repo_data['MavenArtifacts'] = maven_artifacts
-            architecture[repoID] = repo_data
+            repo_docker_images = self.getDockerImages(repo)
+            repo_obj = Repo(repo_name, repoID, repo_docker_images, repo_path, repo_namespace, repo_active_branches, repo_stale_branches, repo_secrets)
+            architecture.add_repo(repo_obj)
 
-        yaml.dump(architecture, open(os.path.join(os.getcwd(), "architecture.yaml"), 'w'))
-
-    def getRepoName(self, repo):
-        """
-        Get the name of the repository.
-        :param repo: Repository object
-        :return: str - Name of the repository
-        """
-        return repo.name
+        architecture.dump_yaml()
 
     def clone(self):
         """
         Clone repositories from GitLab to the local machine.
         """
         logger.info("Cloning Repositories...")
-        for repo in self.repoIDS:
+        for repoID in self.repoIDS:
             logger.info("-------------------------------")
-            self.clone_repo(repo, os.path.join(os.getcwd(), "repos"))
-            self.remove_remote_origin(os.path.join(os.getcwd(), "repos", self.getRepoName(self.getRepo(repo))))
+            self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"))
+            self.remove_remote_origin(os.path.join(os.getcwd(), "repos", self.getRepo(repoID).name))
 
     def getRepo(self, repoID: str):
         """
@@ -134,18 +127,12 @@ class Gitlab(Git):
         try:
             images = repo.repositories.list(all=True)
             for image in images:
-                # image_data = {"name": image.name, "tags": []}
                 try:
                     tags = image.tags.list(all=True)
                     for tag in tags:
-                        # if image.name:
                         data.append(image.name + ":" + tag.name)
-                        # else:
-                        #    data.append(self.getRepoName(repo).lower() + ":" + tag.name)
-                        # image_data["tags"].append(tag.name)
                 except gitlab.exceptions.GitlabListError:
                     pass
-                # data.append(image_data)
         except gitlab.exceptions.GitlabListError:
             pass
         return data
@@ -180,8 +167,7 @@ class Gitlab(Git):
         :param clone_path: Path to clone the repository to
         """
         repo = self.getRepo(repo_id)
-        name = self.getRepoName(repo)
-        clone_path = os.path.join(clone_path, name)
+        clone_path = os.path.join(clone_path, repo.name)
         # Create authorized URL with private token for cloning
         repo_url = repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.__privateToken}@")
         logging.info(f"Cloning {repo_id} to {clone_path}")
@@ -202,23 +188,23 @@ class Gitlab(Git):
             logging.info("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
             process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, text=True)
-            for line in process.stdout:
-                print(line.strip())
+            #for line in process.stdout:
+            #    print(line.strip())
             rc = process.poll()
 
-        self.chekout_branches(name)
+        self.checkout_branches(clone_path)
         self.remove_remote_origin(clone_path)
 
-    def chekout_branches(self, repoName):
+    def checkout_branches(self, path):
         """
         Checkout all branches available in the remote repository.
         :param repoName: Name of the repository to be checked out
         """
-        path = os.path.join(os.getcwd(), "repos", repoName)
         repo = git.Repo(path)
-        logging.info(f"Fetching all branches for {repoName}...")
+        name = path.split('/')[-1]
+        logging.info(f"Fetching all branches for {name}...")
         repo.remotes.origin.fetch()  # Fetch all branches from the remote
-        logging.info(f"Checking out branches for {repoName}...")
+        logging.info(f"Checking out branches for {name}...")
         for branch in repo.remotes.origin.refs:  # Iterate over all remote branches
             branch_name = branch.name.split('/')[-1]  # Extract branch name
             if branch_name == "HEAD":
@@ -235,16 +221,6 @@ class Gitlab(Git):
             elif "main" in repo.branches:
                 repo.git.checkout('main')  # Checkout the main branch
 
-    def remove_remote_origin(self, repo_path):
-        try:
-            repo = git.Repo(repo_path)
-            origin = repo.remote(name='origin')
-            repo.delete_remote(origin)
-            logging.info("Remote 'origin' wurde erfolgreich entfernt.")
-        except Exception as e:
-            pass
-
-
 class CloneProgress(RemoteProgress):
     def __init__(self):
         super().__init__()
@@ -257,6 +233,6 @@ class CloneProgress(RemoteProgress):
 
 
 if __name__ == '__main__':
-    dr = Gitlab("repos.yaml")
-    dr.scan()
+    dr = Gitlab(Config("../../config.yaml"))
     dr.clone()
+    dr.scan()

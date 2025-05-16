@@ -1,8 +1,8 @@
 import logging
 
 import yaml
-from repoMigration import GithubUploader
-import Config
+from src.repoMigration import GithubUploader
+from src import Config
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
@@ -25,4 +25,5 @@ for reopId in architecture.keys():
 Uploader = GithubUploader.GithubUploader(config)
 if dockerImages:
     Uploader.docker_image_migration_monorepo(architecture)
-Uploader.upload_mono_repo("MontiCore/EmbeddedMontiArc", secrets, )
+#Uploader.upload_mono_repo("MontiCore/EmbeddedMontiArc", secrets, )
+Uploader.upload_mono_repo("meetingTest2", secrets, )

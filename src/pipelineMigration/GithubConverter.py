@@ -1,9 +1,9 @@
 import logging
 
 import yaml
-from pipelineMigration.Converter import Converter
-from pipelineMigration.Job import Job
-from pipelineMigration.Pipeline import Pipeline
+from src.pipelineMigration.Converter import Converter
+from src.pipelineMigration.Job import Job
+from src.pipelineMigration.Pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 

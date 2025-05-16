@@ -1,14 +1,13 @@
 import logging
 import os
-from platform import architecture
 
 import git
 from tqdm import tqdm
 
-from Config import Config
-from pipelineMigration.GithubSubtreeConverter import GithubSubTreeConverter
-from pipelineMigration.GitlabCIImporter import GitlabCIImporter
-from pipelineMigration.GithubConverter import GithubActionConverter
+from src.Config import Config
+from src.pipelineMigration.GithubSubtreeConverter import GithubSubTreeConverter
+from src.pipelineMigration.GitlabCIImporter import GitlabCIImporter
+from src.pipelineMigration.GithubConverter import GithubActionConverter
 
 
 def writeStringToFile(file_path, content):

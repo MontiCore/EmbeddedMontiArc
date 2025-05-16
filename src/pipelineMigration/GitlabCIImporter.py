@@ -1,9 +1,9 @@
 from typing import TextIO
 import yaml
 
-from pipelineMigration.Importer import Importer
-from pipelineMigration.Pipeline import Pipeline
-from pipelineMigration.Job import Job
+from src.pipelineMigration.Importer import Importer
+from src.pipelineMigration.Pipeline import Pipeline
+from src.pipelineMigration.Job import Job
 
 
 class GitlabCIImporter(Importer):
