@@ -32,5 +32,3 @@ Die Modelle wurden von den [offiziellen Turnierregeln](/Turnier-Spielregeln%20St
 
 - Das Prinzip "Plichtsolo" ist nicht implementiert
 - Bei der Abfrage des Vorbehaltes muss direkt die gewünschte Spielart genannt werden
-
-TMP
