@@ -23,12 +23,12 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 logger.info("Starting scan and clone")
-config = Config.Config("config.yaml")
+config = Config.Config("../config.yaml")
 dr = gitMigrationOld.clone_and_scan(config)
 
 input("Please adapt the architecture.yaml file and press enter to continue")
 
-data = yaml.safe_load(open("architecture.yaml"))
+data = yaml.safe_load(open("../architecture.yaml"))
 # Get number of iterations for progress bar
 numberIterations = 0
 for repoID in data.keys():

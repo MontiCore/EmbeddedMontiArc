@@ -1,6 +1,8 @@
 import logging
 
 import yaml
+
+from src.Architecture import Architecture
 from src.pipelineMigration.Converter import Converter
 from src.pipelineMigration.Job import Job
 from src.pipelineMigration.Pipeline import Pipeline
@@ -14,7 +16,7 @@ class GithubActionConverter(Converter):
     """
 
     # ToDo: Read secrets directly from architecture.yaml
-    def __init__(self, pipeline: Pipeline, rebuild: bool = False):
+    def __init__(self, architecture: Architecture, pipeline: Pipeline, rebuild: bool = False):
         """
         :param pipeline: Pipeline object
         :param compatible_images: Optional set of compatible images, that don't need to be run in a seperate docker container
@@ -23,11 +25,7 @@ class GithubActionConverter(Converter):
         self.pipeline = pipeline
         self.rebuild = rebuild
         self.timeout = 60  # Default timeout in minutes
-        try:
-            self.architecture = yaml.safe_load(open("architecture.yaml"))
-        except:
-            logger.error("Error: Could not open architecture.yaml")
-            exit(1)
+        self.architecture = architecture
 
         # ToDo: Delete for production, implement their import
         self.compatible_images = {"maven:3.6-jdk-8",
@@ -40,30 +38,31 @@ class GithubActionConverter(Converter):
         self.compatible_images = {"maven:3.6-jdk-8"}
 
         self.migrated_docker_images = {}
-        for repoID in self.architecture.keys():
-            if "DockerImages" in self.architecture[repoID] and self.architecture[repoID]["DockerImages"]:
-                for image in self.architecture[repoID]["DockerImages"]:
-                    if self.architecture[repoID]["Name"] not in self.migrated_docker_images:
-                        self.migrated_docker_images[self.architecture[repoID]["Name"]] = [image]
-                    else:
-                        self.migrated_docker_images[self.architecture[repoID]["Name"]].append(image)
+        for repoID in self.architecture.repoIDs:
+            repo = self.architecture.get_repo_by_ID(repoID)
+            for image in repo.images:
+                if repo.name not in self.migrated_docker_images:
+                    self.migrated_docker_images[repo.name] = [image]
+                else:
+                    self.migrated_docker_images[repo.name].append(image)
 
-    def parse_pipeline(self, name: str, secrets: list[str]) -> str:
+    def parse_pipeline(self, repoID) -> str:
         """
 
         :param name: Name of the pipeline
         :param secrets: Secrets to be used in the pipeline, please see architecture.yaml for more information
         :return: String of the converted pipeline
         """
+        repo = self.architecture.get_repo_by_ID(repoID)
         self.file_change_job_needed = False  # Whether some jobs are only run if some files changed
         pipeline_string = ""
-        pipeline_string += f"name: {name}\n"
+        pipeline_string += f"name: {repo.name}\n"
         pipeline_string += "on:\n"
         pipeline_string += "\tpush:\n"
         pipeline_string += "\tworkflow_dispatch:\n"
         pipeline_string += "env:\n"
-        if secrets:
-            for secret in secrets:
+        if repo.secrets:
+            for secret in repo.secrets:
                 if type(secret) == tuple:
                     pipeline_string += f"\t{secret[0]} : " + f"{secret[1]}\n"
                 else:
@@ -82,7 +81,7 @@ class GithubActionConverter(Converter):
 
         # Parse each regular job of the pipeline
         for job in self.pipeline.jobs:
-            pipeline_string += self.parse_job(self.pipeline.jobs[job], secrets)
+            pipeline_string += self.parse_job(self.pipeline.jobs[job], repo.secrets)
             pipeline_string += "\n"
         return self.set_indentation_to_two_spaces(pipeline_string)
 

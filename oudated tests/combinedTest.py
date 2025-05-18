@@ -12,10 +12,10 @@ import git
 
 print("Starting scan and clone")
 
-config = Config.Config("config.yaml")
+config = Config.Config("../config.yaml")
 dr = gitMigrationOld.clone_and_scan(config)
 
-data = yaml.safe_load(open("architecture.yaml"))
+data = yaml.safe_load(open("../architecture.yaml"))
 # for repoID in data.keys():
 # print()
 # print(data[repoID]["Name"])
@@ -36,7 +36,7 @@ data = yaml.safe_load(open("architecture.yaml"))
 print()
 print("Starting migration")
 # ToDo: Verify new secert handling for repo migration, same for script parser
-architecture = yaml.safe_load(open("architecture.yaml"))
+architecture = yaml.safe_load(open("../architecture.yaml"))
 for repoID in tqdm(data.keys(), desc="Migrating pipelines"):
     repo = git.Repo("./repos/" + data[repoID]["Name"])
     gitlabRepoPath = "repos/" + data[repoID]["Name"]

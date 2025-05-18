@@ -4,10 +4,10 @@ import yaml
 from src.repoMigration import GithubUploader
 from src import Config
 
-config = Config.Config("config.yaml")
+config = Config.Config("../config.yaml")
 Uploader = GithubUploader.GithubUploader(config.targetToken, config.sourceToken)
 
-architecture = yaml.safe_load(open("architecture.yaml"))
+architecture = yaml.safe_load(open("../architecture.yaml"))
 
 print(Uploader.list_private_repos())
 for repoID in config.repoIDS:

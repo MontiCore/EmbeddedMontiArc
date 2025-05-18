@@ -1,26 +1,24 @@
 import re
 
+from src.Architecture import Architecture
 from src.pipelineMigration import Job
 from src.pipelineMigration.GithubConverter import GithubActionConverter
 
 
 class GithubSubTreeConverter(GithubActionConverter):
     # Specialized converter for Monorepo variant"
-    def __init__(self, pipeline, repoPath, repoID, rebuild: bool = False):
+    def __init__(self, architecture: Architecture, pipeline, repoPath, repoID, rebuild: bool = False):
         """
         Initializes the GithubSubTreeConverter class.
         :param pipeline: Pipeline object
         :param repoNames: IDs mapped to names of the repository
         :param repoPath: IDs mapped to paths to the repository
         """
-        super().__init__(pipeline, rebuild)
+        super().__init__(architecture, pipeline, rebuild)
         self.repoPath = repoPath
         self.repoID = repoID
 
-    def check_branch(self, pipeline):
-        for job in pipeline.jobs:
-            pass
-
+    # Check for correct overwriting attribuites
     def parse_pipeline(self, name: str, secrets: list[str]) -> str:
         """
             Parses the pipeline of a subtree Repo and returns it in the converted form as a string.

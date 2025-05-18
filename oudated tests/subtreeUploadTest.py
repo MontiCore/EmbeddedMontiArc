@@ -7,8 +7,8 @@ from src import Config
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
 
-config = Config.Config("config.yaml")
-architecture = yaml.safe_load(open("architecture.yaml"))
+config = Config.Config("../config.yaml")
+architecture = yaml.safe_load(open("../architecture.yaml"))
 
 # config.monorepoName = "EMA2"
 

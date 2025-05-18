@@ -1,13 +1,12 @@
 import logging
-from abc import ABC
+from datetime import datetime
 
 import git
-import yaml
 import os
 
 logger = logging.getLogger(__name__)
 
-class Git(ABC):
+class Git:
     def __init__(self):
         pass
 
@@ -36,7 +35,8 @@ class Git(ABC):
         try:
             if 'origin' in repo.remotes:
                 origin = repo.remote(name='origin')
-                repo.delete_remote(origin)
+                #repo.delete_remote("origin")
+                repo.delete_remote(origin.name)
                 logging.info("Remote 'origin' wurde erfolgreich entfernt.")
         except Exception as e:
             logger.error(f"Fehler beim Zurücksetzen des Remote 'origin': {e}")
@@ -76,21 +76,28 @@ class Git(ABC):
         Initialize a git repository in the given path and makes init commit.
         :param repo_name: Name of the repository
         """
-        repo = git.Repo.init(os.path.join(os.getcwd(), "repos", repo_name))
-        # Create an empty README file
-        readme_path = "./repos/" + repo_name + "/README.md"
-        with open(readme_path, 'w') as f:
-            f.write("# " + repo_name)
-        # Add the README file to the repository
-        repo.git.add("README.md")
-        # Commit the changes
-        repo.index.commit("Initial commit")
-        if "master" not in repo.branches:
-            repo.create_head("master")
-            repo.heads["master"].checkout()
-        return repo
+        # Check if the repository already exists
+        repo_path = os.path.join(os.getcwd(), "repos", repo_name)
+        if os.path.exists(repo_path):
+            logger.info(f"Repository '{repo_name}' already exists at '{repo_path}'.")
+            return git.Repo(repo_path)
+        else:
+            logger.info(f"Creating new repository '{repo_name}' at '{repo_path}'.")
+            repo = git.Repo.init(repo_path)
+            # Create an empty README file
+            readme_path =os.path.join(repo_path, "README.md")
+            with open(readme_path, 'w') as f:
+                f.write("# " + repo_name)
+            # Add the README file to the repository
+            repo.git.add("README.md")
+            # Commit the changes
+            repo.index.commit("Initial commit")
+            if "master" not in repo.branches:
+                repo.create_head("master")
+                repo.heads["master"].checkout()
+            return repo
 
-    def add_subtree(self, repo, subtree_repo_name, prefix="", branch="master"):
+    def add_subtree(self, repo, subtree_repo_name, subtree_repo_path, prefix="", branch="master"):
         """
         Add a subtree to the repository.
         :param name: Repository name
@@ -105,13 +112,13 @@ class Git(ABC):
         # Creates new branch in which the subtree is added
         if subtree_repo_name in repo.remotes:
             repo.delete_remote(subtree_repo_name)
-        repo.create_remote(subtree_repo_name, os.path.join("../..", subtree_repo_name))
+        repo.create_remote(subtree_repo_name, subtree_repo_path)
         repo.git.fetch(subtree_repo_name, branch)
         repo.git.subtree("add", "--prefix", prefix + "/" + subtree_repo_name, subtree_repo_name, branch)
         logger.info(f"Branch {branch} uploaded as a subtree.")
 
 
-    def add_subtree_branch(self, repo, subtree_repo_name, branch, prefix=""):
+    def add_subtree_branch(self, repo, subtree_repo_name, subtree_repo_path, branch, prefix=""):
         """
         Adds (multiple) branches of a repo as subtree to the repository.
         :param name: Repository name
@@ -127,11 +134,11 @@ class Git(ABC):
             return
         if subtree_repo_name in repo.remotes:
             repo.delete_remote(subtree_repo_name)
-        repo.create_remote(subtree_repo_name, os.path.join("../..", subtree_repo_name))
+        repo.create_remote(subtree_repo_name, subtree_repo_path)
         repo.git.fetch(subtree_repo_name, branch)
         repo.git.subtree("add", "--prefix", subtree_path, subtree_repo_name, branch)
 
-    def add_repos_as_subtree(self, target_repo_name, target_repo_namespace, subtree_repo_IDS):
+    def add_repos_as_subtree(self, target_repo_name, target_repo_namespace, architecture):
         """
         Adds only master branch as subtree to the target repository.
         :param target_repo_name: Name of the target GitHub repository
@@ -146,13 +153,14 @@ class Git(ABC):
         target_repo.create_head(branch_name)
         # target_repo.git.symbolic_ref(f"refs/heads/{branch_name}", "refs/heads/empty")  # ToDO: Test
         target_repo.heads[branch_name].checkout()
-        for repoID in subtree_repo_IDS:
-            repo_name = self.repoNames[repoID]
-            repoNamespace = "/".join([i for i in self.namespaces[repoID].split("/") if i not in target_repo_namespace])
-            multiple_branches = len(self.branchesToBeMigrated[repoID]) > 1
-            logger.info(f"Uploading {repo_name} as a subtree to {repoNamespace}...")
-            for branch in self.branchesToBeMigrated[repoID]:
+        for repoID in architecture.repoIDs :
+            repo = architecture.get_repo_by_ID(repoID)
+            repo_namespace = "/".join([i for i in repo.namespace.split("/") if i not in target_repo_namespace])
+            branches_to_be_migrated = repo.get_branches_to_be_migrated()
+            multiple_branches = len(branches_to_be_migrated) > 1
+            logger.info(f"Uploading {repo.name} as a subtree to {repo_namespace}...")
+            for branch in branches_to_be_migrated:
                 if multiple_branches:
-                    self.add_subtree_branch(target_repo, repo_name, prefix=repoNamespace, branch=branch)
+                    self.add_subtree_branch(target_repo, repo.name, repo.path, prefix=repo_namespace, branch=branch)
                 else:
-                    self.add_subtree(target_repo, repo_name, prefix=repoNamespace, branch=branch)
+                    self.add_subtree(target_repo, repo.name, repo.path, prefix=repo_namespace, branch=branch)
