@@ -2,28 +2,6 @@ import os
 import subprocess
 import git
 
-
-def run_git_filter_repo(path=".", size="100M", output=False):
-    """
-        Runs the git filter-repo command to remove large files from the git history.
-    :param path: path to the repository
-    :param size: size of the files to be filtered must end with M
-    :return:
-    """
-    try:
-        result = subprocess.run(
-            ['git', 'filter-repo', '--strip-blobs-bigger-than', size, '--force'],
-            check=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            cwd=path
-        )
-        if output:
-            print("Git filter repo output:", result.stdout.decode())
-    except subprocess.CalledProcessError as e:
-        print("Error:", e.stderr.decode(errors='replace'))
-
-
 def split_large_files2(directory, size="90M"):
     """To be removed"""
     try:
@@ -51,8 +29,7 @@ def split_large_files(directory, size="90M", output=False):
         if output:
             print("Split command output:", result.stdout.decode())
         """
-        # Print all files that have been split
-        # find_command = f"find {directory} -type f -size +{size}"
+        # Prints all files that have been split
         find_command = f"find {directory} -path {directory}/.git -prune -o -type f -size +{size} -print"
         find_result = subprocess.run(find_command, shell=True, check=True, stdout=subprocess.PIPE,
                                      stderr=subprocess.PIPE)

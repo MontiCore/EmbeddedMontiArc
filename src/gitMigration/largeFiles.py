@@ -10,7 +10,7 @@ SIZE_LIMIT = 100 * 1024 * 1024  # 100MB in bytes
 
 def get_git_root(repo_path):
     """
-    heck if the provided path is a Git repository and return its root.
+    Check if the provided path is a Git repository and return its root.
     :param repo_path: Path to the repository
     :return: Path to the root of the Git repository or None if not a Git repository.
     """
@@ -20,6 +20,25 @@ def get_git_root(repo_path):
     except subprocess.CalledProcessError:
         return None
 
+def run_git_filter_repo(path=".", size="100M", output=False):
+    """
+        Runs the git filter-repo command to remove large files from the git history.
+    :param path: path to the repository
+    :param size: size of the files to be filtered must end with M
+    :return:
+    """
+    try:
+        result = subprocess.run(
+            ['git', 'filter-repo', '--strip-blobs-bigger-than', size, '--force'],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=path
+        )
+        if output:
+            print("Git filter repo output:", result.stdout.decode())
+    except subprocess.CalledProcessError as e:
+        print("Error:", e.stderr.decode(errors='replace'))
 
 def find_large_files_in_repo(repo_path):
     """
@@ -60,7 +79,6 @@ def findLargeFilesInHistory(repo_path):
                 size = int(size_output)
                 if size > SIZE_LIMIT:
                     output += (f"   -  {file_path} ({size / (1024 * 1024):.2f} MB)\n")
-
         if output:
             print("Large files found in history:")
             print(output)

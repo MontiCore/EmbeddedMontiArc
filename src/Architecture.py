@@ -12,6 +12,7 @@ class Architecture():
             repos = {}
         self.filepath = filepath
         self.repos = repos
+        self.repoIDs = repos.keys()
 
     def add_repo(self, repo: Repo):
         """
@@ -34,11 +35,12 @@ class Architecture():
     @staticmethod
     def load_architecture(filepath):
         assert os.path.exists(filepath)
-        with open(filepath, 'r') as file:
+        with (open(filepath, 'r') as file):
             architecture = yaml.safe_load(file)
             repos = {}
-            for repoID in architecture.keys():
-                repos[repoID] = Repo.read_from_Architecture(repoID, architecture)
+            for repoName in architecture.keys():
+                id, repo = Repo.read_from_Architecture(repoName, architecture[repoName])
+                repos[id] = repo
         return Architecture(filepath, repos)
 
     def get_repo_by_ID(self, repoID: str):

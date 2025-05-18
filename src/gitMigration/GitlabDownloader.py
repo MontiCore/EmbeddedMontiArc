@@ -12,22 +12,19 @@ from src.gitMigration.Downloader import Downloader
 from src.gitMigration.Git import Git
 from src.gitMigration.mavenSecrets import find_env_vars_in_repo
 
-logger = logging.getLogger(__name__)
 
 from src.Config import Config
 from src.Architecture import Architecture
 from src.Repo import Repo
 
-class Gitlab(Git, Downloader):
+logger = logging.getLogger(__name__)
+
+
+class GitlabDownloader(Git, Downloader):
     def __init__(self, config : Config):
         super().__init__()
-        Downloader.__init__(config)
-
-
-        self.__privateToken = config.sourceToken
-        self.repoIDS = config.repoIDS
-
-        self.gl = gitlab.Gitlab(url=config.url, private_token=self.__privateToken)
+        Downloader.__init__(self,config)
+        self.gl = gitlab.Gitlab(url=config.url, private_token=self.config.sourceToken)
         self.gl.auth()
 
     def scan(self):
@@ -35,7 +32,7 @@ class Gitlab(Git, Downloader):
         Scans all repositories and create a yaml file with the architecture of the repositories.
         """
         architecture = Architecture("architecture.yaml")
-        for repoID in tqdm(self.repoIDS, desc="Scanning repositories"):
+        for repoID in tqdm(self.config.repoIDS, desc="Scanning repositories"):
             repo = self.getRepo(repoID)
 
             repo_name = repo.name
@@ -45,13 +42,10 @@ class Gitlab(Git, Downloader):
             repo_stale_branches = self.getStaleBranches(repo)
             repo_path = os.path.join(os.getcwd(), "repos", repo_name)
 
-
-
             repo_secrets = {}
-
             # Get env variables used by maven. Should be recreated in the new repo
             env_variables = find_env_vars_in_repo(repo_path)
-            repo_secrets["GITLABTOKEN"] = {"Value": self.__privateToken, "Secret": "Y"}
+            repo_secrets["GITLABTOKEN"] = {"Value": self.config.sourceToken, "Secret": "Y"}
             repo_secrets["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
             if env_variables:
                 for secret in env_variables:
@@ -75,10 +69,9 @@ class Gitlab(Git, Downloader):
         Clone repositories from GitLab to the local machine.
         """
         logger.info("Cloning Repositories...")
-        for repoID in self.repoIDS:
+        for repoID in self.config.repoIDS:
             logger.info("-------------------------------")
             self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"))
-            self.remove_remote_origin(os.path.join(os.getcwd(), "repos", self.getRepo(repoID).name))
 
     def getRepo(self, repoID: str):
         """
@@ -166,10 +159,11 @@ class Gitlab(Git, Downloader):
         :param repo_id: Repository ID in GitLab
         :param clone_path: Path to clone the repository to
         """
-        repo = self.getRepo(repo_id)
-        clone_path = os.path.join(clone_path, repo.name)
+        gitlab_repo = self.getRepo(repo_id)
+        clone_path = os.path.join(clone_path, gitlab_repo.name)
+        logger.info(f"Cloning {gitlab_repo.name}")
         # Create authorized URL with private token for cloning
-        repo_url = repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.__privateToken}@")
+        repo_url = gitlab_repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.config.sourceToken}@")
         logging.info(f"Cloning {repo_id} to {clone_path}")
         # If a folder with the repos name already exists, skip cloning
         if not os.path.exists(clone_path):
@@ -178,9 +172,10 @@ class Gitlab(Git, Downloader):
             logging.info(f"Directory {clone_path} already exists, skipping clone.")
             return
         # Clone
-        default_branch = repo.default_branch
-        git.Repo.clone_from(repo_url, clone_path, branch=default_branch, progress=CloneProgress())
-        logging.info(f"Cloning {repo_id} finished")
+        default_branch = gitlab_repo.default_branch
+        with CloneProgress() as progress:
+            git.Repo.clone_from(repo_url, clone_path, branch=default_branch, progress=progress)
+        logging.info(f"Cloning {gitlab_repo.name} finished")
 
         # Check if LFS is used and download LFS objects if necessary
         lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
@@ -191,20 +186,20 @@ class Gitlab(Git, Downloader):
             #for line in process.stdout:
             #    print(line.strip())
             rc = process.poll()
+        try:
+            local_repo = git.Repo(clone_path)
+        except git.exc.InvalidGitRepositoryError:
+            logger.error(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
+            return
+        self.checkout_branches(local_repo)
+        self.remove_remote_origin(local_repo)
 
-        self.checkout_branches(clone_path)
-        self.remove_remote_origin(clone_path)
-
-    def checkout_branches(self, path):
+    def checkout_branches(self, repo):
         """
         Checkout all branches available in the remote repository.
-        :param repoName: Name of the repository to be checked out
+        :param repo: repository objec
         """
-        repo = git.Repo(path)
-        name = path.split('/')[-1]
-        logging.info(f"Fetching all branches for {name}...")
         repo.remotes.origin.fetch()  # Fetch all branches from the remote
-        logging.info(f"Checking out branches for {name}...")
         for branch in repo.remotes.origin.refs:  # Iterate over all remote branches
             branch_name = branch.name.split('/')[-1]  # Extract branch name
             if branch_name == "HEAD":
@@ -221,7 +216,7 @@ class Gitlab(Git, Downloader):
             elif "main" in repo.branches:
                 repo.git.checkout('main')  # Checkout the main branch
 
-class CloneProgress(RemoteProgress):
+class CloneProgress2(RemoteProgress):
     def __init__(self):
         super().__init__()
         self.pbar = tqdm()
@@ -231,8 +226,40 @@ class CloneProgress(RemoteProgress):
         self.pbar.n = cur_count
         self.pbar.refresh()
 
+class CloneProgress(RemoteProgress):
+    def __init__(self):
+        super().__init__()
+        self.pbar = tqdm(desc="Cloning", unit="objects")
+
+    def update(self, op_code, cur_count, max_count=None, message=''):
+        self.pbar.total = max_count
+        self.pbar.n = cur_count
+        self.pbar.refresh()
+
+    def close(self):
+        self.pbar.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+    def new_message_handler__disabled(self):
+        """
+        Can be used to print the output of the git push command directly for debugging. To do so remove the __disabled from the name
+        :return:
+            A progress handler suitable for handle_process_output(), passing lines on to this Progress
+            handler in a suitable format"""
+
+        def handler(line):
+            print(line.rstrip())
+            return self._parse_progress_line(line.rstrip())
+
+        return handler
 
 if __name__ == '__main__':
-    dr = Gitlab(Config("../../config.yaml"))
+    dr = GitlabDownloader(Config("../../config.yaml"))
     dr.clone()
     dr.scan()
+

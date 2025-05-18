@@ -1,9 +1,10 @@
 import os
 
+import git
 from git import Repo
 
 class Repo:
-    def __init__(self, name: str, repoID: str, images: list[str], path: str, namespace : str, active_branches : list[str], stale_branches : list[str], secrets: dict):
+    def __init__(self, name: str, repoID: str, images: list[str], path: str, namespace : str, active_branches : list[str], stale_branches : list[str], secrets: list, secrets_to_create: tuple[str, str] = []):
         self.name = name
         self.ID = repoID
         self.images = images
@@ -12,7 +13,10 @@ class Repo:
         self.active_branches = active_branches
         self.stale_branches = stale_branches
         self.secrets = secrets
+        self.secrets_to_create = secrets_to_create
 
+    def get_repo(self):
+        return git.Repo(self.path)
 
     def __str__(self):
         Output = "---------"
@@ -27,7 +31,7 @@ class Repo:
         return Output
 
     @staticmethod
-    def read_from_Architecture(repoID : str, architecture: dict[str, str | list[str] | dict]) -> Repo:
+    def read_from_Architecture(name : str, architecture: dict[str, str | list[str] | dict]) -> tuple[str, Repo]:
         """
         Reads the repo name and id from the architecture file.
         :param repoID: Id of the repository
@@ -37,21 +41,23 @@ class Repo:
         active_branches = architecture.get("Branches", [])
         stale_branches = architecture.get("StaleBranches", [])
         namespace = architecture.get("Namespace", "")
-        name = architecture.get("Name", "")
         docker_images = architecture.get("DockerImages", [])
-        path = os.path.join(os.getcwd(), name)
+        path = os.path.join(os.getcwd(),"repos", name)
+        id = architecture.get("ID", "")
         secrets = []
+        secrets_to_create = []
         if "Secrets" in architecture:
-            for name, secret in architecture["Secrets"].items():
+            for secret_name, secret in architecture["Secrets"].items():
                 if secret["Value"] == "Please add a value":
                     continue
                 if secret["Secret"].lower() == "y":
-                    secrets.append(name)
+                    secrets.append(secret_name)
+                    secrets_to_create.append((secret_name, secret["Value"]))
                 elif secret["Secret"].lower() == "e":
-                    secrets.append((name, "${{ secrets." + str(secret["Value"]) + " }}"))
+                    secrets.append((secret_name, "${{ secrets." + str(secret["Value"]) + " }}"))
                 else:
-                    secrets.append((name, secret["Value"]))
-        return Repo(name, repoID, docker_images, path, namespace, active_branches, stale_branches, secrets)
+                    secrets.append((secret_name, secret["Value"]))
+        return id,Repo(name, id, docker_images, path, namespace, active_branches, stale_branches, secrets, secrets_to_create)
 
     def get_branches_to_be_migrated(self) -> list[str]:
         """
