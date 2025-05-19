@@ -1,7 +1,5 @@
 import logging
 
-import yaml
-
 from src.Architecture import Architecture
 from src.pipelineMigration.Converter import Converter
 from src.pipelineMigration.Job import Job

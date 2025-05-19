@@ -1,9 +1,10 @@
 from typing import TextIO
+
 import yaml
 
 from src.pipelineMigration.Importer import Importer
-from src.pipelineMigration.Pipeline import Pipeline
 from src.pipelineMigration.Job import Job
+from src.pipelineMigration.Pipeline import Pipeline
 
 
 class GitlabCIImporter(Importer):
