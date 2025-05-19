@@ -1,6 +1,5 @@
 import os
 import subprocess
-import sys
 
 from tqdm import tqdm
 
@@ -19,6 +18,7 @@ def get_git_root(repo_path):
         return root
     except subprocess.CalledProcessError:
         return None
+
 
 def run_git_filter_repo(path=".", size="100M", output=False):
     """
@@ -39,6 +39,7 @@ def run_git_filter_repo(path=".", size="100M", output=False):
             print("Git filter repo output:", result.stdout.decode())
     except subprocess.CalledProcessError as e:
         print("Error:", e.stderr.decode(errors='replace'))
+
 
 def find_large_files_in_repo(repo_path):
     """

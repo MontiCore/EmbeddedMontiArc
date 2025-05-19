@@ -3,8 +3,10 @@ import os
 import git
 from git import Repo
 
+
 class Repo:
-    def __init__(self, name: str, repoID: str, images: list[str], path: str, namespace : str, active_branches : list[str], stale_branches : list[str], secrets: list, secrets_to_create: tuple[str, str] = []):
+    def __init__(self, name: str, repoID: str, images: list[str], path: str, namespace: str, active_branches: list[str],
+                 stale_branches: list[str], secrets: list, secrets_to_create: tuple[str, str] = []):
         self.name = name
         self.ID = repoID
         self.images = images
@@ -31,7 +33,7 @@ class Repo:
         return Output
 
     @staticmethod
-    def read_from_Architecture(name : str, architecture: dict[str, str | list[str] | dict]) -> tuple[str, Repo]:
+    def read_from_Architecture(name: str, architecture: dict[str, str | list[str] | dict]) -> tuple[str, Repo]:
         """
         Reads the repo name and id from the architecture file.
         :param repoID: Id of the repository
@@ -42,7 +44,7 @@ class Repo:
         stale_branches = architecture.get("StaleBranches", [])
         namespace = architecture.get("Namespace", "")
         docker_images = architecture.get("DockerImages", [])
-        path = os.path.join(os.getcwd(),"repos", name)
+        path = os.path.join(os.getcwd(), "repos", name)
         id = architecture.get("ID", "")
         secrets = []
         secrets_to_create = []
@@ -57,7 +59,8 @@ class Repo:
                     secrets.append((secret_name, "${{ secrets." + str(secret["Value"]) + " }}"))
                 else:
                     secrets.append((secret_name, secret["Value"]))
-        return id,Repo(name, id, docker_images, path, namespace, active_branches, stale_branches, secrets, secrets_to_create)
+        return id, Repo(name, id, docker_images, path, namespace, active_branches, stale_branches, secrets,
+                        secrets_to_create)
 
     def get_branches_to_be_migrated(self) -> list[str]:
         """
@@ -84,5 +87,3 @@ class Repo:
         if self.images:
             data["DockerImages"] = self.images
         return {self.name: data}
-
-

@@ -1,11 +1,10 @@
 from abc import ABC
 
-from src.Architecture import Architecture
 from src.Config import Config
 
 
 class Downloader(ABC):
-    def __init__(self, config : Config):
+    def __init__(self, config: Config):
         self.config = config
 
     def clone(self):

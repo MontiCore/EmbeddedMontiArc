@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from src.pipelineMigration.Pipeline import Pipeline
+
 
 class Importer(ABC):
     """
@@ -7,7 +9,7 @@ class Importer(ABC):
     """
 
     @abstractmethod
-    def getPipeline(self,file : str) -> Pipeline:
+    def getPipeline(self, file: str) -> Pipeline:
         """
         Import a pipeline from a file and return it as a Pipeline object.
         :param file: The file path to the pipeline.

@@ -4,21 +4,22 @@ import os
 import git
 import requests
 from git import RemoteProgress, GitCommandError
-from github import GithubException, Github
 from github import Auth
+from github import GithubException, Github
 from tqdm import tqdm
 
 from src.Architecture import Architecture
 from src.Config import Config
-from src.gitMigration.Uploader import Uploader
 from src.gitMigration.Git import Git
+from src.gitMigration.Uploader import Uploader
 
 logger = logging.getLogger(__name__)
 
+
 class GithubUploader(Git, Uploader):
-    def __init__(self, config : Config, architecture: Architecture, sourceURL="https://api.github.com"):
+    def __init__(self, config: Config, architecture: Architecture, sourceURL="https://api.github.com"):
         super().__init__()
-        Uploader.__init__(self,config, architecture)
+        Uploader.__init__(self, config, architecture)
         auth = Auth.Token(self.config.targetToken)
         self.g = Github(auth=auth, base_url=sourceURL)
 
@@ -137,8 +138,7 @@ class GithubUploader(Git, Uploader):
         repos = self.g.get_user().get_repos(public=True)
         return [repo.name for repo in repos if repo.private]
 
-
-    #ToDo: Rework to current design
+    # ToDo: Rework to current design
     def upload_repo(self, repoID, disable_scanning=False):
         """
         Upload a repository to the target Git instance.
@@ -315,7 +315,6 @@ class GithubUploader(Git, Uploader):
                         a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True)
                         commit_pbar.update(1)
 
-
     def deactivate_push_protection(self, url):
         """
             Deactivates push protection for the given GitHub repository.
@@ -369,7 +368,6 @@ class GithubUploader(Git, Uploader):
             logger.info("Push protection activated successfully.")
         else:
             logger.warning("Push protection activation failed.")
-
 
     # ToDo: Remove once MonoRepo variant is tested If needed migrate to new architecture
     """

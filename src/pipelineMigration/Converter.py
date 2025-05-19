@@ -1,8 +1,9 @@
 import os
-from abc import ABC, abstractmethod
-from src.pipelineMigration.Pipeline import Pipeline
-import shutil
 import re
+import shutil
+from abc import ABC, abstractmethod
+
+from src.pipelineMigration.Pipeline import Pipeline
 
 
 class Converter(ABC):

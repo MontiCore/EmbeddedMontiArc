@@ -6,17 +6,18 @@ from tqdm import tqdm
 
 from src.Architecture import Architecture
 from src.Config import Config
+from src.pipelineMigration.GithubConverter import GithubActionConverter
 from src.pipelineMigration.GithubSubtreeConverter import GithubSubTreeConverter
 from src.pipelineMigration.GitlabCIImporter import GitlabCIImporter
-from src.pipelineMigration.GithubConverter import GithubActionConverter
 
 
 def writeStringToFile(file_path, content):
     with open(file_path, 'w') as file:
         file.write(content)
 
-#ToDo: Test
-def GitlabToGithub(repoID: str, architecture : Architecture, config: Config, name: str = "") -> None:
+
+# ToDo: Test
+def GitlabToGithub(repoID: str, architecture: Architecture, config: Config, name: str = "") -> None:
     """
     This function migrates a Pipeline from GitLab to GitHub.
     :param repoID: The ID of the repository to be migrated.
@@ -75,13 +76,15 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
 
         for image in repo.images.keys():
             if not image.startswith(":"):
-                url = ("registry." + config.url.replace("https://", "") +repo.namespace + "/" + repo.name + "/" + image).lower()
+                url = ("registry." + config.url.replace("https://",
+                                                        "") + repo.namespace + "/" + repo.name + "/" + image).lower()
                 newNames[url] = "ghcr.io/" + config.targetUser.lower() + "/" + repo.name + "/" + image
             else:
                 # fullImageNames.append(("registry." + config.url.replace("https://", "") + architecture[repoID][
                 #    "Namespace"] + "/" + architecture[repoID]["Name"] + image).lower())
 
-                url = ("registry." + config.url.replace("https://", "") + repo.namespace + "/" + repo.name + image).lower()
+                url = ("registry." + config.url.replace("https://",
+                                                        "") + repo.namespace + "/" + repo.name + image).lower()
                 newNames[url] = "ghcr.io/" + config.targetUser.lower() + "/" + repo.name + "/" + image
 
     # Change the image names in the pipeline object
@@ -91,7 +94,7 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
     return pipeline
 
 
-def GitlabToGithubSubtree(repoIDS, architecture : Architecture, config: Config,
+def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config,
                           rebuild=False):
     """
         Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits the changes.
@@ -170,12 +173,14 @@ def GitlabToGithubSubtree(repoIDS, architecture : Architecture, config: Config,
                 pipeline = changeToUpdatedImages(pipeline, architecture, config, repoIDS)
                 # Convert the pipeline to Github Actions format, depending on the number of branches
                 if len(branches_to_be_migrated[str(repoID)]) <= 1:
-                    pipelineConverter = GithubSubTreeConverter(architecture, pipeline, github_repo_prefix[repo.name], repoID,
+                    pipelineConverter = GithubSubTreeConverter(architecture, pipeline, github_repo_prefix[repo.name],
+                                                               repoID,
                                                                rebuild=rebuild)
                     convertedPipeline = pipelineConverter.parse_pipeline(repo.name, repo.secrets)
                     file_path = os.path.join(file_path_base, repo.name + ".yml")
                 else:
-                    pipelineConverter = GithubSubTreeConverter(architecture, pipeline, github_repo_prefix[repo.name] + "/" + branch,
+                    pipelineConverter = GithubSubTreeConverter(architecture, pipeline,
+                                                               github_repo_prefix[repo.name] + "/" + branch,
                                                                repoID,
                                                                rebuild=rebuild)
                     convertedPipeline = pipelineConverter.parse_pipeline(repo.name + "_" + branch, repo.secrets)

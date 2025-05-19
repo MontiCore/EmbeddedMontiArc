@@ -3,36 +3,43 @@ import logging
 import os
 import subprocess
 
+import git
 import gitlab
+import typer
 from git import RemoteProgress
 from tqdm import tqdm
-import git
 
+from src.Architecture import Architecture
+from src.Config import Config
+from src.Repo import Repo
 from src.gitMigration.Downloader import Downloader
 from src.gitMigration.Git import Git
 from src.gitMigration.mavenSecrets import find_env_vars_in_repo
 
-
-from src.Config import Config
-from src.Architecture import Architecture
-from src.Repo import Repo
+from rich.console import Console
+from rich.table import Table
+from rich.progress import track
+from rich import print
 
 logger = logging.getLogger(__name__)
 
 
 class GitlabDownloader(Git, Downloader):
-    def __init__(self, config : Config):
+    def __init__(self, config: Config):
         super().__init__()
-        Downloader.__init__(self,config)
+        Downloader.__init__(self, config)
         self.gl = gitlab.Gitlab(url=config.url, private_token=self.config.sourceToken)
         self.gl.auth()
 
-    def scan(self):
+    def scan(self, path: str = "architecture.yaml", verbose: bool = False):
         """
         Scans all repositories and create a yaml file with the architecture of the repositories.
         """
-        architecture = Architecture("architecture.yaml")
-        for repoID in tqdm(self.config.repoIDS, desc="Scanning repositories"):
+
+        logger.info("Scanning Repositories...")
+        print("[bold]Scanning Repositories...")
+        architecture = Architecture(path)
+        for repoID in track(self.config.repoIDS, description="Scan"):
             repo = self.getRepo(repoID)
 
             repo_name = repo.name
@@ -52,26 +59,41 @@ class GitlabDownloader(Git, Downloader):
                     if secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID":
                         continue
                     else:
-                        repo_secrets['Secrets'][secret] = {"Value": "Please add a value",
-                                                        "Secret": "Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
+                        repo_secrets[secret] = {"Value": "Please add a value",
+                                                "Secret": "Y, if it should be saved as a secret. E, if it already exists. The value should then be the name of the according secret. Default is N"}
             for b in repo_all_branches:
                 if b not in repo_stale_branches:
                     repo_active_branches.append(b)
 
             repo_docker_images = self.getDockerImages(repo)
-            repo_obj = Repo(repo_name, repoID, repo_docker_images, repo_path, repo_namespace, repo_active_branches, repo_stale_branches, repo_secrets)
+            repo_obj = Repo(repo_name, repoID, repo_docker_images, repo_path, repo_namespace, repo_active_branches,
+                            repo_stale_branches, repo_secrets)
             architecture.add_repo(repo_obj)
 
-        architecture.dump_yaml()
+        console = Console()
+        table = Table("Name", "Status")
+        for repoID in architecture.repoIDs:
+            repo = architecture.get_repo_by_ID(repoID)
+            table.add_row(repo.name, ":white_check_mark:")
+        print()
+        console.print(table)
+        architecture.dump_yaml(verbose)
 
     def clone(self):
         """
         Clone repositories from GitLab to the local machine.
         """
         logger.info("Cloning Repositories...")
+        print("[bold]Cloning Repositories...")
+        console = Console()
+        table = Table("Repository", "Status")
         for repoID in self.config.repoIDS:
             logger.info("-------------------------------")
-            self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"))
+            typer.echo("--------------------------------")
+            repo_name, status = self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"))
+            table.add_row(repo_name, status)
+        print()
+        console.print(table)
 
     def getRepo(self, repoID: str):
         """
@@ -153,7 +175,7 @@ class GitlabDownloader(Git, Downloader):
         """
         return repo.namespace['full_path']
 
-    def clone_repo(self, repo_id, clone_path):
+    def clone_repo(self, repo_id, clone_path) -> tuple[str, str]:
         """
         Clone a repository from GitLab to the local machine. Additionally it checks out all branches and removes the remote origin.
         :param repo_id: Repository ID in GitLab
@@ -164,41 +186,51 @@ class GitlabDownloader(Git, Downloader):
         logger.info(f"Cloning {gitlab_repo.name}")
         # Create authorized URL with private token for cloning
         repo_url = gitlab_repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.config.sourceToken}@")
-        logging.info(f"Cloning {repo_id} to {clone_path}")
+        logging.info(f"Cloning {gitlab_repo.name} to {clone_path}")
+        typer.echo(f"Cloning {gitlab_repo.name} to {clone_path}")
         # If a folder with the repos name already exists, skip cloning
         if not os.path.exists(clone_path):
             os.makedirs(clone_path)
         else:
             logging.info(f"Directory {clone_path} already exists, skipping clone.")
-            return
+            typer.echo(f"Directory {clone_path} already exists, skipping clone.")
+            return gitlab_repo.name, ":white_check_mark: [green] Skipped cloning [/green]"
         # Clone
         default_branch = gitlab_repo.default_branch
         with CloneProgress() as progress:
             git.Repo.clone_from(repo_url, clone_path, branch=default_branch, progress=progress)
+
         logging.info(f"Cloning {gitlab_repo.name} finished")
+        typer.echo(f"[green]Cloning {gitlab_repo.name} finished [/green]")
 
         # Check if LFS is used and download LFS objects if necessary
         lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
         if lfs_check.stdout:
             logging.info("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
+            typer.echo("LFS-Objekte werden heruntergeladen...")
             process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE,
                                        stderr=subprocess.PIPE, text=True)
-            #for line in process.stdout:
+            # for line in process.stdout:
             #    print(line.strip())
             rc = process.poll()
+
         try:
             local_repo = git.Repo(clone_path)
         except git.exc.InvalidGitRepositoryError:
             logger.error(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
-            return
+            typer.echo(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
+            return gitlab_repo.name, ":x: [red] Invalid Git repository, please delete the folder [/red]"
         self.checkout_branches(local_repo)
         self.remove_remote_origin(local_repo)
+        return gitlab_repo.name, ":white_check_mark: [green] Successfully cloned [/green]"
 
     def checkout_branches(self, repo):
         """
         Checkout all branches available in the remote repository.
         :param repo: repository objec
         """
+        console = Console()
+        table = Table("Branch", "Status")
         repo.remotes.origin.fetch()  # Fetch all branches from the remote
         for branch in repo.remotes.origin.refs:  # Iterate over all remote branches
             branch_name = branch.name.split('/')[-1]  # Extract branch name
@@ -208,23 +240,16 @@ class GitlabDownloader(Git, Downloader):
                 repo.git.checkout('-B', branch_name,
                                   branch.name)  # Create and checkout local branch tracking the remote
                 logging.info(f"Checked out branch {branch_name}.")
+                table.add_row(branch_name, ":white_check_mark: [green] Successfully checked out [/green]")
             except Exception as e:
                 logging.warning(f"Error checking out branch {branch_name}: {e}")
+                table.add_row(branch_name, ":x: [red] Error checking out branch [/red]")
 
             if "master" in repo.branches:
                 repo.git.checkout('master')  # Checkout the master branch
             elif "main" in repo.branches:
                 repo.git.checkout('main')  # Checkout the main branch
 
-class CloneProgress2(RemoteProgress):
-    def __init__(self):
-        super().__init__()
-        self.pbar = tqdm()
-
-    def update(self, op_code, cur_count, max_count=None, message=''):
-        self.pbar.total = max_count
-        self.pbar.n = cur_count
-        self.pbar.refresh()
 
 class CloneProgress(RemoteProgress):
     def __init__(self):
@@ -258,8 +283,8 @@ class CloneProgress(RemoteProgress):
 
         return handler
 
+
 if __name__ == '__main__':
     dr = GitlabDownloader(Config("../../config.yaml"))
     dr.clone()
     dr.scan()
-

@@ -2,12 +2,15 @@ import logging
 import os
 
 import yaml
+
 from src.Repo import Repo
+from rich import print
 
 logger = logging.getLogger(__name__)
 
+
 class Architecture():
-    def __init__(self, filepath : str, repos : dict[str,Repo] = None):
+    def __init__(self, filepath: str, repos: dict[str, Repo] = None):
         if repos is None:
             repos = {}
         self.filepath = filepath
@@ -21,7 +24,7 @@ class Architecture():
         """
         self.repos[repo.ID] = repo
 
-    def dump_yaml(self):
+    def dump_yaml(self, verbose: bool = False):
         """
         Dumps the architecture to a yaml file
         :return: None
@@ -31,6 +34,8 @@ class Architecture():
             for repoID in self.repos:
                 data = data | self.repos[repoID].as_yaml()
             yaml.dump(data, file)
+        if verbose:
+            print(data)
 
     @staticmethod
     def load_architecture(filepath):
