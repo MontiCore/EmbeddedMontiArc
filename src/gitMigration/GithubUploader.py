@@ -6,6 +6,9 @@ import requests
 from git import RemoteProgress, GitCommandError
 from github import Auth
 from github import GithubException, Github
+from rich import print
+from rich.console import Console
+from rich.table import Table
 from tqdm import tqdm
 
 from src.Architecture import Architecture
@@ -83,6 +86,7 @@ class GithubUploader(Git, Uploader):
             else:
                 repo = self.g.get_user().get_repo(name)
             logger.info(f"Repository '{name}' already exists on remote.")
+            print(f"[yellow]Repository '{name}' already exists on remote.[/yellow]")
             if input("Delete existing repository? (y/n): ").lower() == 'y':
                 if input("Are you sure? (y/n): ").lower() == 'y':
                     repo.delete()
@@ -95,6 +99,7 @@ class GithubUploader(Git, Uploader):
                     logger.info(f"New repository '{name}' created.")
         except GithubException as e:
             if e.status == 404:
+                print(f"[yellow]Repository '{name}' does not exist on GitHub.[/yellow]")
                 logger.info(f"Repository '{name}' does not exist.")
                 visibility = input("Create public repository? (y/n): ").lower()
                 if visibility == 'y':
@@ -114,6 +119,9 @@ class GithubUploader(Git, Uploader):
         """
         existing_secrets = list(github_repo.get_secrets("actions"))
         existing_secrets = [secret.name for secret in existing_secrets]
+        if existing_secrets:
+            logger.info("Existing secrets in the GitHub Repo: ", existing_secrets)
+            print("Existing secrets in the GitHub Repo: ", existing_secrets)
         for name, secret in secrets.items():
             if name in existing_secrets:
                 logger.info(f"Secret '{name}' already exists. Skipping creation.")
@@ -121,6 +129,7 @@ class GithubUploader(Git, Uploader):
             else:
                 github_repo.create_secret(name, secret)
                 logger.info(f"Secret '{name}' created successfully.")
+                print(f"Secret '{name}' created successfully.")
 
     def list_private_repos(self):
         """
@@ -146,6 +155,8 @@ class GithubUploader(Git, Uploader):
         :param secrets: secrets to be created
         :param disable_scanning: Whether to disable push protection in this repo
         """
+        logger = logging.getLogger(__name__)
+        print(logger.handlers)
         repo = self.architecture.get_repo_by_ID(repoID)
         path = os.path.join(os.getcwd(), "repos", repo.name)
         repo_git = repo.get_repo()
@@ -198,6 +209,7 @@ class GithubUploader(Git, Uploader):
         :param secrets: Secrets to be created
         :param disable_scanning: Whether to disable push protection in this repo
         """
+
         try:
             if "/" in self.config.monorepoName:
                 path = os.path.join(os.getcwd(), "repos", self.config.monorepoName.split("/")[1])
@@ -206,6 +218,8 @@ class GithubUploader(Git, Uploader):
                 path = os.path.join(os.getcwd(), "repos", self.config.monorepoName)
                 monorepo_name = self.config.monorepoName
             local_repo = git.Repo(path)
+            logger.info(f"Local repo path: {path}")
+            print(f"Local repo path: {path}")
         except git.exc.InvalidGitRepositoryError:
             logger.error(f"The monorepo '{self.config.monorepoName}' does not exist.")
             exit(1)
@@ -213,29 +227,50 @@ class GithubUploader(Git, Uploader):
         # local_repo.git.config('http.postBuffer', '524288000', local=True)
         logger.info(f"Uploading {monorepo_name} to the {monorepo_name}...")
         github_repo = self.get_or_create_remote_repo(self.config.monorepoName)
-        if disable_scanning or True:
+        if disable_scanning:
             self.deactivate_push_protection(github_repo.url)
         self.create_secrets(github_repo, self.get_monorepo_secrets())
         remote_url = github_repo.clone_url.replace("https://", f"https://{self.config.targetToken}@")
         self.reset_remote_origin(local_repo, remote_url)
 
+        summary = {}
         existing_branches = [b.name for b in github_repo.get_branches()]
         for branch in local_repo.branches:
             if branch.name in existing_branches and branch.name != "master":
                 logger.info(f"Branch {branch.name} already exists in the target repository.")
+                print(f"[red]Branch {branch.name} already exists in the target repository.[/red]")
                 if input("Still try to upload? This will override the existing history (y/n): ").lower() == 'n':
+                    print("[red]Skipping branch upload...[/red]")
                     logger.info(f"Skipping branch {branch.name}.")
                     continue
-            local_repo.git.checkout(branch.name)
-            self.push_subtree_wise(branch, local_repo)
+                else:
+                    logger.warning("Forcing update of branch {branch.name}...")
+                    print("[yellow]Forcing update of branch {branch.name}...[/yellow]")
+            print(f"Pushing branch {branch.name}...")
+            try:
+                local_repo.git.checkout(branch.name)
+            except git.exc.GitCommandError as e:
+                logger.error(f"Branch {branch.name} could not be checked out, skipping" + str(e))
+                print(f"[red]Branch {branch.name} could not be checked out, skipping[/red]")
+                continue
+
+            summary[branch.name] = self.push_subtree_wise(branch, local_repo)
             if branch.name == "master":
                 github_repo.edit(default_branch="master")
+                logger.info(f"master branch set as default branch.")
 
         # Different upload strategies
         # self.branchWiseUpload(existing_branches, local_repo)
         # self.commitWiseUpload(existing_branches, local_repo)
-        if disable_scanning or True:
+        if disable_scanning:
             self.activate_push_protection(github_repo.url)
+
+        print()
+        console = Console()
+        table = Table("Branch", "Push status")
+        for branch, status in summary.items():
+            table.add_row(branch, status)
+        console.print(table)
 
     def push_subtree_wise(self, branch, local_repo):
         """
@@ -260,18 +295,26 @@ class GithubUploader(Git, Uploader):
                     a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}",
                                                               progress=progress, force=True)
                 except GitCommandError as e:
-                    print(e)
+                    logger.error(f"Error pushing {push.hexsha}" + str(e))
+                    print(f"[red]Error pushing {push.hexsha}[/red]")
+                    return ":x:"
             # a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}")
             if a:
-                print(a[0].summary)
-                print(a[0].flags)
-                print(a[0].remote_ref_string)
-                print()
+                print(f"[red]Error pushing {push.hexsha}[/red]")
+                logger.error(f"Error pushing {push.hexsha}")
+                logger.error(a[0].summary)
+                logger.error(a[0].flags)
+                logger.error(a[0].remote_ref_string)
+                return ":x:"
+
             logger.info(f"Pushed {i + 1} / {len(pushList)} subtrees")
+            print(f"Pushed {i + 1} / {len(pushList)} subtrees")
         with (PushProgress() as progress):
             a = local_repo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}",
                                                       force=True, progress=progress)
         logger.info(f"Sucessfully pushed {branch.name} branch")
+        print(f"[green]Sucessfully pushed {branch.name} branch[/green]")
+        return ":white_check_mark:"
 
     def push_branch_wise(self, existingBranches, localRepo):
         """
@@ -339,9 +382,12 @@ class GithubUploader(Git, Uploader):
         )
         if response.status_code == 200:
             logger.info("Push protection deactivated successfully.")
+            print("[green]Push protection deactivated successfully.")
         else:
             logger.warning(
                 "Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually and remove blocked blobs.")
+            print(
+                "[red]Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually and remove blocked blobs.")
 
     def activate_push_protection(self, url):
         """
@@ -366,8 +412,10 @@ class GithubUploader(Git, Uploader):
         )
         if response.status_code == 200:
             logger.info("Push protection activated successfully.")
+            print("[green]Push protection activated successfully.")
         else:
             logger.warning("Push protection activation failed.")
+            print("[red]Push protection activation failed.")
 
     # ToDo: Remove once MonoRepo variant is tested If needed migrate to new architecture
     """
@@ -434,7 +482,6 @@ class GithubUploader(Git, Uploader):
         :param repos_to_be_migrated: List of repositories to be migrated. If None, all repositories are migrated.
         :return:
         """
-
         if repos_to_be_migrated is None:
             repos_to_be_migrated = self.architecture.repos.keys()
         action = "name: Migrate Docker Images\n"

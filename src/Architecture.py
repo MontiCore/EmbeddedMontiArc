@@ -2,9 +2,9 @@ import logging
 import os
 
 import yaml
+from rich import print
 
 from src.Repo import Repo
-from rich import print
 
 logger = logging.getLogger(__name__)
 

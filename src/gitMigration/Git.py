@@ -2,13 +2,12 @@ import logging
 import os
 from datetime import datetime
 
+import git
+import typer
+from rich import print
 from rich.console import Console
 from rich.progress import Progress
 from rich.table import Table
-from rich import print
-
-import git
-import typer
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +29,6 @@ class Git:
             # Add new remote origin
             repo.create_remote('origin', new_remote_url)
             logger.info(f"Remote 'origin' wurde erfolgreich auf '{new_remote_url}' gesetzt.")
-            typer.echo(f"Remote 'origin' wurde erfolgreich auf '{new_remote_url}' gesetzt.")
         except Exception as e:
             logger.error(f"Fehler beim Zurücksetzen des Remote 'origin': {e}")
 
@@ -123,6 +121,10 @@ class Git:
             logger.warning(f"Subtree '{subtree_repo_name}' already exists at '{subtree_path}'.")
             print(f"[red] Subtree '{subtree_repo_name}' already exists'.")
             return ":white_check_mark: Subtree already exists"
+        if not os.path.exists(subtree_repo_path):
+            logger.error(f"Subtree repository '{subtree_repo_name}' does not exist at '{subtree_repo_path}'.")
+            print(f"[red] Subtree repository '{subtree_repo_name}' does not exist'.")
+            return ":x: Subtree repository does not exist"
         # Creates new branch in which the subtree is added
         if subtree_repo_name in repo.remotes:
             repo.delete_remote(subtree_repo_name)
@@ -152,10 +154,15 @@ class Git:
             logger.warning(f"Subtree '{subtree_repo_name}' already exists at '{subtree_path}'.")
             print(f"[red] Subtree '{subtree_repo_name}' and branch {branch} already exists'.")
             return ":white_check_mark: Subtree already exists"
+        if not os.path.exists(subtree_repo_path):
+            logger.error(f"Subtree repository '{subtree_repo_name}' does not exist at '{subtree_repo_path}'.")
+            print(f"[red] Subtree repository '{subtree_repo_name}' does not exist'.")
+            return ":x: Subtree repository does not exist"
         if subtree_repo_name in repo.remotes:
             repo.delete_remote(subtree_repo_name)
         repo.create_remote(subtree_repo_name, subtree_repo_path)
         repo.git.fetch(subtree_repo_name, branch)
+
         try:
             repo.git.subtree("add", "--prefix", subtree_path, subtree_repo_name, branch)
         except git.exc.GitCommandError as e:
