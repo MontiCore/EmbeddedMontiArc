@@ -1,7 +1,7 @@
 import os
 
-from rich import print
 import yaml
+from rich import print
 
 
 class Config:

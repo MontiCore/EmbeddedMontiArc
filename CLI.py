@@ -15,6 +15,8 @@ from src.Architecture import Architecture
 from src.gitMigration.largeFiles import run_git_filter_repo
 from src.gitMigration.repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
 from src.gitMigration.Git import Git
+from src.pipelineMigration import GitlabToGithubSubtree
+from src.gitMigration import GithubUploader
 
 app = typer.Typer(
     help="Migration tool for Git repositories. It from GitLab to GitHub. Curently only supports GitHub as target and migration as a monorepo. However more feature (like repo-wise migration) will be added in the future.")
@@ -27,7 +29,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.handlers = []  # Remove if you want to see logs in console
 logger.addHandler(file_handler)
-print(logger.name)
 
 
 @app.command()
@@ -45,7 +46,7 @@ def scan_clone(config_path: str = typer.Option("config.yaml", help="Config file 
     """Scan and clone repositories."""
     logger.info(f"Starting scan and clone using {config_path}")
     config = Config.Config(config_path)
-    typer.echo(f"Config at {config} loaded")
+    print(f"Config at {config_path} loaded")
     print()
     gitlab_downloader = GitlabDownloader(config)
     gitlab_downloader.clone()
@@ -59,7 +60,7 @@ def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", hel
                   remove_large_files_flag: bool = typer.Option(True,
                                                                help="Whether to delete large files and clean them from the history."),
                   split_large_files_flag: bool = typer.Option(False,
-                                                              help="Whether to split large files into smaller chunks.")):
+                                                              help="Whether to split large files into smaller chunks. Only compatible with bash on Linux and MacOS.")):
     """Migrate repositories (remove large files, etc)."""
     architecture = Architecture.load_architecture(architecture_path)
     logger.info("Scan file loaded at " + architecture_path)
@@ -147,17 +148,41 @@ def create_monorepo(config_path: str = typer.Option("config.yaml", help="Config 
 
 
 @app.command()
-def convert_gh_actions(config: str = typer.Option("config.yaml", help="Config file path")):
+def convert_gh_actions(config_path: str = typer.Option("config.yaml", help="Config file path"),
+                       architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
+                       rebuild_large_files: bool = typer.Option(False,
+                                                                help="Whether to rebuild large files that have been split")):
     """Convert CI to GitHub Actions."""
-    typer.echo(f"Converting to GitHub Actions using {config}")
-    # Your logic here
+    logger.info(f"Converting to GitHub Actions using {config_path} and scan file {architecture_path}")
+
+    config = Config.Config(config_path)
+    logger.info("Config loaded")
+    architecture = Architecture.load_architecture(architecture_path)
+    logger.info("Scan file loaded")
+
+    # Convert pipelines
+    GitlabToGithubSubtree(architecture.repoIDs, architecture, config, rebuild=rebuild_large_files)
 
 
 @app.command()
-def upload(config: str = typer.Option("config.yaml", help="Config file path")):
+def upload(config_path: str = typer.Option("config.yaml", help="Config file path"),
+           architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
+           migrate_docker_images: bool = typer.Option(False,
+                                                      help="Whether to move docker images to the monorepo"),
+           disable_scanning: bool = typer.Option(False,
+                                                 help="Whether to move docker images to the monorepo")):
     """Upload to GitHub."""
-    typer.echo(f"Uploading to GitHub using {config}")
-    # Your logic here
+    config = Config.Config(config_path)
+    logger.info("Config loaded")
+    architecture = Architecture.load_architecture(architecture_path)
+    logger.info("Scan file loaded")
+    print(f"Config and scan file loaded")
+
+    Uploader = GithubUploader.GithubUploader(config, architecture)
+    if migrate_docker_images:
+        Uploader.docker_image_migration_monorepo()
+        print("Image migration workflow added")
+    Uploader.upload_mono_repo(disable_scanning)
 
 
 if __name__ == "__main__":

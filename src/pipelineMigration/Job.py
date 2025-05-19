@@ -2,7 +2,9 @@ class Job:
     """
     A class representing a single job in a CI/CD pipeline.
     """
-    def __init__(self,name : str, image : str, stage : str, script : list[str], needs : list[str] = [], when :str  = "", exc : list[str] = [], artifacts = {}, only : list[str] = [], allowFailure = False):
+
+    def __init__(self, name: str, image: str, stage: str, script: list[str], needs: list[str] = [], when: str = "",
+                 exc: list[str] = [], artifacts={}, only: list[str] = [], allowFailure=False):
         """
         Initializes the job with the given parameters.
         :param name: Name of the job

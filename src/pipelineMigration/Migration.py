@@ -2,7 +2,10 @@ import logging
 import os
 
 import git
-from tqdm import tqdm
+from rich import print
+from rich.console import Console
+from rich.progress import Progress
+from rich.table import Table
 
 from src.Architecture import Architecture
 from src.Config import Config
@@ -14,6 +17,9 @@ from src.pipelineMigration.GitlabCIImporter import GitlabCIImporter
 def writeStringToFile(file_path, content):
     with open(file_path, 'w') as file:
         file.write(content)
+
+
+logger = logging.getLogger(__name__)
 
 
 # ToDo: Test
@@ -74,7 +80,7 @@ def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
         if not repo.images:
             continue
 
-        for image in repo.images.keys():
+        for image in repo.images:
             if not image.startswith(":"):
                 url = ("registry." + config.url.replace("https://",
                                                         "") + repo.namespace + "/" + repo.name + "/" + image).lower()
@@ -103,9 +109,8 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config,
     :param config: Config object
     :param secrets: Secrets to be used in the pipeline
     """
-    logger = logging.getLogger(__name__)
+    console = Console()
     github_file_path = os.path.join(os.getcwd(), "repos", config.monorepoName)
-    print(github_file_path)
     subtree_repo = git.Repo(github_file_path)
     file_path_base = os.path.join(github_file_path, ".github", "workflows")
 
@@ -125,18 +130,26 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config,
     if not os.path.exists(file_path_base):
         os.makedirs(file_path_base)
         logger.info(f"Ordner '{file_path_base}' wurde erstellt.")
+    print(f"Trying to convert following pipelines in monorepo at {github_file_path}...")
 
     branches_to_be_migrated = {}
     iterations = 0
+    table = Table("Repository name", "Branch")
     for repoID in repoIDS:
         repo = architecture.get_repo_by_ID(repoID)
         branches_to_be_migrated[repoID] = repo.get_branches_to_be_migrated()
+        for branch in branches_to_be_migrated[repoID]:
+            table.add_row(repo.name, branch)
         iterations += len(branches_to_be_migrated[repoID])
+    console.print(table)
 
-    with tqdm(total=iterations, desc="Migrating pipelines", unit="branch") as progress:
+    summary = {}
+    with Progress() as progress:
+        task = progress.add_task("Migrating", total=iterations)
         # Migrate all contained repos
         for repoID in repoIDS:
             repo = architecture.get_repo_by_ID(repoID)
+            summary[repo.name] = {}
             # Check, which branches were migrated for the repo
             multiple = len(branches_to_be_migrated[str(repoID)]) > 1
             # Iterate over all migrated branches
@@ -151,8 +164,11 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config,
                 try:
                     file = open(os.path.join(path, '.gitlab-ci.yml'), 'r')
                 except FileNotFoundError:
-                    logger.info(f"No .gitlab-ci.yml found for repo {repo.name} in branch {branch}. Skipping.")
-                    progress.update(1)
+                    logger.warning(
+                        f"No .gitlab-ci.yml found for repo {repo.name} in branch {branch} under {path}. Skipping.")
+                    print(f"[red] No pipeline found for repo {repo.name} in branch {branch}. Skipping.[/red]")
+                    summary[repo.name][branch] = ":x:"
+                    progress.update(task, advance=1)
                     continue
                 pipeline = GitlabCIImporter().getPipeline(file)
                 file.close()
@@ -167,6 +183,7 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config,
                         if type(job.exc) == list:
                             if branch in job.exc:
                                 jobs_to_delete.append(job.name)
+                logger.info(f"Deleting jobs {jobs_to_delete} from pipeline of {repo.name} and branch {branch}...")
                 for job in jobs_to_delete:
                     pipeline.delete_job(job)
 
@@ -185,11 +202,24 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config,
                                                                rebuild=rebuild)
                     convertedPipeline = pipelineConverter.parse_pipeline(repo.name + "_" + branch, repo.secrets)
                     file_path = os.path.join(file_path_base, repo.name + "_" + branch + ".yml")
+                print(f"Converted pipeline of {repo.name} and branch {branch}")
+                summary[repo.name][branch] = ":white_check_mark:"
                 # Write and commit action
                 writeStringToFile(file_path, convertedPipeline)
                 subtree_repo.git.add(all=True)
                 subtree_repo.index.commit(f"Migrated pipeline of {repo.name} and branch {branch} from Gitlab to Github")
-                progress.update(1)
+                progress.update(task, advance=1)
+    print()
+    print("Summary of migration:")
+    table = Table("Repository name", "Branch", "Migration successful")
+    for repoID in architecture.repoIDs:
+        repo = architecture.get_repo_by_ID(repoID)
+        for branch in branches_to_be_migrated[repoID]:
+            if branch in summary[repo.name]:
+                table.add_row(repo.name, branch, summary[repo.name][branch])
+            else:
+                table.add_row(repo.name, branch, ":x:")
+    console.print(table)
 
 
 if __name__ == '__main__':
