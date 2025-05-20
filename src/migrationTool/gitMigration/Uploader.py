@@ -7,6 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class Uploader(ABC):
-    def __init__(self, config: Config, architecture: Architecture):
-        self.architecture = architecture
-        self.config = config
+  def __init__(self, config: Config, architecture: Architecture):
+    self.architecture = architecture
+    self.config = config
