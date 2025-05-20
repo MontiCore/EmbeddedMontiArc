@@ -1,4 +1,5 @@
-from src import gitMigrationOld, Config
+from src import gitMigrationOld
+from src.types import Config
 import yaml
 
 config = Config.Config("../config.yaml")

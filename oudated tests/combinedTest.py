@@ -2,7 +2,8 @@ import subprocess
 
 from tqdm import tqdm
 
-from src import gitMigrationOld, Config
+from src import gitMigrationOld
+from src.types import Config
 # from UploaderTest import architecture
 # rom sourceAnalysis import findLargeFilesInHistory
 # import pipelineMigration
