@@ -1,15 +1,10 @@
 import logging
 import os.path
-import subprocess
 
-from tqdm import tqdm
-
-from src import gitMigration, Config
+from src.types import Config
 from src.pipelineMigration import GitlabToGithubSubtree
 
-
 import yaml
-
 
 SPLIT_LARGE_FILES = False
 REMOVE_LFS = True
