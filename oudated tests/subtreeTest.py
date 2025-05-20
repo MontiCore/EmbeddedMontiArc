@@ -4,7 +4,8 @@ import subprocess
 
 from tqdm import tqdm
 
-from src import gitMigrationOld, Config
+from src import gitMigrationOld
+from src.types import Config
 from src.repoMigration import GithubUploader
 # from UploaderTest import architecture
 from src.pipelineMigration import GitlabToGithubSubtree
