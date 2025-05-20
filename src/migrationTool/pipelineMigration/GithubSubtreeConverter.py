@@ -7,14 +7,15 @@ from migrationTool.pipelineMigration.Job import Job
 
 class GithubSubTreeConverter(GithubActionConverter):
   # Specialized converter for Monorepo variant"
-  def __init__(self, architecture: Architecture, pipeline, repoPath, repoID, rebuild: bool = False, ):
+  def __init__(self, architecture: Architecture, pipeline, repoPath, repoID, compatibleImages=set(),
+               rebuild: bool = False, ):
     """
     Initializes the GithubSubTreeConverter class.
     :param pipeline: Pipeline object
     :param repoNames: IDs mapped to names of the repository
     :param repoPath: IDs mapped to paths to the repository
     """
-    super().__init__(architecture, pipeline, rebuild)
+    super().__init__(architecture, pipeline, compatibleImages=compatibleImages, rebuild=rebuild)
     self.repoPath = repoPath
     self.repoID = repoID
 
