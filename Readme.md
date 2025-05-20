@@ -82,5 +82,4 @@ separately in sequentially chronological order. This ensures that the git push l
 in case of failure. This is done automatically for each new branch; for each branch already existing in the monorepo,
 the user can choose whether to override it. At this point one has to be very carefull as this would be done with
 `force pushes`. A master branch is only created if it is not present in the current repo. If it is pushed, it is also
-set
-as the default branch.
+set as the default branch.
