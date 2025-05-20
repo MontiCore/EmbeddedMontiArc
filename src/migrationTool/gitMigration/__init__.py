@@ -1,15 +1,15 @@
 import logging
 
 from .Git import Git
-from .GitlabDownloader import GitlabDownloader
 from .GithubUploader import GithubUploader
-from .repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
+from .GitlabDownloader import GitlabDownloader
 from .largeFiles import run_git_filter_repo
+from .repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
 
 # Entferne alle Handler des Root-Loggers
 root_logger = logging.getLogger()
 for handler in root_logger.handlers[:]:
-    root_logger.removeHandler(handler)
+  root_logger.removeHandler(handler)
 
 # Füge einen FileHandler zum Root-Logger hinzu
 file_handler = logging.FileHandler("output.log")
