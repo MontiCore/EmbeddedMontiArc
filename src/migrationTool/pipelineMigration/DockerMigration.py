@@ -22,6 +22,7 @@ class DockerMigration:
     self.migratedImages = self.read_previously_migrated_docker_images()
     self.newImages = self.add_images_being_migrated()
     self.dontMigrate = set()
+    self.repo_cache = {}
     self.gl = gitlab.Gitlab(self.config.url, private_token=self.config.sourceToken)
     self.gl.auth()
 
@@ -85,9 +86,10 @@ class DockerMigration:
       pass
     return dockerImages
 
-  def get_new_Image(self, image: str) -> tuple[str, str]:
+  def get_new_Image(self, progress, image: str) -> tuple[str, str]:
     """
     Returns the new image URL for the given image.
+    :param progress: Progress bar
     :param image: Image URL
     :return: New image URL or original image URL if not found
     """
@@ -99,17 +101,21 @@ class DockerMigration:
       image_new = self.newImages[image]
       if image_new not in self.nativeImage and image_new not in self.notNativeImage:
         print()
+        progress.stop()
         if Confirm.ask(f"Can the image {image} natively be used in a github action?"):
           self.nativeImage.add(image_new)
         else:
           self.notNativeImage.add(image_new)
+        progress.start()
       return "", image_new
     else:
       if image.startswith("registry." + self.config.url.replace("https://", "")):
         print()
-        if Confirm.ask(
+        progress.stop()
+        if image not in self.dontMigrate and Confirm.ask(
             f"Image {image} is needed for the pipeline, but is not part of the current or a previous migration. Do "
             f"you want to migrate it?"):
+
           cleaned_image = image.split("/")[1:-1]
           image_repo = self.resolve_image_path_to_repo(cleaned_image)
           if image_repo:
@@ -122,6 +128,7 @@ class DockerMigration:
               self.nativeImage.add(image_new)
             else:
               self.notNativeImage.add(image_new)
+            progress.start()
             return image_repo.name, image
         else:
           self.dontMigrate.add(image)
@@ -130,9 +137,18 @@ class DockerMigration:
             self.nativeImage.add(image)
           else:
             self.notNativeImage.add(image)
+          progress.start()
           return "", image
       logger.warning(f"Could not update image: {image}")
       return "", image
+
+  def find_cached_repo(self, path_parts):
+    # Search for the longest cached prefix
+    for i in range(len(path_parts), 0, -1):
+      prefix = tuple(path_parts[:i])
+      if prefix in self.repo_cache:
+        return self.repo_cache[prefix]
+    return None
 
   def dfs_resolve(self, group, remaining_parts, full_path):
     if not remaining_parts:
@@ -151,17 +167,23 @@ class DockerMigration:
     for project in projects:
       if project.path.lower() == next_part.lower():
         logger.info(f"Found project: {project.name} in group: {group.name} for image: {full_path}")
+        # Add to cahe
+        prefix = tuple(full_path[:len(full_path) - len(remaining_parts) + 1])
+        self.repo_cache[prefix] = project
         return project
 
   def resolve_image_path_to_repo(self, image_path):
-    # path_parts = image_path.strip("/").split("/")
-    path_parts = image_path
-    # Search for top-level group
-    root_groups = self.gl.groups.list(search=path_parts[0])
+    # Try cache first by prefix
+    cached = self.find_cached_repo(image_path)
+    if cached:
+      logger.info(f"Cache hit for image path: {image_path}")
+      return cached
+    # Otherwise for top-level group
+    root_groups = self.gl.groups.list(search=image_path[0])
     root_group = None
 
     for g in root_groups:
-      if g.path.lower() == path_parts[0].lower():
+      if g.path.lower() == image_path[0].lower():
         root_group = self.gl.groups.get(g.id)
         break
 
@@ -169,4 +191,5 @@ class DockerMigration:
       logger.warning(f"Could not find root group for image: {image_path}")
       return
 
-    return self.dfs_resolve(root_group, path_parts[1:], image_path)
+    project = self.dfs_resolve(root_group, image_path[1:], image_path)
+    return project
