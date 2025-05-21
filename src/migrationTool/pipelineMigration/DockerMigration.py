@@ -121,15 +121,15 @@ class DockerMigration:
           if image_repo:
             print(f"The image is saved in the repo {image_repo.name} and will automatically be migrated in future "
                   f"migrations.")
-            image_new = "ghcr.io/" + self.config.targetUser.lower() + "/" + image_repo.name.lower() + "/" + \
-                        image.split("/")[-1]
+            image_name = image.replace(image_repo.container_registry_image_prefix, "")
+            image_new = "ghcr.io/" + self.config.targetUser.lower() + "/" + image_repo.name.lower() + image_name
             self.newImages[image] = image_new
             if Confirm.ask(f"Can it natively be used in a github action?"):
               self.nativeImage.add(image_new)
             else:
               self.notNativeImage.add(image_new)
             progress.start()
-            return image_repo.name, image
+            return image_repo.name, image_new
         else:
           self.dontMigrate.add(image)
           logger.warning(f"Image {image} will not be migrated.")

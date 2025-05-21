@@ -56,7 +56,7 @@ class GitlabDownloader(Git, Downloader):
           else:
             repo_secrets[secret] = {"Value": "Please add a value",
                                     "Secret": "Y, if it should be saved as a secret. E, if it already exists. The "
-                                    "value should then be the "
+                                              "value should then be the "
                                               "name of the according secret. Default is N", }
       for b in repo_all_branches:
         if b not in repo_stale_branches:
@@ -173,7 +173,8 @@ class GitlabDownloader(Git, Downloader):
 
   def clone_repo(self, repo_id, clone_path) -> tuple[str, str]:
     """
-    Clone a repository from GitLab to the local machine. Additionally it checks out all branches and removes the remote origin.
+    Clone a repository from GitLab to the local machine. Additionally it checks out all branches and removes the
+    remote origin.
     :param repo_id: Repository ID in GitLab
     :param clone_path: Path to clone the repository to
     """
@@ -227,7 +228,7 @@ class GitlabDownloader(Git, Downloader):
     console = Console()
     table = Table("Branch", "Status")
     repo.remotes.origin.fetch()  # Fetch all branches from the remote
-    for branch in repo.remotes.origin.refs:  # Iterate over all remote branches
+    for branch in tqdm(repo.remotes.origin.refs, desc="Checking out all branches"):  # Iterate over all remote branches
       branch_name = branch.name.split("/")[-1]  # Extract branch name
       if branch_name == "HEAD":
         continue
@@ -264,15 +265,16 @@ class CloneProgress(RemoteProgress):
   def __exit__(self, exc_type, exc_value, traceback):
     self.close()
 
-  def new_message_handler__disabled(self):
+  def new_message_handler(self):
     """
-    Can be used to print the output of the git push command directly for debugging. To do so remove the __disabled from the name
+    Can be used to print the output of the git push command directly for debugging. To do so remove the __disabled
+    from the name
     :return:
         A progress handler suitable for handle_process_output(), passing lines on to this Progress
         handler in a suitable format"""
 
     def handler(line):
-      print(line.rstrip())
+      logger.info(line.rstrip())
       return self._parse_progress_line(line.rstrip())
 
     return handler

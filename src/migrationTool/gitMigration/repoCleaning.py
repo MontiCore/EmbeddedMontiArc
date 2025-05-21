@@ -28,10 +28,10 @@ def split_large_files(directory, size="90M", output=False):
     # command = f"find {directory} -type f -size +{size} -exec sh -c 'split -b {size} --suffix-length=1 \"$0\"
     # \"$0.part\"' {{}} \\;"
     command = (f'find {directory} -path {directory}/.git -prune -o -type f -size +{size} -exec sh -c \'split -b {size} '
-    f'--suffix-length=1 "$0" "$0.part"\' {{}} \\;')
+               f'--suffix-length=1 "$0" "$0.part"\' {{}} \\;')
     result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, )
     if output:
-      print("Split command output:", result.stdout.decode())
+      print(result.stdout.decode())
     """
 # Prints all files that have been split
 find_command = f"find {directory} -path {directory}/.git -prune -o -type f -size +{size} -print"
@@ -88,7 +88,8 @@ def concatenate_files(directory):
   :param directory: Directory of the repository
   """
   try:
-    command = f'find {directory} -type f -name \'*.part*\' | while read part; do base=$(echo "$part" | sed \'s/.part.*//\'); cat "$part" >> "$base"; rm "$part"; done'
+    command = (f'find {directory} -type f -name \'*.part*\' | while read part; do base=$(echo "$part" | sed '
+               f'\'s/.part.*//\'); cat "$part" >> "$base"; rm "$part"; done')
     result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, )
     print("Concatenate command output:", result.stdout.decode())
   except subprocess.CalledProcessError as e:

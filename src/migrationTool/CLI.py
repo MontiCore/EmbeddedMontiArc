@@ -29,6 +29,8 @@ logger.setLevel(logging.INFO)
 logger.handlers = []  # Remove if you want to see logs in console
 logger.addHandler(file_handler)
 
+logger.info("-------------------------")
+
 
 @app.command()
 def create_config(output: str = typer.Option("config.yaml", help="Path for the config file")):
@@ -61,7 +63,8 @@ def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", hel
                                                                     "from the history."),
                   split_large_files_flag: bool = typer.Option(False,
                                                               help="Whether to split large files into smaller chunks. "
-                                                                   "Only compatible with bash on Linux and MacOS.")):
+                                                                   "Only compatible with bash on Linux and MacOS."),
+                  verbose: bool = typer.Option(False, help="Whether to show verbose output")):
   """Migrate repositories (remove large files, etc)."""
   architecture = Architecture.load_architecture(architecture_path)
   logger.info("Scan file loaded at " + architecture_path)
@@ -107,12 +110,12 @@ def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", hel
           summary[repo.name] = False
 
         if split_large_files:
-          split_large_files(repo.path)
+          split_large_files(repo.path, output=verbose)
 
         if remove_lfs_flag:
           remove_lfs_from_gitattributes(repo.path)
         progress.update(task1, advance=1)
-        print(f"Processed branch {branch}")
+        print(f"[green]Processed branch {branch}")
 
       if "master" in git_repo.branches:
         git_repo.git.checkout("master")
@@ -168,8 +171,10 @@ def convert_gh_actions(config_path: str = typer.Option("config.yaml", help="Conf
 def upload(config_path: str = typer.Option("config.yaml", help="Config file path"),
            architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
            migrate_docker_images: bool = typer.Option(False, help="Whether to move docker images to the monorepo"),
-           disable_scanning: bool = typer.Option(False, help="Whether to move docker images to the monorepo")):
+           disable_scanning: bool = typer.Option(False, help="Whether to disable secret scanning during the push")):
   """Upload to GitHub."""
+
+  # ToDo: Upload multiple migrations at once
   config = Config(config_path)
   logger.info("Config loaded")
   architecture = Architecture.load_architecture(architecture_path)
