@@ -117,7 +117,7 @@ class GithubUploader(Git, Uploader):
     existing_secrets = list(github_repo.get_secrets("actions"))
     existing_secrets = [secret.name for secret in existing_secrets]
     if existing_secrets:
-      logger.info("Existing secrets in the GitHub Repo: ", existing_secrets)
+      logger.info("Existing secrets in the GitHub Repo: " + str(existing_secrets))
       print("Existing secrets in the GitHub Repo: ", existing_secrets)
     for name, secret in secrets.items():
       if name in existing_secrets:
@@ -233,7 +233,10 @@ class GithubUploader(Git, Uploader):
     summary = {}
     existing_branches = [b.name for b in github_repo.get_branches()]
     for branch in local_repo.branches:
-      if branch.name in existing_branches and branch.name != "master":
+      if branch.name in existing_branches:
+        if branch.name == "master":
+          logger.info(f"Branch {branch.name} skipped as it already exists.")
+          continue
         logger.info(f"Branch {branch.name} already exists in the target repository.")
         print(f"[red]Branch {branch.name} already exists in the target repository.[/red]")
         if not Confirm.ask("Still try to upload? This will override the existing history: "):
@@ -371,9 +374,8 @@ class GithubUploader(Git, Uploader):
       logger.warning(
         "Push protection deactivation failed. Push might not be possible. Either deactivate manually or push manually "
         "and remove blocked blobs.")
-      print(
-        "[red]Push protection deactivation failed. Push might not be possible. Either deactivate manually or push "
-        "manually and remove blocked blobs.")
+      print("[red]Push protection deactivation failed. Push might not be possible. Either deactivate manually or push "
+            "manually and remove blocked blobs.")
 
   def activate_push_protection(self, url):
     """
@@ -405,7 +407,8 @@ def dockerImageMigration(self, architecture, repoID):
     action += "    env:\n"
     action += f'      GITLAB_USERNAME: "{self.config.sourceUser}"\n'
     action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
-    action += f'      GITLAB_REPO: "{(architecture[repoID]["Namespace"] + "/" + architecture[repoID]["Name"]).lower()}"\n'
+    action += f'      GITLAB_REPO: "{(architecture[repoID]["Namespace"] + "/" + architecture[repoID]["Name"]).lower(
+    )}"\n'
     action += f'      IMAGES_LIST: "{images}"\n'
     action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
     action += '      GHCR_REPO_OWNER: "davidblm"\n'
@@ -415,7 +418,8 @@ def dockerImageMigration(self, architecture, repoID):
     action += '          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
     action += "      - name: Log in to GitHub\n"
     action += "        run: |\n"
-    action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
+    action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" 
+    --password-stdin\n'
     action += "      - name: Migrate Docker images\n"
     action += "        run: |\n"
     action += '          IFS="," read -ra IMAGES <<< "$IMAGES_LIST"\n'
@@ -477,7 +481,8 @@ def dockerImageMigration(self, architecture, repoID):
     action += '          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
     action += "      - name: Log in to GitHub\n"
     action += "        run: |\n"
-    action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin\n'
+    action += ('          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" '
+               '--password-stdin\n')
     for repoId in repos_to_be_migrated:
       repo = self.architecture.get_repo_by_ID(repoId)
       images = ",".join(repo.images)
@@ -545,15 +550,16 @@ class PushProgress(RemoteProgress):
   def __exit__(self, exc_type, exc_value, traceback):
     self.close()
 
-  def new_message_handler__disabled(self):
+  def new_message_handler(self):
     """
-    Can be used to print the output of the git push command directly for debugging. To do so remove the __disabled from the name
+    Can be used to print the output of the git push command directly for debugging. To do so remove the __disabled
+    from the name
     :return:
         A progress handler suitable for handle_process_output(), passing lines on to this Progress
         handler in a suitable format"""
 
     def handler(line):
-      print(line.rstrip())
+      logger.info(line.rstrip())
       return self._parse_progress_line(line.rstrip())
 
     return handler

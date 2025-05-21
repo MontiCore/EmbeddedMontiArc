@@ -51,7 +51,7 @@ This creates the monorepo and adds all the repositories to it. The monorepo will
 a repository with the monorepo name already exists, it is reused. All the subtrees are uploaded to a newly created
 branch named Migration_Date_Time. This ensures that this step does not interfere with the current work on the monorepo.
 The branch can be merged into the main branch later. The monorepo is created using `git subtree` and all the
-repositories are added as subtrees. The subtrees are added to a folder named `repos` in the monorepo. This ensures the
+repositories are added as subtrees. This ensures the
 integrity of the repos current state. Especially later in the upload step.
 
 5. Convert the GitLab pipelines to GitHub actions by running

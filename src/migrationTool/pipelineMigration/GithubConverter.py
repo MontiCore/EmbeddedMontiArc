@@ -556,6 +556,7 @@ class GithubActionConverter(Converter):
       command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
       # ToDo: Add docker, user replacement
       script[i] = command
+    delete.reverse()
     for i in delete:
       script.pop(i)
     return script
