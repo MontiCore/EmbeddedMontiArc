@@ -13,7 +13,7 @@ class GithubActionConverter(Converter):
   This class converts a pipeline Object to GitHub Actions.
   """
 
-  def __init__(self, architecture: Architecture, pipeline: Pipeline, rebuild: bool = False):
+  def __init__(self, architecture: Architecture, pipeline: Pipeline, compatibleImages=set(), rebuild: bool = False):
     """
     Initializes the GithubActionConverter class.
     :param architecture: Architecture object
@@ -27,6 +27,7 @@ class GithubActionConverter(Converter):
     self.timeout = 60  # Default timeout in minutes
     self.architecture = architecture
 
+    """
     # ToDo: Delete for production, implement their import
     self.compatible_images = {"maven:3.6-jdk-8",
                               "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp"
@@ -39,6 +40,8 @@ class GithubActionConverter(Converter):
                               ":v0.0.2", "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp"
                                          "/dockerimages/mxnet170:v0.0.1"}
     self.compatible_images = {"maven:3.6-jdk-8"}
+    """
+    self.compatible_images = compatibleImages
 
     self.migrated_docker_images = {}
     for repoID in self.architecture.repoIDs:
@@ -475,9 +478,7 @@ class GithubActionConverter(Converter):
       # Add an output for each job that is only run if certain files changed
       if job.only and type(job.only) == dict and "changes" in job.only:
         jobString += (f"\t\t\trun{job.name}: " + "${{" + (f"steps."
-                                                         f"{job.name.replace('/', '_').replace(' ', 
-                                                                                               '_')}.outputs.run") +
-                      "}}\n")
+                                                          f"{job.name.replace('/', '_').replace(' ', '_')}.outputs.run") + "}}\n")
 
     jobString += "\t\tsteps:\n"
     # Checkout the last 2 commits

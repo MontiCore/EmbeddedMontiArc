@@ -8,6 +8,7 @@ from rich.progress import Progress
 from rich.table import Table
 
 from migrationTool.migration_types import Architecture, Config
+from migrationTool.pipelineMigration.DockerMigration import DockerMigration
 from migrationTool.pipelineMigration.GithubConverter import GithubActionConverter
 from migrationTool.pipelineMigration.GithubSubtreeConverter import (GithubSubTreeConverter, )
 from migrationTool.pipelineMigration.GitlabCIImporter import GitlabCIImporter
@@ -62,36 +63,20 @@ def GitlabToGithub(repoID: str, architecture: Architecture, config: Config, name
   repo.index.commit("Migrated pipeline from Gitlab to Github")
 
 
-def changeToUpdatedImages(pipeline, architecture, config, repoIDS):
+def changeToUpdatedImages(progress, docker_migration, pipeline):
   """
   Changes the image names in the pipeline to the updated ones.
   :param pipeline: The pipeline object
   :param architecture: The architecture object
   :param repoID: The ID of the repository
   """
-  # Get the full image names from the architecture
-  # ToDo: Save already migrated images in config so that they are changed later on
-  newNames = {}
-  if type(repoIDS) == str:
-    repoIDS = [repoIDS]
-  for repoID in repoIDS:
-    repo = architecture.get_repo_by_ID(repoID)
-    if not repo.images:
-      continue
-    for image in repo.images:
-      if not image.startswith(":"):
-        url = (
-            "registry." + config.url.replace("https://", "") + repo.namespace + "/" + repo.name + "/" + image).lower()
-        newNames[url] = ("ghcr.io/" + config.targetUser.lower() + "/" + repo.name + "/" + image)
-      else:
-        url = ("registry." + config.url.replace("https://", "") + repo.namespace + "/" + repo.name + image).lower()
-        newNames[url] = ("ghcr.io/" + config.targetUser.lower() + "/" + repo.name + "/" + image)
-
+  dependencies = set()
   # Change the image names in the pipeline object
   for _, job in pipeline.jobs.items():
-    if job.image in newNames.keys():
-      job.image = newNames[job.image]
-  return pipeline
+    new_dependencie, job.image = docker_migration.get_new_Image(progress, job.image)
+    if new_dependencie:
+      dependencies.add(new_dependencie)
+  return dependencies, pipeline
 
 
 def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, rebuild=False):
@@ -138,6 +123,8 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
   console.print(table)
 
   summary = {}
+  docker_migration = DockerMigration(architecture, config, "docker_images.txt")
+  dependencies = set()
   with Progress() as progress:
     task = progress.add_task("Migrating", total=iterations)
     # Migrate all contained repos
@@ -180,28 +167,30 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
         for job in jobs_to_delete:
           pipeline.delete_job(job)
 
-        pipeline = changeToUpdatedImages(pipeline, architecture, config, repoIDS)
+        new_dependencies, pipeline = changeToUpdatedImages(progress, docker_migration, pipeline)
+        dependencies = dependencies.union(new_dependencies)
         # Convert the pipeline to Github Actions format, depending on the number of branches
         if len(branches_to_be_migrated[str(repoID)]) <= 1:
           pipelineConverter = GithubSubTreeConverter(architecture, pipeline, github_repo_prefix[repo.name], repoID,
-                                                     rebuild=rebuild, )
+                                                     compatibleImages=docker_migration.nativeImage, rebuild=rebuild, )
           convertedPipeline = pipelineConverter.parse_pipeline(repo.name, repo.secrets)
           file_path = os.path.join(file_path_base, repo.name + ".yml")
         else:
           pipelineConverter = GithubSubTreeConverter(architecture, pipeline,
                                                      github_repo_prefix[repo.name] + "/" + branch, repoID,
-                                                     rebuild=rebuild, )
+                                                     compatibleImages=docker_migration.nativeImage, rebuild=rebuild, )
           convertedPipeline = pipelineConverter.parse_pipeline(repo.name + "_" + branch, repo.secrets)
           file_path = os.path.join(file_path_base, repo.name + "_" + branch + ".yml")
-        print(f"Converted pipeline of {repo.name} and branch {branch}")
+        print(f"[green]Converted pipeline of {repo.name} and branch {branch}")
         summary[repo.name][branch] = ":white_check_mark:"
         # Write and commit action
         writeStringToFile(file_path, convertedPipeline)
         subtree_repo.git.add(all=True)
         subtree_repo.index.commit(f"Migrated pipeline of {repo.name} and branch {branch} from Gitlab to Github")
         progress.update(task, advance=1)
+  docker_migration.write_images_being_migrated()
   print()
-  print("Summary of migration:")
+  print("[bold]Summary of migration:")
   table = Table("Repository name", "Branch", "Migration successful")
   for repoID in architecture.repoIDs:
     repo = architecture.get_repo_by_ID(repoID)
@@ -211,6 +200,12 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
       else:
         table.add_row(repo.name, branch, ":x:")
   console.print(table)
+  if dependencies:
+    print()
+    print("[yellow]During the pipeline migration, dependencies with images from the following repos were detected:")
+    for repo in dependencies:
+      print(repo)
+    print("[yellow]Please migrate them to the new registry as well, before running the actions.")
 
 
 if __name__ == "__main__":
