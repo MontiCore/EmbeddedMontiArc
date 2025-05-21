@@ -29,7 +29,7 @@ class Config:
               "SourceUser": "Please add the name of the user on the GitLab system",
               "TargetRepoOwner": "Please add the name of the user on GitHub",
               "MonorepoNamespace": "Please add the namespace of the monorepo, this removed from the beginning of the "
-              "repo "
+                                   "repo "
                                    "namespaces", }
 
       yaml.safe_dump(data, open(path, "w"))
@@ -38,24 +38,3 @@ class Config:
     else:
       print(f"[red]Config file already exists at {path}[/red]")
       exit(1)
-
-  def write_migrated_docker_images(self, dockerImages):
-    """
-    Write the migrated docker images to the config file
-    :param dockerImages: List of migrated docker images
-    """
-    data = yaml.safe_load(open("../../config.yaml"))
-    data["MigratedDockerImages"] = dockerImages
-    yaml.safe_dump(data, open("../../config.yaml", "w"))
-
-  def read_migrated_docker_images(self, path: str = "config.yaml"):
-    """
-    Read the migrated docker images from the config file
-    :return: List of migrated docker image URLs
-    """
-
-    data = yaml.safe_load(open("config.yaml"))
-    if "MigratedDockerImages" in data.keys():
-      return data["MigratedDockerImages"]
-    else:
-      return []
