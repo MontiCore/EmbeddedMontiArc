@@ -63,7 +63,7 @@ def GitlabToGithub(repoID: str, architecture: Architecture, config: Config, name
   repo.index.commit("Migrated pipeline from Gitlab to Github")
 
 
-def changeToUpdatedImages(docker_migration, pipeline):
+def changeToUpdatedImages(progress, docker_migration, pipeline):
   """
   Changes the image names in the pipeline to the updated ones.
   :param pipeline: The pipeline object
@@ -73,7 +73,7 @@ def changeToUpdatedImages(docker_migration, pipeline):
   dependencies = set()
   # Change the image names in the pipeline object
   for _, job in pipeline.jobs.items():
-    new_dependencie, job.image = docker_migration.get_new_Image(job.image)
+    new_dependencie, job.image = docker_migration.get_new_Image(progress, job.image)
     if new_dependencie:
       dependencies.add(new_dependencie)
   return dependencies, pipeline
@@ -167,7 +167,7 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
         for job in jobs_to_delete:
           pipeline.delete_job(job)
 
-        new_dependencies, pipeline = changeToUpdatedImages(docker_migration, pipeline)
+        new_dependencies, pipeline = changeToUpdatedImages(progress, docker_migration, pipeline)
         dependencies = dependencies.union(new_dependencies)
         # Convert the pipeline to Github Actions format, depending on the number of branches
         if len(branches_to_be_migrated[str(repoID)]) <= 1:
