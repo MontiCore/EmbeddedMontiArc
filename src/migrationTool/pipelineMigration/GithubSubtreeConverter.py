@@ -123,7 +123,10 @@ class GithubSubTreeConverter(GithubActionConverter):
 
       triggered_repo = job.trigger["project"].split("/")[-1]
       repo = self.architecture.get_repo_by_name(triggered_repo)
-      multiple_branches = True if len(repo.get_branches_to_be_migrated()) > 1 else False
+      if repo:
+        multiple_branches = True if len(repo.get_branches_to_be_migrated()) > 1 else False
+      else:
+        multiple_branches = False
 
       if multiple_branches:
         workloflow_name = triggered_repo + "_" + job.trigger["branch"]

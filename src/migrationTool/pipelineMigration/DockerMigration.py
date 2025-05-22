@@ -50,7 +50,7 @@ class DockerMigration:
         else:
           url = ("registry." + self.config.url.replace("https://",
                                                        "") + repo.namespace + "/" + repo.name + image).lower()
-          newImages[url] = ("ghcr.io/" + self.config.targetUser.lower() + "/" + repo.name + "/" + image)
+          newImages[url] = ("ghcr.io/" + self.config.targetUser.lower() + "/" + repo.name + image)
     return newImages
 
   def write_images_being_migrated(self):
