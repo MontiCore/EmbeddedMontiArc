@@ -153,6 +153,7 @@ def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=Fa
         pipeline = GitlabCIImporter().getPipeline(file)
         file.close()
 
+        """ Only for multiple branches
         jobs_to_delete = []
         for job in pipeline.jobs.values():
           if job.only:
@@ -166,6 +167,7 @@ def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=Fa
         logger.info(f"Deleting jobs {jobs_to_delete} from pipeline of {repo.name} and branch {branch}...")
         for job in jobs_to_delete:
           pipeline.delete_job(job)
+        """
 
         new_dependencies, pipeline = changeToUpdatedImages(progress, docker_migration, pipeline)
         dependencies = dependencies.union(new_dependencies)

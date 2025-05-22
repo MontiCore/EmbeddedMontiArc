@@ -144,8 +144,8 @@ def create_monorepo(config_path: str = typer.Option("config.yaml", help="Config 
                     architecture_path: str = typer.Option("architecture.yaml", help="Scan file path")):
   """Create a large monorepo from repos."""
   logger.info(f"Creating monorepo using {config_path} and scan file {architecture_path}")
-  config = Config("config.yaml")
-  architecture = Architecture.load_architecture("architecture.yaml")
+  config = Config(config_path)
+  architecture = Architecture.load_architecture(architecture_path)
   print(f"Config and scan file loaded")
   git = Git()
 

@@ -465,7 +465,7 @@ class GithubActionConverter(Converter):
         # Job is not to be run if certain branches are pushed
         for i, branch in enumerate(job.exc):
           if i == 0 and not ifString:
-            ifString += f"\t\tif: github.ref != 'refs/heads/{branch}'"
+            ifString += f"\t\tif: ${{{{ github.ref != 'refs/heads/{branch}'"
           else:
             ifString += f"\t\t  && github.ref != 'refs/heads/{branch}'"
 
@@ -481,7 +481,7 @@ class GithubActionConverter(Converter):
           ifString += f"needs.FileChanges.outputs.run{job.name.replace('/', '_').replace(' ', '_')} == 'true'"
 
     if ifString:
-      ifString += "}}\n"
+      ifString += " }}\n"
     return ifString
 
   def create_stage_jobs(self):
