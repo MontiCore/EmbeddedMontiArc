@@ -50,9 +50,10 @@ class GitlabCIImporter(Importer):
       general_before_script = self.__flattenList(self.yaml_data["before_script"])
 
     for name, parameter in self.yaml_data.items():
+      if name == "stages":
+        continue
       if "script" in parameter or "trigger" in parameter:
         # Add before script in front of the normal script
-
         if "before_script" in parameter:
           if general_before_script:
             sc = general_before_script + self.__flattenList(parameter.get("before_script", [])) + self.__flattenList(
@@ -71,11 +72,10 @@ class GitlabCIImporter(Importer):
           needs = parameter.get("dependencies", []) + parameter.get("needs", [])
         else:
           needs = parameter.get("needs", [])
-
         jobs[name] = Job(name=name, image=parameter.get("image", general_image), stage=parameter.get("stage", ""),
                          script=sc, needs=needs, when=parameter.get("when", ""), exc=parameter.get("except", []),
                          artifacts=parameter.get("artifacts", []), only=parameter.get("only", []),
-                         allowFailure=parameter.get("allow_failure", False))
+                         allowFailure=parameter.get("allow_failure", False), rules=parameter.get("rules", []))
     return jobs
 
   def __read_dependencies(self) -> tuple[dict[str, set[str]], dict[str, set[str]]]:

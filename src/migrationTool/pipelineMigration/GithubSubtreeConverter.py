@@ -49,11 +49,18 @@ class GithubSubTreeConverter(GithubActionConverter):
     pipelineString += "jobs:\n"
     for _, job in self.pipeline.jobs.items():
       # Check whether a job is only run if a file changes
-      if job.only and type(job.only) == dict and "changes" in job.only:
+      file_changes = (job.only and type(job.only) == dict and "changes" in job.only)
+      if job.rules:
+        for rule in job.rules:
+          if "changes" in rule:
+            file_changes = True
+            break
+      if file_changes:
         # If yes, add job to check
         self.file_change_job_needed = True
         pipelineString += self.create_file_change_job()
         break
+
     # Create jobs for the stages
     pipelineString += self.create_stage_jobs()
     # Parse all the normal jobs

@@ -1,4 +1,5 @@
 import logging
+import re
 
 from migrationTool.migration_types import Architecture
 from migrationTool.pipelineMigration.Converter import Converter
@@ -421,6 +422,18 @@ class GithubActionConverter(Converter):
             ifString += f"\t\tif: github.ref != 'refs/heads/{branch}'"
           else:
             ifString += f"\t\t  && github.ref != 'refs/heads/{branch}'"
+
+    if job.rules:
+      # Job is only to be run if certain rules are met, which are examined in file changes
+      for rule in job.rules:
+        if "changes" in rule and "needs.FileChanges" not in ifString:
+          if ifString == "":
+            ifString += "\t\tif: ${{"
+          else:
+            ifString += " && "
+          # Check output of fileChangeJob whether it should be run or skipped
+          ifString += f"needs.FileChanges.outputs.run{job.name.replace('/', '_').replace(' ', '_')} == 'true'"
+
     if ifString:
       ifString += "}}\n"
     return ifString
@@ -471,12 +484,24 @@ class GithubActionConverter(Converter):
     jobString = "\tFileChanges:\n"
     jobString += f"\t\truns-on: ubuntu-latest\n"
     for _, job in self.pipeline.jobs.items():
-      if job.only and type(job.only) == dict and "changes" in job.only:
+      job_output_needed = job.only and type(job.only) == dict and "changes" in job.only
+      if job.rules:
+        for rule in job.rules:
+          if "changes" in rule:
+            job_output_needed = True
+            break
+      if job_output_needed:
         jobString += f"\t\toutputs:\n"
         break
     for _, job in self.pipeline.jobs.items():
       # Add an output for each job that is only run if certain files changed
-      if job.only and type(job.only) == dict and "changes" in job.only:
+      job_output_needed = job.only and type(job.only) == dict and "changes" in job.only
+      if job.rules:
+        for rule in job.rules:
+          if "changes" in rule:
+            job_output_needed = True
+            break
+      if job_output_needed:
         jobString += (f"\t\t\trun{job.name}: " + "${{" + (f"steps."
                                                           f"{job.name.replace('/', '_').replace(' ', '_')}.outputs.run") + "}}\n")
 
@@ -490,11 +515,18 @@ class GithubActionConverter(Converter):
     jobString += '\t\t\t\t\techo "$CHANGES"\n'
     jobString += '\t\t\t\t\techo "$CHANGES" > diff.txt\n'
     for _, job in self.pipeline.jobs.items():
-      if job.only and type(job.only) == dict and "changes" in job.only:
+      job_output_needed = job.only and type(job.only) == dict and "changes" in job.only
+      if job.rules:
+        for rule in job.rules:
+          if "changes" in rule:
+            job_output_needed = True
+            break
+      if job_output_needed:
         # Create a step for each job, whose run condition needs to be checked
         jobString += f"\t\t\t- name: Check {job.name}\n"
         jobString += f"\t\t\t\tid: {job.name.replace('/', '_').replace(' ', '_')}\n"
         jobString += f"\t\t\t\trun: |\n"
+        """
         jobString += "\t\t\t\t\trun=false\n"
         for path in job.only["changes"]:
           jobString += "\t\t\t\t\tif cat diff.txt | grep" + f" '^.*{path.replace("/**/*", "")}'" + "; then\n"
@@ -504,6 +536,55 @@ class GithubActionConverter(Converter):
           jobString += '\t\t\t\t\t\techo "DONT RUN"\n'
           jobString += "\t\t\t\t\tfi\n"
         jobString += '\t\t\t\t\techo "run=$run" >> $GITHUB_OUTPUT\n'
+        """
+        jobString += "\t\t\t\t\trun=false\n"
+        jobString += "\t\t\t\t\tfor path in $(cat diff.txt); do\n"
+        paths = []
+        if job.only:
+          if job.only["changes"]:
+            for path in job.only["changes"]:
+              paths.append(path.replace("/**/*", ""))
+        if job.rules:
+          for rule in job.rules:
+            if "changes" in rule:
+              for path in rule["changes"]:
+                paths.append(path.replace("/**/*", ""))
+
+        for path in paths:
+          jobString += f"\t\t\t\t\t\tif [[ $path == *{path.replace('/**/*', '')}* ]]; then\n"
+          jobString += '\t\t\t\t\t\t\techo "Matching path found: $path"\n'
+          jobString += '\t\t\t\t\t\t\techo "RUN"\n'
+          jobString += "\t\t\t\t\t\t\trun=true\n"
+          jobString += "\t\t\t\t\t\t\tbreak\n"
+          jobString += "\t\t\t\t\t\tfi\n"
+        jobString += "\t\t\t\t\tdone\n"
+        jobString += '\t\t\t\t\techo "Final file change run status: $run"\n'
+        jobString += '\t\t\t\t\techo "run=$run" >> $GITHUB_OUTPUT\n'
+        if job.rules:
+          for i, rule in enumerate(job.rules):
+            condition = rule["if"]
+            # Handle Branch conditions
+            pattern = r'(\$CI_COMMIT_BRANCH)\s*(==|!=)\s*"([^"]+)"'
+            replacement = r'${{ github.ref }} \2 "refs/heads/\3"'
+            condition = re.sub(pattern, replacement, condition)
+            # Handle trigger sources
+            pattern = r'(\$CI_PIPELINE_SOURCE)\s*(==|!=)\s*"web"'
+            replacement = r'${{ github.event_name }} \2 "workflow_dispatch"'
+            condition = re.sub(pattern, replacement, condition)
+            if "changes" in rule:
+              jobString += f"\t\t\t\t\tif [[ {condition} && $run ]]; then\n"
+              jobString += f'\t\t\t\t\t\techo "RUN condition {i} matched"\n'
+              jobString += '\t\t\t\t\t\techo "run=true" >> $GITHUB_OUTPUT\n'
+              jobString += "\t\t\t\t\t\texit 0\n"
+              jobString += "\t\t\t\t\tfi\n"
+            else:
+              jobString += f"\t\t\t\t\tif [[ {condition} ]]; then\n"
+              jobString += f'\t\t\t\t\t\techo "RUN condition {i} matched"\n'
+              jobString += '\t\t\t\t\t\techo "run=true" >> $GITHUB_OUTPUT\n'
+              jobString += "\t\t\t\t\t\texit 0\n"
+              jobString += "\t\t\t\t\tfi\n"
+          jobString += '\t\t\t\t\techo "No matching condition found"\n'
+          jobString += '\t\t\t\t\t\techo "run=false" >> $GITHUB_OUTPUT\n'
     return jobString
 
   def script_parser(self, script: list[str]) -> list[str]:
