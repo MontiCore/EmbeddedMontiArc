@@ -4,7 +4,7 @@ class Job:
   """
 
   def __init__(self, name: str, image: str, stage: str, script: list[str], needs: list[str] = [], when: str = "",
-               exc: list[str] = [], artifacts={}, only: list[str] = [], allowFailure=False, rules=[]):
+               exc: list[str] = [], artifacts={}, only: list[str] = [], allowFailure=False, rules=[], trigger=dict):
     """
     Initializes the job with the given parameters.
     :param name: Name of the job
@@ -30,6 +30,7 @@ class Job:
     self.only = only
     self.allowFailure = allowFailure
     self.rules = rules
+    self.trigger = trigger
 
   def __str__(self):
     result = f"Name: {self.name}\n"
@@ -53,4 +54,6 @@ class Job:
       result += f"Allow Failure: {self.allowFailure}\n"
     if self.rules:
       result += f"Rules: {self.rules}\n"
+    if self.trigger:
+      result += f"Trigger: {self.trigger}\n"
     return result

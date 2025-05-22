@@ -173,13 +173,15 @@ class Git:
     print(f"Branch {branch} added as a subtree.")
     return ":white_check_mark: Subtree added"
 
-  def add_repos_as_subtree(self, target_repo_name, target_repo_namespace, architecture):
+  def add_repos_as_subtree(self, target_repo_name, target_repo_namespace, architecture, repoIDs=[]):
     """
     Adds only master branch as subtree to the target repository.
     :param target_repo_name: Name of the target GitHub repository
     :param subtree_repo_IDS: IDs of the repositories to be uploaded as subtrees
     """
     console = Console()
+    if not repoIDs:
+      repoIDs = architecture.repoIDs
 
     target_repo = self.init_repo(target_repo_name)
     branch_name = "Migration_" + str(datetime.now().strftime("%Y-%m-%d_at_%H-%M-%S"))
@@ -191,14 +193,14 @@ class Git:
     # target_repo.git.symbolic_ref(f"refs/heads/{branch_name}", "refs/heads/empty")  # ToDO: Test
     target_repo.heads[branch_name].checkout()
     numberIterations = 0
-    for repoID in architecture.repoIDs:
+    for repoID in repoIDs:
       repo = architecture.get_repo_by_ID(repoID)
       numberIterations += len(repo.get_branches_to_be_migrated())
 
     summary = {}
     with Progress(auto_refresh=True, refresh_per_second=0.5) as progress:
       task1 = progress.add_task("Adding subtrees", total=numberIterations)
-      for repoID in architecture.repoIDs:
+      for repoID in repoIDs:
         summary[repoID] = {}
         repo = architecture.get_repo_by_ID(repoID)
         repo_namespace = "/".join([i for i in repo.namespace.split("/") if i not in target_repo_namespace])

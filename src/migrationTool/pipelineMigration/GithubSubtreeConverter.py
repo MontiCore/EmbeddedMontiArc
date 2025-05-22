@@ -15,7 +15,7 @@ class GithubSubTreeConverter(GithubActionConverter):
     :param repoNames: IDs mapped to names of the repository
     :param repoPath: IDs mapped to paths to the repository
     """
-    super().__init__(architecture, pipeline, compatibleImages=compatibleImages, rebuild=rebuild)
+    super().__init__(architecture, pipeline, compatibleImages=compatibleImages, rebuild=rebuild, repoIDs=[repoID])
     self.repoPath = repoPath
     self.repoID = repoID
 
@@ -116,4 +116,26 @@ class GithubSubTreeConverter(GithubActionConverter):
 
     jobString = re.sub(uploadPagesPattern, add_prefix_to_upload_pages_path, jobString)
 
+    if job.trigger:
+      url_pattern = (r"https://api\.github\.com/repos/\$\{\{\s*github\.repository_owner\s*\}\}/(["
+                     r"^/]+)/actions/workflows/([^/]+)\.yml/dispatches")
+      ref_pattern = r"-d\s+'\{\"ref\":\s*\"([^\"]+)\"\}'"
+
+      triggered_repo = job.trigger["project"].split("/")[-1]
+      repo = self.architecture.get_repo_by_name(triggered_repo)
+      multiple_branches = True if len(repo.get_branches_to_be_migrated()) > 1 else False
+
+      if multiple_branches:
+        workloflow_name = triggered_repo + "_" + job.trigger["branch"]
+      else:
+        workloflow_name = triggered_repo
+
+      jobString = re.sub(url_pattern, fr"https://api.github.com/repos/${{{{ github.repository }}}}/actions/workflows/"
+                                      fr"{workloflow_name}.yml/dispatches", jobString)
+
+      # Replace branch name in ref
+      # jobString = re.sub(ref_pattern, fr"-d '{{"ref":\"${{{{ github.event.repository.default_branch }}}}\"}}'",
+      #                   jobString)
+
+      jobString = re.sub(ref_pattern, "-d '{\"ref\":\"${{ github.event.repository.default_branch }}\"}'", jobString)
     return jobString

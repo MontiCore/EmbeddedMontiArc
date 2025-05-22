@@ -69,7 +69,7 @@ class GitlabDownloader(Git, Downloader):
 
     console = Console()
     table = Table("Name", "Status")
-    for repoID in architecture.repoIDs:
+    for repoID in self.config.repoIDS:
       repo = architecture.get_repo_by_ID(repoID)
       table.add_row(repo.name, ":white_check_mark:")
     print()

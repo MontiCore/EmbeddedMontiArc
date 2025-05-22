@@ -56,7 +56,8 @@ def scan_clone(config_path: str = typer.Option("config.yaml", help="Config file 
 
 
 @app.command()
-def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
+def migrate_repos(config_path: str = typer.Option("config.yaml", help="Config file path"),
+                  architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
                   remove_lfs_flag: bool = typer.Option(True, help="Whether to remove git LFS"),
                   remove_large_files_flag: bool = typer.Option(True,
                                                                help="Whether to delete large files and clean them "
@@ -66,13 +67,16 @@ def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", hel
                                                                    "Only compatible with bash on Linux and MacOS."),
                   verbose: bool = typer.Option(False, help="Whether to show verbose output")):
   """Migrate repositories (remove large files, etc)."""
+  logger.info(f"Starting scan and clone using {config_path}")
+  config = Config(config_path)
+  repoIDs = config.repoIDS
   architecture = Architecture.load_architecture(architecture_path)
   logger.info("Scan file loaded at " + architecture_path)
   print("Scan file loaded at " + architecture_path)
 
   console = Console()
   table = Table("Repository name", "Path", "Remove LFS", "Remove large files", "Split large files")
-  for repoID in architecture.repoIDs:
+  for repoID in repoIDs:
     repo = architecture.get_repo_by_ID(repoID)
     table.add_row(repo.name, repo.path, ":white_check_mark:" if remove_lfs_flag else ":x:",
                   ":white_check_mark:" if remove_large_files_flag else ":x:",
@@ -80,12 +84,12 @@ def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", hel
   console.print(table)
 
   numberIterations = 0
-  for repoID in architecture.repoIDs:
+  for repoID in repoIDs:
     numberIterations += len(architecture.get_repo_by_ID(repoID).get_branches_to_be_migrated())
   with Progress(auto_refresh=True, refresh_per_second=0.5) as progress:
     task1 = progress.add_task("Migrating", total=numberIterations)
     summary = {}
-    for repoID in architecture.repoIDs:
+    for repoID in repoIDs:
       repo = architecture.get_repo_by_ID(repoID)
       summary[repo.name] = True
       git_repo = git.Repo(repo.path)
@@ -129,7 +133,7 @@ def migrate_repos(architecture_path: str = typer.Option("architecture.yaml", hel
 
   # Print summary
   table = Table("Repository name", "Migration successful")
-  for repoID in architecture.repoIDs:
+  for repoID in repoIDs:
     repo = architecture.get_repo_by_ID(repoID)
     table.add_row(repo.name, ":white_check_mark:" if summary[repo.name] else ":x:")
   console.print(table)
@@ -146,7 +150,7 @@ def create_monorepo(config_path: str = typer.Option("config.yaml", help="Config 
   git = Git()
 
   # Build monorepo from cleaned repos
-  git.add_repos_as_subtree(config.monorepoName, config.monorepoNamespace, architecture)
+  git.add_repos_as_subtree(config.monorepoName, config.monorepoNamespace, architecture, config.repoIDS)
 
 
 @app.command()
@@ -164,14 +168,14 @@ def convert_gh_actions(config_path: str = typer.Option("config.yaml", help="Conf
   logger.info("Scan file loaded")
 
   # Convert pipelines
-  GitlabToGithubSubtree(architecture.repoIDs, architecture, config, rebuild=rebuild_large_files)
+  GitlabToGithubSubtree(architecture, config, rebuild=rebuild_large_files)
 
 
 @app.command()
 def upload(config_path: str = typer.Option("config.yaml", help="Config file path"),
            architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
            migrate_docker_images: bool = typer.Option(False, help="Whether to move docker images to the monorepo"),
-           disable_scanning: bool = typer.Option(False, help="Whether to disable secret scanning during the push")):
+           disable_scanning: bool = typer.Option(True, help="Whether to disable secret scanning during the push")):
   """Upload to GitHub."""
 
   # ToDo: Upload multiple migrations at once

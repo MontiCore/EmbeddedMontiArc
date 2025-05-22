@@ -190,7 +190,7 @@ class GithubUploader(Git, Uploader):
     :return: Secrets for the monorepo
     """
     secrets = {}
-    for repoID in self.architecture.repoIDs:
+    for repoID in self.config.repoIDS:
       repo = self.architecture.get_repo_by_ID(repoID)
       for name, value in repo.secrets_to_create:
         if name not in secrets.keys():
@@ -462,7 +462,7 @@ def dockerImageMigration(self, architecture, repoID):
     :return:
     """
     if repos_to_be_migrated is None:
-      repos_to_be_migrated = self.architecture.repos.keys()
+      repos_to_be_migrated = self.config.repoIDS
     action = "name: Migrate Docker Images\n"
     action += "on:\n"
     action += "  workflow_dispatch:\n"

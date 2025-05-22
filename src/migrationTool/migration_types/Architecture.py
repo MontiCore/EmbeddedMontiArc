@@ -1,6 +1,6 @@
 import logging
 import os
-
+import sys
 import yaml
 from rich import print
 
@@ -29,11 +29,26 @@ class Architecture:
     Dumps the architecture to a yaml file
     :return: None
     """
-    with open(self.filepath, "w") as file:
-      data = {}
+    data = {}
+    if os.path.exists(self.filepath):
+      try:
+        existing_architecture = Architecture.load_architecture(self.filepath)
+      except AttributeError:
+        existing_architecture = None
+      if existing_architecture is not None:
+        for repoID in self.repos:
+          if repoID not in existing_architecture.repos:
+            data = data | self.repos[repoID].as_yaml()
+      else:
+        for repoID in self.repos:
+          data = data | self.repos[repoID].as_yaml()
+    else:
       for repoID in self.repos:
         data = data | self.repos[repoID].as_yaml()
-      yaml.dump(data, file)
+    if data:
+      with open(self.filepath, "a") as file:
+        yaml.dump(data, file)
+
     if verbose:
       print(data)
 
@@ -41,7 +56,13 @@ class Architecture:
   def load_architecture(filepath):
     assert os.path.exists(filepath)
     with open(filepath, "r") as file:
-      architecture = yaml.safe_load(file)
+      try:
+        architecture = yaml.safe_load(file)
+      except yaml.YAMLError as e:
+        logger.error(f"Error loading YAML file: {e}")
+        print(f"[red]ERROR: Incorrect yml file at {filepath}")
+        sys.exit(1)
+        return None
       repos = {}
       for repoName in architecture.keys():
         id, repo = Repo.read_from_Architecture(repoName, architecture[repoName])
