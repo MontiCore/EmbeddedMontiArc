@@ -79,7 +79,7 @@ def changeToUpdatedImages(progress, docker_migration, pipeline):
   return dependencies, pipeline
 
 
-def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, rebuild=False):
+def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=False):
   """
       Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits
       the changes.
@@ -100,7 +100,7 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
 
   github_repo_prefix = {}  # Path to each subtree in the monorepo
   monorepoNamespace = config.monorepoNamespace.split("/")
-  for repoID in architecture.repoIDs:
+  for repoID in config.repoIDS:
     repo = architecture.get_repo_by_ID(repoID)
     repoNamespace = "/".join([i for i in repo.namespace.split("/") if i not in monorepoNamespace])
     github_repo_prefix[repo.name] = os.path.join(repoNamespace, repo.name)
@@ -114,7 +114,7 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
   branches_to_be_migrated = {}
   iterations = 0
   table = Table("Repository name", "Branch")
-  for repoID in repoIDS:
+  for repoID in config.repoIDS:
     repo = architecture.get_repo_by_ID(repoID)
     branches_to_be_migrated[repoID] = repo.get_branches_to_be_migrated()
     for branch in branches_to_be_migrated[repoID]:
@@ -128,7 +128,7 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
   with Progress() as progress:
     task = progress.add_task("Migrating", total=iterations)
     # Migrate all contained repos
-    for repoID in repoIDS:
+    for repoID in config.repoIDS:
       repo = architecture.get_repo_by_ID(repoID)
       summary[repo.name] = {}
       # Check, which branches were migrated for the repo
@@ -192,7 +192,7 @@ def GitlabToGithubSubtree(repoIDS, architecture: Architecture, config: Config, r
   print()
   print("[bold]Summary of migration:")
   table = Table("Repository name", "Branch", "Migration successful")
-  for repoID in architecture.repoIDs:
+  for repoID in config.repoIDS:
     repo = architecture.get_repo_by_ID(repoID)
     for branch in branches_to_be_migrated[repoID]:
       if branch in summary[repo.name]:

@@ -14,7 +14,8 @@ class GithubActionConverter(Converter):
   This class converts a pipeline Object to GitHub Actions.
   """
 
-  def __init__(self, architecture: Architecture, pipeline: Pipeline, compatibleImages=set(), rebuild: bool = False):
+  def __init__(self, architecture: Architecture, pipeline: Pipeline, compatibleImages=set(), repoIDs=[],
+               rebuild: bool = False):
     """
     Initializes the GithubActionConverter class.
     :param architecture: Architecture object
@@ -27,6 +28,10 @@ class GithubActionConverter(Converter):
     self.rebuild = rebuild
     self.timeout = 60  # Default timeout in minutes
     self.architecture = architecture
+    if not repoIDs:
+      self.repoIDS = architecture.repoIDs
+    else:
+      self.repoIDs = repoIDs
 
     """
     # ToDo: Delete for production, implement their import
@@ -45,7 +50,7 @@ class GithubActionConverter(Converter):
     self.compatible_images = compatibleImages
 
     self.migrated_docker_images = {}
-    for repoID in self.architecture.repoIDs:
+    for repoID in self.repoIDs:
       repo = self.architecture.get_repo_by_ID(repoID)
       for image in repo.images:
         if repo.name not in self.migrated_docker_images:
@@ -78,7 +83,14 @@ class GithubActionConverter(Converter):
     pipeline_string += "jobs:\n"
     # Check if job(s) exist that are only run if certain files changed
     for _, job in self.pipeline.jobs.items():
-      if job.only and type(job.only) == dict and "changes" in job.only:
+      # Check whether a job is only run if a file changes
+      needed = job.only and type(job.only) == dict and "changes" in job.only
+      if job.rules:
+        for rule in job.rules:
+          if "changes" in rule:
+            needed = True
+            break
+      if needed:
         pipeline_string += self.create_file_change_job()
         self.file_change_job_needed = True
         break
@@ -171,55 +183,72 @@ class GithubActionConverter(Converter):
     if not native:
       job_string += GithubActionConverter.start_docker_container(job.image, secrets, "")
 
-    # Add the script the job should run
-    if native:
-      # If native the script can be run directly
-      job_string += f"\t\t\t- name: Script\n"
-      if job.allowFailure == True:
-        job_string += "\t\t\t\tcontinue-on-error: true\n"
-      job_string += f"\t\t\t\trun: |\n"
-      job.script = self.script_parser(job.script)
-      for command in job.script:
-        job_string += f"\t\t\t\t\t\t{command}\n"
-    else:
-      # If not native, the script needs to be run in the docker container using docker exec
-      job_string += f"\t\t\t- name: Script\n"
-      if job.allowFailure == True:
-        job_string += "\t\t\t\tcontinue-on-error: true\n"
-      # Create a SCRIPT variable that contains the script
-      job_string += f"\t\t\t\tenv:\n"
-      job_string += f"\t\t\t\t\tSCRIPT: |\n"
-      job_string += f"\t\t\t\t\t\tcd /workspace\n"
-      job.script = self.script_parser(job.script)
-      for command in job.script:
-        job_string += f"\t\t\t\t\t\t{command}\n"
-      # Run this script in the docker container
-      job_string += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
+    # ToDo: Test trigger, implement check, that triggered jobs exist
+    if job.trigger:
+      # If the job is a trigger job, add the trigger block
+      repo_name = job.trigger["project"].split("/")[-1]
+      branch = job.trigger["branch"]
 
-    # Once the script is done and the job was successful, upload the artifacts
-    if job.artifacts:
-      if job.artifacts["paths"] == ["public"] and job.name == "pages":
-        # If the job is a pages job, deploy the pages
-        job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
+      triggered_repo = self.architecture.get_repo_by_name(repo_name)
+      if triggered_repo is None:
+        print(f"[red] The repo {repo_name} has not been migrated yet!")
+      elif branch not in triggered_repo.get_branches_to_be_migrated():
+        print(
+          f"[red] The branch {branch} of {repo_name} has not been part of the migration yet!")  # If the repo is not
+        # in the monorepo, add the checkout step
+      job_string += GithubActionConverter.add_checkout_step(repo_name)
+      job_string += GithubActionConverter.trigger(repo_name, branch)
+
+    elif job.script:
+      # Add the script the job should run
+      if native:
+        # If native the script can be run directly
+        job_string += f"\t\t\t- name: Script\n"
+        if job.allowFailure == True:
+          job_string += "\t\t\t\tcontinue-on-error: true\n"
+        job_string += f"\t\t\t\trun: |\n"
+        job.script = self.script_parser(job.script)
+        for command in job.script:
+          job_string += f"\t\t\t\t\t\t{command}\n"
       else:
-        if "expire_in" in job.artifacts:
-          retention_time = job.artifacts["expire_in"].replace("day", "")
-        else:
-          retention_time = 7
-        if "when" in job.artifacts:
-          if job.artifacts["when"] == "always":
-            # Upload the artifacts always
-            when = "always()"
-          else:
-            # Upload only if successful
-            when = "success()"
-        else:
-          when = "success()"
+        # If not native, the script needs to be run in the docker container using docker exec
+        job_string += f"\t\t\t- name: Script\n"
+        if job.allowFailure == True:
+          job_string += "\t\t\t\tcontinue-on-error: true\n"
+        # Create a SCRIPT variable that contains the script
+        job_string += f"\t\t\t\tenv:\n"
+        job_string += f"\t\t\t\t\tSCRIPT: |\n"
+        job_string += f"\t\t\t\t\t\tcd /workspace\n"
+        job.script = self.script_parser(job.script)
+        for command in job.script:
+          job_string += f"\t\t\t\t\t\t{command}\n"
+        # Run this script in the docker container
+        job_string += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
 
-        # If the job is not a pages job, upload the artifacts normally
-        job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
-                                                            job.name.replace("/", "_").replace(" ", "_"), when,
-                                                            retention_time)
+      # Once the script is done and the job was successful, upload the artifacts
+      if job.artifacts:
+        if job.artifacts["paths"] == ["public"] and job.name == "pages":
+          # If the job is a pages job, deploy the pages
+          job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
+        else:
+          if "expire_in" in job.artifacts:
+            retention_time = job.artifacts["expire_in"].replace("day", "")
+          else:
+            retention_time = 7
+          if "when" in job.artifacts:
+            if job.artifacts["when"] == "always":
+              # Upload the artifacts always
+              when = "always()"
+            else:
+              # Upload only if successful
+              when = "success()"
+          else:
+            when = "success()"
+
+          # If the job is not a pages job, upload the artifacts normally
+          job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
+                                                              job.name.replace("/", "_").replace(" ", "_"), when,
+                                                              retention_time)
     return Converter.set_indentation_to_two_spaces(job_string)
 
   @staticmethod
@@ -360,6 +389,23 @@ class GithubActionConverter(Converter):
     deploy += "\t\t\t- name: Deploy to Pages\n"
     deploy += "\t\t\t\tuses: actions/deploy-pages@v4\n"
     return deploy
+
+  @staticmethod
+  def trigger(repo_name: str, branch: str = "master") -> str:
+    """
+        Creates the trigger for the pipeline.
+    :param repo_name: Name of the repo
+    :return: String of the trigger block
+    """
+    trigger = ""
+    trigger += f"\t\t\t- name: Trigger {repo_name} pipeline\n"
+    trigger += f"\t\t\t\trun: |\n"
+    trigger += f"\t\t\t\t\tcurl -X POST https://api.github.com/repos/${{{{ github.repository_owner }}}}"
+    trigger += f"/{repo_name}/actions/workflows/{repo_name}.yml/dispatches \\\n"
+    trigger += '\t\t\t\t\t\t-H "Accept: application/vnd.github+json" \\\n'
+    trigger += '\t\t\t\t\t\t-H "Authorization: token ${{ secrets.GITHUBTOKEN }}" \\\n'
+    trigger += f'\t\t\t\t\t\t-d \'{{"ref": "{branch}"}}\'\n'
+    return trigger
 
   def if_condition(self, job: Job) -> str:
     """

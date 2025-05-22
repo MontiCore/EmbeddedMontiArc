@@ -75,7 +75,8 @@ class GitlabCIImporter(Importer):
         jobs[name] = Job(name=name, image=parameter.get("image", general_image), stage=parameter.get("stage", ""),
                          script=sc, needs=needs, when=parameter.get("when", ""), exc=parameter.get("except", []),
                          artifacts=parameter.get("artifacts", []), only=parameter.get("only", []),
-                         allowFailure=parameter.get("allow_failure", False), rules=parameter.get("rules", []))
+                         allowFailure=parameter.get("allow_failure", False), rules=parameter.get("rules", []),
+                         trigger=parameter.get("trigger", {}))
     return jobs
 
   def __read_dependencies(self) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
