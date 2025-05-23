@@ -1,0 +1,14 @@
+URL: https://git.rwth-aachen.de/
+SourceToken: glpat-1E9aKZussdM6-vaqwDGk
+TargetToken: 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
+Repos:
+  #- 25225
+  #- 17712
+  - 69049
+  - 74632
+  - 74631
+  - 69050
+SourceUser: David.Blum
+TargetRepoOwner: DavidBlm
+MonorepoName: TEST
+MonorepoNamespace: monticore/EmbeddedMontiArc
