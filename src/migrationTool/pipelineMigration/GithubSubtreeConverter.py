@@ -45,6 +45,9 @@ class GithubSubTreeConverter(GithubActionConverter):
         else:
           if secret != "CI_PROJECT_ID":
             pipelineString += (f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n")
+    if self.pipeline.variables:
+      for var_name, var_value in self.pipeline.variables.items():
+        pipelineString += f"\t{var_name} : " + f"{var_value}\n"
 
     pipelineString += "jobs:\n"
     for _, job in self.pipeline.jobs.items():

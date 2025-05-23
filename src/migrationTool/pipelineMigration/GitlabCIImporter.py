@@ -20,6 +20,14 @@ class GitlabCIImporter(Importer):
     """
     return self.yaml_data['stages']
 
+  def __readVariables(self) -> dict[str, str]:
+    """
+    Reads the variables from the YAML data.
+    :rtype: dict[str, str]
+    :return: Variables in the pipeline
+    """
+    return self.yaml_data.get('variables', {})
+
   def __flattenList(self, nested_list):
     """
     Flattens a nested list.
@@ -136,6 +144,7 @@ class GitlabCIImporter(Importer):
     """
     self.yaml_data = yaml.safe_load(file)
     self.stages = self.__readStages()
+    self.variables = self.__readVariables()
     self.jobs = self.__read_jobs()
     self.stage_dependencies, self.needs = self.__read_dependencies()
-    return Pipeline(self.stages, self.jobs, self.stage_dependencies, self.needs, self.__get_schedule())
+    return Pipeline(self.stages, self.jobs, self.stage_dependencies, self.needs, self.__get_schedule(), self.variables)
