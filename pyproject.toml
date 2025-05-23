@@ -19,7 +19,7 @@ exclude = [
 ]
 
 [project]
-name = "migrationTool"
+name = "migrationTool-EmbeddedMontiArc"
 version = "0.1.0"
 authors = [{ name = "David Blum", email = "david.blum@rwth-aachen.de" }]
 description = "A CLI tool to migrate git repos from GitLab to GitHub. For this CI/CD pipelines are converted to GitHub Actions."
