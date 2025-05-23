@@ -2,6 +2,7 @@ import logging
 import os
 import gitlab
 from rich.prompt import Confirm
+from rich import print
 
 from migrationTool.migration_types import Architecture, Config
 
@@ -102,7 +103,7 @@ class DockerMigration:
       if image_new not in self.nativeImage and image_new not in self.notNativeImage:
         print()
         progress.stop()
-        if Confirm.ask(f"Can the image {image} natively be used in a github action?"):
+        if Confirm.ask(f"Can the image [yellow]{image}[/yellow] natively be used in a github action?"):
           self.nativeImage.add(image_new)
         else:
           self.notNativeImage.add(image_new)
@@ -113,7 +114,8 @@ class DockerMigration:
         print()
         progress.stop()
         if image not in self.dontMigrate and Confirm.ask(
-            f"Image {image} is needed for the pipeline, but is not part of the current or a previous migration. Do "
+            f"Image [yellow]{image}[/yellow] is needed for the pipeline, but is not part of the current or a previous "
+            f"migration. Do "
             f"you want to migrate it?"):
 
           cleaned_image = image.split("/")[1:-1]
@@ -133,13 +135,22 @@ class DockerMigration:
         else:
           self.dontMigrate.add(image)
           logger.warning(f"Image {image} will not be migrated.")
-          if Confirm.ask(f"Can the image {image} natively be used in a github action?"):
+          if Confirm.ask(f"Can the image [yellow]{image}[/yellow] natively be used in a github action?"):
             self.nativeImage.add(image)
           else:
             self.notNativeImage.add(image)
           progress.start()
           return "", image
-      logger.warning(f"Could not update image: {image}")
+      if image not in self.nativeImage and image not in self.notNativeImage:
+        logger.warning(f"Could not update image: {image}")
+        print()
+        progress.stop()
+        if Confirm.ask(f"Can the image [yellow]{image}[/yellow] natively be used in a github action?"):
+          self.nativeImage.add(image)
+        else:
+          self.notNativeImage.add(image)
+        progress.start()
+        self.newImages[image] = image
       return "", image
 
   def find_cached_repo(self, path_parts):

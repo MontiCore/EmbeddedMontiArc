@@ -1,5 +1,6 @@
 import logging
 import re
+from rich import print
 
 from migrationTool.migration_types import Architecture
 from migrationTool.pipelineMigration.Converter import Converter
@@ -79,6 +80,9 @@ class GithubActionConverter(Converter):
           pipeline_string += f"\t{secret[0]} : " + f"{secret[1]}\n"
         else:
           pipeline_string += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
+    if self.pipeline.variables:
+      for var_name, var_value in self.pipeline.variables.items():
+        pipeline_string += f"\t{var_name} : " + f"{var_value}\n"
 
     pipeline_string += "jobs:\n"
     # Check if job(s) exist that are only run if certain files changed

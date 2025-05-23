@@ -3,7 +3,7 @@ class Pipeline:
   Class representing a CI/CD pipeline.
   """
 
-  def __init__(self, stages, jobs, stageJobs, jobNeeds, schedule):
+  def __init__(self, stages, jobs, stageJobs, jobNeeds, schedule, variables={}):
     """
     Initializes the pipeline with the given stages, jobs, and their dependencies.
     :param stages: List of stages in the pipeline
@@ -18,6 +18,7 @@ class Pipeline:
     self.stageJobs = stageJobs
     self.jobNeeds = jobNeeds
     self.schedule = schedule
+    self.variables = variables
 
   def __str__(self):
     string = f"Stages: {self.stages}\n"
