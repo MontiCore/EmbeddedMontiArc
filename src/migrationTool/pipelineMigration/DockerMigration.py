@@ -62,10 +62,16 @@ class DockerMigration:
     with open(self.path, "a") as file:
       for original_url, new_url in self.newImages.items():
         if original_url not in self.migratedImages.keys():
-          if new_url not in self.nativeImage:
+          if new_url in self.nativeImage:
+            file.write(f"{original_url};{new_url};y\n")
+          elif new_url in self.notNativeImage:
             file.write(f"{original_url};{new_url};n\n")
           else:
-            file.write(f"{original_url};{new_url};y\n")
+            if Confirm.ask(f"Can the image [yellow]{new_url}[/yellow] natively be used in a github action?"):
+              file.write(f"{original_url};{new_url};y\n")
+            else:
+              file.write(f"{original_url};{new_url};n\n")
+
 
   def read_previously_migrated_docker_images(self):
     """

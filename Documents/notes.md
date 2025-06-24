@@ -164,3 +164,11 @@ Solution idea: Add a stage job that decides whether the current stage is deemend
 - [x] Push in multiple steps, so that 2GB limit is not hit
 
 - [x] Implement multiple branches in monorepo
+
+- [ ] Change brnach conditoin to: github.ref_name == 'master'
+
+- [ ] Change need condition to run not if skipped but in case of success or failure do
+
+- [ ] Change filejob to als check except
+
+- [ ] Importer not suited because seperate runs for each script line -> separate shells mention in begining

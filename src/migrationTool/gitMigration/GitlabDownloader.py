@@ -216,7 +216,9 @@ class GitlabDownloader(Git, Downloader):
       logger.error(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       typer.echo(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       return (gitlab_repo.name, ":x: [red] Invalid Git repository, please delete the folder [/red]",)
+    # What does this do?
     self.checkout_branches(local_repo)
+    #Really necessary?
     self.remove_remote_origin(local_repo)
     return (gitlab_repo.name, ":white_check_mark: [green] Successfully cloned [/green]",)
 
