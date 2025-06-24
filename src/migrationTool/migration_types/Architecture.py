@@ -99,7 +99,8 @@ class Architecture:
     :return: List of docker images
     """
     docker_images = {}
-    for repoID, repo in self.repos:
-      if repo.docker_images is not None:
-        docker_images[repoID] = repo.docker_images
+    for repoID in self.repos:
+      repo = self.get_repo_by_ID(repoID)
+      if repo.images is not None:
+        docker_images[repoID] = repo.images
     return docker_images

@@ -36,9 +36,9 @@ class Repo:
   def read_from_Architecture(name: str, architecture: dict[str, str | list[str] | dict]) -> tuple[str, Repo]:
     """
     Reads the repo name and id from the architecture file.
-    :param repoID: Id of the repository
+    :param name : Name of the repo
     :param architecture: Architecture file
-    :return: Tuple of repo name and id
+    :return: Tuple of repo ID and Repo object
     """
     active_branches = architecture.get("Branches", [])
     stale_branches = architecture.get("StaleBranches", [])

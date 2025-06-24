@@ -50,36 +50,6 @@ class Git:
       logger.error(f"Fehler beim Zurücksetzen des Remote 'origin': {e}")
       typer.echo("[red]Fehler beim Zurücksetzen des Remote 'origin'. PLease be carefull when manually pushing![/red]")
 
-  def set_upstream_for_branches(self, repo, remote_name="origin"):
-    """
-    Adds upstream branches to all local branches in the given repository.
-    :param repo: Repo object
-    :param remote_name: Name of remote origin. Default is origin
-    """
-    try:
-      for branch in repo.branches:
-        if (branch.tracking_branch() is None):  # Check if the branch has an upstream branch
-          remote_branch = f"{remote_name}/{branch.name}"
-          repo.git.branch("--set-upstream-to", remote_branch, branch.name)
-          print(f"Upstream-Branch für '{branch.name}' auf '{remote_branch}' gesetzt.")
-        else:
-          print(f"Upstream-Branch für '{branch.name}' ist bereits gesetzt.")
-    except Exception as e:
-      print(f"Fehler beim Setzen der Upstream-Branches: {e}")
-
-  def delete_local_branch(self, repoPath, branch_name):
-    """
-    Deletes a local branch in the given repository.
-    :param repoPath: Path to the repository
-    :param branch_name: Name of the branch to be deleted
-    """
-    try:
-      repo = git.Repo(repoPath)
-      repo.git.branch("-D", branch_name)
-      print(f"Branch '{branch_name}' was deleted")
-    except Exception as e:
-      print(f"Fehler beim Löschen des Branches '{branch_name}': {e}")
-
   def init_repo(self, repo_name):
     """
     Initialize a git repository in the given path and makes init commit.
@@ -111,8 +81,10 @@ class Git:
   def add_subtree(self, repo, subtree_repo_name, subtree_repo_path, prefix="", branch="master"):
     """
     Add a subtree to the repository.
-    :param name: Repository name
+    :param repo: Repository object
+    :param subtree_repo_path: Path to the repository to be added as a subtree
     :param subtree_repo_name: Name of the repository to be added as a subtree
+    :param prefix: Group prefix of the monorepo
     :param branch: Branch of the subtree to be added
     """
     # Check if the subtree already exists
@@ -177,7 +149,10 @@ class Git:
     """
     Adds only master branch as subtree to the target repository.
     :param target_repo_name: Name of the target GitHub repository
-    :param subtree_repo_IDS: IDs of the repositories to be uploaded as subtrees
+    :param target_repo_namespace: Namespace of the target GitHub repository
+    :param architecture: Architecture object containing the repositories to be added
+    :param repoIDs: List of repository IDs to be added as subtrees. If empty, all repositories in the architecture
+    are added.
     """
     console = Console()
     if not repoIDs:
@@ -190,7 +165,6 @@ class Git:
       if Confirm.ask(f"[red]Branch {branch_name} already exists. Do you want to delete it?"):
         target_repo.delete_head(branch_name)
     target_repo.create_head(branch_name)
-    # target_repo.git.symbolic_ref(f"refs/heads/{branch_name}", "refs/heads/empty")  # ToDO: Test
     target_repo.heads[branch_name].checkout()
     numberIterations = 0
     for repoID in repoIDs:

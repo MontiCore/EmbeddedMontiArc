@@ -6,7 +6,8 @@ from rich import print
 
 class Config:
   def __init__(self, path="config.yaml"):
-    data = yaml.safe_load(open(path))
+    with open(path, "r") as file:
+      data = yaml.safe_load(file)
     self.url = data["URL"]
     self.sourceToken = data["SourceToken"]
     self.sourceUser = data["SourceUser"]
@@ -31,8 +32,8 @@ class Config:
               "MonorepoNamespace": "Please add the namespace of the monorepo, this removed from the beginning of the "
                                    "repo "
                                    "namespaces", }
-
-      yaml.safe_dump(data, open(path, "w"))
+      with open(path, "w") as file:
+        yaml.safe_dump(data, file)
       print(f"[green]Config file created at {path}[/green]")
       exit(0)
     else:
