@@ -35,7 +35,6 @@ class TestGithubSubTreeConverter(TestCase):
   def test_parse_pipeline(self):
     # Test that the pipeline is parsed correctly
     pipeline = self.github_converter.parse_pipeline("RepoA", self.architecture.get_repo_by_ID("1").secrets)
-    print(pipeline)
     self.assertIsNotNone(pipeline)
     self.assertIsInstance(pipeline, str)
 
@@ -108,7 +107,6 @@ class TestGithubSubTreeConverter(TestCase):
     # Test that the need job is parsed correctly
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["need_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
-    print(pipeline)
     updated_path = """path: |
             repoA/artifact.txt"""
     self.assertIn(updated_path, pipeline)

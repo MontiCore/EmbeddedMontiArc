@@ -1,16 +1,17 @@
 import os
 import shutil
 from unittest import TestCase
-from unittest.mock import patch
 from rich.progress import Progress
-from rich.prompt import Confirm
+from unittest.mock import MagicMock, patch
 
 from migrationTool.migration_types import Architecture, Config
 from migrationTool.pipelineMigration import DockerMigration
 
 
 class TestDockerMigration(TestCase):
-  def setUp(self):
+  @patch("gitlab.Gitlab")
+  def setUp(self, mock_gitlab):
+    mock_gitlab.return_value.auth = MagicMock(return_value=None)
     path = os.getcwd()
     path = path.split(os.path.sep)
     for i in range(len(path)):
@@ -22,8 +23,7 @@ class TestDockerMigration(TestCase):
     architecture = Architecture.load_architecture(os.path.join(docker_migration_path, "architecture.yaml"))
     config = Config(os.path.join(docker_migration_path, "config.yaml"))
     self.docker_migration = DockerMigration.DockerMigration(architecture, config,
-                                                            os.path.join(docker_migration_path, "images.txt"),
-                                                            test=True)
+                                                            os.path.join(docker_migration_path, "images.txt"))
 
   def tearDown(self):
     shutil.rmtree(os.path.join(os.getcwd(), "TEST"))
@@ -92,7 +92,7 @@ class TestDockerMigration(TestCase):
                  'ghcr.io/davidblm/EMAM2SomeIP:v2'}
     self.assertIsInstance(images, dict)
     self.assertDictEqual(correct, images)
-    self.assertEqual(self.docker_migration.nativeImage, set("ubuntu:22.04"))
+    self.assertEqual(self.docker_migration.nativeImage, {"ubuntu:22.04"})
 
   @patch('rich.prompt.Confirm.ask')
   def test_get_new_image(self, mock_confirm):

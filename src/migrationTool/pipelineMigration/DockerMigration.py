@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class DockerMigration:
-  def __init__(self, architecture: Architecture, config: Config, path: str, test: bool = False):
+  def __init__(self, architecture: Architecture, config: Config, path: str):
     """
     Initializes the DockerMigration class with the given path.
     :param architecture: Architecture to use
@@ -26,11 +26,8 @@ class DockerMigration:
     self.newImages = self.add_images_being_migrated()
     self.dontMigrate = set()
     self.repo_cache = {}
-    if not test:
-      self.gl = gitlab.Gitlab(self.config.url, private_token=self.config.sourceToken)
-      self.gl.auth()
-    else:
-      self.gl = None
+    self.gl = gitlab.Gitlab(self.config.url, private_token=self.config.sourceToken)
+    self.gl.auth()
 
   def add_images_being_migrated(self):
     """
@@ -90,7 +87,9 @@ class DockerMigration:
         original_url, new_url, native = line.strip("\n").split(";")
         dockerImages[original_url] = new_url
         if native == "y":
-          self.nativeImage.update(new_url)
+          self.nativeImage.add(new_url)
+        elif native == "n":
+          self.notNativeImage.add(new_url)
     except:
       pass
     return dockerImages

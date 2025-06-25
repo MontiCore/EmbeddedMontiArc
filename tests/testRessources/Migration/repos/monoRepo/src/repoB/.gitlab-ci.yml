@@ -1,0 +1,21 @@
+stages:
+  - test
+  - build
+
+test:
+  stage: test
+  script:
+    - echo "Running tests for RepoB"
+
+need:
+  stage: build
+  image: docker:latest
+  script:
+    - echo "This job needs to run before the build job"
+
+build:
+  stage: build
+  needs:
+    - need
+  script:
+    - echo "Building Docker images for RepoB"

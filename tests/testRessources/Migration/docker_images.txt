@@ -1,0 +1,2 @@
+docker:latest;docker:latest;n
+ubuntu:latest;ubuntu:latest;y
