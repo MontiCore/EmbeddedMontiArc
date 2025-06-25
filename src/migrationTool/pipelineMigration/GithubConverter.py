@@ -21,35 +21,21 @@ class GithubActionConverter(Converter):
     Initializes the GithubActionConverter class.
     :param architecture: Architecture object
     :param pipeline: Pipeline object
-    :param rebuild: Whether to rebuild the docker images or not
+    :param compatibleImages: Set of images that can be run natively on the GitHub Actions runner
+    :param repoIDs: List of repo IDs to be migrated. If empty, all repos in the architecture are used
+    :param rebuild: Whether to rebuild splitted large files or not
     container
     """
 
     self.pipeline = pipeline
     self.rebuild = rebuild
-    self.timeout = 60  # Default timeout in minutes
+    self.timeout = 120  # Default timeout in minutes
     self.architecture = architecture
     if not repoIDs:
-      self.repoIDS = architecture.repoIDs
+      self.repoIDs = architecture.repoIDs
     else:
       self.repoIDs = repoIDs
-
-    """
-    # ToDo: Delete for production, implement their import
-    self.compatible_images = {"maven:3.6-jdk-8",
-                              "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp"
-                              "/dockerimages/mxnet170-onnx:v0.0.1",
-                              "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp"
-                              "/dockerimages/tensorflow-onnx:latest",
-                              "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator"
-                              "/tensorflow",
-                              "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190"
-                              ":v0.0.2", "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp"
-                                         "/dockerimages/mxnet170:v0.0.1"}
-    self.compatible_images = {"maven:3.6-jdk-8"}
-    """
     self.compatible_images = compatibleImages
-
     self.migrated_docker_images = {}
     for repoID in self.repoIDs:
       repo = self.architecture.get_repo_by_ID(repoID)
@@ -58,12 +44,12 @@ class GithubActionConverter(Converter):
           self.migrated_docker_images[repo.name] = [image]
         else:
           self.migrated_docker_images[repo.name].append(image)
+    self.file_change_job_needed = False  # ToDO: Validate
 
   def parse_pipeline(self, repoID) -> str:
     """
-
-    :param name: Name of the pipeline
-    :param secrets: Secrets to be used in the pipeline, please see architecture.yaml for more information
+    Converts the pipeline object into a Github Action string
+    :param repoID: Repo ID whose pipeline is converted
     :return: String of the converted pipeline
     """
     repo = self.architecture.get_repo_by_ID(repoID)
@@ -110,7 +96,7 @@ class GithubActionConverter(Converter):
 
   def parse_job(self, job: Job, secrets: list[str] = []) -> str:
     """
-        Converts a single job as part of a whole pipeline to a string.
+    Converts a single job as part of a whole pipeline to a string.
     :param job: Job object
     :param secrets: Secrets to be used in the job, please see architecture.yaml for more information
     :return: String of this job block
@@ -162,10 +148,11 @@ class GithubActionConverter(Converter):
 
     # If the job publishes to pages it needs special permissions
     if job.artifacts:
-      if job.artifacts["paths"] == ["public"] and job.name == "pages":
-        job_string += f"\t\tpermissions:\n"
-        job_string += f"\t\t\tpages: write\n"
-        job_string += f"\t\t\tid-token: write\n"
+      if "paths" in job.artifacts:
+        if job.artifacts["paths"] == ["public"] and job.name == "pages":  # ToDo: Add second pages condition
+          job_string += f"\t\tpermissions:\n"
+          job_string += f"\t\t\tpages: write\n"
+          job_string += f"\t\t\tid-token: write\n"
 
     # Add the steps block
     job_string += f"\t\tsteps:\n"
@@ -231,28 +218,29 @@ class GithubActionConverter(Converter):
 
       # Once the script is done and the job was successful, upload the artifacts
       if job.artifacts:
-        if job.artifacts["paths"] == ["public"] and job.name == "pages":
-          # If the job is a pages job, deploy the pages
-          job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
-        else:
-          if "expire_in" in job.artifacts:
-            retention_time = job.artifacts["expire_in"].replace("day", "")
+        if "paths" in job.artifacts:
+          if job.artifacts["paths"] == ["public"] and job.name == "pages":
+            # If the job is a pages job, deploy the pages
+            job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
           else:
-            retention_time = 7
-          if "when" in job.artifacts:
-            if job.artifacts["when"] == "always":
-              # Upload the artifacts always
-              when = "always()"
+            if "expire_in" in job.artifacts:
+              retention_time = job.artifacts["expire_in"].replace("days", "")
             else:
-              # Upload only if successful
+              retention_time = 7
+            if "when" in job.artifacts:
+              if job.artifacts["when"] == "always":
+                # Upload the artifacts always
+                when = "always()"
+              else:
+                # Upload only if successful
+                when = "success()"
+            else:
               when = "success()"
-          else:
-            when = "success()"
 
-          # If the job is not a pages job, upload the artifacts normally
-          job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
-                                                              job.name.replace("/", "_").replace(" ", "_"), when,
-                                                              retention_time)
+            # If the job is not a pages job, upload the artifacts normally
+            job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
+                                                                job.name.replace("/", "_").replace(" ", "_"), when,
+                                                                retention_time)
     return Converter.set_indentation_to_two_spaces(job_string)
 
   @staticmethod
@@ -678,10 +666,6 @@ class GithubActionConverter(Converter):
       if "mvn" in command:
         command += (" -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 "
                     "-Dmaven.wagon.http.readTimeout=600000000")
-      # ToDo: Delete for production
-      if "deploy" in command:
-        delete.append(i)
-        continue
       command = command.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")

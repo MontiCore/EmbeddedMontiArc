@@ -9,7 +9,13 @@ from migrationTool.pipelineMigration.Pipeline import Pipeline
 
 class TestGitlabCIImporter(TestCase):
   def setUp(self):
-    shutil.copytree(os.path.join(os.getcwd(), "testRessources", "GitlabImporter"), os.path.join(os.getcwd(), "TEST"))
+    path = os.getcwd()
+    path = path.split(os.path.sep)
+    for i in range(len(path)):
+      if path[i] == "tests":
+        path = os.path.sep.join(path[:i + 1])
+        break
+    shutil.copytree(os.path.join(path, "testRessources", "GitlabImporter"), os.path.join(os.getcwd(), "TEST"))
 
   def tearDown(self):
     shutil.rmtree(os.path.join(os.getcwd(), "TEST"))

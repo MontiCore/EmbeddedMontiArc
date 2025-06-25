@@ -11,7 +11,13 @@ from migrationTool.pipelineMigration import DockerMigration
 
 class TestDockerMigration(TestCase):
   def setUp(self):
-    shutil.copytree(os.path.join(os.getcwd(), "testRessources", "DockerMigration"), os.path.join(os.getcwd(), "TEST"))
+    path = os.getcwd()
+    path = path.split(os.path.sep)
+    for i in range(len(path)):
+      if path[i] == "tests":
+        path = os.path.sep.join(path[:i + 1])
+        break
+    shutil.copytree(os.path.join(path, "testRessources", "DockerMigration"), os.path.join(os.getcwd(), "TEST"))
     docker_migration_path = os.path.join(os.getcwd(), "TEST")
     architecture = Architecture.load_architecture(os.path.join(docker_migration_path, "architecture.yaml"))
     config = Config(os.path.join(docker_migration_path, "config.yaml"))
