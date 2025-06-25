@@ -21,7 +21,7 @@ class TestGithubSubTreeConverter(TestCase):
       if path[i] == "tests":
         path = os.path.sep.join(path[:i + 1])
         break
-    shutil.copytree(os.path.join(path, "testRessources", "GitHubConverter"), os.path.join(os.getcwd(), "TEST"))
+    shutil.copytree(os.path.join(path, "testRessources", "GitHubConverterSubtree"), os.path.join(os.getcwd(), "TEST"))
     self.architecture = Architecture.load_architecture(os.path.join(os.getcwd(), "TEST", "architecture.yaml"))
     with open(os.path.join(os.getcwd(), "TEST", ".gitlab-ci.yml")) as file:
       importer = GitlabCIImporter()
