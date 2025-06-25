@@ -50,6 +50,11 @@ class Pipeline:
     for stage in self.stageJobs:
       if delete_job in self.stageJobs[stage]:
         self.stageJobs[stage].remove(delete_job)
+        check_stage = stage
+        break
+    if len(self.stageJobs[check_stage]) == 0:
+      del self.stageJobs[check_stage]
+      self.stages.remove(check_stage)
     for jobName in self.jobNeeds:
       if delete_job in self.jobNeeds[jobName]:
         self.jobNeeds[jobName].remove(delete_job)

@@ -97,6 +97,8 @@ class GitlabCIImporter(Importer):
     """
     stage_jobs = {s: set() for s in self.stages}
     for jobName, jobParameter in self.jobs.items():
+      if len(jobParameter.stage) == 1:
+        jobParameter.stage = jobParameter.stage[0]
       stage_jobs[jobParameter.stage].add(jobName)
 
     job_needs = {}

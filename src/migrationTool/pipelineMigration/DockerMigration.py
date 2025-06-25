@@ -10,10 +10,12 @@ logger = logging.getLogger(__name__)
 
 
 class DockerMigration:
-  def __init__(self, architecture: Architecture, config: Config, path: str):
+  def __init__(self, architecture: Architecture, config: Config, path: str, test: bool = False):
     """
     Initializes the DockerMigration class with the given path.
-    :param path: Path to the architecture file
+    :param architecture: Architecture to use
+    :param config: Configuration object containing migration settings
+    :param path: Path to the file where migrated docker images will be stored
     """
     self.path = path
     self.architecture = architecture
@@ -24,15 +26,16 @@ class DockerMigration:
     self.newImages = self.add_images_being_migrated()
     self.dontMigrate = set()
     self.repo_cache = {}
-    self.gl = gitlab.Gitlab(self.config.url, private_token=self.config.sourceToken)
-    self.gl.auth()
+    if not test:
+      self.gl = gitlab.Gitlab(self.config.url, private_token=self.config.sourceToken)
+      self.gl.auth()
+    else:
+      self.gl = None
 
   def add_images_being_migrated(self):
     """
-    Changes the image names in the pipeline to the updated ones.
-    :param pipeline: The pipeline object
-    :param architecture: The architecture object
-    :param repoID: The ID of the repository
+    Gets the images hosted in the currently being migrated repositories
+    :return: Dictionary of new images with their original URLs as keys and new URLs as values
     """
     # Get the full image names from the architecture
     repoIDS = self.config.repoIDS
@@ -71,7 +74,6 @@ class DockerMigration:
               file.write(f"{original_url};{new_url};y\n")
             else:
               file.write(f"{original_url};{new_url};n\n")
-
 
   def read_previously_migrated_docker_images(self):
     """

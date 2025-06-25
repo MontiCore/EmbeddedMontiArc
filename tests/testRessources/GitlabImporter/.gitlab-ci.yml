@@ -1,0 +1,61 @@
+stages:
+  - test
+  - build
+  - deploy
+  - pages
+
+variables:
+  TEST: "test"
+
+image: docker:latest
+before_script:
+  - echo "This is a before script"
+
+test_job:
+  stage: test
+  before_script:
+    - echo "This is a before script for test_job"
+  script:
+    - echo "This is a test job"
+
+test2_job:
+  stage: test
+  image: docker:latest
+  allow_failure: true
+  when: always
+  script:
+    - echo "This is another test job"
+
+build_job:
+  stage: build
+  needs:
+    - test_job
+  dependencies:
+    - test2_job
+  except:
+    - docu
+  script:
+    - echo "This is a build job"
+
+deploy_job:
+  stage: deploy
+  trigger:
+    include:
+      - project: 'architecture'
+        file: '/.gitlab-ci.yml'
+  only:
+    - master
+  artifacts:
+    paths:
+      - abc/**
+
+pages:
+  stage:
+    - pages
+  script:
+    - echo "This is a pages job"
+  artifacts:
+    paths:
+      - public/
+  rules:
+    - $CI_COMMIT_BRANCH == "main"
