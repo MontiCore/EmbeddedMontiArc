@@ -92,6 +92,7 @@ class TestGithubSubTreeConverter(TestCase):
     # Test that the artifact job is parsed correctly
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["artifact_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
+    print(pipeline)
     updated_path = """path: |
             repoA/artifact.txt"""
     self.assertIn(updated_path, pipeline)

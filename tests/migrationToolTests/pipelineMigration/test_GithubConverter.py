@@ -88,6 +88,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Running tests..."
             echo "$TEST"
@@ -111,6 +112,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Building artifacts..."
             echo "Artifact content" > artifact.txt
@@ -142,6 +144,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Building artifacts..."
             echo "Artifact content" > artifact.txt
@@ -173,6 +176,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Deploying image..."
 """
@@ -240,7 +244,7 @@ class TestGithubActionConverter(TestCase):
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  only_branch_job:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref_name == 'main' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -251,6 +255,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job runs only on the 'main' branch"
 """
@@ -263,7 +268,7 @@ class TestGithubActionConverter(TestCase):
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  except_branch_job:
-    if: ${{ github.ref != 'refs/heads/main' }}
+    if: ${{ github.ref_name != 'main' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -274,6 +279,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job runs on all branches except 'main'"
 """
@@ -281,11 +287,13 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_only_files_job(self):
+    self.github_converter.file_change_job_needed = True
     # Tests that the only files job is correctly parsed
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["only_files_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  only_files_job:
+    needs: FileChanges
     if: ${{needs.FileChanges.outputs.runonly_files_job == 'true' }}
     runs-on: ubuntu-latest
     container:
@@ -297,6 +305,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job runs only if files in the 'src/' directory are changed"
 """
@@ -309,6 +318,7 @@ class TestGithubActionConverter(TestCase):
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  except_files_job:
+    if: ${{needs.FileChanges.outputs.runexcept_files_job == 'true' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -319,6 +329,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job runs on all changes except files in the 'docs/' directory"
 """
@@ -326,11 +337,13 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_only_except_files_job(self):
+    self.github_converter.file_change_job_needed = True
     # Tests that the only except files job is correctly parsed
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["only_except_files_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  only_except_files_job:
+    needs: FileChanges
     if: ${{needs.FileChanges.outputs.runonly_except_files_job == 'true' }}
     runs-on: ubuntu-latest
     container:
@@ -342,9 +355,11 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job runs only if files in the 'src/' directory are changed, but not if files in the 'docs/' directory are changed"
 """
+    print(pipeline)
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)
 
@@ -371,6 +386,7 @@ class TestGithubActionConverter(TestCase):
           path: |
             artifact.txt
       - name: Script
+        shell: bash
         run: |
             echo "This job needs the 'artifact_job' to complete successfully before it runs and should download it"
 """
@@ -398,6 +414,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Deploying pages..."
             mkdir public
@@ -463,6 +480,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Building Docker image..."
             docker login registry.git.rwth-aachen.de -u someUserName -p abc
@@ -490,6 +508,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Building Docker image..."
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -518,6 +537,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "Building Maven project..."
             mvn clean install -s settings.xml -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000
@@ -547,6 +567,7 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job runs based on rules"
 """
@@ -570,6 +591,7 @@ class TestGithubActionConverter(TestCase):
           fetch-depth: 1
       - name: Script
         continue-on-error: true
+        shell: bash
         run: |
             echo "This job allows failure"
 """
@@ -593,8 +615,10 @@ class TestGithubActionConverter(TestCase):
         with:
           fetch-depth: 1
       - name: Script
+        shell: bash
         run: |
             echo "This job depends on the 'artifact_job' and should download its artifacts"
 """
+    print(pipeline)
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)

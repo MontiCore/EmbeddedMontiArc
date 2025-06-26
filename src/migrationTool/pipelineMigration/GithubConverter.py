@@ -75,7 +75,8 @@ class GithubActionConverter(Converter):
     # Check if job(s) exist that are only run if certain files changed
     for _, job in self.pipeline.jobs.items():
       # Check whether a job is only run if a file changes
-      needed = job.only and type(job.only) == dict and "changes" in job.only
+      needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
+          job.exc and type(job.exc) == dict and "changes" in job.exc)
       if job.rules:
         for rule in job.rules:
           if "changes" in rule:
@@ -113,22 +114,48 @@ class GithubActionConverter(Converter):
     # Checks the needs of the job and sets the needs of the job accordingly
     if job.needs:
       # If needs exist add them
-      job_string += (f"\t\tneeds: ")
+      needs_string = ""
       if len(job.needs) == 1:
-        job_string += f"{job.needs[0].replace("/", "_").replace(" ", "_")}\n"
+        needs_string += f"{job.needs[0].replace("/", "_").replace(" ", "_")}"
       else:
         for i, j in enumerate(job.needs):
           if i == 0:
-            job_string += (f"[ {j.replace("/", "_").replace(" ", "_")} ")
+            needs_string += (f"[ {j.replace("/", "_").replace(" ", "_")} ")
           else:
-            job_string += (f", {j.replace("/", "_").replace(" ", "_")}")
-        job_string += (f"]\n")
+            needs_string += (f", {j.replace("/", "_").replace(" ", "_")}")
+      i = self.pipeline.stages.index(job.stage)
+      if i > 0:
+        needs_string += f", {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}"
+      file_change_needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
+          job.exc and type(job.exc) == dict and "changes" in job.exc)
+      if job.rules:
+        for rule in job.rules:
+          if "changes" in rule:
+            file_change_needed = True
+      if file_change_needed:
+        # If the job is only run if certain files changed, add the file change job as need
+        needs_string += f", FileChanges"
+      if "," in needs_string:
+        job_string += "\t\tneeds: [" + needs_string + "]\n"
+      else:
+        job_string += "\t\tneeds: " + needs_string + "\n"
     else:
       # If no needs exist, check if the job is the first in the pipeline
       i = self.pipeline.stages.index(job.stage)
       if i > 0:
-        # If not the first job, add the previous stage as a need
-        job_string += f"\t\tneeds: {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}\n"
+        file_change_needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
+            job.exc and type(job.exc) == dict and "changes" in job.exc)
+        if job.rules:
+          for rule in job.rules:
+            if "changes" in rule:
+              file_change_needed = True
+        if file_change_needed:
+          # Job is first in stage and needs file changes
+          job_string += (f"\t\tneeds: [{self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}, "
+                         f"FileChanges]\n")
+        else:
+          # Job is only first in stage
+          job_string += f"\t\tneeds: {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}\n"
       else:
         # If first job, check if the file change job is needed and add it as need
         if self.file_change_job_needed:
@@ -198,6 +225,7 @@ class GithubActionConverter(Converter):
         job_string += f"\t\t\t- name: Script\n"
         if job.allowFailure == True:
           job_string += "\t\t\t\tcontinue-on-error: true\n"
+        job_string += "\t\t\t\tshell: bash\n"
         job_string += f"\t\t\t\trun: |\n"
         job.script = self.script_parser(job.script)
         for command in job.script:
@@ -409,7 +437,7 @@ class GithubActionConverter(Converter):
     ifString = ""
     if self.pipeline.stages.index(job.stage) != 0:
       # If the job is not the first job in the pipeline, check if the previous stage was successful
-      ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'skipped') "
+      ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'failure') "
 
     # Handle only keyword
     if job.only:
@@ -437,22 +465,15 @@ class GithubActionConverter(Converter):
 
     # Handle except keyword
     if job.exc:
-      # Exclude for single files is not supported automatically
-      """
       if type(job.exc) == dict:
+        # Job is only to be run if certain files changed
+        if "changes" in job.exc and "needs.FileChanges" not in ifString:
           if ifString == "":
-              ifString += "\t\tif: ${{"
-          # ToDo: Check if this is correct
-          if "changes" in job.exc:
-              # Job is not to be run if certain files not changed
-              ifString += f" && !contains(github.event.head_commit.message, '"
-              for i, p in enumerate(job.exc['changes']):
-                  if i == 0:
-                      ifString += f"{p}"
-                  else:
-                      ifString += f", {p}"
-              ifString += "')"
-      """
+            ifString += "\t\tif: ${{"
+          else:
+            ifString += " && "
+          # Check output of fileChangeJob whether it should be run or skipped
+          ifString += f"needs.FileChanges.outputs.run{job.name.replace('/', '_').replace(' ', '_')} == 'true'"
       # Job is not to be run if certain branches are pushed
       if type(job.exc) == list:
         # Job is not to be run if certain branches are pushed

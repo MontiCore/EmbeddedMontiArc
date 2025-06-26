@@ -87,7 +87,7 @@ class GithubSubTreeConverter(GithubActionConverter):
     jobString = jobString.replace("            cd /workspace\n",
                                   "            cd /workspace\n" + "            cd " + f"{self.repoPath}" + "\n", )
     # Native job, match with begining of run block and prepend cd to folder
-    patternRepo = r"(- name: Script\s+run: \|)"
+    patternRepo = r"(- name: Script\s+shell: bash\s+run: \|)"
     repoCD = r"\1\n" + f"            cd {self.repoPath}"
     jobString = re.sub(patternRepo, repoCD, jobString)
 

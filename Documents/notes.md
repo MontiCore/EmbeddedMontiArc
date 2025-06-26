@@ -177,7 +177,7 @@ ToDo
 
 - [x] Implement usage as CLI, implement adaptability in the script
 
-- [ ] Implement usage as library
+- [x] Implement usage as library
 
 - [ ] Implement retry mechanism for migration, so that no double commits
 
@@ -185,12 +185,10 @@ ToDo
 
 - [x] Need organization acces to Monticore -> Create extra repos, as no folder structure as in GitLab: Only monorepo
 
-- [ ] Change tool to be independent of user Namespace, currently only works for David.Blum -> Change to repo owner
+- [x] Change tool to be independent of user Namespace, currently only works for David.Blum -> Change to repo owner
   variable in jobs -> remove config entry
 
-- [x] Change trigger similar to: https://github.com/github/gh-actions-importer/blob/main/docs/gitlab/Trigger.md
-
-- [x] Add pre-commit hook to check for file siz -> if yes split? Add pull-hook to rebuild those large files
+- [x] Add pre-commit hook to check for file size -> if yes split? Add pull-hook to rebuild those large files -> omitted
 
 - [x] Make sure user push protection is set to false -> Has to be done manually, no API access
 
@@ -200,12 +198,15 @@ ToDo
 
 - [x] Implement multiple branches in monorepo
 
-- [x] Change brnach conditoin to: github.ref_name == 'master'
+- [x] Change brnach condition to: github.ref_name == 'master'
 
-- [ ] Change need condition to run not if skipped but in case of success or failure do
-
-- [ ] Change filejob to als check except
+- [x] Change filejob to als check except
 
 - [x] Importer not suited because seperate runs for each script line -> separate shells mention in begining
 
-- [ ] Add fileChanges dependency for downstream jobs -> important for rules
+- [x] Add fileChanges dependency for downstream jobs -> important for rules
+
+- [ ] Change trigger similar to: https://github.com/github/gh-actions-importer/blob/main/docs/gitlab/Trigger.md
+  
+- [ ] Add reporting action
+
