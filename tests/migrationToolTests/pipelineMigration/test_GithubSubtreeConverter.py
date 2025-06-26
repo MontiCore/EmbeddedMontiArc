@@ -15,13 +15,9 @@ specific changes are tested.
 
 class TestGithubSubTreeConverter(TestCase):
   def setUp(self):
-    path = os.getcwd()
-    path = path.split(os.path.sep)
-    for i in range(len(path)):
-      if path[i] == "tests":
-        path = os.path.sep.join(path[:i + 1])
-        break
-    shutil.copytree(os.path.join(path, "testRessources", "GitHubConverterSubtree"), os.path.join(os.getcwd(), "TEST"))
+    current_file_dir = os.path.dirname(__file__)
+    testresources_path = os.path.abspath(os.path.join(current_file_dir, "../../testRessources/GitHubConverterSubtree"))
+    shutil.copytree(testresources_path, os.path.join(os.getcwd(), "TEST"))
     self.architecture = Architecture.load_architecture(os.path.join(os.getcwd(), "TEST", "architecture.yaml"))
     with open(os.path.join(os.getcwd(), "TEST", ".gitlab-ci.yml")) as file:
       importer = GitlabCIImporter()

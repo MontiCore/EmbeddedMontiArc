@@ -11,13 +11,9 @@ from migrationTool.pipelineMigration import GitlabToGithubSubtree
 
 class Test(TestCase):
   def setUp(self):
-    path = os.getcwd()
-    path = path.split(os.path.sep)
-    for i in range(len(path)):
-      if path[i] == "tests":
-        path = os.path.sep.join(path[:i + 1])
-        break
-    shutil.copytree(os.path.join(path, "testRessources", "Migration"), os.path.join(os.getcwd(), "TEST"))
+    current_file_dir = os.path.dirname(__file__)
+    testresources_path = os.path.abspath(os.path.join(current_file_dir, "../../testRessources/Migration"))
+    shutil.copytree(testresources_path, os.path.join(os.getcwd(), "TEST"))
     self.architecture = Architecture.load_architecture(os.path.join(os.getcwd(), "TEST", "architecture.yaml"))
     self.config = Config(os.path.join(os.getcwd(), "TEST", "config.yaml"))
 

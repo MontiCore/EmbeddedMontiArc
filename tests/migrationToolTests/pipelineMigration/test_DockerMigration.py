@@ -11,14 +11,9 @@ from migrationTool.pipelineMigration import DockerMigration
 class TestDockerMigration(TestCase):
   @patch("gitlab.Gitlab")
   def setUp(self, mock_gitlab):
-    mock_gitlab.return_value.auth = MagicMock(return_value=None)
-    path = os.getcwd()
-    path = path.split(os.path.sep)
-    for i in range(len(path)):
-      if path[i] == "tests":
-        path = os.path.sep.join(path[:i + 1])
-        break
-    shutil.copytree(os.path.join(path, "testRessources", "DockerMigration"), os.path.join(os.getcwd(), "TEST"))
+    current_file_dir = os.path.dirname(__file__)
+    testresources_path = os.path.abspath(os.path.join(current_file_dir, "../../testRessources/DockerMigration"))
+    shutil.copytree(testresources_path, os.path.join(os.getcwd(), "TEST"))
     docker_migration_path = os.path.join(os.getcwd(), "TEST")
     architecture = Architecture.load_architecture(os.path.join(docker_migration_path, "architecture.yaml"))
     config = Config(os.path.join(docker_migration_path, "config.yaml"))
