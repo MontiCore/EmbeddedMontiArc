@@ -1,0 +1,4 @@
+ubuntu:22.04;ubuntu:22.04;y
+registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2pythonwrapper/tests/mvn-swig:latest;ghcr.io/davidblm/EMADL2PythonWrapper/tests/mvn-swig:latest;n
+registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip:latest;ghcr.io/davidblm/EMAM2SomeIP:latest;n
+registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emam2someip:v2;ghcr.io/davidblm/EMAM2SomeIP:v2;n

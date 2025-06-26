@@ -1,0 +1,18 @@
+RepoA:
+  DockerImages:
+    - embedded_montiarc:latest
+    - embedded_montiarc:0.1.0
+    - test:latest
+  ID: '1'
+  Namespace: monticore/EmbeddedMontiArc/applications
+  Path: /home/david/repos/RepoA
+  StaleBranches:
+    - master
+RepoB:
+  DockerImages:
+    - :latest
+  ID: '2'
+  Namespace: monticore/EmbeddedMontiArc/applications/gans
+  Path: /home/david/repos/RepoB
+  StaleBranches:
+    - master

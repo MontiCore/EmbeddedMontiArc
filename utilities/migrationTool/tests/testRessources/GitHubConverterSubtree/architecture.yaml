@@ -1,0 +1,17 @@
+RepoA:
+  DockerImages:
+    - embedded_montiarc:latest
+    - embedded_montiarc:0.1.0
+    - test:latest
+  Secrets:
+    CI_API_V4_URL:
+      Secret: N
+      Value: https://git.rwth-aachen.de/api/v4
+    GITLABTOKEN:
+      Secret: Y
+      Value: SuperSecretToken
+  ID: '1'
+  Namespace: monticore/EmbeddedMontiArc/applications
+  Path: /home/david/repos/RepoA
+  StaleBranches:
+    - master
