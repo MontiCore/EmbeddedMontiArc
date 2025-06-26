@@ -27,6 +27,9 @@ class TestGithubActionConverter(TestCase):
     shutil.rmtree(os.path.join(os.getcwd(), "TEST"))
 
   def test_parse_pipeline(self):
+    """
+    Tests that the pipeline is parsed correctly. It should contain the correct name, triggers, variables, and jobs.
+    """
     pipeline = self.github_converter.parse_pipeline("1")
     self.assertIsNotNone(pipeline)
     self.assertIsInstance(pipeline, str)
@@ -68,12 +71,15 @@ class TestGithubActionConverter(TestCase):
     # Test that FileChange job provides correct outputs
     output_definition = """outputs:
       runonly_files_job: ${{steps.only_files_job.outputs.run}}
+      runexcept_files_job: ${{steps.except_files_job.outputs.run}}
       runonly_except_files_job: ${{steps.only_except_files_job.outputs.run}}
       runrules_job: ${{steps.rules_job.outputs.run}}"""
     self.assertIn(output_definition, pipeline)
 
   def test_parse_variable_job(self):
-    # Tests that the variable job is correctly parsed
+    """
+    Tests that the variable job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["variable_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -97,7 +103,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_artifact_job(self):
-    # Tests that the artifact job is correctly parsed
+    """
+    Tests that the artifact job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["artifact_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -129,7 +137,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_artifact_advanced_job(self):
-    # Tests that the artifact job is correctly parsed
+    """
+    Tests that the artifact job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["artifact_advanced_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -161,7 +171,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_image_native_job(self):
-    # Tests that the image native job is correctly parsed
+    """
+    Tests that the image native job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["image_native_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -184,7 +196,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_image_manual_migrated_job(self):
-    # Tests that the image manual migrated job is correctly parsed
+    """
+    Tests that the image manual migrated job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["image_manual_migrated_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -212,7 +226,10 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_image_manual_not_migrated_job(self):
-    # Tests that the image manual not migrated job is correctly parsed
+    """
+    Tests that the image manual not migrated job is correctly parsed
+    """
+    Tests that the image manual not migrated job is correctly parsed
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["image_manual_not_migrated_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -239,7 +256,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_only_branch_job(self):
-    # Tests that the only branch job is correctly parsed
+    """
+    Tests that the only branch job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["only_branch_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -263,7 +282,11 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_except_branch_job(self):
-    # Tests that the except branch job is correctly parsed
+    """
+    Tests that the except branch job is correctly parsed
+        """
+    Tests that the only files job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["except_branch_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -287,8 +310,11 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_only_files_job(self):
+    """
+    Tests that the only files job is correctly parsed
+    """
     self.github_converter.file_change_job_needed = True
-    # Tests that the only files job is correctly parsed
+
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["only_files_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -313,7 +339,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_except_files_job(self):
-    # Tests that the except files job is correctly parsed
+    """
+    Tests that the except files job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["except_files_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -338,7 +366,9 @@ class TestGithubActionConverter(TestCase):
 
   def test_parse_only_except_files_job(self):
     self.github_converter.file_change_job_needed = True
-    # Tests that the only except files job is correctly parsed
+    """
+    Tests that the only except files job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["only_except_files_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -359,12 +389,13 @@ class TestGithubActionConverter(TestCase):
         run: |
             echo "This job runs only if files in the 'src/' directory are changed, but not if files in the 'docs/' directory are changed"
 """
-    print(pipeline)
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_need_job(self):
-    # Tests that the need job is correctly parsed
+    """
+    Tests that the need job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["need_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -394,7 +425,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_pages_job(self):
-    # Tests that the pages job is correctly parsed
+    """
+    Tests that the pages job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["pages"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -430,7 +463,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_trigger_job(self):
-    # Tests that the trigger job is correctly parsed
+    """
+    Tests that the trigger job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["trigger_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -463,7 +498,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_docker_not_migrated_job(self):
-    # Tests that the docker not migrated job is correctly parsed
+    """
+    Tests that the docker not migrated job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["docker_not_migrated_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -491,7 +528,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_docker_migrated_job(self):
-    # Tests that the docker migrated job is correctly parsed
+    """
+    Tests that the docker migrated job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["docker_migrated_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -520,7 +559,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_maven_job(self):
-    # Tests that the maven job is correctly parsed
+    """
+    Tests that the maven job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["maven_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -546,10 +587,41 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_report_job(self):
-    self.skipTest("ToBe implemented")
+    """
+    Tests that the report job is correctly parsed
+    """
+    pipeline = self.github_converter.parse_job(self.pipeline.jobs["report_job"],
+                                               self.architecture.get_repo_by_ID("1").secrets)
+    expected = """  report_job:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            echo "Generating test report..."
+            mkdir reports
+            echo "Test report content" > reports/test-report.txt
+      - name: Reporting
+        uses: dorny/test-reporter@v2
+        if : ${{ always() }}
+        with:
+          path: |
+            - reports/test-report.xml
+          reporter: java-junit
+"""
+    self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_rules_job(self):
-    # Tests that the rules job is correctly parsed
+    """
+    Tests that the rules job is correctly parsed
+    """
     self.github_converter.file_change_job_needed = True
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["rules_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
@@ -599,7 +671,9 @@ class TestGithubActionConverter(TestCase):
     self.assertMultiLineEqual(pipeline, expected)
 
   def test_parse_dependencies_job(self):
-    # Tests that the dependencies job is correctly parsed
+    """
+    Tests that the dependencies job is correctly parsed
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["dependencies_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -619,6 +693,5 @@ class TestGithubActionConverter(TestCase):
         run: |
             echo "This job depends on the 'artifact_job' and should download its artifacts"
 """
-    print(pipeline)
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)

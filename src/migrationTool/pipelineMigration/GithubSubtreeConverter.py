@@ -80,20 +80,42 @@ class GithubSubTreeConverter(GithubActionConverter):
     :param secrets: List of secrets to be used in the job
     :return: Converted job
     """
+
+    def parse_path(path: str) -> str:
+      """
+      Parses a path and adds the repo path to it.
+      :param path: Path from normal job
+      :return: Path for monorepo job
+      """
+      path = path.split("/")
+      if path[0] == ".":
+        # If the path is relative, add the repo path to it
+        return f"{self.repoPath}/{'/'.join(path[1:])}"
+      else:
+        return f"{self.repoPath}/{'/'.join(path)}"
+
+    if job.artifacts:
+      if "paths" in job.artifacts:
+        # If the job has artifacts, add the repo path to the paths
+        for i, path in enumerate(job.artifacts["paths"]):
+          job.artifacts["paths"][i] = parse_path(path)
+      elif "reports" in job.artifacts:
+        # If the job has reports, add the repo path to the paths
+        if type(job.artifacts["reports"]) == list:
+          # If the report is a list, parse each path in the list
+          for i, report in enumerate(job.artifacts["reports"]):
+            if report.startswith("junit"):
+              job.artifacts["reports"][i] = "junit:" + parse_path(report.split(":")[1])
+        elif type(job.artifacts["reports"]) == str:
+          # If the report is a single path, parse it
+          job.artifacts["reports"] = parse_path(job.artifacts["reports"])
+    if job.script:
+      # If the job has a script, add the repo path to the script
+      job.script = [f"cd {self.repoPath}"] + job.script
+
     # Uses the normal githubaction converter to parse the job
     jobString = super().parse_job(job, secrets)
-    # Add to the cd command in the begining of the commands, so that the job is run in the correct directory
-    # Non native job
-    jobString = jobString.replace("            cd /workspace\n",
-                                  "            cd /workspace\n" + "            cd " + f"{self.repoPath}" + "\n", )
-    # Native job, match with begining of run block and prepend cd to folder
-    patternRepo = r"(- name: Script\s+shell: bash\s+run: \|)"
-    repoCD = r"\1\n" + f"            cd {self.repoPath}"
-    jobString = re.sub(patternRepo, repoCD, jobString)
 
-    # Add the prefix to the paths in the artifact upload bloxks
-    artifactUploadPattern = (r"(- name: .*\n\s+uses: actions/upload-artifact@v4\n(?:\s+if: .*\n)?\s+with:\n("
-                             r"?:\s+.+\n)*\s+path: \|\n((?:\s+.+\n?)+))")
     prefix = f"{self.repoPath}/"
 
     def replace_paths_with_prefix(match):
@@ -102,8 +124,6 @@ class GithubSubTreeConverter(GithubActionConverter):
       prefixed_paths = [f"            {prefix}{path.strip()}" for path in paths if path.strip()]
       full_block_without_path = re.sub(r"path: \|.*", "", full_block, flags=re.DOTALL)
       return (full_block_without_path + "path: |\n" + "\n".join(prefixed_paths) + "\n")
-
-    jobString = re.sub(artifactUploadPattern, replace_paths_with_prefix, jobString)
 
     # Add the prefix to the paths in the artifact download blocks
     artifactDownloadPattern = (r"(- name: .*\n\s+uses: actions/download-artifact@v4\n(?:\s+.+\n)*?\s+path: \|\n)(("
@@ -139,10 +159,6 @@ class GithubSubTreeConverter(GithubActionConverter):
 
       jobString = re.sub(url_pattern, fr"https://api.github.com/repos/${{{{ github.repository }}}}/actions/workflows/"
                                       fr"{workloflow_name}.yml/dispatches", jobString)
-
-      # Replace branch name in ref
-      # jobString = re.sub(ref_pattern, fr"-d '{{"ref":\"${{{{ github.event.repository.default_branch }}}}\"}}'",
-      #                   jobString)
 
       jobString = re.sub(ref_pattern, "-d '{\"ref\":\"${{ github.event.repository.default_branch }}\"}'", jobString)
     return jobString

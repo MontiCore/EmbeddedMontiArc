@@ -24,7 +24,9 @@ class TestDockerMigration(TestCase):
     shutil.rmtree(os.path.join(os.getcwd(), "TEST"))
 
   def test_add_images_being_migrated(self):
-    # Test that method correctly identifies images and constructs URLs
+    """
+    Test that method correctly identifies images and constructs URLs
+    """
     images = self.docker_migration.add_images_being_migrated()
 
     # Evaluate
@@ -42,7 +44,9 @@ class TestDockerMigration(TestCase):
 
   @patch('rich.prompt.Confirm.ask')  # No Keyboard during test
   def test_write_images_being_migrated(self, mock_confirm):
-    # Test that method writes the correct images to the file
+    """
+    Test that method writes the correct images to the file
+    """
     mock_confirm.side_effect = [True, False, True, False]
     self.docker_migration.write_images_being_migrated()
 
@@ -74,7 +78,9 @@ class TestDockerMigration(TestCase):
     self.assertEqual(new_lines, correct_new_lines)
 
   def test_read_previously_migrated_docker_images(self):
-    # Test that method reads previously migrated images correctly
+    """
+    Test that method reads previously migrated images correctly
+    """
     images = self.docker_migration.read_previously_migrated_docker_images()
 
     # Evaluate
@@ -91,7 +97,9 @@ class TestDockerMigration(TestCase):
 
   @patch('rich.prompt.Confirm.ask')
   def test_get_new_image(self, mock_confirm):
-    # Test that method returns correct new image URL or original if not found
+    """
+    Test that method returns correct new image URL or original if not found
+    """
     mock_confirm.side_effect = [True, False, False, False, False, True]
 
     with Progress() as progress:

@@ -29,7 +29,9 @@ class TestGithubSubTreeConverter(TestCase):
     shutil.rmtree(os.path.join(os.getcwd(), "TEST"))
 
   def test_parse_pipeline(self):
-    # Test that the pipeline is parsed correctly
+    """
+     Test that the pipeline is parsed correctly
+    """
     pipeline = self.github_converter.parse_pipeline("RepoA", self.architecture.get_repo_by_ID("1").secrets)
     self.assertIsNotNone(pipeline)
     self.assertIsInstance(pipeline, str)
@@ -76,23 +78,37 @@ class TestGithubSubTreeConverter(TestCase):
     # Test that FileChange job provides correct outputs
     output_definition = """outputs:
       runonly_files_job: ${{steps.only_files_job.outputs.run}}
+      runexcept_files_job: ${{steps.except_files_job.outputs.run}}
       runonly_except_files_job: ${{steps.only_except_files_job.outputs.run}}
       runrules_job: ${{steps.rules_job.outputs.run}}"""
     self.assertIn(output_definition, pipeline)
 
   def test_parse_variable_job(self):
-    # Test that the variable job is parsed correctly
+    """
+    Test that the variable job is parsed correctly
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["variable_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     cd_to_reop = """run: |
             cd repoA"""
     self.assertIn(cd_to_reop, pipeline)
 
+  def test_parse_report_job(self):
+    """
+    Test that the report job is parsed correctly
+    """
+    pipeline = self.github_converter.parse_job(self.pipeline.jobs["report_job"],
+                                               self.architecture.get_repo_by_ID("1").secrets)
+    updated_path = """path: |
+            - repoA/reports/test-report.xml"""
+    self.assertIn(updated_path, pipeline)
+
   def test_parse_artifact_job(self):
-    # Test that the artifact job is parsed correctly
+    """
+    Test that the artifact job is parsed correctly
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["artifact_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
-    print(pipeline)
     updated_path = """path: |
             repoA/artifact.txt"""
     self.assertIn(updated_path, pipeline)
@@ -101,7 +117,9 @@ class TestGithubSubTreeConverter(TestCase):
     self.assertIn(cd_to_reop, pipeline)
 
   def test_parse_need_job(self):
-    # Test that the need job is parsed correctly
+    """
+    Test that the need job is parsed correctly
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["need_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     updated_path = """path: |
@@ -112,7 +130,9 @@ class TestGithubSubTreeConverter(TestCase):
     self.assertIn(cd_to_reop, pipeline)
 
   def test_image_manual_migrated_job(self):
-    # Test that the native image job is parsed correctly
+    """
+    Test that the native image job is parsed correctly
+    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["image_manual_migrated_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     cd_to_repo = """SCRIPT: |
@@ -121,5 +141,7 @@ class TestGithubSubTreeConverter(TestCase):
     self.assertIn(cd_to_repo, pipeline)
 
   def test_parse_trigger_job(self):
-    # Test that the trigger job is parsed correctly
+    """
+    Test that the trigger job is parsed correctly
+    """
     self.skipTest("To be implemented")

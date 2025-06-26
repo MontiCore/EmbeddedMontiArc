@@ -270,6 +270,15 @@ class GithubActionConverter(Converter):
             job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
                                                                 job.name.replace("/", "_").replace(" ", "_"), when,
                                                                 retention_time)
+        elif "reports" in job.artifacts:
+          # If the job has reports, upload them using the reporting action
+          if job.artifacts["reports"] and "junit" in job.artifacts["reports"]:
+            job_string += GithubActionConverter.reporting(job.artifacts["reports"]["junit"])
+          elif type(job.artifacts["reports"]) == list:
+            for report in job.artifacts["reports"]:
+              if report.startswith("junit"):
+                # If the report is a junit report, upload it using the reporting action
+                job_string += GithubActionConverter.reporting([report.split(":")[1]])
     return Converter.set_indentation_to_two_spaces(job_string)
 
   @staticmethod
@@ -376,6 +385,24 @@ class GithubActionConverter(Converter):
     for path in paths:
       upload += f"\t\t\t\t\t\t{path}\n"
     return upload
+
+  @staticmethod
+  def reporting(paths: list[str]):
+    """
+        Creates the string for the reporting action block.
+    :param paths: Paths to the reports to be uploaded
+    :return: String of the reporting block
+    """
+    report = ""
+    report += "\t\t\t- name: Reporting\n"
+    report += "\t\t\t\tuses: dorny/test-reporter@v2\n"
+    report += "\t\t\t\tif : ${{ always() }}\n"
+    report += "\t\t\t\twith:\n"
+    report += f"\t\t\t\t\tpath: |\n"
+    for path in paths:
+      report += f"\t\t\t\t\t\t- {path}\n"
+    report += "\t\t\t\t\treporter: java-junit\n"
+    return report
 
   @staticmethod
   def download_artifacts(paths: list[str], name) -> str:
@@ -555,7 +582,8 @@ class GithubActionConverter(Converter):
         break
     for _, job in self.pipeline.jobs.items():
       # Add an output for each job that is only run if certain files changed
-      job_output_needed = job.only and type(job.only) == dict and "changes" in job.only
+      job_output_needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
+          job.exc and type(job.exc) == dict and "changes" in job.exc)
       if job.rules:
         for rule in job.rules:
           if "changes" in rule:
@@ -626,7 +654,7 @@ class GithubActionConverter(Converter):
         jobString += "\t\t\t\t\t\t\tbreak\n"
         jobString += "\t\t\t\t\t\tfi\n"
       jobString += "\t\t\t\t\tdone\n"
-      jobString += '\t\t\t\t\techo "Final file status except check: exc"\n'
+      jobString += '\t\t\t\t\techo "Final file status except check: $exc"\n'
       if only and not exc:
         jobString += '\t\t\t\t\techo "run=$only" >> $GITHUB_OUTPUT\n'
       elif exc and not only:
