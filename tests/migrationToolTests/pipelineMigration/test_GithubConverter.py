@@ -229,7 +229,6 @@ class TestGithubActionConverter(TestCase):
     """
     Tests that the image manual not migrated job is correctly parsed
     """
-    Tests that the image manual not migrated job is correctly parsed
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["image_manual_not_migrated_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
@@ -285,8 +284,6 @@ class TestGithubActionConverter(TestCase):
     """
     Tests that the except branch job is correctly parsed
         """
-    Tests that the only files job is correctly parsed
-    """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["except_branch_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off

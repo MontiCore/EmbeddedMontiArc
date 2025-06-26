@@ -1,3 +1,5 @@
 /repos/
-/repos/Meeting/
-/config*
+*/output.log
+architecture.yaml
+config.yaml
+docker_images.txt
