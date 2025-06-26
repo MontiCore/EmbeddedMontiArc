@@ -5,8 +5,40 @@ on:
       - 'utilities/migrationTool/**'
   workflow_dispatch:
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          cd utilities/migrationTool
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$(pwd)/utilities/migrationTool/src:$PYTHONPATH" >> $GITHUB_ENV
+      - name: Configurate Git
+        run: |
+          git config --global user.email "test@test.com"
+          git config --global user.name "Test"
+      - name: Run tests
+        run: |
+          cd utilities/migrationTool
+          pip install pytest pytest-cov
+          pytest --cov=src/migrationTool --cov-report=term --junitxml=report.xml
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v2
+        if: always() # ensures this runs even if previous step fails
+        with:
+          name: Pytest Results
+          path: utilities/migrationTool/report.xml
+          reporter: java-junit     
   build:
     runs-on: ubuntu-latest
+    needs: test
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
