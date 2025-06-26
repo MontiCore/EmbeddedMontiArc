@@ -59,6 +59,7 @@ class GithubActionConverter(Converter):
     pipeline_string += "on:\n"
     pipeline_string += "\tpush:\n"
     pipeline_string += "\tworkflow_dispatch:\n"
+    pipeline_string += "\tpull_request:\n"
     pipeline_string += "env:\n"
     if repo.secrets:
       for secret in repo.secrets:
@@ -408,7 +409,7 @@ class GithubActionConverter(Converter):
     ifString = ""
     if self.pipeline.stages.index(job.stage) != 0:
       # If the job is not the first job in the pipeline, check if the previous stage was successful
-      ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'failure') "
+      ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'skipped') "
 
     # Handle only keyword
     if job.only:
@@ -430,9 +431,9 @@ class GithubActionConverter(Converter):
           ifString += " && "
         for i, branch in enumerate(job.only):
           if i == 0:
-            ifString += f" github.ref == 'refs/heads/{branch}'"
+            ifString += f" github.ref_name == '{branch}'"
           else:
-            ifString += f" && github.ref == 'refs/heads/{branch}'"
+            ifString += f" && github.ref_name == '{branch}'"
 
     # Handle except keyword
     if job.exc:
@@ -457,9 +458,9 @@ class GithubActionConverter(Converter):
         # Job is not to be run if certain branches are pushed
         for i, branch in enumerate(job.exc):
           if i == 0 and not ifString:
-            ifString += f"\t\tif: ${{{{ github.ref != 'refs/heads/{branch}'"
+            ifString += f"\t\tif: ${{{{ github.ref_name != '{branch}'"
           else:
-            ifString += f"\t\t  && github.ref != 'refs/heads/{branch}'"
+            ifString += f"\t\t  && github.ref_name != '{branch}'"
 
     if job.rules:
       # Job is only to be run if certain rules are met, which are examined in file changes
@@ -603,7 +604,7 @@ class GithubActionConverter(Converter):
             condition = rule["if"]
             # Handle Branch conditions
             pattern = r'(\$CI_COMMIT_BRANCH)\s*(==|!=)\s*"([^"]+)"'
-            replacement = r'${{ github.ref }} \2 "refs/heads/\3"'
+            replacement = r'${{ github.ref_name }} \2 "\3"'
             condition = re.sub(pattern, replacement, condition)
             # Handle trigger sources
             pattern = r'(\$CI_PIPELINE_SOURCE)\s*(==|!=)\s*"web"'

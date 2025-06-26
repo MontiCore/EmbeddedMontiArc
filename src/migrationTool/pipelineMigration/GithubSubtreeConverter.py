@@ -35,6 +35,7 @@ class GithubSubTreeConverter(GithubActionConverter):
     pipelineString += "\t\tpaths:\n"
     pipelineString += "\t\t\t- '" + self.repoPath + "/**'\n"
     pipelineString += "\tworkflow_dispatch:\n"
+    pipelineString += "\tpull_request:\n"
     pipelineString += "env:\n"
     pipelineString += f"\tCI_PROJECT_ID : {self.repoID}\n"
     if secrets:
