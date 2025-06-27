@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture UnrollInputsTooMany{
+    def input Q(0:1)^{4} in
+    def output Q(0:1)^{4} out[2]
+
+    in -> Softmax() -> out[0];
+
+    timed<t> GreedySearch(max_length=2) {
+        (out[0] | out[t-1]) ->
+        Concatenate() ->
+        FullyConnected(units=4) ->
+        Softmax() ->
+        out[t]
+    };
+}

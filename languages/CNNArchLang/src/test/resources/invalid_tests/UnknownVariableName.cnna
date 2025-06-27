@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture UnknownVariableName(){
+    in1 ->
+    FullyConnected(units=64) ->
+    Tanh() ->
+    FullyConnected(units=10) ->
+    Softmax() ->
+    out1;
+}
