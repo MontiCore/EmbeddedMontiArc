@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package wrapper.structures;
+import wrapper.structures.*;
+
+struct Quaternion{
+	Q x;
+	Q y;
+	Q z;
+	Q w;
+}

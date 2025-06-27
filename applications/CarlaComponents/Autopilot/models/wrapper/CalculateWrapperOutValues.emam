@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package wrapper;
+import wrapper.structures.*;
+
+component CalculateWrapperOutValues{
+    // ports for Autopilot to CARLA:
+    ports 
+		in Q (0.0 : 0.001 : 2.5) calculated_throttle,
+		in Q (-0.785 : 0.001 : 0.785) calculated_steer,
+		in Q (0.0 : 0.001 : 3.0) calculated_brake,
+		out Ego_Vehicle vehicle_control;
+
+
+    implementation Math{
+        //Wrapping Autopilot output into CARLA input:
+		//convert actuation commands from autopilot into commands for CARLA
+		vehicle_control.throttle = (calculated_throttle / 2.5);
+		vehicle_control.steer = (calculated_steer / 0.785);
+		vehicle_control.brake = (calculated_brake / 3.0);
+		vehicle_control.hand_brake = false;
+		vehicle_control.reverse = false;
+		vehicle_control.gear = 1;
+		vehicle_control.manual_gear_shift = false;	
+    }
+}
