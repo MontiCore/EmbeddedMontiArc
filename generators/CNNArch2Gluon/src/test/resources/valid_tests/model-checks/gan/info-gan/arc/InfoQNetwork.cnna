@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture InfoQNetwork {
+    def input Q(-oo:oo)^{1024} features
+    def output Q(-1:1)^{10} c1
+
+        features ->
+		FullyConnected(units=128, no_bias=true) ->
+		BatchNorm() ->
+		Relu() ->
+		FullyConnected(units=10, no_bias=true) ->
+		Softmax() ->
+		c1;
+}

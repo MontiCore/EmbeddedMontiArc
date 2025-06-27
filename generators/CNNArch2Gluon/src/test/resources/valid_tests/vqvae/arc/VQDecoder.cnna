@@ -1,0 +1,7 @@
+architecture VQDecoder{
+    def input Q(-oo:oo)^{1,28,28} encoding
+    def output Q(-oo:oo)^{1,28,28} data
+
+    encoding ->
+    data;
+}

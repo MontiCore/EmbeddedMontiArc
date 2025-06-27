@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package reward;
+
+component RewardFunction {
+    ports
+        in Q^{16} state,
+        in B isTerminal,
+        out Q reward;
+
+    implementation Math {
+        Q speed = state(15);
+        Q angle = state(1);
+
+        reward = speed * cos(angle);
+    }
+}
