@@ -1,0 +1,10 @@
+    vector<float> CNN_pred_0_(4);
+    vector<float> CNN_pred_1_(4);
+
+    _predictor_0_.predict(CNNTranslator::translate(data[0]),
+                CNNTranslator::translate(data[1]),
+                CNN_pred_0_,
+                CNN_pred_1_);
+
+    pred[0] = CNNTranslator::translateToCol(CNN_pred_0_, std::vector<size_t> {4});
+    pred[1] = CNNTranslator::translateToCol(CNN_pred_1_, std::vector<size_t> {4});
