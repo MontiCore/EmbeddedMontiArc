@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.differential;
+
+component Integrator<T>(T dvalue = 0) {
+	port
+		in T input,
+		out T output;
+
+	implementation Math{
+	    output(t=0) = dvalue;
+	    diff(output) == input;
+	}
+}

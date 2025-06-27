@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops.artificial;
+
+import de.monticore.lang.monticar.semantics.loops.artificial.Basic;
+
+non-virt component NVComp {
+    port
+        in Q input1,
+        in Q input2,
+        out Q output1,
+        out Q output2;
+
+    instance Basic nvb1;
+    instance Basic nvb2;
+
+    connect input1 -> nvb1.input;
+    connect nvb1.output -> output1;
+    connect input2 -> nvb2.input;
+    connect nvb2.output -> output2;
+}

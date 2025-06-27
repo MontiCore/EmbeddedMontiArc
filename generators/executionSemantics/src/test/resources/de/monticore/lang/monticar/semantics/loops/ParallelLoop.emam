@@ -1,0 +1,19 @@
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.*;
+
+component ParallelLoop {
+    port
+        in Q input,
+        out Q output;
+
+    instance SimpleLoop simple1, simple2;
+    instance Subtract<Q> subtract;
+    instance Add<Q,2> add;
+
+    connect input -> subtract.minuend;
+    connect subtract.difference -> simple1.input, simple2.input;
+    connect simple1.output -> add.summand[1];
+    connect simple2.output -> add.summand[2];
+    connect add.result -> subtract.subtrahend, output;
+}

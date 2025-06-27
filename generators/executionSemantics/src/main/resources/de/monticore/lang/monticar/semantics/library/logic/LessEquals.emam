@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.logic;
+
+component LessEquals<T> {
+	port
+		in T input1,
+		in T input2,
+		out B output;
+
+	implementation Math{
+	    output=input1<=input2;
+	}
+}
