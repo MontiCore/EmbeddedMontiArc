@@ -197,3 +197,4 @@ Different method for the hyperparameter optimization are presented here: [Hyperp
 
 Different methods for neural architecture search and model evaluation methods are presented here:
 [Neural_Architecture_Search.pdf](documents/presentations/Neural_Architecture_Search.pdf)
+
