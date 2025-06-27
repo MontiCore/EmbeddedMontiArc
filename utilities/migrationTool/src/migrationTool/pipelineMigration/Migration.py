@@ -73,9 +73,10 @@ def changeToUpdatedImages(progress, docker_migration, pipeline):
   dependencies = set()
   # Change the image names in the pipeline object
   for _, job in pipeline.jobs.items():
-    new_dependencie, job.image = docker_migration.get_new_Image(progress, job.image)
-    if new_dependencie:
-      dependencies.add(new_dependencie)
+    if job.image != "":
+      new_dependency, job.image = docker_migration.get_new_Image(progress, job.image)
+      if new_dependency:
+        dependencies.add(new_dependency)
   return dependencies, pipeline
 
 

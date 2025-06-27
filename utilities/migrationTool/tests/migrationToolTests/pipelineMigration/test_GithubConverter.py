@@ -478,18 +478,13 @@ class TestGithubActionConverter(TestCase):
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
-      - name: Checkout latest commit
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          repository: another-repo
-          token: ${{ secrets.ACCESS_TOKEN }}
       - name: Trigger another-repo pipeline
-        run: |
-          curl -X POST https://api.github.com/repos/${{ github.repository_owner }}/another-repo/actions/workflows/another-repo.yml/dispatches \\
-            -H "Accept: application/vnd.github+json" \\
-            -H "Authorization: token ${{ secrets.GITHUBTOKEN }}" \\
-            -d '{"ref": "main"}'
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: another-repo.yml
+          BRANCH: main
+          REPO: another-repo
+          GH_TOKEN: ${{github.token}}
 """
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)

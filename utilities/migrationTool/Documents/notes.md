@@ -206,9 +206,14 @@ ToDo
 
 - [x] Add fileChanges dependency for downstream jobs -> important for rules
 
-- [ ] Change trigger similar to: https://github.com/github/gh-actions-importer/blob/main/docs/gitlab/Trigger.md
+- [x] Change trigger similar to: https://github.com/github/gh-actions-importer/blob/main/docs/gitlab/Trigger.md
 
 - [x] Add reporting action
 
+- [ ] Get or create Repo in GHuploader should use user name from config
+
 - [ ] Add second pages trigger
 
+- [ ] Recheck maven options
+
+- [ ] Docker image step only if images contained

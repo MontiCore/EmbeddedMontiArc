@@ -53,7 +53,8 @@ class GithubSubTreeConverter(GithubActionConverter):
     pipelineString += "jobs:\n"
     for _, job in self.pipeline.jobs.items():
       # Check whether a job is only run if a file changes
-      file_changes = (job.only and type(job.only) == dict and "changes" in job.only)
+      file_changes = (job.only and type(job.only) == dict and "changes" in job.only) or (
+          job.exc and type(job.exc) == dict and "changes" in job.exc)
       if job.rules:
         for rule in job.rules:
           if "changes" in rule:
@@ -141,24 +142,21 @@ class GithubSubTreeConverter(GithubActionConverter):
     jobString = re.sub(uploadPagesPattern, add_prefix_to_upload_pages_path, jobString)
 
     if job.trigger:
-      url_pattern = (r"https://api\.github\.com/repos/\$\{\{\s*github\.repository_owner\s*\}\}/(["
-                     r"^/]+)/actions/workflows/([^/]+)\.yml/dispatches")
-      ref_pattern = r"-d\s+'\{\"ref\":\s*\"([^\"]+)\"\}'"
-
       triggered_repo = job.trigger["project"].split("/")[-1]
       repo = self.architecture.get_repo_by_name(triggered_repo)
       if repo:
         multiple_branches = True if len(repo.get_branches_to_be_migrated()) > 1 else False
       else:
         multiple_branches = False
-
       if multiple_branches:
-        workloflow_name = triggered_repo + "_" + job.trigger["branch"]
+        workloflow_name = triggered_repo + "_" + job.trigger["branch"] + ".yml"
       else:
-        workloflow_name = triggered_repo
+        workloflow_name = triggered_repo + ".yml"
 
-      jobString = re.sub(url_pattern, fr"https://api.github.com/repos/${{{{ github.repository }}}}/actions/workflows/"
-                                      fr"{workloflow_name}.yml/dispatches", jobString)
+      # Regex für die Werte
+      pattern = r"(WORKFLOW_FILE:\s+)(\{.*?\}\.yml)|(BRANCH:\s+)(\w+)|(REPO:\s+)(\w+)"
 
-      jobString = re.sub(ref_pattern, "-d '{\"ref\":\"${{ github.event.repository.default_branch }}\"}'", jobString)
+      # Ersetzen der Werte
+      jobString = re.sub(pattern, lambda m: m.group(1) + f"{workloflow_name}" if m.group(1) else m.group(
+        3) + "${{ github.ref_name }}" if m.group(3) else m.group(5) + "${{github.repository}}", jobString)
     return jobString
