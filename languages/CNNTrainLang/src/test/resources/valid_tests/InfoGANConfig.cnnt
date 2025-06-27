@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration InfoGANConfig {
+    learning_method: gan
+    discriminator_name: mnistGenerator.Discriminator
+    qnet_name: mnistGenerator.QNetwork
+    num_epoch: 10
+    batch_size: 64
+    normalize: false
+    context: cpu
+    noise_input: "noise"
+    print_images: true
+    log_period: 10
+    load_checkpoint: false
+    optimizer: adam{
+            learning_rate: 0.0002
+            beta1: 0.5
+    }
+    discriminator_optimizer: adam{
+            learning_rate: 0.0002
+            beta1:0.5
+    }
+    noise_distribution: gaussian{
+            mean_value: 0
+            spread_value: 1
+    }
+    constraint_distributions: { "c1": gaussian{  mean_value: 0
+                                                spread_value: 1 } }
+    constraint_losses: { "c1": l1 }
+}
