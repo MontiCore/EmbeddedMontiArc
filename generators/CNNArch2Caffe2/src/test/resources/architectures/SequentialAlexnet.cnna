@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture SequentialAlexnet(img_height=224, img_width=224, img_channels=3, classes=10){
+    def input Z(0:255)^{img_channels, img_height, img_width} data
+    def output Q(0:1)^{classes} predictions
+
+    def conv(kernel, channels, hasPool=true, convStride=(1,1)){
+        Convolution(kernel=kernel, channels=channels, stride=convStride) ->
+        Relu() ->
+        Pooling(pool_type="max", kernel=(3,3), stride=(2,2), ?=hasPool)
+    }
+    def fc(){
+        FullyConnected(units=4096) ->
+        Relu() ->
+        Dropout()
+    }
+
+    data ->
+    conv(kernel=(11,11), channels=96, convStride=(4,4)) ->
+    Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
+    conv(kernel=(5,5), channels=256, convStride=(4,4)) ->
+    Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
+    conv(kernel=(3,3), channels=384, hasPool=false) ->
+    conv(kernel=(3,3), channels=384, hasPool=false) ->
+    conv(kernel=(3,3), channels=256) ->
+    fc() ->
+    fc() ->
+    FullyConnected(units=classes) ->
+    Softmax() ->
+    predictions;
+}
