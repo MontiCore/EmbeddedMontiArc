@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.a;
+
+component CompA{
+    port in Q portA;
+    port in Q portB;
+    port out Q portC;
+    port out Q portD;
+    port in N portE;
+    port out N portF;
+    port in Z portG;
+    port out Z portH;
+    port in B portI;
+    port out B portJ;
+
+    implementation Math{
+        portA = portD;
+        portE = portF;
+        portG = portH;
+        portI = portJ;
+    }
+}
