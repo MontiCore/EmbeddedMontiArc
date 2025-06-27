@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests;
+
+component GenericCompInstance{
+
+    instance GenericComp<B> instB;
+    instance GenericComp<Q> instQ;
+    instance GenericComp<Z> instZ;
+
+    //Not supported: no way of getting the matrix type
+    //instance GenericComp<B^{3,1}> instBMat;
+    //instance GenericComp<Q^{3,1}> instQMat;
+    //instance GenericComp<Z^{3,1}> instZMat;
+}

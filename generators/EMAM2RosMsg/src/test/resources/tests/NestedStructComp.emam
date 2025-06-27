@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests;
+import structs.NestedStruct;
+
+component NestedStructComp{
+    port in NestedStruct inNested;
+}

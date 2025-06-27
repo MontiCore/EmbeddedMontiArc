@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests;
+import structs.MultiNestedStruct;
+
+component MultiNestedStructComp{
+    port in MultiNestedStruct inMultiNested;
+}

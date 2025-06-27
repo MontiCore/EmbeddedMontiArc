@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package structs;
+
+struct NestedStruct{
+    BasicStruct fieldNested1;
+    BasicStruct fieldNested2;
+    Q fieldQ;
+    B fieldB;
+    Z fieldZ;
+}
