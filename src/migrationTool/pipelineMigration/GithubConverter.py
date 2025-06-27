@@ -212,10 +212,7 @@ class GithubActionConverter(Converter):
       if triggered_repo is None:
         print(f"[red] The repo {repo_name} has not been migrated yet!")
       elif branch not in triggered_repo.get_branches_to_be_migrated():
-        print(
-          f"[red] The branch {branch} of {repo_name} has not been part of the migration yet!")  # If the repo is not
-        # in the monorepo, add the checkout step
-      job_string += GithubActionConverter.add_checkout_step(repo_name)
+        print(f"[red] The branch {branch} of {repo_name} has not been part of the migration yet!")
       job_string += GithubActionConverter.trigger(repo_name, branch)
 
     elif job.script:
@@ -267,9 +264,9 @@ class GithubActionConverter(Converter):
               when = "success()"
 
             # If the job is not a pages job, upload the artifacts normally
-            job_string += GithubActionConverter.upload_artifacs(job.artifacts["paths"],
-                                                                job.name.replace("/", "_").replace(" ", "_"), when,
-                                                                retention_time)
+            job_string += GithubActionConverter.upload_artifacts(job.artifacts["paths"],
+                                                                 job.name.replace("/", "_").replace(" ", "_"), when,
+                                                                 retention_time)
         elif "reports" in job.artifacts:
           # If the job has reports, upload them using the reporting action
           if job.artifacts["reports"] and "junit" in job.artifacts["reports"]:
@@ -366,7 +363,7 @@ class GithubActionConverter(Converter):
     return start
 
   @staticmethod
-  def upload_artifacs(paths: list[str], name, when="success()", expiration: int = 7) -> str:
+  def upload_artifacts(paths: list[str], name, when="success()", expiration: int = 7) -> str:
     """
         Creates the string for the upload artifacts action block.
     :param paths: Paths to the artifacts to be uploaded
@@ -447,12 +444,20 @@ class GithubActionConverter(Converter):
     """
     trigger = ""
     trigger += f"\t\t\t- name: Trigger {repo_name} pipeline\n"
+    """
     trigger += f"\t\t\t\trun: |\n"
     trigger += f"\t\t\t\t\tcurl -X POST https://api.github.com/repos/${{{{ github.repository_owner }}}}"
     trigger += f"/{repo_name}/actions/workflows/{repo_name}.yml/dispatches \\\n"
     trigger += '\t\t\t\t\t\t-H "Accept: application/vnd.github+json" \\\n'
     trigger += '\t\t\t\t\t\t-H "Authorization: token ${{ secrets.GITHUBTOKEN }}" \\\n'
-    trigger += f'\t\t\t\t\t\t-d \'{{"ref": "{branch}"}}\'\n'
+    trigger += f'\t\t\t\t\t\t-d \'{{"ref": "{branch}"}}\'\n' ${{github.repository}}
+    """
+    trigger += "\t\t\t\trun: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH\n"
+    trigger += "\t\t\t\tenv:\n"
+    trigger += f"\t\t\t\t\tWORKFLOW_FILE: {repo_name}.yml\n"
+    trigger += f"\t\t\t\t\tBRANCH: {branch}\n"
+    trigger += f"\t\t\t\t\tREPO: {repo_name}\n"
+    trigger += "\t\t\t\t\tGH_TOKEN: ${{github.token}}\n"
     return trigger
 
   def if_condition(self, job: Job) -> str:
@@ -571,7 +576,8 @@ class GithubActionConverter(Converter):
     jobString = "\tFileChanges:\n"
     jobString += f"\t\truns-on: ubuntu-latest\n"
     for _, job in self.pipeline.jobs.items():
-      job_output_needed = job.only and type(job.only) == dict and "changes" in job.only
+      job_output_needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
+          job.exc and type(job.exc) == dict and "changes" in job.exc)
       if job.rules:
         for rule in job.rules:
           if "changes" in rule:

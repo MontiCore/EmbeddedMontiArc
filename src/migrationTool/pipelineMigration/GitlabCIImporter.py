@@ -49,7 +49,7 @@ class GitlabCIImporter(Importer):
     :return: Jobs in the pipeline
     """
     jobs = {}
-    general_image = "ubuntu:latest"
+    general_image = ""
     general_before_script = []
     if "image" in self.yaml_data:
       general_image = self.yaml_data["image"]

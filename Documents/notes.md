@@ -206,7 +206,7 @@ ToDo
 
 - [x] Add fileChanges dependency for downstream jobs -> important for rules
 
-- [ ] Change trigger similar to: https://github.com/github/gh-actions-importer/blob/main/docs/gitlab/Trigger.md
+- [x] Change trigger similar to: https://github.com/github/gh-actions-importer/blob/main/docs/gitlab/Trigger.md
 
 - [x] Add reporting action
 
