@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.emam.optimization;
+
+component MinimizePortsTest{
+
+    ports in Q u,
+          out Q y;
+
+    implementation Math{
+        minimize
+            Q v;
+        in
+            Q y1 = (v*v) - 2 * v + 1;
+        subject to
+            v >= 0;
+        end
+        u=v;
+    }
+}

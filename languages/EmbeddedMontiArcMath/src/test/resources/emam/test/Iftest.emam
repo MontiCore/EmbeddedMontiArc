@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test;
+
+component Iftest{
+    port
+        in (0 m: oo m) a,
+        in (0 m: oo m) b,
+        out (0 m: oo m) c;
+
+    implementation Math{
+            if a > b
+                c = a;
+            else
+                c = b;
+            end
+        }
+
+}

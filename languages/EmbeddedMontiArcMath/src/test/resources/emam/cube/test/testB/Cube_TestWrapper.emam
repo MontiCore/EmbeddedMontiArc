@@ -1,0 +1,13 @@
+package testB;
+
+component Cube_TestWrapper {
+    port
+        in Z^{3,3,3} data,
+        out Z out1;
+
+    instance Cube cubeInstance;
+
+    connect data -> cubeInstance.data;
+    connect cubeInstance.out1 -> out1;
+
+}

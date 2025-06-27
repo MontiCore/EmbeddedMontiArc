@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+component EigenSolver<N1 n,N1 targetEigenvectors>{
+    ports in Q(-oo:oo)^{n,n} matrix,
+          out Q(-oo:oo)^{n,targetEigenVectors} eigenvectors;
+
+    implementation Math{
+        //calculate requested amount of eigenvectors if present
+        eigenvectors = eigvecLM(matrix,targetEigenvectors);
+    }
+}

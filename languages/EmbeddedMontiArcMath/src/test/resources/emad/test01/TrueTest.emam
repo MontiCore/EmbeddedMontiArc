@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test01;
+
+component TrueTest{
+    ports
+        in B inValue,
+        out B outValue;
+
+
+    connect false -> outValue;
+
+    @ TrueEvent<inValue>(123) {
+        connect true -> outValue;
+    }
+
+}
+
