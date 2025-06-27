@@ -1,0 +1,11 @@
+**/target
+**/nppBackup
+.project
+.settings
+.classpath
+.idea
+.git
+*.iml
+*.log*
+*logs*
+.vscode/
