@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testA;
+
+dynamic component GatherSum_TestWrapper {
+	port
+		in B connectNew,
+		in Q sumValueIn,
+		out Q out1;
+
+	dynamic component AD {
+	    ports
+	        in B connectNew,
+	        in Q sumValueIn,
+	        dynamic out Q values[0:32];
+
+	    implementation Math {
+            Z id = 0;
+            if ports_connect(values, id, 42.1234)
+               values(id) = sumValueIn;
+            end
+	    }
+	}
+
+	instance AD d;
+	instance GatherSum gs;
+
+    connect connectNew -> d.connectNew;
+    connect sumValueIn -> d.sumValueIn;
+
+    connect gs.out1 -> out1;
+
+    @ d.values::connect {
+        connect d.values[?] -> gs.in1[?];
+    }
+
+}

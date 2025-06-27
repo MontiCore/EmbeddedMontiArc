@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lib;
+
+// u1 = Einschaltschwelle
+// u2 = Ausschaltschwelle
+component STQ (Q u1, Q u2) {
+    port
+        in Q inValue,
+        out B outValue;
+
+    implementation Math{
+        static B prevValue = 0;
+        outValue = prevValue;
+        if prevValue==1
+            if inValue < u2
+                outValue = 0;
+            end
+        else
+            if inValue >= u1
+                outValue = 1;
+            end
+        end
+        prevValue = outValue;
+    }
+}
