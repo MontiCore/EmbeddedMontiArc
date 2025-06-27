@@ -1,0 +1,15 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<assembly
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>schemas</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeSiteDirectory>false</includeSiteDirectory>
+    <fileSets>
+        <fileSet>
+            <outputDirectory/>
+            <directory>src/main/schemas</directory>
+        </fileSet>
+    </fileSets>
+</assembly>
