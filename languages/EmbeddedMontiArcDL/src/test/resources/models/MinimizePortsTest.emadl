@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+component MinimizePortsTest{
+
+    ports in Q u,
+          out Q y;
+
+    implementation Math{
+        minimize
+            Q x;
+        in
+            Q y1 = (x*x) - 2 * x + 1;
+        subject to
+            x >= 0;
+        end
+    }
+}

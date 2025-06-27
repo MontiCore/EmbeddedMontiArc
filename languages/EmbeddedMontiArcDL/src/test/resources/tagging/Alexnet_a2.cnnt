@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Alexnet_a2{
+    num_epoch:10
+    batch_size:64
+    normalize:true
+    load_checkpoint:false
+    optimizer:adam{
+        learning_rate:0.001
+    }
+}
