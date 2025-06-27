@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.custom;
+
+component PacmanMain{
+
+    instance NeedsInitComponent needsInit;
+    instance PacmanInit pacmanInit;
+    instance PacmanPositionStateSaver stateSaver;
+    instance PacmanInputControl pacmanInputControl;
+    instance PacmanBehaviourStub stubby;
+    //instance GhostInit ghostInit;
+    instance PacmanWorldManager<16, 16> pacmanWorldManager;
+
+    connect needsInit.out1 -> pacmanInit.exec;
+    connect needsInit.out1 -> pacmanWorldManager.needsInit;
+    connect needsInit.out1 -> stateSaver.needsInit;
+    connect pacmanInputControl.moveDown -> stubby.moveDown;
+    connect pacmanInputControl.moveUp -> stubby.moveUp;
+    connect pacmanInputControl.moveLeft -> stubby.moveLeft;
+    connect pacmanInputControl.moveRight -> stubby.moveRight;
+
+    connect pacmanInputControl.moveDown -> pacmanWorldManager.moveDown;
+    connect pacmanInputControl.moveUp -> pacmanWorldManager.moveUp;
+    connect pacmanInputControl.moveLeft -> pacmanWorldManager.moveLeft;
+    connect pacmanInputControl.moveRight -> pacmanWorldManager.moveRight;
+
+//    connect pacmanWorldManager.pacmanNextPositionX -> stateSaver.positionX;
+//    connect pacmanWorldManager.pacmanNextPositionY -> stateSaver.positionY;
+
+    connect stateSaver.pacmanPositionX -> pacmanWorldManager.pacmanPositionX;
+    connect stateSaver.pacmanPositionY -> pacmanWorldManager.pacmanPositionY;
+
+//    connect pacmanWorldManager.pacmanNextPositionX -> stateSaver.pacmanPositionX;
+//    connect pacmanWorldManager.pacmanNextPositionY -> stateSaver.pacmanPositionY;
+
+    instance Delay<Q>(0) delayedPosX;
+    instance Delay<Q>(0) delayedPosY;
+
+    connect pacmanWorldManager.pacmanNextPositionX -> delayedPosX.input;
+    connect delayedPosX.output -> stateSaver.positionX;
+    connect pacmanWorldManager.pacmanNextPositionY -> delayedPosY.input;
+    connect delayedPosY.output -> stateSaver.positionY;
+}

@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package connectionFromInner;
+
+dynamic component Test4 {
+
+    ports
+        dynamic out Q tOut[0:5];
+
+    dynamic component Test1Inner {
+        ports
+            dynamic out Q innerOut[0:5];
+
+        dynamic component Test2Inner {
+            ports
+                dynamic out Q innerOutinnerOut[0:5];
+            implementation Math{
+                Z id = 0;
+                if ports_connect(innerOutinnerOut, id, 42.1234)
+                   innerOutinnerOut(id) = 123;
+                end
+            }
+        }
+
+        instance Test2Inner t2;
+        @ t2.innerOutinnerOut::connect {
+            connect t2.innerOutinnerOut[?] -> innerOut[?];
+        }
+    }
+
+    instance Test1Inner t1;
+
+    @ t1.innerOut::connect {
+        connect t1.innerOut[?] -> tOut[?];
+    }
+
+}

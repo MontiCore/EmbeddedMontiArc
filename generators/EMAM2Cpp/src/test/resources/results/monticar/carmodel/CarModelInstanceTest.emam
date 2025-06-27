@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.monticar.carmodel;
+
+component CarModelInstanceTest {
+  instance KinematicBicycleCarModel<0.1 s, 1 m, 1 m>                          kinematicBicycleCarModel;
+  instance MatlabCarModel<0.1 s, 2000 kg, 1.5 m, 1.5 m, 150000, 40000, 0.5>   matlabCarModel;
+}

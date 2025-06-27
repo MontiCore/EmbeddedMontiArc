@@ -1,0 +1,30 @@
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.*;
+import de.monticore.lang.monticar.semantics.library.differential.Integrator;
+
+// see https://de.mathworks.com/help/simulink/ug/vdp_sorted_order.png
+
+component VanDerPolEquation {
+    port
+        out Q output,
+        out Q out2;
+
+    instance Constant<1> one;
+    instance Subtract<Q> subtract1;
+    instance Subtract<Q> subtract2;
+    instance Gain<1> gain;
+    instance Integrator<Q> integrator1, integrator2;
+    instance Multiplication<Q, 2> uSquare, mult;
+
+
+    connect one.output -> subtract1.minuend;
+    connect uSquare.product -> subtract1.subtrahend;
+    connect subtract1.difference -> mult.factor[1];
+    connect mult.product -> gain.input;
+    connect gain.output -> subtract2.subtrahend;
+    connect subtract2.difference -> integrator1.input;
+    connect integrator1.output -> integrator2.input, mult.factor[2], out2;
+    connect integrator2.output -> output, subtract2.minuend, uSquare.uSqaure[1], uSquare.uSqaure[2];
+
+}

@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.heithoff;
+
+component NearestGhost {
+    ports
+        in Z(0cm: 180cm) ghostX[4],
+        in Z(0cm: 210cm) ghostY[4],
+        in Z(0cm: 180cm) pacManX,
+        in Z(0cm: 210cm) pacManY,
+      
+        out Z(0:1:3) nearestIndex;
+      
+    implementation Math {
+        Q min = 3430;
+        Z index = 1;
+        
+        for i = 1:4
+            Q distX = abs(ghostX(i) - pacManX);
+            Q distY = abs(ghostY(i) - pacManY);
+            Q dist_sqr = distX + distY;
+            Q dist = sqrt(dist_sqr);
+            if(dist < min)
+                min = dist;
+                index = i;
+            end
+        end
+        
+        nearestIndex = index;
+    }
+}

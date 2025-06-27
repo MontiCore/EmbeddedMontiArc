@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.custom;
+
+//Tiles start from top left and go to right, then next row starting from left to right
+component PacmanWorld<N tileMaxX = 16, N tileMaxY = 16>{
+    port in Z tileState,
+         in N tileX,
+         in N tileY,
+         out Z^{tileMaxX,tileMaxY} tiles;
+
+    implementation Math{
+        if((tileX > 0 && tileX <= tileMaxX + 1 ) && (tileY > 0 && tileY <= tileMaxY + 1))
+            tiles(tileX, tileY) = tileState;
+        end
+    }
+
+
+}

@@ -1,0 +1,1561 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----< de.monticore.lang.monticar:embedded-montiarc-math-generator >-----
+[INFO] Building embedded-montiarc-math-generator 0.1.15-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ embedded-montiarc-math-generator ---
+[INFO] Deleting /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.1:prepare-agent (pre-unit-test) @ embedded-montiarc-math-generator ---
+[INFO] argLine set to -javaagent:/home/julian/.m2/repository/org/jacoco/org.jacoco.agent/0.8.1/org.jacoco.agent-0.8.1-runtime.jar=destfile=/home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target/jacoco.exec
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ embedded-montiarc-math-generator ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 22 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:compile (default-compile) @ embedded-montiarc-math-generator ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 216 source files to /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target/classes
+[INFO] /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/src/main/java/de/monticore/lang/monticar/generator/order/tools/Slist.java: Some input files use or override a deprecated API.
+[INFO] /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/src/main/java/de/monticore/lang/monticar/generator/order/tools/Slist.java: Recompile with -Xlint:deprecation for details.
+[INFO] /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/src/main/java/de/monticore/lang/monticar/generator/optimization/MathAssignmentPartResultReuse.java: Some input files use unchecked or unsafe operations.
+[INFO] /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/src/main/java/de/monticore/lang/monticar/generator/optimization/MathAssignmentPartResultReuse.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ embedded-montiarc-math-generator ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1249 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:testCompile (default-testCompile) @ embedded-montiarc-math-generator ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 35 source files to /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.1:test (default-test) @ embedded-montiarc-math-generator ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running de.monticore.lang.monticar.generator.NonVirtualBlockTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.064 s - in de.monticore.lang.monticar.generator.NonVirtualBlockTest
+[INFO] Running de.monticore.lang.monticar.generator.SListTest
+[DEBUG] de.se_rwth.commons.logging.Log Switching logging component from de.monticore.lang.math.LogConfig to de.monticore.lang.embeddedmontiarc.LogConfig
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.395 s - in de.monticore.lang.monticar.generator.SListTest
+[INFO] Running de.monticore.lang.monticar.generator.cmake.GenerateCMakeTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.241 s - in de.monticore.lang.monticar.generator.cmake.GenerateCMakeTest
+[INFO] Running de.monticore.lang.monticar.generator.ConfigPortTest
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.116 s - in de.monticore.lang.monticar.generator.ConfigPortTest
+[INFO] Running de.monticore.lang.monticar.generator.ImplementExecutionOrderTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.444 s - in de.monticore.lang.monticar.generator.ImplementExecutionOrderTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.GenerationTest
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  unknown type symbol: Q
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARNING] Tests run: 34, Failures: 0, Errors: 0, Skipped: 7, Time elapsed: 3.235 s - in de.monticore.lang.monticar.generator.cpp.GenerationTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.BasicMathGenerationTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.087 s - in de.monticore.lang.monticar.generator.cpp.BasicMathGenerationTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.GeneratorCppCliTest
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[WARN]  Octave does not support whole number matrices. Using real matrix instead!
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.076 s - in de.monticore.lang.monticar.generator.cpp.GeneratorCppCliTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.AutomaticStreamTestGenerationTest
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidError: success
+All tests passed! Made 12 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.motion.CalculatePidError: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1: success
+All tests passed! Made 32 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.motion.CalculateEngineAndBrakesTest1: success
+All tests passed! Made 0 assertions.
+de.rwth.armin.modeling.autopilot.motion.CalculatePidParametersTest1: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidParameters: success
+All tests passed! Made 40 assertions.
+de.rwth.armin.modeling.autopilot.motion.CalculatePidError: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1: success
+All tests passed! Made 12 assertions.
+de.rwth.armin.modeling.autopilot.common.Abs: success
+de.rwth.armin.modeling.autopilot.common.AbsTest1: success
+All tests passed! Made 10 assertions.
+de.rwth.armin.modeling.autopilot.common.PIDTest1: success
+de.rwth.armin.modeling.autopilot.common.PID: success
+All tests passed! Made 6 assertions.
+de.rwth.armin.modeling.autopilot.motion.DecideEngineOrBrakesTest1: success
+de.rwth.armin.modeling.autopilot.motion.DecideEngineOrBrakes: success
+All tests passed! Made 8 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.motion.CalculateEngineAndBrakesTest1: success
+All tests passed! Made 40 assertions.
+de.rwth.armin.modeling.autopilot.motion.CalculatePidParameters: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidParametersTest1: success
+All tests passed! Made 40 assertions.
+de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidError: success
+All tests passed! Made 12 assertions.
+de.rwth.armin.modeling.autopilot.common.Abs: success
+de.rwth.armin.modeling.autopilot.common.AbsTest1: success
+All tests passed! Made 10 assertions.
+de.rwth.armin.modeling.autopilot.common.PIDTest1: success
+de.rwth.armin.modeling.autopilot.common.PID: success
+All tests passed! Made 6 assertions.
+de.rwth.armin.modeling.autopilot.motion.DecideEngineOrBrakes: success
+de.rwth.armin.modeling.autopilot.motion.DecideEngineOrBrakesTest1: success
+All tests passed! Made 8 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.motion.CalculatePidError: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1: success
+All tests passed! Made 12 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.motion.CalculatePidError: success
+de.rwth.armin.modeling.autopilot.motion.CalculatePidErrorTest1: success
+All tests passed! Made 32 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.common.Compass2CurrentDirection: success
+de.rwth.armin.modeling.autopilot.common.Compass2CurrentDirectionTest1: success
+All tests passed! Made 0 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.armin.modeling.autopilot.common.Compass2CurrentDirectionTest1: success
+de.rwth.armin.modeling.autopilot.common.Compass2CurrentDirection: success
+All tests passed! Made 40 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.MultipleAssignmentsTest1: success
+de.MultipleAssignmentsTest: success
+All tests passed! Made 2 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.MultipleAssignmentsTest: success
+de.MultipleAssignmentsTest1: success
+All tests passed! Made 4 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.pacman.PacManControllerSimpleTest1: success
+All tests passed! Made 0 assertions.
+==================End stream testing==================
+=================Start stream testing=================
+de.rwth.pacman.PacManControllerSimpleTest1: success
+All tests passed! Made 20 assertions.
+==================End stream testing==================
+[WARNING] Tests run: 12, Failures: 0, Errors: 0, Skipped: 4, Time elapsed: 100.574 s - in de.monticore.lang.monticar.generator.cpp.AutomaticStreamTestGenerationTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.template.AllTemplatesTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.034 s - in de.monticore.lang.monticar.generator.cpp.template.AllTemplatesTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.ThreadingOptimizerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.133 s - in de.monticore.lang.monticar.generator.cpp.ThreadingOptimizerTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.armadillo.BasicMathGenerationArmadilloTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.93 s - in de.monticore.lang.monticar.generator.cpp.armadillo.BasicMathGenerationArmadilloTest
+[INFO] Running de.monticore.lang.monticar.generator.cpp.armadillo.ArmadilloFunctionTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[WARNING] Tests run: 89, Failures: 0, Errors: 0, Skipped: 11
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  02:17 min
+[INFO] Finished at: 2019-12-19T22:29:42+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.22.1:test (default-test) on project embedded-montiarc-math-generator: There are test failures.
+[ERROR] 
+[ERROR] Please refer to /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target/surefire-reports for the individual test results.
+[ERROR] Please refer to dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+[ERROR] Command was /bin/sh -c cd /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp && /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx1024m -XX:MaxPermSize=256m org.apache.maven.surefire.booter.ForkedBooter /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target/surefire 2019-12-19T22-27-40_001-jvmRun1 surefire3267269558612857491tmp surefire_07880373491665917666tmp
+[ERROR] Error occurred in starting fork, check output in log
+[ERROR] Process Exit Code: 255
+[ERROR] Crashed tests:
+[ERROR] de.monticore.lang.monticar.generator.cpp.armadillo.ArmadilloFunctionTest
+[ERROR] org.apache.maven.surefire.booter.SurefireBooterForkException: The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+[ERROR] Command was /bin/sh -c cd /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp && /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java -Xmx1024m -XX:MaxPermSize=256m org.apache.maven.surefire.booter.ForkedBooter /home/julian/Dropbox/Dokumente/bachelorarbeit/pipeline/EMAM2Cpp/target/surefire 2019-12-19T22-27-40_001-jvmRun1 surefire3267269558612857491tmp surefire_07880373491665917666tmp
+[ERROR] Error occurred in starting fork, check output in log
+[ERROR] Process Exit Code: 255
+[ERROR] Crashed tests:
+[ERROR] de.monticore.lang.monticar.generator.cpp.armadillo.ArmadilloFunctionTest
+[ERROR] 	at org.apache.maven.plugin.surefire.booterclient.ForkStarter.fork(ForkStarter.java:669)
+[ERROR] 	at org.apache.maven.plugin.surefire.booterclient.ForkStarter.run(ForkStarter.java:282)
+[ERROR] 	at org.apache.maven.plugin.surefire.booterclient.ForkStarter.run(ForkStarter.java:245)
+[ERROR] 	at org.apache.maven.plugin.surefire.AbstractSurefireMojo.executeProvider(AbstractSurefireMojo.java:1183)
+[ERROR] 	at org.apache.maven.plugin.surefire.AbstractSurefireMojo.executeAfterPreconditionsChecked(AbstractSurefireMojo.java:1011)
+[ERROR] 	at org.apache.maven.plugin.surefire.AbstractSurefireMojo.execute(AbstractSurefireMojo.java:857)
+[ERROR] 	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:137)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:210)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:156)
+[ERROR] 	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:148)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:117)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:81)
+[ERROR] 	at org.apache.maven.lifecycle.internal.builder.singlethreaded.SingleThreadedBuilder.build(SingleThreadedBuilder.java:56)
+[ERROR] 	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:128)
+[ERROR] 	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:305)
+[ERROR] 	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:192)
+[ERROR] 	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:105)
+[ERROR] 	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:956)
+[ERROR] 	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:288)
+[ERROR] 	at org.apache.maven.cli.MavenCli.main(MavenCli.java:192)
+[ERROR] 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+[ERROR] 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+[ERROR] 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+[ERROR] 	at java.lang.reflect.Method.invoke(Method.java:498)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:282)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:225)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:406)
+[ERROR] 	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:347)
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component BoundingRectCommandTest{
+    port
+        in Q contour,
+        out Q rect;
+
+    implementation Math {
+        rect = boundingRect(contour);
+    }
+}

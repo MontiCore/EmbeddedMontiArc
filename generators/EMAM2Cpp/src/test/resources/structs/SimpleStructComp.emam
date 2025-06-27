@@ -1,0 +1,10 @@
+package structs;
+
+component SimpleStructComp{
+    ports in SimpleStruct in1,
+          out SimpleStruct out1;
+
+    implementation Math{
+        out1.field = 2 * in1.field;
+    }
+}

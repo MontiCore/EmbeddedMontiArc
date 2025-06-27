@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package connected;
+
+dynamic component DynamicMean<T, N1 n = 2> {
+
+    ports
+        dynamic in T inValues [0:n],
+        out T outMean;
+
+    @ inValues::connect{ /* Interface for dynamic ports */ }
+
+    implementation Math {
+
+        T val=0;
+        T m=0;
+
+        for i=1:n
+            if is_connected(inValues, abs(i))
+                val=val+inValues(i);
+                m=m+1;
+            end
+        end
+
+        outMean=0;
+        if (m != 0)
+            outMean=(val / m);
+        end
+
+    }
+}

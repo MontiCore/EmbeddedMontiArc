@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba;
+
+component LookUp(Q(-oo:oo)^{1,n} lookupTable) {
+	ports
+		in N1 in1,
+		out (0:100) out1;
+	implementation Math{
+	    out1 = lookupTable(in1);
+	}
+}

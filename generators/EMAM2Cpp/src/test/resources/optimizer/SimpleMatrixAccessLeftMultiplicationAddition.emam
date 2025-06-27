@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package optimizer;
+
+component SimpleMatrixAccessLeftMultiplicationAddition{
+    ports in Q(-oo:oo)^{1000,200} mat1,
+          in Q(-oo:oo)^{1000,200} mat2,
+          in Q(-oo:oo)^{10,100} mat4,
+          out Q(-oo:oo) valOut;
+
+
+    implementation Math{
+        matOut = mat1(2,2)*mat2(1,1)+mat1(2,2)*mat4(1,1);
+    }
+
+}

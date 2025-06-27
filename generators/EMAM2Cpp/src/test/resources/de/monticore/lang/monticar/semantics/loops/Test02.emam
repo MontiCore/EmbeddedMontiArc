@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.*;
+
+component Test02 {
+    port
+        in Q input1,
+        in Q input2,
+        out Q output;
+
+    instance Subtract<Q> subtract;
+    instance Multiplication<Q,2> mult;
+
+    connect input1 -> subtract.minuend;
+    connect input2 -> mult.factor[1];
+    connect subtract.difference -> output, mult.factor[2];
+    connect mult.product -> subtract.subtrahend;
+}

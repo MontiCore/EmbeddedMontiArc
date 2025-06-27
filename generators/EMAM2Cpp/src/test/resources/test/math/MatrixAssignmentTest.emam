@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+component MatrixAssignmentTest{
+    implementation Math{
+        Q^{2,2} matA = ones(2,2);
+        Q^{2,2} matB = ones(2,2);
+        matA(1,1) = matB(1,1);
+    }
+}

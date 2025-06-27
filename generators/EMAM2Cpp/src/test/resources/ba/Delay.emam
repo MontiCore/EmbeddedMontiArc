@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba;
+
+component Delay(Q(-oo:oo) dvalue) {
+	port
+		in Q(-oo:oo) in1,
+		out Q(-oo:oo) out1;
+
+	implementation Math{
+	    static Q lastVal = dvalue;
+	    out1 = lastVal;
+	    lastVal = in1;
+	}
+}

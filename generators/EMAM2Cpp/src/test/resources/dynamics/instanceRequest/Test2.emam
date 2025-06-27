@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package instanceRequest;
+
+dynamic component Test2{
+	port
+		dynamic in B a[2:6],
+		dynamic out B b[2:4];
+
+    component PassThrough {
+        ports
+            in B in1,
+            out B out1;
+
+        connect in1 -> out1;
+    }
+
+	instance PassThrough ptA[2:3];
+	instance PassThrough ptB[2:4];
+	instance PassThrough ptC[0:1];
+
+
+    connect a[2] -> ptB[2].in1;
+    connect ptB[2].out1 -> ptA[2].in1;
+    connect ptA[2].out1 -> b[2];
+
+    connect a[1] -> ptB[1].in1;
+    connect ptB[1].out1 -> ptA[1].in1;
+    connect ptA[1].out1 -> b[1];
+
+
+
+
+    @ a::connect && b::connect {
+        connect a[?] -> ptB[?].in1;
+        connect ptB[?].out1 -> ptA[?].in1;
+        connect ptA[?].out1 -> b[?];
+    }
+
+}

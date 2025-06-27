@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component CorrectPortNumber{
+    port
+        in B sIn[5],
+        out B sOut[5];
+
+
+    connect sIn[1:2] -> sOut[4:5];
+
+}

@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package connected;
+
+
+component Test {
+
+    component Delay<T> {
+        ports
+            out T oB;
+
+        implementation Math {
+            T v=5;
+            ob=v;
+        }
+    }
+
+    instance Delay<Q> d;
+
+
+}

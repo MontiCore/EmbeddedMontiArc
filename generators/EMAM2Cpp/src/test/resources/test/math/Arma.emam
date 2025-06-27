@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component Arma{
+port
+    in Q^{n,m} src,
+    out Q^{n,m} dst;
+
+    implementation Math{
+        dst = 0.5 * src;
+    }
+}
