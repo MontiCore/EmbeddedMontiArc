@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.msg;
+import tests.structs.MultiNestedStruct;
+
+component MultiNestedStructComp{
+    port in MultiNestedStruct inMultiNested;
+    port out MultiNestedStruct outMultiNested;
+}

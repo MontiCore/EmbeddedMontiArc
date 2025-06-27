@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba.intersection;
+
+//TODO: x = (n-1)n/2
+component ConflictToStopConverter<N1 n = 2,N1 x = 3,N1 m = 5>{
+    port in Z(1:n) indexLookupIn[x];
+    port in B conflictIn[x];
+    port out B stopOut[n];
+
+    implementation Math{
+        for i = 1:n
+            stopOut(i) = False;
+        end
+
+        for i = 1:x
+            if conflictIn(i)
+                Q curIndex = indexLookupIn(i);
+                stopOut(curIndex) = True;
+            end
+        end
+
+    }
+
+}

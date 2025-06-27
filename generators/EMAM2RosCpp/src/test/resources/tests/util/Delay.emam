@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.util;
+
+component Delay<T>(T msg,T defaultMsg,ms delayInMs){
+    port in T msgIn;
+    port in ms deltaTime;
+    port out T msgOut;
+
+    //TODO: new msg arrives before old one is send
+    implementation Math{
+        static Boolean send = false;
+        static Z(0:oo) counter = 0;
+        static T last = defaultMsg;
+
+        //reset
+        if((last == defaultMsg) AND (msgIn != defaultMsg)){
+            send = false;
+            counter = 0;
+            last = msgIn;
+        }
+
+        counter = counter + deltaTime;
+        if ((counter >= delayInMs) AND (send == false)){
+            send = true;
+            msgOut = msgIn;
+        }else{
+            msgOut = defaultMsg;
+            last = defaultMsg;
+        }
+    }
+}

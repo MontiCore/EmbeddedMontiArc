@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.filter;
+
+import tests.structs.Trajectory;
+
+component TrajectoryFilter<N1 n = 2>{
+    port in Q(0:100) cutoffPosition;
+    port in Q(0:10) cutoffTime;
+
+    port in Trajectory trajectoryIn[n];
+    port out Trajectory trajectoryOut[n];
+
+    instance SingleTrajectoryFilter singleFilters[n];
+
+    connect trajectoryIn[:] -> singleFilters[:].trajectoryIn;
+    connect singleFilters[:].trajectoryOut -> trajectoryOut[:];
+    connect cutoffPosition -> singleFilters[:].cutoffPosition;
+    connect cutoffTime -> singleFilters[:].cutoffTime;
+
+}
