@@ -210,5 +210,10 @@ ToDo
 
 - [x] Add reporting action
 
+- [ ] Get or create Repo in GHuploader should use user name from config
+
 - [ ] Add second pages trigger
 
+- [ ] Recheck maven options
+
+- [ ] Docker image step only if images contained

@@ -187,7 +187,9 @@ class Git:
         table = Table("Branch", "Path")
         for branch in branches_to_be_migrated:
           table.add_row(branch, (repo_namespace if not multiple_branches else repo_namespace + "/" + branch), )
+        progress.stop()
         console.print(table)
+        progress.start()
         for branch in branches_to_be_migrated:
           if multiple_branches:
             summary[repoID][branch] = self.add_subtree_branch(target_repo, repo.name, repo.path, prefix=repo_namespace,
