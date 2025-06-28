@@ -56,4 +56,3 @@ Further examples can be found in the [MNISTCalculator](https://git.rwth-aachen.d
 ## Dependency Graph of this project
 
 ![Dependency graph](dependency-graph.svg)
-
