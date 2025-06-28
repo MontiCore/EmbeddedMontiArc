@@ -85,7 +85,6 @@ jobs:
     needs: FileChanges
     if: ${{ github.ref_name != 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
