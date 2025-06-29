@@ -101,7 +101,7 @@ jobs:
             cd /workspace
             cd utilities/emadl-maven-plugin
             mvn install:install-file \
-            -Dfile=/workspace/javaml-0.1.7.jar \
+            -Dfile=/workspace/utilities/emadl-maven-plugin/javaml-0.1.7.jar \
             -DgroupId=your.group.id \
             -DartifactId=javaml \
             -Dversion=0.1.7 \
