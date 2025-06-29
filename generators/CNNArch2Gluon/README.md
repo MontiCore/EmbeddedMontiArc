@@ -87,6 +87,7 @@ data_imbalance: image_augmentation {
 - `check_bias`: specifies if the resulting up-sampled dataset should be checked for bias
 
 
+
 ## How to use Hyperparameter Optimization
 
 To carry out a Hyperparameter Optimization (HPO), one can set the `optimizer` flag as the nested parameter `hpo` like in the following:
