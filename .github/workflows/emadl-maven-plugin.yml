@@ -107,7 +107,7 @@ jobs:
             -Dversion=0.1.7 \
             -Dpackaging=jar \
             -DgeneratePom=true
-            mvn -B  clean install -s settings.xml
+            mvn -B install -s settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   MasterDeployJobLinux:
