@@ -182,7 +182,6 @@ jobs:
 
   BranchJobLinux:
     needs: FileChanges
-    if: ${{needs.FileChanges.outputs.runBranchJobLinux == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
