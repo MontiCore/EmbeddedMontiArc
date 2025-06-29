@@ -204,7 +204,7 @@ jobs:
 
   trigger-emadl:
     needs: linux_phase
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure')  &&  github.ref_name == 'master' }}
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
