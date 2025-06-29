@@ -100,6 +100,13 @@ jobs:
           SCRIPT: |
             cd /workspace
             cd utilities/emadl-maven-plugin
+            mvn install:install-file \
+            -Dfile=/workspace/javaml-0.1.7.jar \
+            -DgroupId=your.group.id \
+            -DartifactId=javaml \
+            -Dversion=0.1.7 \
+            -Dpackaging=jar \
+            -DgeneratePom=true
             mvn -B  clean install -s settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
