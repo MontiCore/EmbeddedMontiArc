@@ -243,3 +243,4 @@ data_imbalance: image_augmentation {
 - `scale_in` and `scale_out`: specifies if the image should be scaled in and scaled out
 - `check_bias`: specifies if the resulting up-sampled dataset should be checked for bias
 
+
