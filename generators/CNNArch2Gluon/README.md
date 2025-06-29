@@ -108,3 +108,5 @@ optimizer: hpo {
 - `optimizer_options`: list of optimizers options for HPO
 - `with_cleaning`: specifies if the cleaning parameters like `missing`, `noisy` and `duplicated` should be optimized as well
 - `ntrials`: specifies how many trials a HPO should execute
+
+- 
