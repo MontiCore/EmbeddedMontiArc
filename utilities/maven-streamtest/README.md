@@ -38,6 +38,8 @@ The test of a component can be divided into 3 steps:
 2. **Building**: After generated in the first step, the C++ code is compiled in this step. Also, a neural network will be trained here if it is needed.
 3. **Execution**: In this step, the streamtests of the components will be executed. The result will be verified after the execution.
 
+
+
 ![diagram](Diagram.svg)
 
 ## Configuration
