@@ -159,12 +159,6 @@
                  </repository>
         
 
-                <repository>
-                  <id>jena</id>
-                  <name>Uni Jena</name>
-                  <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss</url>
-                </repository>
-
 
             </repositories>
             
