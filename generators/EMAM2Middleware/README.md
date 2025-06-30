@@ -27,6 +27,8 @@ and the cli is located in `de.monticore.lang.monticar.generator.middleware.cli.D
 
 Parameters: `${file path to config json}` OR `-r ${raw json config string}`
 
+
+
 Example: [CliUsage.sh](src/test/resources/CliUsage.sh)
 
 An example config file with all clustering algorithms: [config](src/test/resources/config/parameterTest/clusterParamsAllAlgos.json)
