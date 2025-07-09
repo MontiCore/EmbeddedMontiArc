@@ -33,6 +33,8 @@ The toolchain, driving the Reinforcement Learning, is split into two parts. A lo
 4. Create the `config.ini` file by copying `config.ini.template`and filling it with your settings. For information on what the specific values mean look at section
    [Configuration](#configuration)
 
+
+
         #for wsl or windows powershell
         cp config.ini.template config.ini
         #for windows command line
