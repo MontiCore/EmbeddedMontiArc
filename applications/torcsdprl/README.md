@@ -34,6 +34,8 @@ python get-pip.py
 pip install --user h5py matplotlib numpy==1.16.5 mxnet==1.5.1.post0
 ```
 
+
+
 ### Caffe
 Caffe is only needed to convert the training data from levelDB to hdf5 in the preprocessing step.
 For Ubuntu >= 17 run 
