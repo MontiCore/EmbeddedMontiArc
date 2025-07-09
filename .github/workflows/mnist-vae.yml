@@ -349,7 +349,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   InstallVQVAE:
-    needs: [[ TestPythonPretrainedVQVAE , TestCPPPretrainedVQVAE, test_phase]
+    needs: [ TestPythonPretrainedVQVAE , TestCPPPretrainedVQVAE, test_phase]
     if: ${{ !cancelled() && needs.test_phase.result == 'success'      && github.ref_name != 'master' && needs.TestPythonPretrainedVQVAE.result == 'success' && needs.TestCPPPretrainedVQVAE.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -449,7 +449,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   DeployPretrainedVQVAE:
-    needs: [[ TestPythonPretrainedVQVAE , TestCPPPretrainedVQVAE, test_phase]
+    needs: [ TestPythonPretrainedVQVAE , TestCPPPretrainedVQVAE, test_phase]
     if: ${{ !cancelled() && needs.test_phase.result == 'success' &&  github.ref_name == 'master' && needs.TestPythonPretrainedVQVAE.result == 'success' && needs.TestCPPPretrainedVQVAE.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
