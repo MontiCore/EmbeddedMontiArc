@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Update_allstatusmsg{
+  ports
+    // return all platoon message with update(no match)
+    dynamic in statusmessage        status_msg[0:32],
+    //dynamic in platoonmessage       single_traj_msg[0:32],
+    dynamic in statusmessage        single_status_msg[0:32],
+
+    dynamic out statusmessage       update_allstatus_msg[0:32],
+
+    out statusmessage stmsg,
+    out statusmessage stmsg1;
+
+    implementation Math{
+      for i = 1:32
+        if is_connected(status_msg,i)
+            update_allstatus_msg(i) = status_msg(i);
+        end
+      end
+      for k = 1:32
+        if is_connected(status_msg,k)
+           stmsg = status_msg(k);
+           for j = 1:32
+             if is_connected(single_status_msg,j)
+                stmsg1 = single_status_msg(j);
+                if stmsg.vehicleid == stmsg1.vehicleid
+                   update_allstatus_msg(k) = stmsg1;
+                end
+             end
+           end
+        end
+      end
+    }
+  }

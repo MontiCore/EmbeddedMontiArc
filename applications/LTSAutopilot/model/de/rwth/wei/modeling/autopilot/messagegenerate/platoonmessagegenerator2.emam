@@ -1,0 +1,93 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component platoonmessagegenerator2{
+ ports
+    in B               send_plat_message,
+    in Z               timestamp,
+    in Q               followid,
+    in Z               platoon_num,
+    in Z               currentplat_num,
+    in Q^{1,32}        currentplatoonlist,
+    in Q^{1,32}        platoonlist,
+    in B               ifsplit,
+    in B               if_followplatoon,
+    in Q               position_x,
+    in Q               position_y,
+    in Q               vehicleid,
+    in Q               compass,
+    in Q               length,
+    in Q               width,
+    in Q               engine,
+    in Q               brake,
+    in Q               steering,
+    in Q               velocity,
+
+    dynamic out platoonmessage plat_msg[0:32],
+    out platoonmessage pmsg,
+    out Z after_platnum,
+    out Q^{1,32} after_platlist,
+    out Q^{1,32} platoonlist1,
+    out Q^{1,32} platoonlist2;
+
+    implementation Math{
+       after_platnum = currentplat_num;
+       after_platlist = currentplatoonlist;
+       if send_plat_message == 1
+          if if_followplatoon = 1
+             pmsg.vehicleid = vehicleid;
+             pmsg.timestamp = timestamp;
+             pmsg.position_x = position_x;
+             pmsg.position_y = position_y;
+             pmsg.compass = compass;
+             pmsg.length = length;
+             pmsg.width = width;
+             pmsg.velocity = velocity;
+             pmsg.engine = engine;
+             pmsg.brakes = brake;
+             pmsg.steering = steering;
+             pmsg.ifsplit = ifsplit;
+             pmsg.member_num = platoon_num + currentplat_num;
+             platoonlist1 = currentplatoonlist;
+             for i = 1:platoon_num
+                platoonlist1(1,(i+currentplat_num)) = platoonlist(1,i);
+             end
+             pmsg.platoon_member = platoonlist1;
+             after_platnum = pmsg.member_num;
+             after_platlist = pmsg.platoon_member;
+             Z a = 1;
+             if ports_connect(plat_msg,a,pmsg)
+                plat_msg(a) = pmsg;
+             end
+             Z r = ports_free(plat_msg,a);
+          else
+              pmsg.vehicleid = vehicleid;
+              pmsg.timestamp = timestamp;
+              pmsg.position_x = position_x;
+              pmsg.position_y = position_y;
+              pmsg.compass = compass;
+              pmsg.length = length;
+              pmsg.width = width;
+              pmsg.velocity = velocity;
+              pmsg.engine = engine;
+              pmsg.brakes = brake;
+              pmsg.steering = steering;
+              pmsg.ifsplit = ifsplit;
+              pmsg.member_num = 1 + currentplat_num;
+              platoonlist2 = currentplatoonlist;
+              platoonlist2(1,(currentplat_num+1)) = followid;
+              pmsg.platoon_member = platoonlist2;
+              after_platnum = pmsg.member_num;
+              after_platlist = pmsg.platoon_member;
+              Z a1 = 1;
+              if ports_connect(plat_msg,a1,pmsg)
+                 plat_msg(a1) = pmsg;
+              end
+              Z r1 = ports_free(plat_msg,a1);
+          end
+       end
+    }
+
+
+}

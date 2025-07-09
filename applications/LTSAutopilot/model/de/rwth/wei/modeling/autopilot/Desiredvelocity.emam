@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot;
+
+component Desiredvelocity{
+ ports
+  in  Q   velocity1,
+  in  Q   velocity2,
+  in  Q   velocity3,
+
+  out Q   maximalallowedvelocity;
+
+  implementation Math{
+    maximalallowedvelocity = velocity1;
+
+    if maximalallowedvelocity < velocity2
+       maximalallowedvelocity = velocity2;
+    end
+
+    if maximalallowedvelocity < velocity3
+       maximalallowedvelocity = velocity3;
+    end
+  }
+
+}
