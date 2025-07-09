@@ -33,6 +33,8 @@ and the Vue.js frontend will be started.
 
 To start the dockerized version of the application, first set a symlink to the production environment file:
 ```
+
+
 ln -s .env.production .env
 ```
 After this, start both services with docker-compose:
