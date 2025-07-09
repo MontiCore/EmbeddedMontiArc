@@ -1,0 +1,101 @@
+name: data-consumer
+on:
+  push:
+    paths:
+      - 'applications/catena-x/data-consumer/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 70026
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+  build_phase:
+    needs: [build-backend, build-frontend]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage build"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage build"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  build-backend:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8-jdk-11
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-consumer
+            cd backend
+            mvn --settings settings.xml -Dfraunhofer-mydata-control.username=$MYDATA_USERNAME -Dfraunhofer-mydata-control.password=$MYDATA_PASSWORD compile
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    container:
+      image: node:lts-alpine3.15
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-consumer
+            cd frontend
+            npm install --location=global npm@8.1.2
+            npm install
+            npm run build
+
+  test:
+    needs: build_phase
+    if: ${{ !cancelled() && needs.build_phase.result == 'success' }}
+    env:
+      POSTGRES_DB: $DATABASE_NAME
+      POSTGRES_USER: $DATABASE_USER
+      POSTGRES_PASSWORD: $DATABASE_PASSWORD
+      DATABASE_URL: $DATABASE_URL
+      DATABASE_NAME: $DATABASE_NAME
+      DATABASE_PASSWORD: $DATABASE_PASSWORD
+      DATABASE_USER: $DATABASE_USER
+      DATA_PROVIDER_URL: $DATA_PROVIDER_URL
+      BACKEND_PORT: $BACKEND_PORT
+      PROVIDER_NAME: $PROVIDER_NAME
+      PROVIDER_URL: $PROVIDER_URL
+      CONSUMER_URL: $CONSUMER_URL
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8-jdk-11
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-consumer
+            cd ..
+            git clone https://gitlab-ci-token:${{ secrets.GITLABTOKEN }}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/catena-x/data-provider
+            cd data-provider
+            ln -s .env.development .env
+            cd backend
+            mvn package -DskipTests
+            java -jar target/backend-0.0.1-SNAPSHOT.jar &
+            sleep 30
+            cd ../../data-consumer/backend
+            mvn --settings settings.xml -Dfraunhofer-mydata-control.username=$MYDATA_USERNAME -Dfraunhofer-mydata-control.password=$MYDATA_PASSWORD test
+
