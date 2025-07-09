@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba.intersection;
+
+//TODO: x = (n-1)n/2
+//TODO: units
+component ConflictComputer<N1 n = 2,N1 x = 3,N1 m = 5>{
+    port in Q^{3,m} trajectoryIn[n];
+    port in Q cutoffPos,in Q cutoffTime;
+    port out B conflictOut[x];
+
+    //TODO: horrible runtime O(n²m²)
+    //TODO: split into mutliple components?
+    //TODO: rename loop variables, comments
+    implementation Math{
+        Z xi = 1;
+
+        for ni = 1:n
+        Z minNj = ni + 1;
+        for nj = minNj:n
+            B conflictFlag = False;
+            Q^{3,m} tmpTrajA = trajectoryIn(ni);
+            Q^{3,m} tmpTrajB = trajectoryIn(nj);
+
+            for mi = 1:m
+            Z minMj = mi + 1;
+            for mj = minMj:m
+                Q deltaXSquared = (tmpTrajA(1,mi) - tmpTrajB(1,mj)) * (tmpTrajA(1,mi) - tmpTrajB(1,mj));
+                Q deltaYSquared = (tmpTrajA(2,mi) - tmpTrajB(2,mj)) * (tmpTrajA(2,mi) - tmpTrajB(2,mj));
+                Q deltaTSquared = (tmpTrajA(3,mi) - tmpTrajB(3,mj)) * (tmpTrajA(3,mi) - tmpTrajB(3,mj));
+
+                B condPos = deltaXSquared + deltaYSquared <= cutoffPos * cutoffPos;
+                B condTime = deltaTSquared <= cutoffTime * cutoffTime;
+
+                if condPos && condTime
+                    conflictFlag = True;
+                    //TODO: break
+                end
+            end
+            end
+
+            conflictOut(xi) = conflictFlag;
+            xi = xi + 1;
+        end
+        end
+    }
+
+
+
+}
