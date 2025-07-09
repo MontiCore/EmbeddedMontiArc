@@ -1,0 +1,61 @@
+name: MemoriesWithProductKeys
+on:
+  push:
+    paths:
+      - 'applications/MemoriesWithProductKeys/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 48585
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+
+  TestMemoriesWithProductKeysTraining:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emadl2cpp/dockerimages/mxnet150:v0.0.5
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet150:v0.0.5 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/MemoriesWithProductKeys
+            cd memories-with-product-keys
+            mvn streamtest:streamtest-build -s settings.xml
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  TestMemoriesWithProductKeysPrediction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170:v0.0.1
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/MemoriesWithProductKeys
+            cd gluon
+            chmod +x build.sh
+            ./build.sh
+            RES=$(./build/src/cpp/MemoriesWithProductKeys resources/prediction_data/prediction_samples.txt resources/prediction_data/prediction_sequences.txt resources/prediction_data/prediction_lengths.txt)
+            if [[ $RES != *"Prediction for sample 0: 0"* ]]; then echo "Wrong result:" $RES; exit 1; fi;
+        run: docker exec build-container bash -c "$SCRIPT"
+
