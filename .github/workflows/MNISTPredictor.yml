@@ -1,0 +1,119 @@
+name: MNISTPredictor
+on:
+  push:
+    paths:
+      - 'applications/MNISTPredictor/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 25230
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+  linux_phase:
+    needs: [TestAutoML, TestPYTORCH]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage linux"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage linux"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  TestPYTORCH:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/MNISTPredictor
+            cd pytorch
+            chmod +x execute-pipeline.sh
+            ./execute-pipeline.sh
+            chmod +x build.sh
+            ./build.sh
+            cd target
+            ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  TestAutoML:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/MNISTPredictor
+            cd automl
+            echo "Maven clean compile"
+            mvn clean compile -s settings.xml -U
+            echo "Rename directory location of dataset"
+            mv src/main/resources/experiments/training_data src/main/resources/experiments/data
+            echo "Execute AutoML pipeline"
+            mvn exec:java -s settings.xml -U
+        run: docker exec build-container bash -c "$SCRIPT"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: TestAutoML
+          retention-days: 7
+          path: |
+            applications/MNISTPredictor/automl/target/generated-sources/**
+
+  TestEMADLMavenPlugin:
+    needs: linux_phase
+    if: ${{ !cancelled() && needs.linux_phase.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/MNISTPredictor
+            cd emadl-maven-automl
+            python3 -m pip install -U pip
+            python3 -m pip install scikit-image
+            python3 -m pip install opencv-python
+            python3 -m pip install mxnet
+            python3 -m pip install mlflow
+            export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch
+            echo $Torch_DIR
+            mvn dependency:resolve emadl:train -s settings.xml -U -e
+        run: docker exec build-container bash -c "$SCRIPT"
+
