@@ -1,0 +1,36 @@
+name: End2EndDriving
+on:
+  push:
+    paths:
+      - 'applications/End2EndDriving/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 31685
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+
+  masterJobLinux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/end2enddriving:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/monticore/end2enddriving:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/End2EndDriving
+            cd tensorflow
+            ./build.sh
+            python3 v-tool/cli.py -i resources/training_data/test.h5 -p
+        run: docker exec build-container bash -c "$SCRIPT"
+
