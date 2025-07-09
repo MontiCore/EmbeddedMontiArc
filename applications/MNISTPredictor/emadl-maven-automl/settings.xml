@@ -33,7 +33,7 @@
                     <property>
                         <name>Private-Token</name>
                         <value>glpat-J3n7bWBdyfB1fx2VAFDL</value>
-<!--                        <name>Job-Token</name>-->
+<!--                        <name>Private-Token</name>-->
 <!--                        <value>${CI_JOB_TOKEN}</value>-->
                     </property>
                 </httpHeaders>
