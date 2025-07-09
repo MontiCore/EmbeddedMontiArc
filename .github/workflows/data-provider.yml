@@ -1,0 +1,131 @@
+name: data-provider
+on:
+  push:
+    paths:
+      - 'applications/catena-x/data-provider/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 70027
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+  build_phase:
+    needs: [build-backend, build-frontend]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage build"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage build"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+  unit-test_phase:
+    needs: [build_phase, unit-test]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage unit-test"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage unit-test"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  build-backend:
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8-jdk-11
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-provider
+            cd backend
+            mvn compile
+
+  build-frontend:
+    runs-on: ubuntu-latest
+    container:
+      image: node:lts-alpine3.15
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-provider
+            cd frontend
+            npm install --location=global npm@8.1.2
+            npm install
+            npm run build
+
+  unit-test:
+    needs: build_phase
+    if: ${{ !cancelled() && needs.build_phase.result == 'success' }}
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8-jdk-11
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-provider
+            cd backend
+            mvn test -Dtest=!de.thesis.provider.backend.integration.**
+
+  integration-test:
+    needs: unit-test_phase
+    if: ${{ !cancelled() && needs.unit-test_phase.result == 'success' }}
+    env:
+      POSTGRES_DB: insurance_db
+      POSTGRES_USER: insurance_employee
+      POSTGRES_PASSWORD: o*K9ebP3'E[0xbi
+      DATABASE_URL: jdbc:postgresql://postgres:5432/insurance_db
+      DATABASE_NAME: insurance_db
+      DATABASE_PASSWORD: o*K9ebP3'E[0xbi
+      DATABASE_USER: insurance_employee
+      DATA_PROVIDER_URL: http://localhost:8082
+    runs-on: ubuntu-latest
+    container:
+      image: maven:3.8-jdk-11
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd applications/catena-x/data-provider
+            cd ..
+            rm -rf data-consumer
+            git clone https://gitlab-ci-token:${{ secrets.GITLABTOKEN }}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/catena-x/data-consumer
+            cd data-consumer
+            ln -s .env.development .env
+            cd backend
+            mvn --settings settings.xml -Dfraunhofer-mydata-control.username=$MYDATA_USERNAME -Dfraunhofer-mydata-control.password=$MYDATA_PASSWORD package -DskipTests
+            java -jar infrastructure/target/infrastructure-0.0.1-SNAPSHOT.jar &
+            sleep 30
+            cd ../../data-provider
+            ln -s .env.development .env
+            cd backend
+            mvn test -Dtest=de.thesis.provider.backend.integration.**
+
