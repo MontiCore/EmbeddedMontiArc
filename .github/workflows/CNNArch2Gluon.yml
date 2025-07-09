@@ -113,7 +113,7 @@ jobs:
           echo "Final run status: $run"
           echo "run=$run" >> $GITHUB_OUTPUT
   linux_phase:
-    needs: [masterJobLinux, BranchJobLinux, githubjob]
+    needs: [githubjob, masterJobLinux, BranchJobLinux]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
