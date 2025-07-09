@@ -32,3 +32,4 @@ The learning rate scheduler will return the next learning rate based on:
 learning_rate * pow(learning_rate_decay, floor(num_update/step_size))
 ```
 
+
