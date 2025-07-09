@@ -30,6 +30,8 @@ Generation, training, and execution were tested on Ubuntu 16.04 LTS. The generat
     pip install --user h5py numpy pyprind matplotlib
     ```
 
+    
+
 - MXNet C++ Language Bindings (Follow official [installation guide](https://mxnet.incubator.apache.org/versions/master/install/ubuntu_setup.html))
 - MXNet for Python 3 (Follow official [installation guide](https://mxnet.incubator.apache.org/versions/master/install/index.html?platform=Linux&language=Python&processor=CPU))
 - Armadillo >= 9.400.3 (Follow official [installation guide](http://arma.sourceforge.net/download.html))
