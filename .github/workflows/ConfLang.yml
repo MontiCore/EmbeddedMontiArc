@@ -61,7 +61,7 @@ jobs:
         uses: dorny/test-reporter@v2
         if : ${{ always() }}
         with:
-        name: build
+          name: build
           path: |
             - languages/ConfLang/target/surefire-reports/TEST-*.xml
           reporter: java-junit
