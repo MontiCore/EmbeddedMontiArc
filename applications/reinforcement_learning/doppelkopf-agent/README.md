@@ -7,3 +7,6 @@ Es wird empfohlen, das Projekt wie folgt über docker zu bauen:
 ```
 docker build -t doppelkopf .
 ```
+
+
+
