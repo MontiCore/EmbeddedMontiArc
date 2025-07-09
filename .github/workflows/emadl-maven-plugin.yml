@@ -70,7 +70,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   trigger_apps_phase:
-    needs: [page_phase, trigger-mnist-vae, trigger-3d-gan, trigger-tictactoe, trigger-coopautopilot, trigger-mnistcalc, trigger-doppelkopf, trigger-kipf-gnn, trigger-sentiment]
+    needs: [page_phase, trigger-sentiment, trigger-mnistcalc, trigger-mnist-vae, trigger-3d-gan, trigger-tictactoe, trigger-kipf-gnn, trigger-doppelkopf, trigger-coopautopilot]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
