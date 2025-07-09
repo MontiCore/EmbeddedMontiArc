@@ -24,7 +24,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   test_phase:
-    needs: [prebuild_phase, TestMavenStreamtestPlugin, TestMnistWithAdaNet, TrainHexadecimal_MnistCalculator, TestEMADLMavenPlugin, TrainTensorflowONNX, TrainOperator_MnistCalculator, TestGluonONNX, TestMNISTwithCustomLayer, DeployDecompositionResNetArtifact, TrainHexadecimal_MnistCalculatorTL, TrainOperator_MnistCalculatorTL, TestTENSORFLOW]
+    needs: [prebuild_phase, TrainTensorflowONNX, TestMNISTwithCustomLayer, TestTENSORFLOW, TrainOperator_MnistCalculator, TrainHexadecimal_MnistCalculatorTL, TestMnistWithAdaNet, TestMavenStreamtestPlugin, TrainOperator_MnistCalculatorTL, DeployDecompositionResNetArtifact, TrainHexadecimal_MnistCalculator, TestEMADLMavenPlugin, TestGluonONNX]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +36,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   testmodular_phase:
-    needs: [test_phase, TestDecompositionResNet, TestDecomposition, TestTransfer, TestModularModels]
+    needs: [test_phase, TestTransfer, TestDecomposition, TestDecompositionResNet, TestModularModels]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
