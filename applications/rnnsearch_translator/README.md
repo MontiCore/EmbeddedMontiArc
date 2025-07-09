@@ -12,3 +12,5 @@ This project uses the RNNsearch architecture by [Bahdanau et al.](https://arxiv.
 2. Update the settings in `src/emadl/translator/RNNsearch.cnnt` if wanted.
 3. Run `./build.sh` to generate, train and compile the model.
 4. Run `build/src/cpp/Translator resources/vocabularies/vocab.en resources/vocabularies/vocab.en '<source sequence>'` to translate a sentence from English to Vietnamese.
+
+
