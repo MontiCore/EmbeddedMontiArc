@@ -11,7 +11,7 @@ env:
   GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
 jobs:
   build_phase:
-    needs: [build-backend, build-frontend]
+    needs: [build-frontend, build-backend]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
