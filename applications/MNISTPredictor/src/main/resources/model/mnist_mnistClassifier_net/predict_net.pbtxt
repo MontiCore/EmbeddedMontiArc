@@ -1,0 +1,210 @@
+name: "deploy_net"
+op {
+  input: "data"
+  input: "conv1__w"
+  input: "conv1__b"
+  output: "conv1_"
+  name: ""
+  type: "Conv"
+  arg {
+    name: "stride"
+    i: 1
+  }
+  arg {
+    name: "exhaustive_search"
+    i: 0
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  arg {
+    name: "kernel"
+    i: 5
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+  engine: "CUDNN"
+}
+op {
+  input: "conv1_"
+  output: "pool1_"
+  name: ""
+  type: "MaxPool"
+  arg {
+    name: "kernel"
+    i: 2
+  }
+  arg {
+    name: "stride"
+    i: 2
+  }
+  arg {
+    name: "cudnn_exhaustive_search"
+    i: 0
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+  engine: "CUDNN"
+}
+op {
+  input: "pool1_"
+  input: "conv2__w"
+  input: "conv2__b"
+  output: "conv2_"
+  name: ""
+  type: "Conv"
+  arg {
+    name: "stride"
+    i: 1
+  }
+  arg {
+    name: "exhaustive_search"
+    i: 0
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  arg {
+    name: "kernel"
+    i: 5
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+  engine: "CUDNN"
+}
+op {
+  input: "conv2_"
+  output: "pool2_"
+  name: ""
+  type: "MaxPool"
+  arg {
+    name: "kernel"
+    i: 2
+  }
+  arg {
+    name: "stride"
+    i: 2
+  }
+  arg {
+    name: "cudnn_exhaustive_search"
+    i: 0
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+  engine: "CUDNN"
+}
+op {
+  input: "pool2_"
+  input: "fc2__w"
+  input: "fc2__b"
+  output: "fc2_"
+  name: ""
+  type: "FC"
+  arg {
+    name: "use_cudnn"
+    i: 1
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  arg {
+    name: "cudnn_exhaustive_search"
+    i: 0
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+}
+op {
+  input: "fc2_"
+  output: "fc2_"
+  name: ""
+  type: "Relu"
+  arg {
+    name: "cudnn_exhaustive_search"
+    i: 0
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+  engine: "CUDNN"
+}
+op {
+  input: "fc2_"
+  input: "fc3__w"
+  input: "fc3__b"
+  output: "fc3_"
+  name: ""
+  type: "FC"
+  arg {
+    name: "use_cudnn"
+    i: 1
+  }
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  arg {
+    name: "cudnn_exhaustive_search"
+    i: 0
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+}
+op {
+  input: "fc3_"
+  output: "predictions"
+  name: ""
+  type: "Softmax"
+  arg {
+    name: "order"
+    s: "NCHW"
+  }
+  arg {
+    name: "cudnn_exhaustive_search"
+    i: 0
+  }
+  device_option {
+    device_type: 1
+    cuda_gpu_id: 0
+  }
+  engine: "CUDNN"
+}
+external_input: "data"
+external_input: "data"
+external_input: "conv1__w"
+external_input: "conv1__b"
+external_input: "conv2__w"
+external_input: "conv2__b"
+external_input: "fc2__w"
+external_input: "fc2__b"
+external_input: "fc3__w"
+external_input: "fc3__b"
+external_output: "predictions"
