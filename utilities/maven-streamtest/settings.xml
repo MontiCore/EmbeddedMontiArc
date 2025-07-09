@@ -39,12 +39,7 @@
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
-                <repository>
-                    <id>icm</id>
-                    <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
-                </repository>
+
             </repositories>
             <pluginRepositories>
                 <pluginRepository>

@@ -29,11 +29,7 @@
             <mirrorOf>external:*</mirrorOf>
             <url>https://nexus.se.rwth-aachen.de/content/groups/public</url>
         </mirror>
-        <mirror>
-            <id>icm-repository</id>
-            <mirrorOf>icm</mirrorOf>
-            <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
-        </mirror>
+
 
     </mirrors>
 
@@ -49,12 +45,7 @@
                     <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                 </repository>
-                <repository>
-                    <id>icm</id>
-                    <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss/</url>
-                    <releases><enabled /></releases>
-                    <snapshots><enabled /></snapshots>
-                </repository>
+
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
