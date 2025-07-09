@@ -1,0 +1,13 @@
+package memorieswithproductkeys;
+
+stream StreamTest for Stream{
+    // Input
+    hundreds: 1; 
+    tens: 1;
+    ones: 1;
+
+    // Output
+    number: 111;
+
+}
+

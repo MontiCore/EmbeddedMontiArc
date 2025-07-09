@@ -1,0 +1,21 @@
+# (c) https://github.com/MontiCore/monticore
+
+stages:
+- linux
+
+TestMemoriesWithProductKeysTraining:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet150:v0.0.5
+  script:
+  - cd memories-with-product-keys
+  - mvn streamtest:streamtest-build -s settings.xml
+
+TestMemoriesWithProductKeysPrediction:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  script:
+  - cd gluon
+  - chmod +x build.sh
+  - ./build.sh
+  - RES=$(./build/src/cpp/MemoriesWithProductKeys resources/prediction_data/prediction_samples.txt resources/prediction_data/prediction_sequences.txt resources/prediction_data/prediction_lengths.txt)
+  - "if [[ $RES != *\"Prediction for sample 0: 0\"* ]]; then echo \"Wrong result:\" $RES; exit 1; fi;"

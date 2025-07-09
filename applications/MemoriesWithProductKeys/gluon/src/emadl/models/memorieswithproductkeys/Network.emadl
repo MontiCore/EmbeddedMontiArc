@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package memorieswithproductkeys;
+
+component Network<Z(1:oo) n = 128>{
+    ports in Z(0:oo)^{n} data_0,
+		  in Z(0:oo)^{n} data_1,
+		  in Z(0:oo)^{1} data_2,
+          out Q(0:1)^{33} softmax;
+
+    implementation CNN {
+        
+        def memoryBlock(p, k){ 
+            (
+                ([0]| [0]| [0]| [1]) ->
+                DotProductSelfAttention(numHeads=16, useMask=true) -> 
+                Dropout(p=p)
+            |
+                [0]
+            ) ->
+            Add() ->
+            LayerNorm() ->
+            LargeMemory(numHeads=4, k=k, subKeySize=512) ->
+            LayerNorm()
+        }
+    
+        (data_0 | data_1 | data_2) ->
+        (
+		    LoadNetwork(networkDir="tag:bert_small", networkPrefix="classBertSmallUnPooled-", numInputs=3, outputShape=(128, 768))
+        |
+            [2]
+        ) ->
+        memoryBlock(p=0.1, k=32) ->
+        FullyConnected(units=768) ->
+        Dropout(p=0.1) -> 
+		FullyConnected(units=33) ->
+		Softmax() ->
+        softmax;
+    }
+}
