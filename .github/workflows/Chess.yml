@@ -1,0 +1,38 @@
+name: Chess
+on:
+  push:
+    paths:
+      - 'applications/games/Chess/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 69050
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull gradle:7.1.0-jdk11
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} gradle:7.1.0-jdk11 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/games/Chess
+            apt-get update
+            apt-get install -y software-properties-common
+            apt-add-repository -y ppa:swi-prolog/stable
+            apt-get update
+            apt-get install -y swi-prolog
+            gradle test --info
+        run: docker exec build-container bash -c "$SCRIPT"
+
