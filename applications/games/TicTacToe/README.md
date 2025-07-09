@@ -13,3 +13,4 @@ Das Projekt beinhaltelt die Tic-Tac-Toe-Modelle sowie eine Testinfrastruktur.
 ## Spielregeln
 
 Siehe [Tic-Tac-Toe](https://de.wikipedia.org/wiki/Tic-Tac-Toe)
+
