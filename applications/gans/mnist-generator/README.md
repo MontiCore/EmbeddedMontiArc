@@ -13,3 +13,4 @@ Train with calling ./build.sh inside the gluon folder.
 ## Generating Numbers
 After training handwritten digits can be generated with: ./build/src/cpp/MNISTGenerator x 
 where x is an integer number used as the random seed.
+
