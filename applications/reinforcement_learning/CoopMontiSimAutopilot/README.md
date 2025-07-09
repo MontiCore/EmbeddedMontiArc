@@ -18,6 +18,8 @@ https://mxnet.apache.org/versions/1.9.1/get_started?platform=linux&language=pyth
 
 Additional installations:
 
+
+
 - Maven:
    ```bash
    sudo apt-get install maven
