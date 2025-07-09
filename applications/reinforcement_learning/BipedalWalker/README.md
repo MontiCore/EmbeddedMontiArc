@@ -34,6 +34,8 @@ Generation, training, and execution were tested on Ubuntu 16.04 LTS. The generat
 - MXNet for Python (Follow official [installation guide](https://mxnet.incubator.apache.org/versions/master/install/index.html?platform=Linux&language=Python&processor=CPU))
 - Armadillo >= 9.400.3 (Follow official [installation guide](http://arma.sourceforge.net/download.html))
 - ROS Kinetic (Follow official [installation guide](http://wiki.ros.org/kinetic/Installation/Ubuntu))
+
+- 
 - OpenAI-Gym: Follow official [installation guide](https://github.com/openai/gym#installation)
 
 Note that you require the [Box2D](https://github.com/openai/gym/blob/master/docs/environments.md) package of OpenAI-Gym.
