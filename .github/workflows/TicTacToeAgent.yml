@@ -116,7 +116,7 @@ jobs:
             applications/reinforcement_learning/TicTacToeAgent/tictactoe-agent/generator-target/
 
   TestTrain:
-    needs: [[ TestBuildJava17 , TestBuildJava1_8, linuxBuildJava1_8_phase]
+    needs: [ TestBuildJava17 , TestBuildJava1_8, linuxBuildJava1_8_phase]
     if: ${{ !cancelled() && needs.linuxBuildJava1_8_phase.result == 'success' && needs.TestBuildJava17.result == 'success' && needs.TestBuildJava1_8.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
