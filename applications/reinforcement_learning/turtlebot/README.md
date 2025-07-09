@@ -22,7 +22,7 @@ git push -uf origin main
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/turtlebot/-/settings/integrations)
+- [ ] [Set up project integrations](https://git.rth-aachen.de/monticore/EmbeddedMontiArc/applications/reinforcement_learning/turtlebot/-/settings/integrations)
 
 ## Collaborate with your team
 
