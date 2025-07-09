@@ -28,6 +28,7 @@ Generation, training, and execution were tested on Ubuntu 16.04 LTS. The generat
     ```
 - Python pip:
     ```bash
+    
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
     python get-pip.py --user
     ```
