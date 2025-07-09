@@ -144,7 +144,7 @@ jobs:
           done
           echo "Final file status only check: $only"
   docker_phase:
-    needs: [buildDockerMXNet150, buildDockerTensorflowONNX, buildDockerPyTorch, buildDockerDGLQD, buildDockerMXNet170onnx, buildDockerMXNet170, buildDockerMXNet170DGL]
+    needs: [buildDockerMXNet170onnx, buildDockerMXNet150, buildDockerTensorflowONNX, buildDockerDGLQD, buildDockerMXNet170DGL, buildDockerPyTorch, buildDockerMXNet170]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -156,7 +156,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   linux_phase:
-    needs: [docker_phase, modularityTest, artifact-extraction, integrationPythonWrapperTest, integrationMXNetJobLinux, integrationPyTorchJobLinux, UnitTestJobLinux, integrationGluonJobLinux, integrationCaffe2JobLinux, integrationTensorflowJobLinux]
+    needs: [docker_phase, integrationMXNetJobLinux, UnitTestJobLinux, integrationPyTorchJobLinux, integrationTensorflowJobLinux, integrationPythonWrapperTest, integrationGluonJobLinux, modularityTest, artifact-extraction, integrationCaffe2JobLinux]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
@@ -168,7 +168,7 @@ jobs:
             exit 1
           if: ${{contains(needs.*.result, 'failure')}}
   deploy_phase:
-    needs: [linux_phase, git_masterJobLinux, githubjob]
+    needs: [linux_phase, githubjob, git_masterJobLinux]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
