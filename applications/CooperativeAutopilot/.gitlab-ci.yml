@@ -1,0 +1,15 @@
+# In order to have the 'armadillo' library cloned locally
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+  - integration
+
+
+TestSaaS:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp:ema-lab
+  script: 
+  - mvn streamtest:streamtest-generator -s settings.xml
+  - temp-build.sh
+  - mvn emadl:simulate -s settings.xml
