@@ -29,6 +29,8 @@ ROS Kinetic (Follow [official installation guide](http://wiki.ros.org/Installati
 - Run environment for training
 ```bash
 roscore #start ROS master
+
+
 java -cp "target/tictactoe-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.tictactoe.TicTacToeEnv --training
 ```
 - Run environment for gaming
