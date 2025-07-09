@@ -12,7 +12,7 @@ env:
   cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
 jobs:
   linux_phase:
-    needs: [TestAutoML, TestPYTORCH]
+    needs: [TestPYTORCH, TestAutoML]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
