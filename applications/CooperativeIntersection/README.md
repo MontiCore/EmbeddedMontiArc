@@ -29,3 +29,4 @@ Uninstall note: these scripts will add multiple lines to your .bashrc, which you
     * after that the intersection controller is active and tries to prevent vehicle collisions
     * the vehicles will cross the intersection 10 times with different starting velocities and positions
     * every collision is documented in the terminal output
+
