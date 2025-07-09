@@ -17,3 +17,4 @@ So to generate a bathtub, copy the files from
 ![Example of a generated sofa](images/xampleSofa3.png)
 
 ![Another sofa](images/xampleSofa.png)
+
