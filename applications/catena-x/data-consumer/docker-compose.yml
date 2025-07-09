@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:alpine3.15
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=${DATABASE_USER}
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8081:8081"
+

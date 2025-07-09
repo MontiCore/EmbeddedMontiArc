@@ -1,0 +1,9 @@
+<settings>
+    <servers>
+        <server>
+            <id>fraunhofer-mydata-control</id>
+            <username>${fraunhofer-mydata-control.username}</username>
+            <password>${fraunhofer-mydata-control.password}</password>
+        </server>
+    </servers>
+</settings>
