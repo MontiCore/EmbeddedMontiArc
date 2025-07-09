@@ -26,6 +26,8 @@ git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/cat
 ```
 
 Move into the root directory:
+
+
 ```
 cd data-consumer
 ```
