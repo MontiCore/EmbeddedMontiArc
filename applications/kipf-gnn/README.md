@@ -27,3 +27,4 @@ To use the Graph Neural Network training schema set `network_type:gnn` in the `.
 
 `train_mask:(start_idx, end_idx)` and `test_mask(start_idx, end_idx)` use to mask nodes for single graph training.
 `multi_graph:true` when using multiple graphs for training e.g., in graph level prediction tasks.
+
