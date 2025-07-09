@@ -22,6 +22,8 @@ mvn package -s settings.xml
 ```
 
 ## Running chess environment
+
+
 ###  Prerequisites
 - SWI-Prolog (Follow [official installation guide](https://www.swi-prolog.org/build/unix.html)) or install on ubuntu:
 ```bash
