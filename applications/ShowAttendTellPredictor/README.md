@@ -27,6 +27,8 @@ A concrete call could look like this:
 build/src/cpp/ShowAttendTell resources/training_data/plane.jpg resources/training_data/dict.txt
 ```
 
+
+
 Both PNG and JPEG images should work fine, and will be resized to the correct size of 224 x 224 pixels automatically.
 
 
