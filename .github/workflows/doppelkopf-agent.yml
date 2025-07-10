@@ -39,7 +39,7 @@ jobs:
   TestBuildJava17:
     runs-on: ubuntu-latest
     container:
-      image: maven:3.8.4-openjdk-17-slim
+      image: maven:3.8.4-openjdk-17
     timeout-minutes: 120
     steps:
       - name: Checkout latest commit
