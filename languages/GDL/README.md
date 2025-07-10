@@ -39,6 +39,8 @@ mvn install:install-file \
    -DgeneratePom=true
 
 mvn install:install-file \
+
+
    -Dfile=target/libs/GDL-cli.jar \
    -DgroupId=de.monticore.lang.gdl \
    -DartifactId=lang.gdl.cli \
