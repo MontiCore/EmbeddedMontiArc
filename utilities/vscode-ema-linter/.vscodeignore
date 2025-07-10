@@ -1,0 +1,17 @@
+.vscode/**
+.vscode-test/**
+out/test/**
+src/**
+.gitignore
+vsc-extension-quickstart.md
+**/tsconfig.json
+**/tslint.json
+**/*.map
+**/*.ts
+scripts/*
+logs/*
+package.old.json
+.gitlab-ci.yml
+build.sh
+**/*.versionsBackup
+**/keywords.txt
