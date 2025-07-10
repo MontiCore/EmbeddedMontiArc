@@ -1,0 +1,28 @@
+package threedgan;
+
+component Generator {
+    ports in Q(0:1)^{200} noise,
+         out Q(0:1)^{1, 32, 32, 32} data;
+
+    implementation CNN{
+
+        noise ->
+        Reshape( shape=(200,1,1,1)) ->
+        UpConvolution3D(kernel=(4,4,4), channels=256 , stride = (2,2,2), padding=(1,1,1)) ->
+        BatchNorm() ->
+        Relu() ->
+        UpConvolution3D(kernel=(4,4,4), channels=128 , stride = (2,2,2), padding=(1,1,1)) ->
+        BatchNorm() ->
+        Relu() ->
+        UpConvolution3D(kernel=(4,4,4), channels=64 , stride = (2,2,2), padding="simple3d") ->
+        BatchNorm() ->
+        Relu() ->
+        UpConvolution3D(kernel=(4,4,4), channels=32 , stride = (2,2,2), padding="simple3d") ->
+        BatchNorm() ->
+        Relu() ->
+        UpConvolution3D(kernel=(4,4,4), channels=1 , stride = (2,2,2), padding="simple3d") ->
+        Sigmoid() ->
+        data;
+    }
+}
+

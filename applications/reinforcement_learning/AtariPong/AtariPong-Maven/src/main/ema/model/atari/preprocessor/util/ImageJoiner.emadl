@@ -1,0 +1,44 @@
+/* (c) https://github.com/MontiCore/monticore */
+package atari.preprocessor.util;
+
+component ImageJoiner<Z height=105, Z width=80> {
+    ports
+        in Q^{height, width} image,
+        out Q^{4, height, width} imageCollection;
+
+    implementation Math {
+        static Q^{height, width} t0_image = image;
+        static Q^{height, width} t1_image = image;
+        static Q^{height, width} t2_image = image;
+        static Q^{height, width} t3_image = image;
+
+        t3_image = t2_image;
+        t2_image = t1_image;
+        t1_image = t0_image;
+        t0_image = image;
+
+        for h=1:height
+            for w=1:width
+                imageCollection(1, h, w) = t0_image(h,w);
+            end
+        end
+
+        for h=1:height
+            for w=1:width
+                imageCollection(2, h, w) = t1_image(h,w);
+            end
+        end
+
+        for h=1:height
+            for w=1:width
+                imageCollection(3, h, w) = t2_image(h,w);
+            end
+        end
+
+        for h=1:height
+            for w=1:width
+                imageCollection(4, h, w) = t3_image(h,w);
+            end
+        end
+    }
+}

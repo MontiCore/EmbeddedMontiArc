@@ -20,7 +20,6 @@
 
   <profiles>
 
-  
     <profile>
       <id>se-nexus</id>
       <!-- enable snapshots for the built in central repo to direct -->
