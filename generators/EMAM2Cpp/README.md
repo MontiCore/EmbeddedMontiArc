@@ -71,3 +71,5 @@ Create a environment variable called _Armadillo_Home_ with the path to the base 
   * In build dir:
     * cmake ..
     * cmake --build .  --config release
+   
+    * 
