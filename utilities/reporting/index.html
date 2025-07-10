@@ -1,0 +1,38 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EmbeddedMontiArc Reports</title>
+    <link rel="stylesheet" href="report/js/jquery-ui-1.12.1/jquery-ui.min.css">
+    <link rel="stylesheet" href="report/css/index.css">
+    <script src="report/js/dataTable/jquery-3.3.1.min.js"></script>
+    <script src="report/js/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+
+<div id="my-title"><div>Reports</div></div>
+<div id="button-gr-container" class="custom-button-container">
+    <a id="button-gr" class="custom-button ui-button ui-widget ui-corner-all" href="report/grammarReport.html">Grammars</a>
+</div>
+<div id="button-cq-container" class="custom-button-container">
+    <a id="button-cq" class="custom-button ui-button ui-widget ui-corner-all" href="report/componentQuality.html">Component Quality</a><br>
+</div>
+<div id="button-pl-container" class="custom-button-container">
+    <a id="button-pl" class="custom-button ui-button ui-widget ui-corner-all" href="report/pipelineReport.html">Pipelines</a>
+</div>
+<div id="button-tq-container" class="custom-button-container">
+    <a id="button-tq" class="custom-button ui-button ui-widget ui-corner-all" href="report/testReport.html">Test Quality</a>
+</div>
+
+<div id="select-project-container" class="custom-button-container">
+    <label id="select-project-label" for="select-project">Select project</label>
+    <select name="select-project" id="select-project" class="custom-button">
+        <option selected="selected" value="-1">All Projects</option>
+    </select>
+</div>
+
+<script src="report/js/index.js"></script>
+</body>
+</html>
