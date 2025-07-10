@@ -39,6 +39,8 @@ For EmbeddedMontiArc Languages the Language Servers are implemented in [ema-lsp]
 Run `./build.sh` with a bash shell.
 
 Alternatively: 
+
+
 1. run `npm install` to download the dependencies
 2. run `node scripts/createSyntax.js ./settings/global.json` to generate syntax highlighting and activation events for the extension. Warning: this modifies the `package.json` file!
 3. run `vsce package -o "ema-linter.vsix"` to create the installable `.vsix` file.
