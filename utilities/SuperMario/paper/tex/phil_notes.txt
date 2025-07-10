@@ -1,0 +1,26 @@
+
+#INTRODUCTION
+
+
+The data collected in an empirical study may be quantitative or qualitative. Quantitative
+data involves numbers and classes, while qualitative data involves words, descriptions,
+pictures, diagrams etc. Quantitative data is analyzed using statistics, while qualitative data is
+analyzed using categorization and sorting. Case studies tend mostly to be based on qualitative
+data, as these provide a richer and deeper description. However, a combination of qualitative
+and quantitative data often provides better understanding of the studied phenomenon
+(Seaman 1999), i.e. what is sometimes called “mixed methods” (Robson 2002).
+
+---> Use both, explain with the above. Ref: Guidelines Case Study.pdf
+
+
+
+.
+Perry et al. define similar criteria for a case study (Perry et al. 2005). It is expected that a
+case study:
+& “Has research questions set out from the beginning of the study
+& Data is collected in a planned and consistent manner
+& Inferences are made from the data to answer the research question
+& Explores a phenomenon, or produces an explanation, description, or causal analysis of it
+& Threats to validity are addressed in a systematic way.”
+
+---> Use list to structure paper.
