@@ -34,6 +34,9 @@ apt-get install -y swi-prolog
 ROS Kinetic (Follow [official installation guide](http://wiki.ros.org/Installation/Ubuntu))
 
 ### Running 
+
+
+
 - Run environment for training
 ```bash
 roscore #start ROS master
