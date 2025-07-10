@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg2;
+
+component Critic {
+    ports
+        in Q^{1} input_critic,
+        out Q(-1:1)^{1} output_critic;
+}

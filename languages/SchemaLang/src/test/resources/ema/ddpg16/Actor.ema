@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg16;
+
+component Actor {
+    ports
+        in Q(-2:2)^{2} input_actor,
+        out Q(-1:1) output_actor;
+}
