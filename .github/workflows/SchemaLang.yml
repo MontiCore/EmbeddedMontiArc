@@ -70,6 +70,7 @@ jobs:
             mvn $MAVEN_CLI_OPTS clean install -U
         run: docker exec build-container bash -c "$SCRIPT"
       - name: Reporting
+        continue-on-error: true
         uses: dorny/test-reporter@v2
         if : ${{ always() }}
         with:
