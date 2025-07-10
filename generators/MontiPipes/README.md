@@ -22,7 +22,9 @@ git push -uf origin main
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/montipipes/-/settings/integrations)
+- [ ] [Set up project integrations](https://git.rwth-aachen.de/monticore/EmbeddedMonti
+- [ ]
+- [ ] Arc/generators/montipipes/-/settings/integrations)
 
 ## Collaborate with your team
 
