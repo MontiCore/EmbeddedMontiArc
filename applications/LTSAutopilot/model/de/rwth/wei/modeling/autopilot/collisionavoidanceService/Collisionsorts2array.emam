@@ -1,0 +1,99 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.collisionavoidanceService;
+
+component Collisionsorts2array{
+  ports
+    // 1 is higher priority, -1 is lower priority, 2 is uncertain priority, 3 is front vehicle， -3 is follow vehicles
+    // collision information from collisonarray
+    in     Z            vehicle_n,
+    in     Z^{1,32}     iscollision,
+    in     Z^{1,32}     collision_id,
+    in     Z^{1,32}     collisionpriority,
+    in     Q^{1,32}     angletocurrent,
+    in     Q^{1,32}     velocity_car1,
+    in     Q^{1,32}     dis2intersection,
+
+    // higher collision information
+    out     Z            higher_vehicle_n,
+    out     Z^{1,32}     higher_iscollision,
+    out     Z^{1,32}     higher_collision_id,
+    out     Q^{1,32}     higher_angletocurrent,
+    out     Q^{1,32}     higher_velocity_car1,
+    out     Q^{1,32}     higher_dis2intersection,
+
+    // lower priority information
+    out     Z            lower_vehicle_n,
+    out     Z^{1,32}     lower_iscollision,
+    out     Z^{1,32}     lower_collision_id,
+    out     Q^{1,32}     lower_angletocurrent,
+    out     Q^{1,32}     lower_velocity_car1,
+    out     Q^{1,32}     lower_dis2intersection,
+
+    // uncertain priority information
+    out     Z            uncertain_vehicle_n,
+    out     Z^{1,32}     uncertain_iscollision,
+    out     Z^{1,32}     uncertain_collision_id,
+    out     Q^{1,32}     uncertain_velocity_car1,
+    out     Q^{1,32}     uncertain_dis2intersection;
+
+    implementation Math{
+      // initial of higher
+      higher_iscollision(1,1) = 0;
+      higher_collision_id(1,1) = 0;
+      higher_angletocurrent(1,1) = 0.0;
+      higher_velocity_car1(1,1) = 0.0;
+      higher_dis2intersection(1,1) = 0.0;
+
+      // initial of lower
+      lower_iscollision(1,1) = 0;
+      lower_collision_id(1,1) = 0;
+      lower_angletocurrent(1,1) = 0.0;
+      lower_velocity_car1(1,1) = 0.0;
+      lower_dis2intersection(1,1) = 0.0;
+
+      //initial of uncertain
+      uncertain_iscollision(1,1) = 0;
+      uncertain_collision_id(1,1) = 0;
+      uncertain_velocity_car1(1,1) = 0.0;
+      uncertain_dis2intersection(1,1) = 0.0;
+
+      // initial counter for vehicle number
+      Z counter = 1;
+      Z counter1 = 1;
+      Z counter2 = 1;
+      if vehicle_n >= 1
+          for i = 1:vehicle_n
+              // vehicle in higher priority area
+              if collisionpriority(1,i) == 1
+                higher_iscollision(1,counter) = iscollision(1,i);
+                higher_collision_id(1,counter) = collision_id(1,i);
+                higher_angletocurrent(1,counter) = angletocurrent(1,i);
+                higher_velocity_car1(1,counter) = velocity_car1(1,i);
+                higher_dis2intersection(1,counter) = dis2intersection(1,i);
+                counter = counter + 1;
+             end
+              // vehicle has the lower priority
+              if collisionpriority(1,i) == - 1
+                  lower_iscollision(1,counter) = iscollision(1,i);
+                  lower_collision_id(1,counter1) = collision_id(1,i);
+                  lower_angletocurrent(1,counter1) = angletocurrent(1,i);
+                  lower_velocity_car1(1,counter1) = velocity_car1(1,i);
+                  lower_dis2intersection(1,counter1) = dis2intersection(1,i);
+                  counter1 = counter1 + 1;
+              end
+              // uncertain priority vehicle
+              if collisionpriority(1,i) == 2
+                  uncertain_iscollision(1,counter) = iscollision(1,i);
+                  uncertain_collision_id(1,counter2) = collision_id(1,i);
+                  uncertain_velocity_car1(1,counter2) = velocity_car1(1,i);
+                  uncertain_dis2intersection(1,counter2) = dis2intersection(1,i);
+                  counter2 = counter2 + 1;
+              end
+          end
+      end
+      // set the vehicle num of differnt type priority
+      higher_vehicle_n = counter - 1;
+      lower_vehicle_n = counter1 - 1;
+      uncertain_vehicle_n = counter2 - 1;
+    }
+}

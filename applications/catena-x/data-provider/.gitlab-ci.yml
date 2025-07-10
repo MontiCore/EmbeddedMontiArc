@@ -1,0 +1,56 @@
+stages:
+  - build
+  - unit-test
+  - integration-test
+
+build-backend:
+  stage: build
+  image: maven:3.8-jdk-11
+  script:
+    - cd backend
+    - mvn compile
+
+build-frontend:
+  stage: build
+  image: node:lts-alpine3.15
+  script:
+    - cd frontend
+    - npm install --location=global npm@8.1.2
+    - npm install
+    - npm run build
+
+unit-test:
+  stage: unit-test
+  image: maven:3.8-jdk-11
+  script:
+    - cd backend
+    - mvn test -Dtest=!de.thesis.provider.backend.integration.**
+
+integration-test:
+  stage: integration-test
+  image: maven:3.8-jdk-11
+  services:
+    - postgres:alpine3.15
+  variables:
+    POSTGRES_DB: insurance_db
+    POSTGRES_USER: insurance_employee
+    POSTGRES_PASSWORD: o*K9ebP3'E[0xbi
+    DATABASE_URL: jdbc:postgresql://postgres:5432/insurance_db
+    DATABASE_NAME: insurance_db
+    DATABASE_PASSWORD: o*K9ebP3'E[0xbi
+    DATABASE_USER: insurance_employee
+    DATA_PROVIDER_URL: http://localhost:8082
+  script:
+    - cd ..
+    - rm -rf data-consumer
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/catena-x/data-consumer
+    - cd data-consumer
+    - ln -s .env.development .env
+    - cd backend
+    - mvn --settings settings.xml -Dfraunhofer-mydata-control.username=$MYDATA_USERNAME -Dfraunhofer-mydata-control.password=$MYDATA_PASSWORD package -DskipTests
+    - java -jar infrastructure/target/infrastructure-0.0.1-SNAPSHOT.jar &
+    - sleep 30
+    - cd ../../data-provider
+    - ln -s .env.development .env
+    - cd backend
+    - mvn test -Dtest=de.thesis.provider.backend.integration.**

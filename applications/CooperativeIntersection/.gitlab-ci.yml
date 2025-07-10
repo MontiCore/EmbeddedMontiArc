@@ -1,0 +1,23 @@
+# (c) https://github.com/MontiCore/monticore  
+stages:
+- generate
+- compile
+
+gen:
+  image: maven:3-jdk-8
+  stage: generate
+  artifacts:
+    paths:
+    - target/
+  script:
+  - chmod 700 generate.sh
+  - ./generate.sh
+
+comp:
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/cooperativeintersection/emam-coincar
+  stage: compile
+  dependencies:
+    - gen
+  script:
+    - chmod 700 compile.sh
+    - ./compile.sh

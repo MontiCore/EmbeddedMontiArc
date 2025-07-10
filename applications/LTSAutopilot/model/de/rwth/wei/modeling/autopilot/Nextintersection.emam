@@ -1,0 +1,51 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot;
+
+component Nextintersection{
+ports
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Z^{1,100}       isintersection,
+  in  Q               length,
+
+  out Z               isnextintersection,
+  out Q               nextintersection_x,
+  out Q               nextintersection_y,
+  out Q               dis2intersection,
+  out Z               plat_isnextintersection,
+  out Q               plat_nextintersection_x,
+  out Q               plat_nextintersection_y;
+
+  implementation Math{
+    plat_isnextintersection = 0;
+    plat_nextintersection_x = 0.0;
+    plat_nextintersection_y = 0.0;
+    for i = 1:trajectory_length
+       if (isintersection(1,i) == 1)
+        plat_isnextintersection = 1;
+        plat_nextintersection_x = trajectory_x(1,i);
+        plat_nextintersection_y = trajectory_y(1,i);
+    end
+    isintersection = 0;
+    nextintersection_x = 0.0;
+    nextintersection_y = 0.0;
+    dis2intersection = 0.0;
+    for i = 2:trajectory_length
+       if (isintersection(1,i) == 1)
+          for j = 1:i-1
+             Q dx = trajectory_x(1,j+1)-trajectory_x(1,j);
+             Q dy = trajectory_y(1,j+1)-trajectory_y(1,j);
+             Q dis_sqrt = dx*dx + dy*dy;
+             Q dis = sqrt(dis_sqrt);
+             dis2intersection = dis2intersection + dis;
+          end
+          if dis2intersection <= 6.8*length
+            isintersection = 1;
+            nextintersection_x = trajectory_x(1,i);
+            nextintersection_y = trajectory_y(1,i);
+          end
+       end
+    end
+  }
+}

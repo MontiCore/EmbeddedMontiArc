@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package calculator;
+
+component Multiply {
+    ports
+        in Q(-oo:oo)^{3} a,
+        in Z(-oo:oo) b,
+        out Q(-oo:oo)^{3} c;
+    
+    implementation Math {
+        Q(-oo:oo)^{3} result;
+
+        result(1) = a(1) * b;
+        result(2) = a(2) * b;
+        result(3) = a(3) * b;
+
+        c = result;
+    }
+}

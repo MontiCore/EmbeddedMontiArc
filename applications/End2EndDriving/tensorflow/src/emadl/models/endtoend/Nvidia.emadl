@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package endtoend;
+
+component Nvidia{
+	ports in Q(0:1)^{3, 120, 160} data,
+		out Q(-oo:oo)^{1} target;
+
+	implementation CNN {
+		data ->
+		BatchNorm() ->
+		Convolution(kernel=(5,5),channels=24,stride=(2,2)) ->
+		Relu() ->
+		Convolution(kernel=(5,5),channels=36,stride=(2,2)) ->
+		Relu() ->
+		Convolution(kernel=(5,5),channels=48,stride=(2,2)) ->
+		Relu() ->
+		Convolution(kernel=(3,3),channels=64,stride=(2,2)) ->
+		Relu() ->
+        Convolution(kernel=(3,3),channels=64) ->
+        Relu() ->
+		Flatten() ->
+        FullyConnected(units=1164) ->
+        Relu() ->
+        Dropout() ->
+		FullyConnected(units=100) ->
+		Relu() ->
+		Dropout() ->
+		FullyConnected(units=50) ->
+		Relu() ->
+		Dropout() ->
+		FullyConnected(units=10) ->
+        FullyConnected(units=1) ->
+		target;
+	}
+}

@@ -1,0 +1,1 @@
+cNNSegment.SmallSeg resources/model_pretrained/cNNCalculator.Network

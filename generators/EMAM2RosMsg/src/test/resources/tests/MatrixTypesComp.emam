@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests;
+
+component MatrixTypesComp{
+    ports in Q^{3,1} in1,
+          in Q^{4,4} in2,
+          out B^{2,3,4} out1,
+          out Z^{2,3,4,5} out2;
+}

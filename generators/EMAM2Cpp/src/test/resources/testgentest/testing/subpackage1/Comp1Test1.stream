@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing.subpackage1;
+
+stream Comp1Test1 for Comp1 {
+    in1: true tick false tick true;
+    in2: 0 tick 1 tick 2;
+    in3: 0.0 tick 12.3 tick 100.0;
+
+    out1: false tick true tick false;
+    out2: 0 tick -1 tick -2;
+    out3: 100.0 tick 87.7 +/- 0.01 tick 0.0;
+}

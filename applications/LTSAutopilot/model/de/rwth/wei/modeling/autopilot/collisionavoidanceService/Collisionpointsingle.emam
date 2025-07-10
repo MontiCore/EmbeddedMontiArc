@@ -1,0 +1,870 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.collisionavoidanceService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Collisionpointsingle{
+  // to find the collision and front vehicle(real-time)
+  ports
+    // basic information of current vehicle
+    in Z trajectory_length_car1,
+    in Q^{1,100} trajectory_x_car1,
+    in Q^{1,100} trajectory_y_car1,
+    in Q car1_length,
+    in Q car1_width,
+
+    // basic information from other vehicle
+    in Statusmessage status_message,
+
+    out Z  isfrontvehicle,
+    out Z  iscollision,
+    out Q  distance,
+    out Z  vehicleid;
+
+    implementation Math{
+      iscollision = 0;
+      isfrontvehicle = 0;
+      distance = 0.0;
+      vehicleid = 0;
+      Z tag = 0;
+      // initial Intermediate variables
+      Z firstcollision = 0;
+      Q max_diag_1x = 0.0;
+      Q max_diag_1y = 0.0;
+      Q min_diag_1x = 0.0;
+      Q min_diag_1y = 0.0;
+      Q max_diag_2x = 0.0;
+      Q max_diag_2y = 0.0;
+      Q min_diag_2x = 0.0;
+      Q min_diag_2y = 0.0;
+      Q max_diag_car1_1x = 0.0;
+      Q max_diag_car1_1y = 0.0;
+      Q min_diag_car1_1x = 0.0;
+      Q min_diag_car1_1y = 0.0;
+      Q max_diag_car1_2x = 0.0;
+      Q max_diag_car1_2y = 0.0;
+      Q min_diag_car1_2x = 0.0;
+      Q min_diag_car1_2y = 0.0;
+      Q max_car1_1x = 0.0;
+      Q max_car1_1y = 0.0;
+      Q min_car1_1x = 0.0;
+      Q min_car1_1y = 0.0;
+      Q max_car1_2x = 0.0;
+      Q max_car1_2y = 0.0;
+      Q min_car1_2x = 0.0;
+      Q min_car1_2y = 0.0;
+      Q max_car1_3x = 0.0;
+      Q max_car1_3y = 0.0;
+      Q min_car1_3x = 0.0;
+      Q min_car1_3y = 0.0;
+      Q max_car1_4x = 0.0;
+      Q max_car1_4y = 0.0;
+      Q min_car1_4x = 0.0;
+      Q min_car1_4y = 0.0;
+      Q max_1x = 0.0;
+      Q max_1y = 0.0;
+      Q min_1x = 0.0;
+      Q min_1y = 0.0;
+      Q max_2x = 0.0;
+      Q max_2y = 0.0;
+      Q min_2x = 0.0;
+      Q min_2y = 0.0;
+      Q max_3x = 0.0;
+      Q max_3y = 0.0;
+      Q min_3x = 0.0;
+      Q min_3y = 0.0;
+      Q max_4x = 0.0;
+      Q max_4y = 0.0;
+      Q min_4x = 0.0;
+      Q min_4y = 0.0;
+      Q collison_point_x_car1 = 0.0;
+      Q collison_point_y_car1 = 0.0;
+
+      Q px = status_message.position_x;
+      Q py = status_message.position_y;
+      Q compass = status_message.compass;
+      Q length = status_message.length;
+      Q width = status_message.width;
+      Q rads = compass + 0.5 * M_PI;
+      Q vpx = cos(rads);
+      Q vpy = sin(rads);
+
+      Q top_rightx =  0.0;
+      Q top_righty =  0.0;
+      Q top_leftx =  0.0;
+      Q top_lefty =  0.0;
+      Q bottom_rightx = 0.0;
+      Q bottom_righty =  0.0;
+      Q bottom_leftx =  0.0;
+      Q bottom_lefty =  0.0;
+
+      // originial position of Boundary box of other vehicle
+      Q top_rightx0 = px + length/2;
+      Q top_righty0 = py - width/2;
+      Q top_leftx0 = px + length/2;
+      Q top_lefty0 = py + width/2;
+      Q bottom_rightx0 = px -length/2;
+      Q bottom_righty0 = py + width/2;
+      Q bottom_leftx0 = px -length/2;
+      Q bottom_lefty0 = py + width/2;
+
+       if vpx == 0 || vpy == 0
+          if vpx == 0 && vpy < 0
+            top_rightx = px - width/2;
+            top_righty = py - length/2;
+            top_leftx = px + width/2;
+            top_lefty = py - length/2;
+            bottom_rightx = px - width/2;
+            bottom_righty = py + length/2;
+            bottom_leftx = px + width/2;
+            bottom_lefty = py + length/2;
+          end
+          if vpx == 0 && vpy > 0
+            top_rightx = px + width/2;
+            top_righty = py + length/2;
+            top_leftx = px - width/2;
+            top_lefty = py + length/2;
+            bottom_rightx = px + width/2;
+            bottom_righty = py - length/2;
+            bottom_leftx = px - width/2;
+            bottom_lefty = py - length/2;
+          end
+          if vpx < 0 && vpy == 0
+            top_rightx = top_rightx0;
+            top_righty = top_righty0;
+            top_leftx = top_leftx0;
+            top_lefty = top_lefty0;
+            bottom_rightx = bottom_rightx0;
+            bottom_righty = bottom_righty0;
+            bottom_leftx = bottom_leftx0;
+            bottom_lefty = bottom_lefty0;
+          end
+          if vpx > 0 && vpy == 0
+            top_rightx = bottom_leftx0;
+            top_righty = bottom_lefty0;
+            top_leftx = bottom_rightx0;
+            top_lefty = bottom_righty0;
+            bottom_rightx = top_leftx0;
+            bottom_righty = top_lefty0;
+            bottom_leftx = top_rightx0;
+            bottom_lefty = top_righty0;
+          end
+       end
+       if(vpx < 0 && vpy > 0)||(vpx < 0 && vpy < 0)
+           top_rightx = (top_rightx0 - px)*cos(M_PI + rads) - (top_righty0 - py)*sin(M_PI + rads) + px;
+           top_righty = (top_rightx0 - px)*sin(M_PI + rads) + (top_righty0 - py)*cos(M_PI + rads) + py;
+           top_leftx = (top_leftx0 - px)*cos(M_PI + rads)- (top_lefty0 - py)*sin(M_PI + rads) +px;
+           top_lefty = (top_leftx0 - px)*sin(M_PI + rads) + (top_lefty0 - py)*cos(M_PI + rads) +py;
+           bottom_rightx = (bottom_rightx0 - px)*cos(M_PI + rads) - (bottom_righty0 - py)*sin(M_PI + rads) +px;
+           bottom_righty = (bottom_rightx0 - px)*sin(M_PI + rads) + (bottom_righty0 - py)*cos(M_PI + rads) +py;
+           bottom_leftx = (bottom_leftx0 - px)*cos(M_PI + rads) - (bottom_lefty0 - py)*sin(M_PI + rads) +px;
+           bottom_lefty = (bottom_leftx0 - px)*sin(M_PI + rads) + (bottom_lefty0 - py)*cos(M_PI + rads) +py;
+       else
+           top_rightx = (top_rightx0 - px)*cos(rads) - (top_righty0 - py)*sin(rads) + px;
+           top_righty = (top_rightx0 - px)*sin(rads) + (top_righty0 - py)*cos(rads) + py;
+           top_leftx = (top_leftx0 - px)*cos(rads)- (top_lefty0 - py)*sin(rads) + px;
+           top_lefty = (top_leftx0 - px)*sin(rads) + (top_leftx0 - py)*cos(rads) + py;
+           bottom_rightx = (bottom_rightx0 - px)*cos(rads) - (bottom_righty0 - py)*sin(rads) + px;
+           bottom_righty = (bottom_rightx0 - px)*sin(rads) +(bottom_righty0 - py)*cos(rads) + py;
+           bottom_leftx = (bottom_leftx0 - px)*cos(rads) - (bottom_lefty0 - py)*sin(rads) + px;
+           bottom_lefty = (bottom_leftx0 - px)*sin(rads) +(bottom_lefty0 - py)*cos(rads) + py;
+       end
+       for j = 1:(trajectory_length_car1 - 1)
+           // current position and next position
+           Q px_car1 = trajectory_x_car1(1,j);
+           Q px1_car1 = trajectory_x_car1(1,j+1);
+           Q py_car1 = trajectory_y_car1(1,j);
+           Q py1_car1 = trajectory_y_car1(1,j+1);
+           Q vpx_car1 = px1_car1 - px_car1;
+           Q vpy_car1 = py1_car1 - py_car1;
+           Q rads_car1 = atan(vpy_car1/vpx_car1);
+
+           Q top_rightx_car1 = 0.0;
+           Q top_righty_car1 = 0.0;
+           Q top_leftx_car1 = 0.0;
+           Q top_lefty_car1 = 0.0;
+           Q bottom_rightx_car1 = 0.0;
+           Q bottom_righty_car1 = 0.0;
+           Q bottom_leftx_car1 = 0.0;
+           Q bottom_lefty_car1 = 0.0;
+           // originial position of Boundary box
+           Q top_rightx0_car1 = px_car1 + car1_length/2;
+           Q top_righty0_car1 = py_car1 - car1_width/2;
+           Q top_leftx0_car1 = px_car1 + car1_length/2;
+           Q top_lefty0_car1 = py_car1 + car1_width/2;
+           Q bottom_rightx0_car1 = px_car1 - car1_length/2;
+           Q bottom_righty0_car1 = py_car1 + car1_width/2;
+           Q bottom_leftx0_car1 = px_car1 -car1_length/2;
+           Q bottom_lefty0_car1 = py_car1 + car1_width/2;
+           if (vpx_car1 == 0) || (vpy_car1 == 0)
+             if (vpx_car1 == 0)&&(vpy_car1 < 0)
+               top_rightx_car1 = px_car1 - car1_width/2;
+               top_righty_car1 = py_car1 - car1_length/2;
+               top_leftx_car1 = px_car1 + car1_width/2;
+               top_lefty_car1 = py_car1 - car1_length/2;
+               bottom_rightx_car1 = px_car1 - car1_width/2;
+               bottom_righty_car1 = py_car1 + car1_length/2;
+               bottom_leftx_car1 = px_car1 + car1_width/2;
+               bottom_lefty_car1 = py_car1 + car1_length/2;
+             end
+             if (vpx_car1 == 0)&&(vpy_car1 > 0)
+               top_rightx_car1 = px_car1 + car1_width/2;
+               top_righty_car1 = py_car1 + car1_length/2;
+               top_leftx_car1 = px_car1 - car1_width/2;
+               top_lefty_car1 = py_car1 + car1_length/2;
+               bottom_rightx_car1 = px_car1 + car1_width/2;
+               bottom_righty_car1 = py_car1 - car1_length/2;
+               bottom_leftx_car1 = px_car1 - car1_width/2;
+               bottom_lefty_car1 = py_car1 - car1_length/2;
+             end
+             if (vpx_car1 < 0)&&(vpy_car1 == 0)
+               top_rightx_car1 = top_rightx0_car1;
+               top_righty_car1 = top_righty0_car1;
+               top_leftx_car1 = top_leftx0_car1;
+               top_lefty_car1 = top_lefty0_car1;
+               bottom_rightx_car1 = bottom_rightx0_car1;
+               bottom_righty_car1 = bottom_righty0_car1;
+               bottom_leftx_car1 = bottom_leftx0_car1;
+               bottom_lefty_car1 = bottom_lefty0_car1;
+             end
+             if (vpx_car1 > 0)&&(vpy_car1 == 0)
+               top_rightx_car1 = bottom_leftx0_car1;
+               top_righty_car1 = bottom_lefty0_car1;
+               top_leftx = bottom_rightx0_car1;
+               top_lefty = bottom_righty0_car1;
+               bottom_rightx = top_leftx0_car1;
+               bottom_righty = top_lefty0_car1;
+               bottom_leftx = top_rightx0_car1;
+               bottom_lefty = top_righty0_car1;
+             end
+           end
+           if(vpx_car1 < 0 && vpy_car1 > 0)||(vpx_car1 < 0 && vpy_car1 < 0)
+             top_rightx_car1 = (top_rightx0_car1 - px_car1)*cos(M_PI + rads_car1) - (top_righty0_car1 - py_car1)*sin(M_PI + rads_car1) +px_car1;
+             top_righty_car1 = (top_rightx0_car1 - px_car1)*sin(M_PI + rads_car1) +(top_righty0_car1 - py_car1)*cos(M_PI + rads_car1) +py_car1;
+             top_leftx_car1 = (top_leftx0_car1 - px_car1)*cos(M_PI + rads_car1) - (top_lefty0_car1 - py_car1)*sin(M_PI + rads_car1) +px_car1;
+             top_lefty_car1 = (top_leftx0_car1 - px_car1)*sin(M_PI + rads_car1) +(top_lefty0_car1 - py_car1)*cos(M_PI + rads_car1) +py_car1;
+             bottom_rightx_car1 = (bottom_rightx0_car1 - px_car1)*cos(M_PI + rads_car1) - (bottom_righty0_car1 - py_car1)*sin(M_PI + rads_car1) +px_car1;
+             bottom_righty_car1 = (bottom_rightx0_car1 - px_car1)*sin(M_PI + rads_car1) +(bottom_righty0_car1 - py_car1)*cos(M_PI + rads_car1) +py_car1;
+             bottom_leftx_car1 = (bottom_leftx0_car1 - px_car1)*cos(M_PI + rads_car1) - (bottom_lefty0_car1 - py_car1)*sin(M_PI + rads_car1) +px_car1;
+             bottom_lefty_car1 = (bottom_leftx0_car1 - px_car1)*sin(M_PI + rads_car1) +(bottom_lefty0_car1 - py_car1)*cos(M_PI + rads_car1) +py_car1;
+           else
+             top_rightx_car1 = (top_rightx0_car1 - px_car1)*cos(rads_car1) - (top_righty0_car1 - py_car1)*sin(rads_car1) +px_car1;
+             top_righty_car1 = (top_rightx0_car1 - px_car1)*sin(rads_car1) +(top_righty0_car1 - py_car1)*cos(rads_car1) +py_car1;
+             top_leftx_car1 = (top_leftx0_car1 - px_car1)*cos(rads_car1) - (top_lefty0_car1 - py_car1)*sin(rads_car1) +px_car1;
+             top_lefty_car1 = (top_leftx0_car1 - px_car1)*sin(rads_car1) +(top_leftx0_car1 - py_car1)*cos(rads_car1) +py_car1;
+             bottom_rightx_car1 = (bottom_rightx0_car1 - px_car1)*cos(rads_car1) - (bottom_righty0_car1 - py_car1)*sin(rads_car1) +px_car1;
+             bottom_righty_car1 = (bottom_rightx0_car1 - px_car1)*sin(rads_car1) +(bottom_righty0_car1 - py_car1)*cos(rads_car1) +py_car1;
+             bottom_leftx_car1 = (bottom_leftx0_car1 - px_car1)*cos(rads_car1) - (bottom_lefty0_car1 - py_car1)*sin(rads_car1) +px_car1;
+             bottom_lefty_car1 = (bottom_leftx0_car1 - px_car1)*sin(rads_car1) +(bottom_lefty0_car1 - py_car1)*cos(rads_car1) +py_car1;
+           end
+           Q center_distance_sqrt = (px - px_car1)*(px - px_car1)+(py - py_car1)*(py - py_car1);
+           Q center_dis = sqrt(center_distance_sqrt);
+           // frist judgement of Boundary collsion
+           if (center_dis < width/2 + car1_width/2) && (firstcollision == 0)
+             firstcollision = 1;
+             iscollision = 1;
+             // collsion_id = car1_id;
+             // collison_point_x = trajectory_x(1,i);
+             // collison_point_y = trajectory_y(1,i);
+             collison_point_x_car1 = trajectory_x_car1(1,j);
+             collison_point_y_car1 = trajectory_y_car1(1,j);
+             tag = j;
+           else
+             // first diag line of current vehicle(Top R to bottom L)
+             // x-ray
+             if top_rightx - bottom_leftx > 0
+               max_diag_1x = top_rightx;
+               min_diag_1x = bottom_leftx;
+             else
+               max_diag_1x = bottom_leftx;
+               min_diag_1x = top_rightx;
+             end
+             // y-ray
+             if top_righty - bottom_lefty > 0
+               max_diag_1y = top_righty;
+               min_diag_1y = bottom_lefty;
+             else
+               max_diag_1y = bottom_lefty;
+               min_diag_1y = top_righty;
+             end
+             // second diag line of current vehicle(Top L to bottom R)
+             // x-ray
+             if top_leftx - bottom_rightx > 0
+               max_diag_2x = top_leftx;
+               min_diag_2x = bottom_rightx;
+             else
+               max_diag_2x = bottom_rightx;
+               min_diag_2x = top_leftx;
+             end
+             // y-ray
+             if top_lefty - bottom_righty > 0
+               max_diag_2y = top_lefty;
+               min_diag_2y = bottom_righty;
+             else
+               max_diag_2y = bottom_righty;
+               min_diag_2y = top_lefty;
+             end
+
+             // Boundary line 1 of car 1(top to bottom R)
+             // x-ray
+             if top_rightx_car1 - bottom_rightx_car1 > 0
+               max_car1_1x = top_rightx_car1;
+               min_car1_1x = bottom_rightx_car1;
+             else
+               max_car1_1x = bottom_rightx_car1;
+               min_car1_1x = top_rightx_car1;
+             end
+             // y-ray
+             if top_righty_car1 - bottom_righty_car1 > 0
+               max_car1_1y = top_righty_car1;
+               min_car1_1y = bottom_righty_car1;
+             else
+               max_car1_1y = bottom_righty_car1;
+               min_car1_1y = top_righty_car1;
+             end
+             // if there is a collision between diag line 1 of current vehicle and boundary line 1 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_1x >= min_car1_1x )&&( max_car1_1x >= min_diag_1x )&&( max_diag_1y >= min_car1_1y )&&( max_car1_1y >= min_diag_1y)
+               Q P1Q1_x = top_rightx - top_rightx_car1;
+               Q P1Q1_y = top_righty - top_righty_car1;
+               Q Q2Q1_x = bottom_rightx_car1 - top_rightx_car1;
+               Q Q2Q1_y = bottom_righty_car1 - top_righty_car1;
+               Q P2Q1_x = bottom_leftx - top_rightx_car1;
+               Q P2Q1_y = bottom_lefty - top_righty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               // second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of current vehicle and boundary line 1 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_2x >= min_car1_1x )&&( max_car1_1x >= min_diag_2x )&&( max_diag_2y >= min_car1_1y )&&( max_car1_1y >= min_diag_2y)
+               Q P1Q1_x = top_leftx - top_rightx_car1;
+               Q P1Q1_y = top_lefty - top_righty_car1;
+               Q Q2Q1_x = bottom_rightx_car1 - top_rightx_car1;
+               Q Q2Q1_y = bottom_righty_car1 - top_righty_car1;
+               Q P2Q1_x = bottom_rightx - top_rightx_car1;
+               Q P2Q1_y = bottom_righty - top_righty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+
+             // Boundary line 2 of car 1 (R to L top)
+             // x-ray
+             if top_rightx_car1 - top_leftx_car1 > 0
+               max_car1_2x = top_rightx_car1;
+               min_car1_2x = top_leftx_car1;
+             else
+               max_car1_2x = top_leftx_car1;
+               min_car1_2x = top_rightx_car1;
+             end
+             // y-ray
+             if top_righty_car1 - top_lefty_car1 > 0
+               max_car1_2y = top_righty_car1;
+               min_car1_2y = top_lefty_car1;
+             else
+               max_car1_2y = top_lefty_car1;
+               min_car1_2y = top_righty_car1;
+             end
+             // if there is a collision between diag line 1 of current vehicle and boundary line 2 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_1x >= min_car1_2x )&&( max_car1_2x >= min_diag_1x )&&( max_diag_1y >= min_car1_2y )&&( max_car1_2y >= min_diag_1y)
+               Q P1Q1_x = top_rightx - top_rightx_car1;
+               Q P1Q1_y = top_righty - top_righty_car1;
+               Q Q2Q1_x = top_leftx_car1 - top_rightx_car1;
+               Q Q2Q1_y = top_lefty_car1 - top_righty_car1;
+               Q P2Q1_x = bottom_leftx - top_rightx_car1;
+               Q P2Q1_y = bottom_lefty - top_righty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of current vehicle and boundary line 2 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_2x >= min_car1_2x )&&( max_car1_2x >= min_diag_2x )&&( max_diag_2y >= min_car1_2y )&&( max_car1_2y >= min_diag_2y)
+               Q P1Q1_x = top_leftx - top_rightx_car1;
+               Q P1Q1_y = top_lefty - top_righty_car1;
+               Q Q2Q1_x = bottom_rightx_car1 - top_rightx_car1;
+               Q Q2Q1_y = bottom_righty_car1 - top_righty_car1;
+               Q P2Q1_x = bottom_rightx - top_rightx_car1;
+               Q P2Q1_y = bottom_righty - top_righty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+
+             // Boundary line 3 of car 1 (R to L bottom)
+             // x-ray
+             if bottom_rightx_car1 - bottom_leftx_car1 > 0
+               max_car1_3x = bottom_rightx_car1;
+               min_car1_3x = bottom_leftx_car1;
+             else
+               max_car1_3x = bottom_leftx_car1;
+               min_car1_3x = bottom_rightx_car1;
+             end
+             // y-ray
+             if bottom_righty_car1 - bottom_lefty_car1 > 0
+               max_car1_3y = bottom_righty_car1;
+               min_car1_3y = bottom_lefty_car1;
+             else
+               max_car1_3y = bottom_lefty_car1;
+               min_car1_3y = bottom_righty_car1;
+             end
+             // if there is a collision between diag line 1 of current vehicle and boundary line 3 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_1x >= min_car1_3x )&&( max_car1_3x >= min_diag_1x )&&( max_diag_1y >= min_car1_3y )&&( max_car1_3y >= min_diag_1y)
+               Q P1Q1_x = top_rightx - bottom_rightx_car1;
+               Q P1Q1_y = top_righty - bottom_righty_car1;
+               Q Q2Q1_x = bottom_leftx_car1 - bottom_rightx_car1;
+               Q Q2Q1_y = bottom_lefty_car1 - bottom_righty_car1;
+               Q P2Q1_x = bottom_leftx - bottom_rightx_car1;
+               Q P2Q1_y = bottom_lefty - bottom_righty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of current vehicle and boundary line 3 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_2x >= min_car1_3x )&&( max_car1_3x >= min_diag_2x )&&( max_diag_2y >= min_car1_3y )&&( max_car1_3y >= min_diag_2y)
+               Q P1Q1_x = top_leftx - bottom_rightx_car1;
+               Q P1Q1_y = top_lefty - bottom_righty_car1;
+               Q Q2Q1_x = bottom_leftx_car1 - bottom_rightx_car1;
+               Q Q2Q1_y = bottom_lefty_car1 - bottom_righty_car1;
+               Q P2Q1_x = bottom_rightx - bottom_rightx_car1;
+               Q P2Q1_y = bottom_righty - bottom_righty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // Boundary line 4 of car 1 (top to bottom L)
+             // x-ray
+             if top_leftx_car1 - bottom_leftx_car1 > 0
+               max_car1_4x = top_leftx_car1;
+               min_car1_4x = bottom_leftx_car1;
+             else
+               max_car1_4x = bottom_leftx_car1;
+               min_car1_4x = top_leftx_car1;
+             end
+             // y-ray
+             if top_lefty_car1 - bottom_lefty_car1 > 0
+               max_car1_4y = top_lefty_car1;
+               min_car1_4y = bottom_lefty_car1;
+             else
+               max_car1_4y = bottom_lefty_car1;
+               min_car1_4y = top_lefty_car1;
+             end
+             // if there is a collision between diag line 1 of current vehicle and boundary line 4 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_1x >= min_car1_4x )&&( max_car1_4x >= min_diag_1x )&&( max_diag_1y >= min_car1_4y )&&( max_car1_4y >= min_diag_1y)
+               Q P1Q1_x = top_rightx - top_leftx_car1;
+               Q P1Q1_y = top_righty - top_lefty_car1;
+               Q Q2Q1_x = bottom_leftx_car1 - top_leftx_car1;
+               Q Q2Q1_y = bottom_lefty_car1 - top_lefty_car1;
+               Q P2Q1_x = bottom_leftx - top_leftx_car1;
+               Q P2Q1_y = bottom_lefty - top_lefty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of current vehicle and boundary line 4 of car 1
+             // first step: Rapid rejection test
+             if ( max_diag_2x >= min_car1_4x )&&( max_car1_4x >= min_diag_2x )&&( max_diag_2y >= min_car1_4y )&&( max_car1_4y >= min_diag_2y)
+               Q P1Q1_x = top_leftx - top_leftx_car1;
+               Q P1Q1_y = top_lefty - top_lefty_car1;
+               Q Q2Q1_x = bottom_leftx_car1 - top_leftx_car1;
+               Q Q2Q1_y = bottom_leftx_car1 - top_lefty_car1;
+               Q P2Q1_x = bottom_rightx - top_leftx_car1;
+               Q P2Q1_y = bottom_righty - top_lefty_car1;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // first diag line of car1(Top R to bottom L)
+             // x-ray
+             if top_rightx_car1 - bottom_leftx_car1 > 0
+               max_diag_car1_1x = top_rightx_car1;
+               min_diag_car1_1x = bottom_leftx_car1;
+             else
+               max_diag_car1_1x = bottom_leftx_car1;
+               min_diag_car1_1x = top_rightx_car1;
+             end
+             // y-ray
+             if top_righty_car1 - bottom_lefty_car1 > 0
+               max_diag_car1_1y = top_righty_car1;
+               min_diag_car1_1y = bottom_lefty_car1;
+             else
+               max_diag_car1_1y = bottom_lefty_car1;
+               min_diag_car1_1y = top_righty_car1;
+             end
+             // second diag line of car1(Top L to bottom R)
+             // x-ray
+             if top_leftx_car1 - bottom_rightx_car1 > 0
+               max_diag_car1_2x = top_leftx_car1;
+               min_diag_car1_2x = bottom_rightx_car1;
+             else
+               max_diag_car1_2x = bottom_rightx_car1;
+               min_diag_car1_2x = top_leftx_car1;
+             end
+             // y-ray
+             if top_lefty_car1 - bottom_righty_car1 > 0
+               max_diag_car1_2y = top_lefty_car1;
+               min_diag_car1_2y = bottom_righty_car1;
+             else
+               max_diag_car1_2y = bottom_righty_car1;
+               min_diag_car1_2y = top_lefty_car1;
+             end
+
+             // Boundary line 1 of current vehicle(top to bottom R)
+             // x-ray
+             if top_rightx - bottom_rightx> 0
+               max_1x = top_rightx;
+               min_1x = bottom_rightx;
+             else
+               max_1x = bottom_rightx;
+               min_1x = top_rightx;
+             end
+             // y-ray
+             if top_righty - bottom_righty > 0
+               max_1y = top_righty;
+               min_1y = bottom_righty;
+             else
+               max_1y = bottom_righty;
+               min_1y = top_righty;
+             end
+             // if there is a collision between diag line 1 of car1 and boundary line 1 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_1x >= min_1x )&&( max_1x >= min_diag_car1_1x )&&( max_diag_car1_1y >= min_1y )&&( max_1y >= min_diag_car1_1y)
+               Q P1Q1_x = top_rightx_car1 - top_rightx;
+               Q P1Q1_y = top_righty_car1 - top_righty;
+               Q Q2Q1_x = bottom_rightx - top_rightx;
+               Q Q2Q1_y = bottom_righty - top_righty;
+               Q P2Q1_x = bottom_leftx_car1 - top_rightx;
+               Q P2Q1_y = bottom_lefty_car1 - top_righty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of car1 and boundary line 1 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_2x >= min_1x )&&( max_1x >= min_diag_car1_2x )&&( max_diag_car1_2y >= min_1y )&&( max_1y >= min_diag_car1_2y)
+               Q P1Q1_x = top_leftx_car1 - top_rightx;
+               Q P1Q1_y = top_lefty_car1 - top_righty;
+               Q Q2Q1_x = bottom_rightx - top_rightx;
+               Q Q2Q1_y = bottom_righty - top_righty;
+               Q P2Q1_x = bottom_rightx_car1 - top_rightx;
+               Q P2Q1_y = bottom_righty_car1 - top_righty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // Boundary line 2 of current vehicle (R to L top)
+             // x-ray
+             if top_rightx - top_leftx > 0
+               max_2x = top_rightx;
+               min_2x = top_leftx;
+             else
+               max_2x = top_leftx;
+               min_2x = top_rightx;
+             end
+             // y-ray
+             if top_righty - top_lefty > 0
+               max_2y = top_righty;
+               min_2y = top_lefty;
+             else
+               max_2y = top_lefty;
+               min_2y = top_righty;
+             end
+             // if there is a collision between diag line 1 of car1 and boundary line 2 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_1x >= min_2x )&&( max_2x >= min_diag_car1_1x )&&( max_diag_car1_1y >= min_2y )&&( max_2y >= min_diag_car1_1y)
+               Q P1Q1_x = top_rightx_car1 - top_rightx;
+               Q P1Q1_y = top_righty_car1 - top_righty;
+               Q Q2Q1_x = top_leftx - top_rightx;
+               Q Q2Q1_y = top_lefty - top_righty;
+               Q P2Q1_x = bottom_leftx_car1 - top_rightx;
+               Q P2Q1_y = bottom_lefty_car1 - top_righty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of car1 and boundary line 3 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_2x >= min_2x )&&( max_2x >= min_diag_car1_2x )&&( max_diag_car1_2y >= min_2y )&&( max_2y >= min_diag_car1_2y)
+               Q P1Q1_x = top_leftx_car1 - top_rightx;
+               Q P1Q1_y = top_lefty_car1 - top_righty;
+               Q Q2Q1_x = top_leftx - top_rightx;
+               Q Q2Q1_y = top_lefty - top_righty;
+               Q P2Q1_x = bottom_rightx_car1 - top_rightx;
+               Q P2Q1_y = bottom_righty_car1 - top_righty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // Boundary line 3 of current vehicle (R to L bottom)
+             // x-ray
+             if bottom_rightx - bottom_leftx > 0
+               max_3x = bottom_rightx;
+               min_3x = bottom_leftx;
+             else
+               max_3x = bottom_leftx;
+               min_3x = bottom_rightx;
+             end
+             // y-ray
+             if bottom_righty - bottom_lefty > 0
+               max_3y = bottom_righty;
+               min_3y = bottom_lefty;
+             else
+               max_3y = bottom_lefty;
+               min_3y = bottom_righty;
+             end
+             // if there is a collision between diag line 1 of car1 and boundary line 3 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_1x >= min_3x )&&( max_3x >= min_diag_car1_1x )&&( max_diag_car1_1y >= min_3y )&&( max_3y >= min_diag_car1_1y)
+               Q P1Q1_x = top_rightx_car1 - bottom_rightx;
+               Q P1Q1_y = top_righty_car1 - bottom_righty;
+               Q Q2Q1_x = bottom_leftx - bottom_rightx;
+               Q Q2Q1_y = bottom_lefty - bottom_righty;
+               Q P2Q1_x = bottom_leftx_car1 - bottom_rightx;
+               Q P2Q1_y = bottom_lefty_car1 - bottom_righty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of car1 and boundary line 3 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_2x >= min_3x )&&( max_3x >= min_diag_car1_2x )&&( max_diag_car1_2y >= min_3y )&&( max_3y >= min_diag_car1_2y)
+               Q P1Q1_x = top_leftx_car1 - bottom_rightx;
+               Q P1Q1_y = top_lefty_car1 - bottom_righty;
+               Q Q2Q1_x = bottom_leftx - bottom_rightx;
+               Q Q2Q1_y = bottom_lefty - bottom_righty;
+               Q P2Q1_x = bottom_rightx_car1 - bottom_rightx;
+               Q P2Q1_y = bottom_righty_car1 - bottom_righty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // Boundary line 4 of current vehicle (top to bottom L)
+             // x-ray
+             if top_leftx - bottom_leftx > 0
+               max_4x = top_leftx;
+               min_4x = bottom_leftx;
+             else
+               max_4x = bottom_leftx;
+               min_4x = top_leftx;
+             end
+             // y-ray
+             if top_lefty - bottom_lefty > 0
+               max_4y = top_lefty;
+               min_4y = bottom_lefty;
+             else
+               max_4y = bottom_lefty;
+               min_4y = top_lefty;
+             end
+             // if there is a collision between diag line 1 of car1 and boundary line 4 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_1x >= min_4x )&&( max_4x >= min_diag_car1_1x )&&( max_diag_car1_1y >= min_4y )&&( max_4y >= min_diag_car1_1y)
+               Q P1Q1_x = top_rightx_car1 - top_leftx;
+               Q P1Q1_y = top_righty_car1 - top_lefty;
+               Q Q2Q1_x = bottom_leftx - top_leftx;
+               Q Q2Q1_y = bottom_lefty - top_lefty;
+               Q P2Q1_x = bottom_leftx_car1 - top_leftx;
+               Q P2Q1_y = bottom_lefty_car1 - top_lefty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 // collsion_id = car1_id;
+                 // collison_point_x = trajectory_x(1,i);
+                 // collison_point_y = trajectory_y(1,i);
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+             // if there is a collision between diag line 2 of car1 and boundary line 4 of current car
+             // first step: Rapid rejection test
+             if ( max_diag_car1_2x >= min_4x )&&( max_4x >= min_diag_car1_2x )&&( max_diag_car1_2y >= min_4y )&&( max_4y >= min_diag_car1_2y)
+               Q P1Q1_x = top_leftx_car1 - top_leftx;
+               Q P1Q1_y = top_lefty_car1 - top_lefty;
+               Q Q2Q1_x = bottom_leftx - top_leftx;
+               Q Q2Q1_y = bottom_lefty - top_lefty;
+               Q P2Q1_x = bottom_rightx_car1 - top_leftx;
+               Q P2Q1_y = bottom_righty_car1 - top_lefty;
+               Q Prod_P1Q1Q2Q1 = (P1Q1_x * Q2Q1_y) - (Q2Q1_x * P1Q1_y);
+               Q Prod_Q2Q1P2Q1 = (Q2Q1_x * P2Q1_y) - (P2Q1_x * Q2Q1_y);
+               //second step: Stradd test
+               if (Prod_P1Q1Q2Q1 * Prod_Q2Q1P2Q1 >= 0) && (firstcollision == 0)
+                 firstcollision = 1;
+                 iscollision = 1;
+                 collison_point_x_car1 = trajectory_x_car1(1,j);
+                 collison_point_y_car1 = trajectory_y_car1(1,j);
+                 tag = j;
+               end
+             end
+           end
+        end
+        if iscollision == 1
+          Q directionx = trajectory_x_car1(1,tag) - trajectory_x_car1(1,tag-1);
+          Q directiony = trajectory_y_car1(1,tag) - trajectory_y_car1(1,tag-1);
+          Q cos_angle  = directionx * vpx + directiony* vpy;
+          Q sqrt_mode =  directionx * directionx + directiony * directiony;
+          Q mode = sqrt(sqrt_mode);
+          cos_angle = cos_angle/mode;
+          Q angle_between = acos(cos_angle);
+          if angle_between < 0.1 * M_PI
+            isfrontvehicle = 1;
+            vehicleid = status_message.vehicleid;
+            for i = 1:(tag-1)
+              Q tag_dx = trajectory_x_car1(1,i);
+              Q tag_dy = trajectory_y_car1(1,i);
+              Q tag_dxx = trajectory_x_car1(1,i+1);
+              Q tag_dyy = trajectory_y_car1(1,i+1);
+              Q sqrt_distance = (tag_dx - tag_dxx)*(tag_dx - tag_dxx) + (tag_dy - tag_dyy)*(tag_dy - tag_dyy);
+              Q dis1 = sqrt(sqrt_distance);
+              distance = distance + dis1;
+            end
+          end
+        end
+    }
+}

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.a;
+
+component CompB{
+    port in Q rosIn;
+    port out Q rosOut;
+
+    implementation Math{
+        rosOut = rosIn;
+    }
+}

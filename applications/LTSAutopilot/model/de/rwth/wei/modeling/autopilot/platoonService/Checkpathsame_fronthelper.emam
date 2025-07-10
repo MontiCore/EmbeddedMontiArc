@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+
+component Checkpathsame_fronthelper {
+ ports
+   in  Z    hasmeasure,
+   in  Q    similarity,
+   in  Z    if_sendjointmsg,
+   in  Z    potentialid,
+   in  Z    if_potentialheaderexists,
+   in  Z    checkpathsimilarity,
+
+
+   out  Z    new_potentialid,
+   out  Z    new_if_sendjointmsg,
+   out  Z    new_if_potentialheaderexists;
+
+   implementation Math{
+     if checkpathsimilarity == 0
+         new_potentialid = potentialid;
+         new_if_sendjointmsg =  if_sendjointmsg;
+         new_if_potentialheaderexists = if_potentialheaderexists;
+     else
+         if hasmeasure == 0
+           new_potentialid = potentialid;
+           new_if_sendjointmsg =  if_sendjointmsg;
+           new_if_potentialheaderexists = if_potentialheaderexists;
+         else
+           if similarity < 6.0
+             new_potentialid = potentialid;
+             new_if_potentialheaderexists = if_potentialheaderexists;
+             new_if_sendjointmsg = 1;
+           end
+         end
+     end
+   }
+}

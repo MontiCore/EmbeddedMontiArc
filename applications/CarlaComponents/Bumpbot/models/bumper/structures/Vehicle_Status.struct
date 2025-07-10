@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package bumper.structures;
+import bumper.structures.*;
+
+struct Vehicle_Status{
+        Q velocity;
+        Q acceleration;
+        Quaternion orientation;
+        Ego_Vehicle ego_vehicle;
+}
+
+

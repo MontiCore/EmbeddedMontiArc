@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lib;
+
+// u1 = Einschaltschwelle
+// u2 = Ausschaltschwelle
+component STQ_TestWrapper {
+    port
+        in Q in1,
+        out B out1;
+
+
+    instance STQ(0.8, 0.65) st;
+
+    connect in1 -> st.inValue;
+    connect st.outValue -> out1;
+}

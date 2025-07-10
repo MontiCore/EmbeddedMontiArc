@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration A{
+     num_epoch : 5
+     batch_size : 100
+     optimizer: rmsprop{
+        learning_rate_policy: 68
+     }
+ }

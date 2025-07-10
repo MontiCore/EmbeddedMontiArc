@@ -1,0 +1,14 @@
+- !de.monticar.lang.monticar.generator.python.RosTag
+  component: test.basicGenericArrayInstance
+  subscriber:
+    - !de.monticar.lang.monticar.generator.python.RosInterface
+      ports:
+        val1[:]: posX
+      topic: test
+      type: automated_driving_msgs/CarMessage
+  publisher:
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          valOut[:]: posX[:]
+        topic: test
+        type: automated_driving_msgs/CarMessage

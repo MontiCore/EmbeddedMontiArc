@@ -1,0 +1,130 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Velocity_control{
+  ports
+   dynamic in Statusmessage   status_msg[0:32],
+   dynamic in Platoonmessage  plat_msg[0:32],
+
+   in   Z                timestamp,
+   in   Z                platoonheadid,
+   in   Q                velocity,
+   in   Q                position_x,
+   in   Q                position_y,
+   in   Z                vehicleid,
+   in   Z^{1,100}        platoonlist,
+   in   Z                plat_num,
+
+   out  Q                new_engine,
+   out  Q                new_brake,
+   out  Z                if_take,
+   out  Platoonmessage   pmsg,
+   out  Statusmessage    smsg,
+   out  Q^{1,32}         member_velocity,
+   out  Q^{1,32}         member_px,
+   out  Q^{1,32}         member_py,
+   out  Q^{1,32}         d;
+
+   implementation Math{
+     new_engine = 0.0;
+     new_brake = 0.0;
+     if_take = 0;
+     Z tag = 0;
+     Z tag1 = 0;
+     Z plat_num = 0;
+     Q platoon_x = 0.0;
+     Q platoon_y = 0.0;
+     Q platoon_v = 0.0;
+     Q s0 = 4; // distance at rest
+     Q t0 = 0.5;// expect following distance
+     Q a = 2.5; // maximal engine
+     Q b = 1.5; // suitable brake
+     Q ai = 0.0; // engine or brake
+     for i = 1:32
+        if is_connected(plat_msg,i)
+           pmsg = plat_msg(i);
+           if pmsg.vehicleid == platoonheadid
+              tag = 1;
+              // platoonlist = pmsg.platoon_member;
+              // plat_num = pmsg.member_num;
+              platoon_x = pmsg.position_x;
+              platoon_y = pmsg.position_y;
+              platoon_v = pmsg.velocity;
+              for i1 = 1:plat_num
+                 if platoonlist(1,i1) != vehicleid
+                   tag1 = 0;
+                   for k1 = 1:32
+                      if is_connected(status_msg,k1)
+                         smsg = status_msg(k1);
+                         if smsg.vehicleid == platoonlist(1,i1)
+                            tag1 = 1;
+                            member_velocity(1,i1) = smsg.velocity;
+                            member_px(1,i1) = smsg.position_x;
+                            member_py(1,i1) = smsg.position_y;
+                         end
+                      end
+                   end
+                 end
+               end//for i1 = 1:plat_num
+           end
+        end
+     end
+     if tag != 0 && tag1 != 0
+        Z num = 0
+        for j = 1:plat_num
+            if vehicleid == platoonlist(1,j)
+               num = j;
+            end
+        end
+        if num >= 1
+           for k = 1:num
+              if k == 1
+                 Q v_current = velocity;
+                 d(1,1) = s0 + v_current * t0 + v_current*(v_current - platoon_v)/3.873;
+              else if k < num
+                 Q v = member_velocity(1,k-1);
+                 Q v1 = member_velocity(1,k);
+                 d(1,k) = s0 + v1 * t0 + v1*(v1 - v)/3.873;
+              else
+                 Q v2 = member_velocity(1,num-1);
+                 Q v3 = velocity;
+                 d(1,num) = s0 + v3 * t0 + v3*(v3 - v2)/3.873;
+              end
+           end
+           Q dd = 0.0;
+           for k2 = 1:num
+              dd = dd + d(1,k2)
+           end
+           dd = dd/num;
+           if num == 1
+             Q dx = position_x;
+             Q dy = position_y;
+             Q sqrt_dis = (dx - platoon_x)*(dx - platoon_x) + (dy - platoon_y)*(dy - platoon_y);
+             Q dis = sqrt(sqrt_dis);
+             Q v6 = platoon_v;
+             Q v7 = velocity;
+             ai = a * ( 1 - (v7/v6)*(v7/v6)*(v7/v6)*(v7/v6) - (dd/dis)*(dd/dis));
+           else
+             Q dxx = position_x;
+             Q dyy = position_y;
+             Q dxxx = member_px(num -1);
+             Q dyyy = member_py(num -1);
+             Q sqrt_dis1 = (dxx - dxxx)*(dxx - dxxx) + (dyy - dyyy)*(dyy - dyyy);
+             Q dis1 = sqrt(sqrt_dis1);
+             Q v8 = platoon_v;
+             Q v9 = velocity;
+              ai = a * ( 1 - (v9/v8)*(v9/v8)*(v9/v8)*(v9/v8) - (dd/dis1)*(dd/dis1));
+           end
+           if ai > 0
+              new_engine = ai;
+              if_take = 1;
+           else
+              new_brake = ai;
+              if_take = 1;
+           end
+        end //if num >= 1
+     end
+   }
+
+}

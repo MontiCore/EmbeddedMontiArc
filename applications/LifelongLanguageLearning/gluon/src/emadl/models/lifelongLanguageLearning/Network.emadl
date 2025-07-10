@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lifelongLanguageLearning;
+
+component Network<Z(1:oo) n = 128>{
+    ports in Z(0:oo)^{n} data_0,
+		  in Z(0:oo)^{n} data_1,
+		  in Z(0:oo)^{1} data_2,
+          out Q(0:1)^{33} softmax;
+
+    implementation CNN {
+        (data_0 | data_1 | data_2) ->
+        EpisodicMemory(replayInterval=90, replayBatchSize=100, replaySteps=1, replayGradientSteps=1, memoryStoreProb=1, maxStoredSamples=575000, memoryReplacementStrategy="no_replacement", useLocalAdaptation=true, localAdaptationK=2, localAdaptationGradientSteps=4, queryNetDir="tag:bert_small", queryNetPrefix="classBertSmall-", queryNetNumInputs=3) ->
+        LoadNetwork(networkDir="tag:bert_small", 
+                    networkPrefix="classBertSmall-", 
+                    numInputs=3, outputShape=768) ->
+        Dropout(p=0.1) -> 
+		FullyConnected(units=33) ->
+		Softmax() ->
+        softmax;
+    }
+}

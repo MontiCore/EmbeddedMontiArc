@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+#ifndef TEST_MATH_MATRIXCONSTANTVARIABLEMATHSECTIONTEST
+#define TEST_MATH_MATRIXCONSTANTVARIABLEMATHSECTIONTEST
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+#include "octave/oct.h"
+class test_math_matrixConstantVariableMathSectionTest{
+public:
+Matrix CONSTANTCONSTANTVECTOR0;
+void init()
+{
+CONSTANTCONSTANTVECTOR0 = Matrix(2,2);
+CONSTANTCONSTANTVECTOR0(0,0) = 1;
+CONSTANTCONSTANTVECTOR0(0,1) = 0;
+CONSTANTCONSTANTVECTOR0(1,0) = 0;
+CONSTANTCONSTANTVECTOR0(1,1) = 1;
+}
+void execute()
+{
+Matrix a = CONSTANTCONSTANTVECTOR0;
+}
+
+};
+#endif

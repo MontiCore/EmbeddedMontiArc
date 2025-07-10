@@ -1,0 +1,7 @@
+{
+  "modelsDir": "Autopilot/models/",
+  "outputDir": "Autopilot/target/",
+  "rootModel": "wrapper.wrapper",
+  "generators": ["cpp", "roscpp"]
+}
+

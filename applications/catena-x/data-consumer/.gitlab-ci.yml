@@ -1,0 +1,51 @@
+stages:
+  - build
+  - test
+
+build-backend:
+  stage: build
+  image: maven:3.8-jdk-11
+  script:
+    - cd backend
+    - mvn --settings settings.xml -Dfraunhofer-mydata-control.username=$MYDATA_USERNAME -Dfraunhofer-mydata-control.password=$MYDATA_PASSWORD compile
+
+build-frontend:
+  stage: build
+  image: node:lts-alpine3.15
+  script:
+    - cd frontend
+    - npm install --location=global npm@8.1.2
+    - npm install
+    - npm run build
+
+# This job contains unit and integration test
+test:
+  stage: test
+  image: maven:3.8-jdk-11
+  services:
+    - postgres:alpine3.15
+  variables:
+    POSTGRES_DB: $DATABASE_NAME
+    POSTGRES_USER: $DATABASE_USER
+    POSTGRES_PASSWORD: $DATABASE_PASSWORD
+    DATABASE_URL: $DATABASE_URL
+    DATABASE_NAME: $DATABASE_NAME
+    DATABASE_PASSWORD: $DATABASE_PASSWORD
+    DATABASE_USER: $DATABASE_USER
+    DATA_PROVIDER_URL: $DATA_PROVIDER_URL
+    BACKEND_PORT: $BACKEND_PORT
+    PROVIDER_NAME: $PROVIDER_NAME
+    PROVIDER_URL: $PROVIDER_URL
+    CONSUMER_URL: $CONSUMER_URL
+
+  script:
+    - cd ..
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/catena-x/data-provider
+    - cd data-provider
+    - ln -s .env.development .env
+    - cd backend
+    - mvn package -DskipTests
+    - java -jar target/backend-0.0.1-SNAPSHOT.jar &
+    - sleep 30
+    - cd ../../data-consumer/backend
+    - mvn --settings settings.xml -Dfraunhofer-mydata-control.username=$MYDATA_USERNAME -Dfraunhofer-mydata-control.password=$MYDATA_PASSWORD test

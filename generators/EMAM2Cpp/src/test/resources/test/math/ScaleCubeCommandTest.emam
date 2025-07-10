@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component ScaleCubeCommandTest{
+    ports in Q(-1:1)^{1,28,28} img_in,
+          out Q(-1:1)^{1,64,64} img_out;
+
+    implementation Math{
+		img_out = scaleCube(img_in, 0, 64, 64);
+    }
+}

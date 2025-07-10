@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+// purpose of this test model is to test if the correct data types for scalars, vectors, matrices and cubes are
+// generated. Also checks if the empty initialization is correct.
+
+package test.math;
+
+component TypeDimensionsTest{
+    implementation Math{
+
+        // scalar
+        Q qvalue;
+
+        // vector
+        Q^{3} vec3;
+
+        // matrix
+        Q^{3, 3} mat33;
+
+        // cube
+        Q^{3, 3, 3} cub333;
+
+    }
+}

@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/MemoriesWithProductKeys.dir/MemoriesWithProductKeys.cpp.o  -o MemoriesWithProductKeys   -L/home/julian/.local/lib/python2.7/site-packages/mxnet  -Wl,-rpath,/home/julian/.local/lib/python2.7/site-packages/mxnet -lmxnet ../../../../target/tmp/libmemorieswithproductkeys_connector.a -lblas -lopenblas /usr/lib/x86_64-linux-gnu/libarmadillo.so -lmxnet 

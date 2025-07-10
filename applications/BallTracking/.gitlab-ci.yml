@@ -1,0 +1,29 @@
+# (c) https://github.com/MontiCore/monticore  
+
+stages:
+- linux
+
+TestJobLinux:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/mnist-infogan/gans_mxnet:latest
+
+  script:
+  - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP.git
+  - cd EMADL2CPP
+  - mvn clean install -s settings.xml -DskipTests
+  - cd ..
+
+  - rm -rf target 
+  - find ./EMADL2CPP/target -name "*SNAPSHOT-jar-with-dependencies.jar" -exec java -jar {} -m src/main/emam/ -r ba.ballTracking -o target -flag-generate-cmake \;
+
+  - rm -rf build
+  - mkdir build && cd build
+
+  - echo "Building BallTracking.."
+  - cmake ..
+  - make
+
+  except:
+    changes:
+      - README.md
+      - .gitignore

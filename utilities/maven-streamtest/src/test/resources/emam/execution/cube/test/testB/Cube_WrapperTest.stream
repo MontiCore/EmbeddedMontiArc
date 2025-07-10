@@ -1,0 +1,6 @@
+package testB;
+
+stream Cube_WrapperTest for Cube {
+    data: [[1,1,1;1,1,1;1,1,1][1,1,1;1,1,1;1,1,1][1,1,1;1,1,1;1,1,1]];
+    out1: 100;
+}

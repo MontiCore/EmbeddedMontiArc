@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testA;
+
+stream And_TestStream for And {
+
+    in1: true tick true tick false tick false ;
+    in2: true tick false tick true tick false;
+
+    out1: true tick false tick false tick false;
+
+}

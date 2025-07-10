@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lib;
+
+stream GE_TestWrapperStream for GE_TestWrapper {
+    in11: 0 tick 1 tick 0 tick 24;
+    in12: 0 tick 0 tick 2 tick 42;
+
+    in21: 0.5 tick 0.1 tick 0.89 tick 24.42;
+    in22: 0.5 tick 0.01 tick 0.9 tick 42.24;
+
+    out1: true tick true tick false tick false;
+    out2: true tick true tick false tick false;
+}

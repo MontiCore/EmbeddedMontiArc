@@ -1,0 +1,79 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Vehicleinplatoon{
+  ports
+  dynamic in  Statusmessage     status_msg[0:32],
+  dynamic in  Platoonmessage    plat_msg[0:32],
+
+  in   Z    vehicleid,
+
+  out   Z    if_inplatoon,
+  out   Z    if_tailid,
+  out   Z    frontplatoonid,
+  out   Z    frontvehicleid,
+  out   Statusmessage  smsg,
+  out   Statusmessage  smsg1,
+  out   Platoonmessage pmsg,
+  out   Z^{1,100}  memeberlist;
+
+  @ status_msg::connect{/* interface for dynamic ports*/}
+  @ plat_msg::connect{/* interface for dynamic ports*/}
+
+  implementation Math{
+    frontvehicleid = vehicleid;
+    if_inplatoon = 0;
+    if_tailid = 0;
+    frontplatoonid = 0;
+    Z platoonid = 0;
+    Z if_platoonexists = 0;
+    Z timestamp_plat = 0;
+    Z member_num = 0;
+    Z if_split = 0;
+    // if front vehicle in platoon
+    for i = 1:32
+       if is_connected(status_msg, i)
+          smsg = status_msg(i);
+          if smsg.vehicleid == vehicleid
+             platoonid = smsg.platoon_headid;
+          end
+       end
+    end
+    // if in platoon
+    if platoonid != 0
+      for j = 1:32
+         if is_connected(plat_msg,j)
+            pmsg = plat_msg(j);
+            if pmsg.vehicleid == platoonid
+                if_platoonexists = 1;
+                timestamp_plat = pmsg.timestamp;
+                memeberlist = pmsg.platoon_member;
+                member_num = pmsg.member_num;
+                if_split = pmsg.ifsplit;
+            end
+            // there is timenew statusmessage from platoon header, means platoon split
+            for i1 = 1:32
+               if is_connected(status_msg,i1)
+                  smsg1 = status_msg(i1);
+                  Z timestamp_single = smsg1.timestamp;
+                  if smsg1.vehicleid == platoonid && timestamp_single > timestamp_plat
+                     if_platoonexists = 0;
+                  end
+               end
+            end
+            for k = 1:member_num
+               if vehicleid == memeberlist(1,k) && if_platoonexists == 1
+                  if if_split == 0
+                    if_inplatoon = 1;
+                    frontplatoonid = platoonid;
+                    if_tailid = memeberlist(1,member_num);
+                  end
+               end
+            end
+         end
+      end
+    end // if platoonid != 0.0
+  }
+
+}

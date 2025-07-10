@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package optimizer;
+
+component ComplexMatrixRightMultiplicationAddition{
+    ports in Q(-oo:oo)^{200,1000} mat1,
+          in Q(-oo:oo)^{200,200} mat2,
+          in Q(-oo:oo)^{200,1000} mat4,
+          out Q(-oo:oo)^{200,1000} matOut;
+
+
+    implementation Math{
+        Q^{200,1000} a = mat1;
+        Q^{200,1000} b = mat1;
+
+
+        matOut = mat2 * a + mat4 * b;
+    }
+
+}

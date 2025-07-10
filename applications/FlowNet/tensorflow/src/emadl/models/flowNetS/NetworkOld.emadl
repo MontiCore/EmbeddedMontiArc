@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+package flowNetS;
+
+component NetworkOld{
+    ports in Q(0:255)^{3, 384, 512} data_0,
+          in Q(0:255)^{3, 384, 512} data_1,
+          out Q(-oo:oo)^{2, 384, 512} target;
+
+    implementation CNN {
+	    
+        def conv(channels, kernel=3, stride=2, pad="same"){
+            Convolution(kernel=(kernel,kernel), stride=(stride,stride), channels=channels, padding=pad) ->
+            Relu()
+        }
+		
+		
+	    (data_0 | data_1) ->
+	    Concatenate() ->
+		
+		conv(channels=64, kernel=7, stride=2, pad="same") ->
+       	conv(channels=128, kernel=5, stride=2, pad="same") ->
+		
+        (
+        	conv(channels=256, kernel=5, stride=2, pad="same") ->
+        	conv(channels=256, kernel=3, stride=1, pad="same") ->
+		
+			(
+				conv(channels=512, kernel=3, stride=2, pad="same") ->
+        		conv(channels=512, kernel=3, stride=1, pad="same") ->
+				
+				(
+					 conv(channels=512, kernel=3, stride=2, pad="same") ->
+        			 conv(channels=512, kernel=3, stride=1, pad="same") ->
+					 
+					 (
+					 	conv(channels=1024, kernel=3, stride=2, pad="same") ->
+                        conv(channels=1024, kernel=3, stride=1, pad="same") ->
+                        UpConvolution(channels=512, kernel=(4,4), stride=(2,2), padding="same") ->
+                        Relu()
+					 |
+					    [0]
+					 ) ->
+					 Concatenate() ->
+					 UpConvolution(channels=256, kernel=(4,4), stride=(2,2), padding="same") ->
+                     Relu()
+				|
+				     [0]
+				) ->
+				Concatenate() ->
+			    UpConvolution(channels=128, kernel=(4,4), stride=(2,2), padding="same") ->
+                Relu()
+			|
+			    [0]
+			) ->	
+			Concatenate() ->
+			UpConvolution(channels=64, kernel=(4,4), stride=(2,2), padding="same") ->
+            Relu()
+		|
+            [0]
+		) ->
+		
+		Concatenate() ->
+		
+        UpConvolution(channels=16, kernel=(4,4), stride=(2,2), padding="same") ->
+        UpConvolution(channels=2, kernel=(1,1), stride=(2,2), padding="same") ->
+        
+        target;
+    }
+}

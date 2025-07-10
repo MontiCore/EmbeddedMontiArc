@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture Small3DGan{
+    def input Q(0:1)^{200} data
+    def output Q(0:1)^{1} discriminated
+
+    data ->
+    Reshape (shape=(200,1,1,1)) ->
+    UpConvolution3D(kernel=(4,4,4), channels=64 , stride = (2,2,2), padding="simple3d") ->
+    BatchNorm() ->
+    Relu() ->
+    UpConvolution3D(kernel=(4,4,4), channels=32 , stride = (2,2,2), padding="simple3d") ->
+    BatchNorm() ->
+    Relu() ->
+    UpConvolution3D(kernel=(4,4,4), channels=1 , stride = (2,2,2), padding="simple3d") ->
+    Sigmoid() ->
+    Convolution3D(kernel=(4,4,4), channels=32, stride=(2,2,2), padding=(1,1,1)) ->
+    BatchNorm() ->
+    LeakyRelu(alpha=0.2) ->
+    Convolution3D(kernel=(4,4,4), channels=64, stride=(2,2,2), padding=(1,1,1)) ->
+    BatchNorm() ->
+    LeakyRelu(alpha=0.2) ->
+    Convolution3D(kernel=(4,4,4), channels=1, stride=(2,2,2), padding="simple3d") ->
+    Sigmoid() ->
+    discriminated;
+} 

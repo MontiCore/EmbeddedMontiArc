@@ -1,0 +1,801 @@
+// 6 nimmt!
+
+//----
+// Roles
+//----
+(role red)
+(role blue)
+(role green)
+(role yellow)
+
+(role random)
+
+//----
+//Initial State
+//----
+//Before dealing cards
+
+//all, red, blue, green, yellow, random
+
+(init (control random))
+
+//init points
+(init (currPoints red 0))
+(init (currPoints blue 0))
+(init (currPoints green 0))
+(init (currPoints yellow 0))
+
+// 4 Stacks
+//(stack <stack#> <stack pos>)
+(init (stack a 1 0))
+(init (stack a 2 0))
+(init (stack a 3 0))
+(init (stack a 4 0))
+(init (stack a 5 0))
+(init (stack a 6 0))
+
+(init (stack b 1 0))
+(init (stack b 2 0))
+(init (stack b 3 0))
+(init (stack b 4 0))
+(init (stack b 5 0))
+(init (stack b 6 0))
+
+(init (stack c 1 0))
+(init (stack c 2 0))
+(init (stack c 3 0))
+(init (stack c 4 0))
+(init (stack c 5 0))
+(init (stack c 6 0))
+
+(init (stack d 1 0))
+(init (stack d 2 0))
+(init (stack d 3 0))
+(init (stack d 4 0))
+(init (stack d 5 0))
+(init (stack d 6 0))
+
+//4 Hands, 10 cards each
+// (hand <role> <pos> <card>)
+(init (sees red (hand red 1 0)))
+(init (sees red (hand red 2 0)))
+(init (sees red (hand red 3 0)))
+(init (sees red (hand red 4 0)))
+(init (sees red (hand red 5 0)))
+(init (sees red (hand red 6 0)))
+(init (sees red (hand red 7 0)))
+(init (sees red (hand red 8 0)))
+(init (sees red (hand red 9 0)))
+(init (sees red (hand red 10 0)))
+
+(init (sees blue (hand blue 1 0)))
+(init (sees blue (hand blue 2 0)))
+(init (sees blue (hand blue 3 0)))
+(init (sees blue (hand blue 4 0)))
+(init (sees blue (hand blue 5 0)))
+(init (sees blue (hand blue 6 0)))
+(init (sees blue (hand blue 7 0)))
+(init (sees blue (hand blue 8 0)))
+(init (sees blue (hand blue 9 0)))
+(init (sees blue (hand blue 10 0)))
+
+(init (sees green (hand green 1 0)))
+(init (sees green (hand green 2 0)))
+(init (sees green (hand green 3 0)))
+(init (sees green (hand green 4 0)))
+(init (sees green (hand green 5 0)))
+(init (sees green (hand green 6 0)))
+(init (sees green (hand green 7 0)))
+(init (sees green (hand green 8 0)))
+(init (sees green (hand green 9 0)))
+(init (sees green (hand green 10 0)))
+
+(init (sees yellow (hand yellow 1 0)))
+(init (sees yellow (hand yellow 2 0)))
+(init (sees yellow (hand yellow 3 0)))
+(init (sees yellow (hand yellow 4 0)))
+(init (sees yellow (hand yellow 5 0)))
+(init (sees yellow (hand yellow 6 0)))
+(init (sees yellow (hand yellow 7 0)))
+(init (sees yellow (hand yellow 8 0)))
+(init (sees yellow (hand yellow 9 0)))
+(init (sees yellow (hand yellow 10 0)))
+
+(init (inPlay red 1000))
+(init (inPlay blue 1000))
+(init (inPlay green 1000))
+(init (inPlay yellow 1000))
+
+//------------
+//Stack Functions
+//------------
+(<= (isFull ?stack)
+    (not (true (stack ?stack 6 0)))
+)
+
+(<= (isFull ?stack)
+    (does ?player (put ?stack 6))
+)
+
+//Atleast one smaller stack; One function for each possible stack to optimize runtime
+(<= (isMatchingStack a ?card)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    //is ?card closest to ?stack ?
+    (less ?card1 ?card)
+    (not (between ?card2 ?card1 ?card))
+    (not (between ?card3 ?card1 ?card))
+    (not (between ?card4 ?card1 ?card))
+)
+
+(<= (isMatchingStack b ?card)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    //is ?card closest to ?stack ?
+    (less ?card2 ?card)
+    (not (between ?card1 ?card2 ?card))
+    (not (between ?card3 ?card2 ?card))
+    (not (between ?card4 ?card2 ?card))
+)
+
+(<= (isMatchingStack c ?card)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    //is ?card closest to ?stack ?
+    (less ?card3 ?card)
+    (not (between ?card2 ?card3 ?card))
+    (not (between ?card1 ?card3 ?card))
+    (not (between ?card4 ?card3 ?card))
+)
+
+(<= (isMatchingStack d ?card)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    //is ?card closest to ?stack ?
+    (less ?card4 ?card)
+    (not (between ?card2 ?card4 ?card))
+    (not (between ?card3 ?card4 ?card))
+    (not (between ?card1 ?card4 ?card))
+)
+
+//No smaller stack => any stack returns true
+(<= (isMatchingStack ?stack ?card)
+    (lastCard a ?pos1 ?card1)
+    (lastCard b ?pos2 ?card2)
+    (lastCard c ?pos3 ?card3)
+    (lastCard d ?pos4 ?card4)
+    (not (less ?card1 ?card))
+    (not (less ?card2 ?card))
+    (not (less ?card3 ?card))
+    (not (less ?card4 ?card))
+)
+
+//Determine the last card in a stack
+(<= (lastCard ?stack ?pos ?card)
+    (true (stack ?stack ?pos ?card))
+    //?pos has a card
+    (distinct ?card 0)
+    //following slot empty
+    (succ ?pos ?posP)
+    (true (stack ?stack ?posP 0))
+    //previous slot filled
+    (succ ?posM ?pos)
+    (not (true (stack ?stack ?posM 0)))
+)
+
+//special case slot 1
+(<= (lastCard ?stack 1 ?card)
+    (true (stack ?stack 1 ?card))
+    (true (stack ?stack 2 0))
+)
+
+//Util Functions
+
+//Return points of the given card, return 0 if not a card
+(<= (hasPoints ?card ?points)
+    (isCard ?card ?points)
+)
+
+(<= (hasPoints ?card 0)
+    (not (isCard ?card ?points))
+)
+
+//Determine if ?cardMiddle is greater than ?cardLeft and smaller than ?cardRight
+(<= (between ?cardMiddle ?cardLeft ?cardRight)
+    (less ?cardLeft ?cardMiddle)
+    (less ?cardMiddle ?cardRight)
+)
+
+//determine the smallest card in Play
+(<= (smallest ?card1)
+    (does ?player2 (play ?pos2))
+    (true (sees ?player2 (hand ?player2 ?pos2 ?card2)))
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (smallest ?card1)
+    (does ?player1 (play ?pos1))
+    (true (sees ?player1 (hand ?player1 ?pos1 ?card1)))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (smallest ?card1)
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?card1 ?card2)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (smallest ?card1)
+    (does ?player2 (put ?stack2 ?pos2))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (true (sees ?player4 (inPlay ?player4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?card1 ?card3)
+    (less ?card1 ?card4)
+)
+
+(<= (lessEqual ?num1 ?num2)
+    (less ?num1 ?num2)
+)
+
+//Both parameters equal
+(<= (lessEqual ?num1 ?num1)
+    (number ?num1) //one operation to avoid prolog error, make sure numbers are being compared
+)
+
+(<= (hasCardInPlay ?player)
+    (true (sees ?player (inPlay ?player ?card)))
+    (distinct 1000 ?card)
+)
+
+(<= (allPlayed)
+    (true (control all))
+    (true (sees ?player1 (inPlay ?player1 ?card1)))
+    (true (sees ?player2 (inPlay ?player2 ?card2)))
+    (true (sees ?player3 (inPlay ?player3 ?card3)))
+    (does ?player4 (play ?pos4))
+    (true (sees ?player4 (hand ?player4 ?pos4 ?card4)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (distinct ?card1 1000)
+    (distinct ?card2 1000)
+    (distinct ?card3 1000)
+)
+
+//-------------
+//Legal
+//-------------
+
+//define legal moves
+
+//---Player---
+//Enable players to do nothing if it's not their turn to do something
+(<= (legal ?player (noop))
+    (not (true (control ?player)))
+    (not (true (control all)))
+    (true (control ?player1))
+    (isPlayer ?player)
+)
+//Karten dürfen nur gespielt werden, wenn alle spielen
+(<= (legal ?player (play ?pos))
+    (true (control all))
+    (true (sees ?player (hand ?player ?pos ?card)))
+    (isCard ?card ?val)
+    (distinct ?card 0)
+    (not (hasCardInPlay ?player))
+)
+
+//Anlegen
+(<= (legal ?player (put ?stack ?pos))
+    (true (control ?player))
+    (true (sees ?player (inPlay ?player ?card)))
+    (isMatchingStack ?stack ?card)
+    (lastCard ?stack ?posP ?cardP)
+    (succ ?posP ?pos)
+    (less ?cardP ?card)
+    (smallest ?card)
+)
+
+//Anlegen in slot 6 falls kein passender Stapel vorhanden war
+(<= (legal ?player (put ?stack 6))
+    (true (control ?player))
+    (true (sees ?player (inPlay ?player ?card)))
+    (isMatchingStack ?stack ?card)
+    (lastCard ?stack ?posLast ?cardLast)
+    (greater ?cardLast ?card)
+    (smallest ?card)
+)
+
+//---random---
+
+//Kein Spieler hat einen freien Platz auf der Hand, Poisition 1 jedes Stapels ist belegt
+(<= (legal random (gameReady))
+    (true (control random))
+    (not (true (stack ?stack 1 0)))
+    (not (true (sees ?player (hand ?player ?pos 0))))
+)
+
+(<= (legal random (deal stack ?stack ?card))
+    (true (control random))
+    (true (stack ?stack 1 0))
+    (isCard ?card ?val)
+    (not (true (dealt ?card)))
+)
+
+(<= (legal random (deal hand ?player ?pos ?card))
+    (true (control random))
+    (true (sees ?player (hand ?player ?pos 0)))
+    (isCard ?card ?val)
+    (not (true (dealt ?card)))
+)
+
+//-------------
+//Build next state
+//-------------
+
+//---deal cards---
+//handle dealt cards
+(<= (next (dealt ?card))
+    (true (control random))
+    (true (dealt ?card))
+    //discard flags to save space after random is done
+)
+
+(<= (next (dealt ?card))
+    (does random (deal hand ?player ?pos ?card))
+)
+
+(<= (next (dealt ?card))
+    (does random (deal stack ?stack ?card))
+)
+
+(<= (next (sees ?player (hand ?player ?pos ?card)))
+    (does random (deal hand ?player ?pos ?card))
+)
+
+(<= (next (stack ?stack 1 ?card))
+    (does random (deal stack ?stack ?card))
+)
+
+//---handle card plays---
+
+//place card
+(<= (next (stack ?stack ?pos ?card))
+    (does ?player (put ?stack ?pos))
+    (true (sees ?player (inPlay ?player ?card)))
+    (distinct ?pos 6)
+)
+
+//handle inPlay flags
+(<= (next (sees ?player (inPlay ?player ?card)))
+    (does ?player (play ?pos))
+    (true (sees ?player (hand ?player ?pos ?card)))
+)
+
+//copy inPlay card while it's not beeing put or replaced
+(<= (next (sees ?player (inPlay ?player ?card)))
+    (true (sees ?player (inPlay ?player ?card)))
+    (not (does ?player (put ?stack ?pos)))
+    (not (does ?player (play ?pos2)))
+)
+
+//remove card from inPlay when it's put
+(<= (next (sees ?player (inPlay ?player 1000)))
+    (does ?player (put ?stack ?pos))
+)
+
+//mark player as having no card in play
+(<= (next (sees ?player (inPlay ?player 1000)))
+    (not (true (control all)))
+    (true (sees ?player (inPlay ?player 1000)))
+)
+
+//---Control handling---
+
+//hand control to the player with the smallest card in play which isn't already placed (1000 = card was placed in a prior turn)
+(<= (next (control ?player))
+    (not (true (control all)))
+    (true (sees ?player (inPlay ?player ?card)))
+    (not (does ?player (put ?stack ?pos)))
+    (smallest ?card)
+    (distinct ?card 1000)
+)
+
+//transition to put phase
+(<= (next (control ?player))
+    (true (sees ?player (inPlay ?player ?card)))
+    (allPlayed)
+    (smallest ?card)
+)
+
+(<= (next (control ?player))
+    (does ?player (play ?pos))
+    (true (sees ?player (hand ?player ?pos ?card)))
+    (allPlayed)
+    (smallest ?card)
+)
+
+//Warten bis alle gespielt haben
+(<= (next (control all))
+    (true (control all))
+    (not (allPlayed))
+)
+
+//Letzter Spieler legt an
+(<= (next (control all))
+    (not (true (control all)))
+    (does ?player1 (put ?stack ?pos))
+    (true (sees ?player2 (inPlay ?player2 1000)))
+    (true (sees ?player3 (inPlay ?player3 1000)))
+    (true (sees ?player4 (inPlay ?player4 1000)))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+)
+
+//Random control handling
+(<= (next (control random))
+    (not (does random (gameReady)))
+    (true (control random))
+)
+
+(<= (next (control all))
+    (does random (gameReady))
+    (true (control random))
+)
+
+//Hands
+//Copy all non played cards
+(<= (next (sees ?player (hand ?player ?pos ?card)))
+    (true (sees ?player (hand ?player ?pos ?card)))
+    (not (does ?player (play ?pos)))
+    (not (does random (deal hand ?player ?pos ?card1)))
+)
+//Set all played cards in hand to zero
+(<= (next (sees ?player (hand ?player ?pos 0)))
+    (does ?player (play ?pos))
+)
+
+//Copy Stacks and remove overflow
+//Copy non full stacks 1 to 1 except positions where a card was put
+(<= (next (stack ?stack ?pos ?card))
+    (true (stack ?stack ?pos ?card))
+    (not (isFull ?stack))
+    (not (does random (deal stack ?stack ?card1)))
+    (not (does ?player (put ?stack ?pos)))
+)
+
+(<= (next (stack ?stack ?pos ?card))
+    (true (stack ?stack ?pos ?card))
+    (not (isFull ?stack))
+    (distinct ?pos 1)
+    (not (does ?player (put ?stack ?pos)))
+)
+
+//Copy slots 6 into 1 if stack is full, write 0 to others
+(<= (next (stack ?stack 1 ?card))
+    (does ?player (put ?stack 6))
+    (true (sees ?player (inPlay ?player ?card)))
+)
+
+(<= (next (stack ?stack 2 0))
+    (isFull ?stack)
+)
+
+(<= (next (stack ?stack 3 0))
+    (isFull ?stack)
+)
+
+(<= (next (stack ?stack 4 0))
+    (isFull ?stack)
+)
+
+(<= (next (stack ?stack 5 0))
+    (isFull ?stack)
+)
+
+(<= (next (stack ?stack 6 0))
+    (isFull ?stack)
+)
+
+//---Point handling---
+//Arith Points 
+//add all points in pos 1-5 if player puts card at 6
+(<= (next (currPoints ?player ?num))
+    (does ?player (put ?stack 6))
+    (true (currPoints ?player ?p))
+    (true (stack ?stack 1 ?card1))
+    (hasPoints ?card1 ?points1)
+    (add ?p ?points1 ?temp1) 
+    (true (stack ?stack 2 ?card2))
+    (hasPoints ?card2 ?points2)
+    (add ?temp1 ?points2 ?temp2)
+    (true (stack ?stack 3 ?card3))
+    (hasPoints ?card3 ?points3)
+    (add ?temp2 ?points3 ?temp3)
+    (true (stack ?stack 4 ?card4))
+    (hasPoints ?card4 ?points4)
+    (add ?temp3 ?points4 ?temp4)
+    (true (stack ?stack 5 ?card5))
+    (hasPoints ?card5 ?points5)
+    (add ?temp4 ?points5 ?num)
+)
+
+//If player is not gaining points, copy old score
+(<= (next (currPoints ?player ?num))
+    (true (currPoints ?player ?num))
+    (not (does ?player (put ?stack 6)))
+)
+
+//copy existing points
+(<= (next (points ?player ?card))
+    (true (points ?player ?card))
+)
+
+//apply Points gained by moving pos 1-5 to points
+(<= (next (points ?player ?card1))
+    (does ?player (put ?stack 6))
+    (true (stack ?stack 1 ?card1))
+)
+
+(<= (next (points ?player ?card2))
+    (does ?player (put ?stack 6))
+    (true (stack ?stack 2 ?card2))
+    (distinct ?card2 0)
+)
+
+(<= (next (points ?player ?card3))
+    (does ?player (put ?stack 6))
+    (true (stack ?stack 3 ?card3))
+    (distinct ?card3 0)
+)
+
+(<= (next (points ?player ?card4))
+    (does ?player (put ?stack 6))
+    (true (stack ?stack 4 ?card4))
+    (distinct ?card4 0)
+)
+
+(<= (next (points ?player ?card5))
+    (does ?player (put ?stack 6))
+    (true (stack ?stack 5 ?card5))
+    (distinct ?card5 0)
+)
+
+//------------
+//Goals
+//------------
+
+//First Place
+(<= (goal ?player 100)
+    (true (currPoints ?player ?points))
+    (true (currPoints ?player2 ?points2))
+    (true (currPoints ?player3 ?points3))
+    (true (currPoints ?player4 ?points4))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (lessEqual ?points ?points2)
+    (lessEqual ?points ?points3 )
+    (lessEqual ?points ?points4)
+)
+
+//Second Place
+(<= (goal ?player 50)
+    (true (currPoints ?player ?points))
+    (true (currPoints ?player2 ?points2))
+    (true (currPoints ?player3 ?points3))
+    (true (currPoints ?player4 ?points4))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (greater ?points ?points2)
+    (lessEqual ?points ?points3)
+    (lessEqual ?points ?points4)
+)
+
+//third or fourth place
+(<= (goal ?player 0)
+    (true (currPoints ?player ?points))
+    (true (currPoints ?player2 ?points2))
+    (true (currPoints ?player3 ?points3))
+    (true (currPoints ?player4 ?points4))
+    (distinct ?player1 ?player2 ?player3 ?player4)
+    (less ?points2 ?points)
+    (less ?points3 ?points)
+)
+
+//------------
+//Terminal
+//------------
+(<= terminal
+    (true (sees red (hand red 1 0)))
+    (true (sees red (hand red 2 0)))
+    (true (sees red (hand red 3 0)))
+    (true (sees red (hand red 4 0)))
+    (true (sees red (hand red 5 0)))
+    (true (sees red (hand red 6 0)))
+    (true (sees red (hand red 7 0)))
+    (true (sees red (hand red 8 0)))
+    (true (sees red (hand red 9 0)))
+    (true (sees red (hand red 10 0)))
+    (true (sees blue (hand blue 1 0)))
+    (true (sees blue (hand blue 2 0)))
+    (true (sees blue (hand blue 3 0)))
+    (true (sees blue (hand blue 4 0)))
+    (true (sees blue (hand blue 5 0)))
+    (true (sees blue (hand blue 6 0)))
+    (true (sees blue (hand blue 7 0)))
+    (true (sees blue (hand blue 8 0)))
+    (true (sees blue (hand blue 9 0)))
+    (true (sees blue (hand blue 10 0)))
+    (true (sees green (hand green 1 0)))
+    (true (sees green (hand green 2 0)))
+    (true (sees green (hand green 3 0)))
+    (true (sees green (hand green 4 0)))
+    (true (sees green (hand green 5 0)))
+    (true (sees green (hand green 6 0)))
+    (true (sees green (hand green 7 0)))
+    (true (sees green (hand green 8 0)))
+    (true (sees green (hand green 9 0)))
+    (true (sees green (hand green 10 0)))
+    (true (sees yellow (hand yellow 1 0)))
+    (true (sees yellow (hand yellow 2 0)))
+    (true (sees yellow (hand yellow 3 0)))
+    (true (sees yellow (hand yellow 4 0)))
+    (true (sees yellow (hand yellow 5 0)))
+    (true (sees yellow (hand yellow 6 0)))
+    (true (sees yellow (hand yellow 7 0)))
+    (true (sees yellow (hand yellow 8 0)))
+    (true (sees yellow (hand yellow 9 0)))
+    (true (sees yellow (hand yellow 10 0)))
+    (true (sees red (inPlay red 1000)))
+    (true (sees blue (inPlay blue 1000)))
+    (true (sees green (inPlay green 1000)))
+    (true (sees yellow (inPlay yellow 1000)))
+)
+
+
+//------------
+//Constants
+//------------
+//(isPlayer <player>)
+(isPlayer red)
+(isPlayer blue)
+(isPlayer green)
+(isPlayer yellow)
+
+//(isPos <Position>)
+(isPos 1)
+(isPos 2)
+(isPos 3)
+(isPos 4)
+(isPos 5)
+(isPos 6)
+
+//Points per card
+//(isCard <number> <points>)
+(isCard 1 1)
+(isCard 2 1)
+(isCard 3 1)
+(isCard 4 1)
+(isCard 5 2)
+(isCard 6 1)
+(isCard 7 1)
+(isCard 8 1)
+(isCard 9 1)
+(isCard 10 3)
+(isCard 11 5)
+(isCard 12 1)
+(isCard 13 1)
+(isCard 14 1)
+(isCard 15 2)
+(isCard 16 1)
+(isCard 17 1)
+(isCard 18 1)
+(isCard 19 1)
+(isCard 20 3)
+(isCard 21 1)
+(isCard 22 5)
+(isCard 23 1)
+(isCard 24 1)
+(isCard 25 2)
+(isCard 26 1)
+(isCard 27 1)
+(isCard 28 1)
+(isCard 29 1)
+(isCard 30 3)
+(isCard 31 1)
+(isCard 32 1)
+(isCard 33 5)
+(isCard 34 1)
+(isCard 35 2)
+(isCard 36 1)
+(isCard 37 1)
+(isCard 38 1)
+(isCard 39 1)
+(isCard 40 3)
+(isCard 41 1)
+(isCard 42 1)
+(isCard 43 1)
+(isCard 44 5)
+(isCard 45 2)
+(isCard 46 1)
+(isCard 47 1)
+(isCard 48 1)
+(isCard 49 1)
+(isCard 50 3)
+(isCard 51 1)
+(isCard 52 1)
+(isCard 53 1)
+(isCard 54 1)
+(isCard 55 7)
+(isCard 56 1)
+(isCard 57 1)
+(isCard 58 1)
+(isCard 59 1)
+(isCard 60 3)
+(isCard 61 1)
+(isCard 62 1)
+(isCard 63 1)
+(isCard 64 1)
+(isCard 65 2)
+(isCard 66 5)
+(isCard 67 1)
+(isCard 68 1)
+(isCard 69 1)
+(isCard 70 3)
+(isCard 71 1)
+(isCard 72 1)
+(isCard 73 1)
+(isCard 74 1)
+(isCard 75 2)
+(isCard 76 1)
+(isCard 77 5)
+(isCard 78 1)
+(isCard 79 1)
+(isCard 80 3)
+(isCard 81 1)
+(isCard 82 1)
+(isCard 83 1)
+(isCard 84 1)
+(isCard 85 2)
+(isCard 86 1)
+(isCard 87 1)
+(isCard 88 5)
+(isCard 89 1)
+(isCard 90 3)
+(isCard 91 1)
+(isCard 92 1)
+(isCard 93 1)
+(isCard 94 1)
+(isCard 95 2)
+(isCard 96 1)
+(isCard 97 1)
+(isCard 98 1)
+(isCard 99 5)
+(isCard 100 3)
+(isCard 101 1)
+(isCard 102 1)
+(isCard 103 1)
+(isCard 104 1)

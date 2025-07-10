@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmemorieswithproductkeys_connector.a  CMakeFiles/memorieswithproductkeys_connector.dir/memorieswithproductkeys_connector.cpp.o
+/usr/bin/ranlib libmemorieswithproductkeys_connector.a

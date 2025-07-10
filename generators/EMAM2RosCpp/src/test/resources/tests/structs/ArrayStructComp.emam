@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.structs;
+
+import tests.structs.Position;
+
+component ArrayStructComp{
+    port in Trajectory trajectoryIn;
+
+//    implementation Math{
+//        PositionWithDeltaTime tmp = trajectoryIn.positionsWithDeltaTime(1);
+//    }
+}

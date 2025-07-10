@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagematch;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Idmatchplatoonmessage{
+ports
+ dynamic in  Platoonmessage  plat_msg[0:32],
+ in  Z  near_platoonid,
+
+ out Platoonmessage match_plat_msg,
+ out Z  ifmatchsuccess,
+ out Platoonmessage pmsg;
+
+ @ plat_msg::connect{/* interface for dynamic ports*/}
+
+ implementation Math{
+  ifmatchsuccess = 0;
+  for i = 1:32
+     if is_connected(plat_msg,i)
+        pmsg = plat_msg(i);
+        if pmsg.vehicleid == near_platoonid
+           ifmatchsuccess = 1;
+           match_plat_msg = pmsg;
+        end
+     end
+  end
+ }
+}

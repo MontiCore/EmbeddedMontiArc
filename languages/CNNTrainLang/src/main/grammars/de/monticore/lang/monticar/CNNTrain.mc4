@@ -1,0 +1,332 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar;
+
+grammar CNNTrain extends de.monticore.lang.monticar.Common2, de.monticore.NumberUnit{
+    symbol scope CNNTrainCompilationUnit =
+                                ("package" package:(Name& || ".")+ ";")?  // optional package declaration
+                                "configuration"
+                                 name:Name&
+                                 Configuration;
+
+    Configuration =  "{"entries:ConfigEntry* "}";
+
+    interface Entry;
+    ast Entry = method String getName(){}
+                method ASTConfigValue getValue(){};
+    interface ConfigValue;
+    interface ConfigEntry extends Entry;
+    interface VariableReference;
+    ast VariableReference = method String getName(){};
+
+    // General Values
+    DataVariable implements VariableReference = Name&;
+    IntegerValue implements ConfigValue = NumberWithUnit;
+    NumberValue implements ConfigValue = NumberWithUnit;
+    StringValue implements ConfigValue = StringLiteral;
+    BooleanValue implements ConfigValue = (TRUE:"true" | FALSE:"false");
+    ComponentNameValue implements ConfigValue = Name ("."Name)*;
+    DoubleVectorValue implements ConfigValue = "(" number:NumberWithUnit ("," number:NumberWithUnit)* ")";
+    IntegerListValue implements ConfigValue = "[" number:NumberWithUnit ("," number:NumberWithUnit)* "]";
+
+    NumEpochEntry implements ConfigEntry = name:"num_epoch" ":" value:IntegerValue;
+    BatchSizeEntry implements ConfigEntry = name:"batch_size" ":" value:IntegerValue;
+    LoadCheckpointEntry implements ConfigEntry = name:"load_checkpoint" ":" value:BooleanValue;
+    CheckpointPeriodEntry implements ConfigEntry = name:"checkpoint_period" ":" value:IntegerValue;
+    LoadPretrainedEntry implements ConfigEntry = name:"load_pretrained" ":" value:BooleanValue;
+    LogPeriodEntry implements ConfigEntry = name:"log_period" ":" value:IntegerValue;
+    NormalizeEntry implements ConfigEntry = name:"normalize" ":" value:BooleanValue;
+
+    ShuffleDataEntry implements ConfigEntry = name:"shuffle_data" ":" value:BooleanValue;
+    ClipGlobalGradNormEntry implements ConfigEntry = name:"clip_global_grad_norm" ":" value:NumberValue;
+
+    OptimizerEntry implements ConfigEntry = (name:"optimizer" | name:"actor_optimizer") ":" value:OptimizerValue;
+    TrainContextEntry implements ConfigEntry = name:"context" ":" value:TrainContextValue;
+    LossEntry implements ConfigEntry = name:"loss" ":" value:LossValue;
+    LossWeightsEntry implements ConfigEntry = name:"loss_weights" ":" value:DoubleVectorValue;
+
+    EvalMetricEntry implements MultiParamConfigEntry = name:"eval_metric" ":" value:EvalMetricValue;
+
+    interface EvalMetricValue extends MultiParamValue;
+    AccuracyEvalMetric implements EvalMetricValue = name:"accuracy";
+    BleuMetric implements EvalMetricValue = name:"bleu" ("{" params:BleuEntry* "}")?;
+    AccIgnoreLabelMetric implements EvalMetricValue = name:"accuracy_ignore_label" ("{" params:AccIgnoreLabelEntry* "}")?;
+    CrossEntropyEvalMetric implements EvalMetricValue = name:"cross_entropy";
+    F1EvalMetric implements EvalMetricValue = name:"f1";
+    MAEEvalMetric implements EvalMetricValue = name:"mae";
+    MSEEvalMetric implements EvalMetricValue = name:"mse";
+    PerplexityEvalMetric implements EvalMetricValue = name:"perplexity";
+    RMSEEvalMetric implements EvalMetricValue = name:"rmse";
+    TopKAccuracyEvalMetric implements EvalMetricValue = name:"top_k_accuracy";
+
+    interface BleuEntry extends Entry;
+    ExcludeBleuEntry implements BleuEntry = name:"exclude" ":" value:IntegerListValue;
+
+    interface AccIgnoreLabelEntry extends Entry;
+    AxisAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"axis" ":" value:IntegerValue;
+    IgnoreLabelAccIgnoreLabelEntry implements AccIgnoreLabelEntry = name:"metric_ignore_label" ":" value:IntegerValue;
+
+    EvalTrainEntry implements ConfigEntry = name:"eval_train" ":" value:BooleanValue;
+
+    LRPolicyValue implements ConfigValue =(fixed:"fixed"
+                                         | step:"step"
+                                         | exp:"exp"
+                                         | inv:"inv"
+                                         | poly:"poly"
+                                         | sigmoid:"sigmoid");
+                                         
+    TrainContextValue implements ConfigValue = (cpu:"cpu" | gpu:"gpu");
+    
+    interface OptimizerParamEntry extends Entry;
+
+    interface LossValue extends MultiParamValue;
+
+    L1Loss implements LossValue = name:"l1" ("{" params:Entry* "}")?;
+
+    L2Loss implements LossValue = name:"l2" ("{" params:Entry* "}")?;
+
+    EPELoss implements LossValue = name:"epe" ("{" params:Entry* "}")?;
+
+    LogCoshLoss implements LossValue = name:"log_cosh" ("{" params:Entry* "}")?;
+
+    interface HuberEntry extends Entry;
+    HuberLoss implements LossValue = name:"huber" ("{" params:HuberEntry* "}")?;
+
+    interface CrossEntropyEntry extends Entry;
+    CrossEntropyLoss implements LossValue = name:"cross_entropy" ("{" params:CrossEntropyEntry* "}")?;
+
+    interface SoftmaxCrossEntropyEntry extends Entry;
+    SoftmaxCrossEntropyLoss implements LossValue = name:"softmax_cross_entropy" ("{" params:SoftmaxCrossEntropyEntry* "}")?;
+
+    interface SoftmaxCrossEntropyIgnoreIndicesEntry extends Entry;
+    SoftmaxCrossEntropyIgnoreIndicesLoss implements LossValue = name:"softmax_cross_entropy_ignore_indices" ("{" params:SoftmaxCrossEntropyIgnoreIndicesEntry* "}")?;
+
+    interface DiceEntry extends Entry;
+    DiceLoss implements LossValue = name:"dice_loss" ("{" params:DiceEntry* "}")?;
+
+    interface SoftmaxCrossEntropyIgnoreLabelEntry extends Entry;
+    SoftmaxCrossEntropyIgnoreLabelLoss implements LossValue = name:"softmax_cross_entropy_ignore_label" ("{" params:SoftmaxCrossEntropyIgnoreLabelEntry* "}")?;
+
+    SigmoidBinaryCrossEntropyLoss implements LossValue = name:"sigmoid_binary_cross_entropy" ("{" params:Entry* "}")?;
+
+    interface HingeEntry extends Entry;
+    HingeLoss implements LossValue = name:"hinge" ("{" params:HingeEntry* "}")?;
+
+    interface SquaredHingeEntry extends Entry;
+    SquaredHingeLoss implements LossValue = name:"squared_hinge" ("{" params:SquaredHingeEntry* "}")?;
+
+    interface LogisticEntry extends Entry;
+    LogisticLoss implements LossValue = name:"logistic" ("{" params:LogisticEntry* "}")?;
+
+    interface KullbackLeiblerEntry extends Entry;
+    KullbackLeiblerLoss implements LossValue = name:"kullback_leibler" ("{" params:KullbackLeiblerEntry* "}")?;
+
+    SparseLabelEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry, SoftmaxCrossEntropyIgnoreLabelEntry = name:"sparse_label" ":" value:BooleanValue;
+    FromLogitsEntry implements SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, KullbackLeiblerEntry, DiceEntry, SoftmaxCrossEntropyIgnoreLabelEntry = name:"from_logits" ":" value:BooleanValue;
+    LossAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry,SoftmaxCrossEntropyIgnoreLabelEntry = name:"loss_axis" ":" value:IntegerValue;
+    BatchAxisEntry implements CrossEntropyEntry, SoftmaxCrossEntropyEntry, SoftmaxCrossEntropyIgnoreIndicesEntry, DiceEntry, SoftmaxCrossEntropyIgnoreLabelEntry = name:"batch_axis" ":" value:IntegerValue;
+    IgnoreIndicesEntry implements SoftmaxCrossEntropyIgnoreIndicesEntry = name:"ignore_indices" ":" value:IntegerValue;
+    IgnoreLabelEntry implements SoftmaxCrossEntropyIgnoreLabelEntry = name:"loss_ignore_label" ":" value:IntegerValue;
+    MarginEntry implements HingeEntry, SquaredHingeEntry = name:"margin" ":" value:NumberValue;
+    LabelFormatEntry implements LogisticEntry = name:"label_format" ":" value:StringValue;
+
+    interface OptimizerValue extends ConfigValue;
+    interface SGDEntry extends OptimizerParamEntry;
+    SGDOptimizer implements OptimizerValue = name:"sgd" ("{" params:SGDEntry* "}")?;
+
+    interface AdamEntry extends OptimizerParamEntry;
+    AdamOptimizer implements OptimizerValue = name:"adam" ("{" params:AdamEntry* "}")?;
+
+    AdamWOptimizer implements OptimizerValue = name:"adamw" ("{" params:AdamEntry* "}")?;
+
+    interface RmsPropEntry extends OptimizerParamEntry;
+    RmsPropOptimizer implements OptimizerValue = name:"rmsprop" ("{" params:RmsPropEntry* "}")?;
+
+    interface AdaGradEntry extends OptimizerParamEntry;
+    AdaGradOptimizer implements OptimizerValue = name:"adagrad" ("{" params:AdaGradEntry* "}")?;
+
+    NesterovOptimizer implements OptimizerValue = name:"nag" ("{" params:SGDEntry* "}")?;
+
+    interface AdaDeltaEntry extends OptimizerParamEntry;
+    AdaDeltaOptimizer implements OptimizerValue = name:"adadelta" ("{" params:AdaDeltaEntry* "}")?;
+
+    interface GeneralOptimizerEntry extends SGDEntry,AdamEntry,RmsPropEntry,AdaGradEntry,AdaDeltaEntry;
+
+    MinimumLearningRateEntry implements GeneralOptimizerEntry = name:"learning_rate_minimum" ":" value:NumberValue;
+    LearningRateEntry implements GeneralOptimizerEntry = name:"learning_rate" ":" value:NumberValue;
+    WeightDecayEntry implements GeneralOptimizerEntry = name:"weight_decay" ":" value:NumberValue;
+    LRDecayEntry implements GeneralOptimizerEntry = name:"learning_rate_decay" ":" value:NumberValue;
+    LRPolicyEntry implements GeneralOptimizerEntry = name:"learning_rate_policy" ":" value:LRPolicyValue;
+    RescaleGradEntry implements GeneralOptimizerEntry = name:"rescale_grad" ":" value:NumberValue;
+    ClipGradEntry implements GeneralOptimizerEntry = name:"clip_gradient" ":" value:NumberValue;
+    StepSizeEntry implements GeneralOptimizerEntry = name:"step_size" ":" value:IntegerValue;
+
+
+    MomentumEntry implements SGDEntry = name:"momentum" ":" value:NumberValue;
+    Beta1Entry implements AdamEntry = name:"beta1" ":" value:NumberValue;
+    Beta2Entry implements AdamEntry = name:"beta2" ":" value:NumberValue;
+    EpsilonEntry implements AdamEntry,AdaGradEntry,RmsPropEntry,AdaDeltaEntry = name:"epsilon" ":" value:NumberValue;
+    Gamma1Entry implements RmsPropEntry = name:"gamma1" ":" value:NumberValue;
+    Gamma2Entry implements RmsPropEntry = name:"gamma2" ":" value:NumberValue;
+    CenteredEntry implements RmsPropEntry = name:"centered" ":" value:BooleanValue;
+    ClipWeightsEntry implements RmsPropEntry = name:"clip_weights" ":" value:NumberValue;
+    RhoEntry implements AdaDeltaEntry,RmsPropEntry,HuberEntry = name:"rho" ":" value:NumberValue;
+
+    UseTeacherForcing implements ConfigEntry = name:"use_teacher_forcing" ":" value:BooleanValue;
+
+    // Visual attention Extension
+    SaveAttentionImage implements ConfigEntry = name:"save_attention_image" ":" value:BooleanValue;
+
+    // Reinforcement Extensions
+    interface MultiParamValue extends ConfigValue;
+
+    LearningMethodEntry implements ConfigEntry = name:"learning_method" ":" value:LearningMethodValue;
+    RLAlgorithmEntry implements ConfigEntry = name:"rl_algorithm" ":" value:RLAlgorithmValue;
+    NumEpisodesEntry implements ConfigEntry = name:"num_episodes" ":" value:IntegerValue;
+    DiscountFactorEntry implements ConfigEntry = name:"discount_factor" ":" value:NumberValue;
+    NumMaxStepsEntry implements ConfigEntry = name:"num_max_steps" ":" value:IntegerValue;
+    TargetScoreEntry implements ConfigEntry = name:"target_score" ":" value:NumberValue;
+    TrainingIntervalEntry implements ConfigEntry = name:"training_interval" ":" value:IntegerValue;
+    SnapshotIntervalEntry implements ConfigEntry = name:"snapshot_interval" ":" value:IntegerValue;
+    AgentNameEntry implements ConfigEntry = name:"agent_name" ":" value:StringValue;
+    RewardFunctionEntry implements ConfigEntry = name:"reward_function" ":" value:ComponentNameValue;
+    StartTrainingAtEntry implements ConfigEntry = name:"start_training_at" ":" value:IntegerValue;
+    EvaluationSamplesEntry implements ConfigEntry = name:"evaluation_samples" ":" value:IntegerValue;
+
+    LearningMethodValue implements ConfigValue = (supervisedLearning:"supervised" | reinforcement:"reinforcement" | gan:"gan");
+
+    RLAlgorithmValue implements ConfigValue = (dqn:"dqn-algorithm" | ddpg:"ddpg-algorithm" | tdThree:"td3-algorithm");
+
+    interface MultiParamConfigEntry extends ConfigEntry;
+    
+    // Initializer
+    InitializerEntry implements MultiParamConfigEntry = (name:"initializer" | name:"actor_initializer") ":" value:InitializerValue;
+    interface InitializerValue extends MultiParamValue;
+    
+    interface InitializerNormalEntry extends Entry;
+    InitializerNormalValue implements InitializerValue = name:"normal" ("{" params:InitializerNormalEntry* "}")?;
+    InitializerNormalSigma implements InitializerNormalEntry = name:"sigma" ":" value:NumberValue;
+
+    // Replay Memory
+    ReplayMemoryEntry implements MultiParamConfigEntry = name:"replay_memory" ":" value:ReplayMemoryValue;
+    interface ReplayMemoryValue extends MultiParamValue;
+
+    interface ReplayMemoryBufferEntry extends Entry;
+    ReplayMemoryBufferValue implements ReplayMemoryValue = name:"buffer" ("{" params:ReplayMemoryBufferEntry* "}")?;
+
+    ReplayMemoryOnlineValue implements ReplayMemoryValue = name:"online";
+
+    interface ReplayMemoryCombinedEntry extends Entry;
+    ReplayMemoryCombinedValue implements ReplayMemoryValue = name:"combined" ("{" params:ReplayMemoryCombinedEntry* "}")?;
+
+    interface GeneralReplayMemoryEntry extends ReplayMemoryBufferEntry, ReplayMemoryCombinedEntry;
+
+    MemorySizeEntry implements GeneralReplayMemoryEntry = name:"memory_size" ":" value:IntegerValue;
+    SampleSizeEntry implements GeneralReplayMemoryEntry = name:"sample_size" ":" value:IntegerValue;
+
+    // Strategy
+    StrategyEntry implements MultiParamConfigEntry = name:"strategy" ":" value:StrategyValue;
+    interface StrategyValue extends MultiParamValue;
+
+    interface StrategyEpsGreedyEntry extends Entry;
+    StrategyEpsGreedyValue implements StrategyValue = name:"epsgreedy" ("{" params:StrategyEpsGreedyEntry* "}")?;
+
+    interface StrategyOrnsteinUhlenbeckEntry extends Entry;
+    StrategyOrnsteinUhlenbeckValue implements StrategyValue = name:"ornstein_uhlenbeck" ("{" params:StrategyOrnsteinUhlenbeckEntry* "}")?;
+
+    interface StrategyGaussianEntry extends Entry;
+    StrategyGaussianValue implements StrategyValue = name:"gaussian" ("{" params:StrategyGaussianEntry* "}")?;
+
+    StrategyGaussianNoiseVarianceEntry implements StrategyGaussianEntry = name: "noise_variance" ":" value:NumberValue;
+
+    StrategyOUMu implements StrategyOrnsteinUhlenbeckEntry = name: "mu" ":" value:DoubleVectorValue;
+    StrategyOUTheta implements StrategyOrnsteinUhlenbeckEntry = name: "theta" ":" value:DoubleVectorValue;
+    StrategyOUSigma implements StrategyOrnsteinUhlenbeckEntry = name: "sigma" ":" value:DoubleVectorValue;
+
+    interface GeneralStrategyEntry extends StrategyEpsGreedyEntry, StrategyOrnsteinUhlenbeckEntry, StrategyGaussianEntry;
+
+    GreedyEpsilonEntry implements GeneralStrategyEntry = name:"epsilon" ":" value:NumberValue;
+    MinEpsilonEntry implements GeneralStrategyEntry = name:"min_epsilon" ":" value:NumberValue;
+    EpsilonDecayStartEntry implements GeneralStrategyEntry = name:"epsilon_decay_start" ":" value:IntegerValue;
+    EpsilonDecayMethodEntry implements GeneralStrategyEntry = name:"epsilon_decay_method" ":" value:EpsilonDecayMethodValue;
+    EpsilonDecayMethodValue implements ConfigValue = (linear:"linear" | no:"no");
+    EpsilonDecayPerStepEntry implements GeneralStrategyEntry = name:"epsilon_decay_per_step" ":" value:BooleanValue;
+    EpsilonDecayEntry implements GeneralStrategyEntry = name:"epsilon_decay" ":" value:NumberValue;
+
+    // Environment
+    EnvironmentEntry implements MultiParamConfigEntry = name:"environment" ":" value:EnvironmentValue;
+    interface EnvironmentValue extends MultiParamValue;
+
+    interface GymEnvironmentEntry extends Entry;
+    GymEnvironmentValue implements EnvironmentValue = name:"gym" ("{" params:GymEnvironmentEntry* "}");
+    GymEnvironmentNameEntry implements GymEnvironmentEntry = name:"name" ":" value:StringValue;
+
+    interface RosEnvironmentEntry extends Entry;
+    RosEnvironmentValue implements EnvironmentValue = name:"ros_interface" ("{" params:RosEnvironmentEntry* "}")?;
+    RosEnvironmentStateTopicEntry implements RosEnvironmentEntry = name:"state_topic" ":" value:StringValue;
+    RosEnvironmentActionTopicEntry implements RosEnvironmentEntry = name:"action_topic" ":" value:StringValue;
+    RosEnvironmentResetTopicEntry implements RosEnvironmentEntry = name:"reset_topic" ":" value:StringValue;
+    RosEnvironmentTerminalStateTopicEntry implements RosEnvironmentEntry = name:"terminal_state_topic" ":" value:StringValue;
+    RosEnvironmentRewardTopicEntry implements RosEnvironmentEntry = name:"reward_topic" ":" value:StringValue;
+
+    // DQN exclusive parameters
+    UseFixTargetNetworkEntry implements ConfigEntry = name:"use_fix_target_network" ":" value:BooleanValue;
+    TargetNetworkUpdateIntervalEntry implements ConfigEntry = name:"target_network_update_interval" ":" value:IntegerValue;
+    UseDoubleDQNEntry implements ConfigEntry = name:"use_double_dqn" ":" value:BooleanValue;
+
+
+    // DDPG and TD3 exclusive parameters
+    CriticNetworkEntry implements ConfigEntry = name:"critic" ":" value:ComponentNameValue;
+    SoftTargetUpdateRateEntry implements ConfigEntry = name:"soft_target_update_rate" ":" value:NumberValue;
+    CriticInitializerEntry implements MultiParamConfigEntry = name:"critic_initializer" ":" value:InitializerValue;
+    CriticOptimizerEntry implements ConfigEntry = name:"critic_optimizer" ":" value:OptimizerValue;
+
+    // TD3 exclusive parameters
+    PolicyNoiseEntry implements ConfigEntry = name:"policy_noise" ":" value:NumberValue;
+    NoiseClipEntry implements ConfigEntry = name:"noise_clip" ":" value:NumberValue;
+    PolicyDelayEntry implements ConfigEntry = name:"policy_delay" ":" value:IntegerValue;
+
+    // GANs Extensions
+
+    KValueEntry implements ConfigEntry = name:"k_value" ":" value:IntegerValue;
+    GeneratorTargetNameEntry implements ConfigEntry = name:"generator_target_name" ":" value:StringValue;
+    GeneratorLossEntry implements ConfigEntry = name:"generator_loss" ":" value:GeneratorLossValue;
+    GeneratorLossValue implements ConfigValue = (l1: "l1" | l2: "l2");
+    NoiseInputEntry implements ConfigEntry = name:"noise_input" ":" value:StringValue;
+    GeneratorLossWeightEntry implements ConfigEntry = name:"generator_loss_weight" ":" value:NumberValue;
+    DiscriminatorLossWeightEntry implements ConfigEntry = name:"discriminator_loss_weight" ":" value:NumberValue;
+
+    PrintImagesEntry implements ConfigEntry = name:"print_images" ":" value:BooleanValue;
+
+    interface MultiParamValueMapConfigEntry extends ConfigEntry;
+    interface MultiParamValueMapParamValue extends ConfigValue;
+    interface MultiParamValueMapTupleValue extends ConfigValue;
+
+    DiscriminatorNetworkEntry implements ConfigEntry = name:"discriminator_name" ":" value:ComponentNameValue;
+    DiscriminatorOptimizerEntry implements ConfigEntry = name:"discriminator_optimizer" ":" value:OptimizerValue;
+    QNetworkEntry implements ConfigEntry = name:"qnet_name" ":" value:ComponentNameValue;
+    PreprocessingEntry implements ConfigEntry = name:"preprocessing_name" ":" value:ComponentNameValue;
+
+    // Noise Distribution Creator
+    NoiseDistributionEntry implements MultiParamConfigEntry = name:"noise_distribution" ":" value:NoiseDistributionValue;
+    interface NoiseDistributionValue extends MultiParamValue;
+
+    interface NoiseDistributionParamEntry extends Entry;
+    interface NoiseDistributionGaussianEntry extends NoiseDistributionParamEntry;
+
+    NoiseDistributionGaussianValue implements NoiseDistributionValue = name:"gaussian" ("{" params:NoiseDistributionGaussianEntry* "}")?;
+
+    MeanValueEntry implements NoiseDistributionGaussianEntry = name:"mean_value" ":" value:IntegerValue;
+    SpreadValueEntry implements NoiseDistributionGaussianEntry = name:"spread_value" ":" value:IntegerValue;
+
+    NoiseDistributionUniformValue implements NoiseDistributionValue = name:"uniform" ("{"  "}")?;
+
+    // Constraint Distributions
+    ConstraintDistributionEntry implements MultiParamValueMapConfigEntry  = name:"constraint_distributions" ":" value:ConstraintDistributionValue;
+    ConstraintDistributionValue implements MultiParamValueMapParamValue = ("{" params:ConstraintDistributionParam* "}")?;
+    ConstraintDistributionParam implements MultiParamValueMapTupleValue = name:StringValue ":" multiParamValue:NoiseDistributionValue;
+
+    // Constraint losses
+    ConstraintLossEntry implements MultiParamValueMapConfigEntry  = name:"constraint_losses" ":" value:ConstraintLossValue;
+    ConstraintLossValue implements MultiParamValueMapParamValue = ("{" params:ConstraintLossParam* "}")?;
+    ConstraintLossParam implements MultiParamValueMapTupleValue = name:StringValue ":" multiParamValue:LossValue;
+}
