@@ -39,11 +39,11 @@ jobs:
   TestBuildJava17:
     runs-on: ubuntu-latest
     container:
-      image: maven:3.8.4-openjdk-17
+      image: maven:3.8.4-openjdk-17-slim
     timeout-minutes: 120 
     steps:
       - name: Install git
-        run: apt install git
+        run: apt-get install git -y
       - name: Checkout latest commit
         uses: actions/checkout@v4
         with:
