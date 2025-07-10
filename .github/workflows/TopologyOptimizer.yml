@@ -30,8 +30,10 @@ jobs:
             apt-get update
             apt-get install -y maven
             cd /workspace
-            cd generator
+            cd generators
+            ls
             cd EMAM2Middleware
+            ls
             mvn clean install -s settings.xml
             cd ../..
             cd applications/reinforcement_learning/TopologyOptimizer
