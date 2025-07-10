@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+view SensorConnectionsInterfaceComplete {
+
+       component Sensor {
+         port
+           out float val1,
+           out int val2;
+       }
+       instance Sensor sensor;
+       
+       component Cylinder { }
+       instance Cylinder cylinder;
+       
+       component JointLimiter { }
+       instance JointLimiter jointLimiter;
+    
+    connect sensor.val1 -> jointLimiter;
+    connect sensor.val2 -> cylinder;
+
+}

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package daimler;
+
+view Widerstand {
+
+  component Oeffentlicher_Demonstrator_FAS_v04 {
+    component Widerstand {}
+    instance Widerstand widerstand;
+  }
+  instance Oeffentlicher_Demonstrator_FAS_v04 oeffentlicher_Demonstrator_FAS_v04;
+}

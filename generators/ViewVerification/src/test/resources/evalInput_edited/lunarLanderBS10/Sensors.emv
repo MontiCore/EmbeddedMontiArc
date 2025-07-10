@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderBS10;
+
+// In this application, FlightControl maintains
+// the state of a spacecraft based on the
+// information provided by various sensors:
+// Altimeter, Gyroscope, Fuel level indicator
+// and the engine control switch.
+
+view Sensors {
+
+  component LunarLander {
+  
+    atomic component FlightControl { }
+    instance FlightControl flightControl;
+    
+    atomic component Altimeter { }
+    instance Altimeter altimeter;
+    atomic component Gyroscope { }
+    instance Gyroscope gyroscope;
+    atomic component FuelLevel { }
+    instance FuelLevel fuelLevel;
+    atomic component EngineControlSwitch { }
+    instance EngineControlSwitch engineControlSwitch;
+  }
+  instance LunarLander lunarLander;
+  
+  connect altimeter -> flightControl;
+  connect gyroscope -> flightControl;
+  connect fuelLevel -> flightControl;
+  connect engineControlSwitch -> flightControl;
+
+}

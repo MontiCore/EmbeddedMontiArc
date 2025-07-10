@@ -1,0 +1,73 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Synthesized C&C model for C&C views specification
+
+component Flight_System {
+
+  component FD {
+    port
+      in Page_Image New_Page_Image_To_Display,
+      in Page_Request New_Page_Request_From_FM,
+      out Page_Content New_Page_Content_To_FM;
+
+  }
+  instance FD fD;
+  component FM {
+    port
+      in Page_Content New_Page_Content_from_FD,
+      out Menu_Cmd New_Page_Content_from_PCM,
+      in Menu_Cmd New_Page_Request_From_DM,
+      in Page_Request New_Page_Request_From_FM,
+      out Page_Request New_Page_Request_To_FD;
+
+    connect new_Page_Request_From_DM -> new_Page_Content_from_PCM;
+
+    connect new_Page_Request_From_FM -> new_Page_Request_To_FD;
+
+  }
+  instance FM fM;
+  component PCM {
+    port
+      out Page_Request New_Page_Request_From_FM,
+      in Page_Request New_Page_Request_From_DM;
+
+    connect new_Page_Request_From_DM -> new_Page_Request_From_FM;
+
+  }
+  instance PCM pCM;
+  component Pilot_Display {
+    port
+      out Menu_Cmd Menu_Cmd_Pushed,
+      in Page_Image Page_To_Show;
+
+  }
+  instance Pilot_Display pilot_Display;
+  component Pilot_DM {
+    port
+      in Menu_Cmd Menu_selection_from_Display,
+      in Page_Request New_Page_Request_To_FD,
+      out Page_Image New_Page_Image_To_Display,
+      out Page_Request New_Page_Request_To_PCM;
+
+    connect new_Page_Request_To_FD -> new_Page_Request_To_PCM;
+
+  }
+  instance Pilot_DM pilot_DM;
+  connect fD.New_Page_Content_To_FM -> fM.New_Page_Content_from_FD;
+
+  connect fM.New_Page_Request_To_FD -> fD.New_Page_Request_From_FM;
+
+  connect fM.New_Page_Request_To_FD -> pCM.New_Page_Request_From_DM;
+
+  connect pCM.New_Page_Request_From_FM -> pilot_DM.New_Page_Request_To_FD;
+
+  connect pilot_Display.Menu_Cmd_Pushed -> pilot_DM.Menu_selection_from_Display;
+
+  connect pilot_Display.Menu_Cmd_Pushed -> fM.New_Page_Request_From_DM;
+
+  connect pilot_DM.New_Page_Image_To_Display -> fD.New_Page_Image_To_Display;
+
+  connect pilot_DM.New_Page_Image_To_Display -> pilot_Display.Page_To_Show;
+
+  connect pilot_DM.New_Page_Request_To_PCM -> fM.New_Page_Request_From_FM;
+
+}

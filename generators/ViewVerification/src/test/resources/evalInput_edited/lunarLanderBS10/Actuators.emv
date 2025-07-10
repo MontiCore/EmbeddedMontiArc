@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderBS10;
+
+// After processing control laws and computing values,
+// FlightControl provides them to the various actuators:
+// Descent engine controller, Attitude control thruster
+// and Display.
+    
+view Actuators {
+
+  component LunarLander {
+  
+    atomic component FlightControl { }
+    instance FlightControl flightControl;
+    
+    atomic component DescentEngineController { }
+    instance DescentEngineController descentEngineController;
+    atomic component AttitudeControlThruster { }
+    instance AttitudeControlThruster attitudeControlThruster;
+    atomic component Display { }
+    instance Display display;
+  }
+  instance LunarLander lunarLander;
+
+  connect flightControl -> descentEngineController;
+  connect flightControl -> attitudeControlThruster;
+  connect flightControl -> display;
+  
+}

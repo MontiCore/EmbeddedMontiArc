@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// The Lunar Lander application consists of three
+// components: a data store component, a
+// calculation component, and a user interface
+// component.
+
+view LunarLanderOverview {
+
+   component LunarLanderApplication {
+    
+    atomic component DataStore {}
+    instance DataStore dataStore;
+    
+    atomic component Calculation {}
+    instance Calculation calculation;
+    
+    atomic component UserInterface {}
+    instance UserInterface userInterface;
+  }
+   instance LunarLanderApplication lunarLanderApplication;
+  
+}

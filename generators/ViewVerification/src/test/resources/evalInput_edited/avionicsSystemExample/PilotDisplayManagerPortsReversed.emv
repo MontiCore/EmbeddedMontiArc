@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample;
+
+// not consistent with architecture
+
+// all the ports with reverse direction
+
+view PilotDisplayManagerPortsReversed {
+  
+  // Display_Manager
+  component Pilot_DM {
+    port
+      out Menu_Cmd Menu_selection_from_Display,
+      in Page_Image New_Page_Image_To_Display,
+      in Page_Request New_Page_Request_To_PCM,
+      out Page_Content New_Page_Content_from_PCM;
+  }
+  instance Pilot_DM pilot_DM;
+
+}

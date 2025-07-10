@@ -1,0 +1,54 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component SensorReading {
+  port
+    in boolean button,
+    in int level1,
+    in boolean pump,
+    in int valve,
+    out boolean pumpState,
+    out UserInput userButtonOut,
+    out ValvePosition valvePosition,
+    out int waterLevel1;
+  
+  component PumpSensorReader {
+    port
+      in boolean pump,
+      out boolean pumpState;
+  }
+  instance PumpSensorReader pumpSensorReader;
+  
+  component UserButtonReader {
+    port
+      in boolean button,
+      out UserInput userButton;
+  }
+  instance UserButtonReader userButtonReader;
+  
+  component TankSensorReader {
+    port
+      in int level1,
+      out int waterLevel1;
+  }
+  instance TankSensorReader tankSensorReader;
+  
+  component ValveSensorReader {
+    port
+      in int valve,
+      out ValvePosition valvePosition;
+  }
+  instance ValveSensorReader valveSensorReader;
+  
+  connect pump -> pumpSensorReader.pump;
+  connect pumpSensorReader.pumpState -> pumpState;
+  
+  connect button -> userButtonReader.button;
+  connect userButtonReader.userButton -> userButtonOut;
+
+  connect level1 -> tankSensorReader.level1;
+  connect tankSensorReader.waterLevel1 -> waterLevel1;
+  
+  connect valve -> valveSensorReader.valve;
+  connect valveSensorReader.valvePosition -> valvePosition;
+}

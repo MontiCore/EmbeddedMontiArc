@@ -1,0 +1,215 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component PumpStation {
+
+  autoconnect port;
+
+  component Environment {
+      port
+      in boolean valveOpen,
+      in boolean valveClose,
+      in boolean pumpActuatorPort,
+      out int level1,
+      out boolean pump,
+      out int valve,
+        out boolean button;
+
+    component PhysicsSimulation {
+      port
+        in boolean valveOpen,
+        in boolean valveClose,
+        in boolean pumpActuatorPort,
+        out int level1,
+        out int level2,
+        out boolean pump,
+        out int valve;
+    }
+    instance PhysicsSimulation physicsSimulation;
+   
+    component SimulationPanel {
+      port
+        in int level1,
+        in int level2,
+        in boolean pump,
+        in int valve,
+        out boolean button;
+    }
+    instance SimulationPanel simulationPanel;
+    
+    connect pumpActuatorPort -> physicsSimulation.pumpActuatorPort;
+    connect valveOpen -> physicsSimulation.valveOpen;
+    connect valveClose -> physicsSimulation.valveClose;
+
+    connect physicsSimulation.level2 -> simulationPanel.level2;
+    connect physicsSimulation.level1 -> simulationPanel.level1;
+    connect physicsSimulation.level1 -> level1;
+    connect physicsSimulation.pump -> simulationPanel.pump;
+    connect physicsSimulation.pump -> pump;
+    connect physicsSimulation.valve -> simulationPanel.valve;
+    connect physicsSimulation.valve -> valve;
+    
+    connect simulationPanel.button -> button;
+  }
+  instance Environment environment;
+  
+
+  component PumpingSystem {
+    port
+      in int level1,
+      in boolean button,
+      in boolean pump,
+      in int valve,
+      out boolean pumpActuatorPort,
+      out boolean valveOpen,
+      out boolean valveClose;
+    
+    component SensorReading {
+      port
+        in boolean button,
+        in int level1,
+        in boolean pump,
+        in int valve,
+        out boolean pumpState,
+        out UserInput userButtonOut,
+        out ValvePosition valvePosition,
+        out int waterLevel1;
+      
+      component PumpSensorReader {
+        port
+          in boolean pump,
+          out boolean pumpState;
+      }
+      instance PumpSensorReader pumpSensorReader;
+      
+      component UserButtonReader {
+        port
+          in boolean button,
+          out UserInput userButton;
+      }
+      instance UserButtonReader userButtonReader;
+      
+      component TankSensorReader {
+        port
+          in int level1,
+          out int waterLevel1;
+      }
+      instance TankSensorReader tankSensorReader;
+      
+      component ValveSensorReader {
+        port
+          in int valve,
+          out ValvePosition valvePosition;
+      }
+      instance ValveSensorReader valveSensorReader;
+      
+      connect pump -> pumpSensorReader.pump;
+      connect pumpSensorReader.pumpState -> pumpState;
+      
+      connect button -> userButtonReader.button;
+      connect userButtonReader.userButton -> userButtonOut;
+    
+      connect level1 -> tankSensorReader.level1;
+      connect tankSensorReader.waterLevel1 -> waterLevel1;
+      
+      connect valve -> valveSensorReader.valve;
+      connect valveSensorReader.valvePosition -> valvePosition;
+    }
+    instance SensorReading sensorReading;
+    
+    component Controller {
+    
+      port
+        in UserInput userButtonIn,
+        in int waterLevel1,
+        out boolean desiredPumpState,
+        out ValvePosition desiredValvePosition;
+
+      component UserOperation {
+        port
+          in UserInput userButton,
+          out boolean desiredPumpState,
+          out ValvePosition desiredValvePosition;
+      }
+      instance UserOperation userOperation;
+      
+      component EMSOperation {
+        port
+          in int waterLevel1,
+          out boolean desiredPumpState,
+          out ValvePosition desiredValvePosition;
+      }
+      instance EMSOperation eMSOperation;
+
+      component ModeArbiter {
+        port
+          in boolean emsPumpState,
+          in ValvePosition emsValvePosition,
+          in boolean userPumpState,
+          in ValvePosition userValvePosition,
+          out boolean desiredPumpState,
+          out ValvePosition desiredValvePosition;
+      }
+      instance ModeArbiter modeArbiter;
+
+      connect userButtonIn -> userOperation.userButton;
+      connect userOperation.desiredPumpState -> modeArbiter.userPumpState;
+      connect userOperation.desiredValvePosition -> modeArbiter.userValvePosition;
+
+      connect waterLevel1 -> eMSOperation.waterLevel1;
+      connect eMSOperation.desiredPumpState -> modeArbiter.emsPumpState;
+      connect eMSOperation.desiredValvePosition -> modeArbiter.emsValvePosition;
+      
+      connect modeArbiter.desiredPumpState -> desiredPumpState;
+      connect modeArbiter.desiredValvePosition -> desiredValvePosition;
+    
+    }
+    instance Controller controller;
+    
+    component PumpActuator {
+      port
+        in boolean desiredPumpState,
+        in boolean pumpState,
+        out boolean pumpActuatorPort;
+    }
+    instance PumpActuator pumpActuator;
+
+
+    component ValveActuator {
+      port
+        in ValvePosition desiredValvePosition,
+        in ValvePosition valvePosition,
+        out boolean valveOpen,
+        out boolean valveClose;
+    }
+    instance ValveActuator valveActuator;
+
+    connect button -> sensorReading.button;
+    connect level1 -> sensorReading.level1;
+    connect valve -> sensorReading.valve;
+    connect pump -> sensorReading.pump;
+    
+    connect sensorReading.pumpState -> pumpActuator.pumpState;
+    connect sensorReading.userButtonOut -> controller.userButtonIn;
+    connect sensorReading.waterLevel1 -> controller.waterLevel1;
+    connect sensorReading.valvePosition -> valveActuator.valvePosition;
+    
+    connect pumpActuator.pumpActuatorPort -> pumpActuatorPort;
+    
+    connect controller.desiredPumpState -> pumpActuator.desiredPumpState;
+    connect controller.desiredValvePosition -> valveActuator.desiredValvePosition;
+    
+    connect valveActuator.valveOpen -> valveOpen;
+    connect valveActuator.valveClose -> valveClose;
+  }
+  instance PumpingSystem pumpingSystem;
+  
+  connect environment.button -> pumpingSystem.button;
+  connect environment.level1 -> pumpingSystem.level1;
+  connect environment.pump -> pumpingSystem.pump;
+  connect environment.valve -> pumpingSystem.valve;
+  
+  connect pumpingSystem.pumpActuatorPort -> environment.pumpActuatorPort;
+  connect pumpingSystem.valveOpen -> environment.valveOpen;
+  connect pumpingSystem.valveClose -> environment.valveClose;
+}

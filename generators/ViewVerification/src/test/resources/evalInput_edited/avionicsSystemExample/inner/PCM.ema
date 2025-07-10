@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample.inner;
+
+component PCM {
+    port
+      in Page_Request New_Page_Request_From_DM,
+      out Page_Content New_Page_Content_To_DM,
+      out Page_Request New_Page_Request_To_FM,
+      in Page_Content New_Page_Content_from_FM;
+}
