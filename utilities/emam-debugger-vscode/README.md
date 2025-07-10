@@ -39,6 +39,9 @@ npm install
 vsce package -o "emam-debug.vsix"
 ```
 
+
+
+
 ## Debugging
 A log file is written to the logs directory inside the extension directory(e.g. `~/.vscode/extensions/se-rwth.emam-debug-0.0.1/logs` or `./logs` when debugging)
 
