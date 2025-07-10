@@ -1,0 +1,4 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "maven.executable.options": "-s ./settings.xml"
+}
