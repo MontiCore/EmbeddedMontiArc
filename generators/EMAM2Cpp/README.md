@@ -24,6 +24,8 @@
 * add yourCommandTest.emam in EMAM2Cpp/src/test/resources/test/math
 * add a cpp file for your command in EMAM2Cpp/src/test/resources/results/armadillo/testMath/l0. This
   file will be compared to the generated one from yourCommandTest.emam.
+
+  
 * add your test in
   EMAM2Cpp/src/test/java/de/monticore/lang/monticar/generator/cpp/armadillo/ArmadilloFunctionTest.java
 
