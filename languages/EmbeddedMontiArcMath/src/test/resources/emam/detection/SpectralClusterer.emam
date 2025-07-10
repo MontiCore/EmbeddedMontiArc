@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+component SpectralClusterer<N1 n, N1 k, N1 maximumClusters>{
+    ports in Q(-oo:oo)^{n*n,3} imgMatrix,
+          out Q(-oo:oo)^{n, maximumClusters} clusters;
+
+    component NormalizedLaplacian<N1 n>{
+        ports in Q(-oo:oo)^{n,n} degree,
+              in Q(-oo:oo)^{n,n} W,
+              out Q(-oo:oo)^{n,n} nLaplacian;
+
+        implementation Math{
+            /*for i=1:size(degree,1)
+                for j=1:size(degree,2)
+                    nLaplacian(i,j) = W(i,j) / (sqrt(degree(i,i)) * sqrt(degree(j,j)));
+                end
+            end*/
+            nLaplacian = degree^-0.5 * W * degree^-0.5;
+
+        }
+    }
+
+    instance Similarity<2500> similarity;
+    instance NormalizedLaplacian<n> normalizedLaplacian;
+    instance EigenSolver<n,k> eigenSolver;
+    instance KMeansClustering<n, k, maximumClusters> kMeansClustering;
+
+    connect imgMatrix -> similarity.data;
+    connect laplacian.L -> normalizedLaplacian.L;
+    connect similarity.degree -> normalizedLaplacian.degree;
+    connect normalizedLaplacian.nLaplacian -> eigenSolver.matrix;
+    connect eigenSolver.eigenvectors -> kMeansClustering.vectors;
+    connect kMeansClustering.clusters -> clusters;
+
+}

@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas.advancedLibrary;
+
+import fas.basicLibrary.*;
+
+component SysInit {
+	port
+		out B y;
+		
+	instance Memory<B>(true) memory_Init;
+		
+	connect false -> memory_Init.in1;
+	connect memory_Init.out1 -> y;
+}
