@@ -1,0 +1,54 @@
+/* (c) https://github.com/MontiCore/monticore */
+@import "~@angular/material/theming";
+@import "~@covalent/core/theming/all-theme";
+
+// (optional) Additional themes
+
+// Define a custom typography config that overrides the font-family
+// or any typography level.
+$typography: mat-typography-config(
+        $font-family: 'Roboto, monospace',
+        $headline: mat-typography-level(32px, 48px, 700)
+);
+
+@include mat-core($typography); // $typography is an **optional** argument for the mat-core
+
+$primary-dark: mat-palette($mat-blue-grey, 900);
+$accent-dark: mat-palette($mat-blue, A700);
+$warn-dark: mat-palette($mat-red, 600);
+$theme-dark: mat-dark-theme($primary-dark, $accent-dark, $warn-dark);
+
+@include angular-material-theme($theme-dark);
+@include covalent-theme($theme-dark);
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background: #ddd;
+  border-radius: 20px;
+}
+
+.tc-primary {
+  color: mat-color($primary-dark);
+}
+
+.tc-accent, a {
+  color: mat-color($accent-dark);
+}
+
+a:hover {
+  color: darken(mat-color($accent-dark), 10%);
+}
+
+.tc-warn {
+  color: mat-color($warn-dark);
+}
+
+// (optional) Additional themes

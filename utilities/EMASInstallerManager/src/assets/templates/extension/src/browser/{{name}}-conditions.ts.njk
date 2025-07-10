@@ -1,0 +1,18 @@
+
+import { injectable, inject } from "inversify";
+import { ScriptsConditions } from "@emastudio/scripts/lib/browser";
+import { Disposable } from "@theia/core/lib/common";
+import { {{context.name}}Scripts } from "../common";
+
+@injectable()
+export class {{context.name}}Conditions {
+    @inject(ScriptsConditions) protected readonly conditions: ScriptsConditions;
+
+    {% for button in context.getButtons() %}
+    public async check{{button.getScriptAsName()}}(disposable: Disposable): Promise<void> {
+        const existsScript = await this.conditions.check("{{context.name | lower}}", {{context.name}}Scripts.{{button.getScriptAsConstant()}});
+
+        if (!existsScript) disposable.dispose();
+    }
+    {% endfor %}
+}
