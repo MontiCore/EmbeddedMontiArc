@@ -24,6 +24,8 @@ git clone --recursive https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simu
 
 ```bash
 git clone <project_url>
+
+
 cd <project_folder>
 # Normal Build
 mvn clean install -s settings.xml
