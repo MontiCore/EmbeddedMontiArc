@@ -1,0 +1,12 @@
+(<= (legal test (do))
+    (not (count 1 (a ?x)))
+    (not (distinct 1 1))
+    (not (not (a 1)))
+)
+
+(<= (next (success))
+    (does test (do))
+)
+
+(a 1)
+(a 2)

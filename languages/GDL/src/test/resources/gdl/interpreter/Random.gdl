@@ -1,0 +1,14 @@
+(role random)
+
+(init (roll_dice))
+
+(<= (legal random (dice ?x))
+    (true (roll_dice))
+    (dice ?x)
+)
+
+(<= (next (dice ?x))
+    (does random (dice ?x))
+)
+
+(dice 1)

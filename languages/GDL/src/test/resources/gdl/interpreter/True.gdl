@@ -1,0 +1,11 @@
+(init (test))
+(init (test test))
+
+(<= (legal test (do))
+    (true (test))
+)
+
+(<= (next (success))
+    (does test (do))
+    (true (test test))
+)
