@@ -19,6 +19,8 @@ RL model using EMADL that can optimize lattice structures. Structures are genera
 - If using the cluster:
     - WinSCP (installed on the local PC)
 
+
+
 ## Installation
 
 The toolchain, driving the Reinforcement Learning, is split into two parts. A local part, which runs nTopology on a local PC running Windows 10/11, and a remote part which runs everything else on the RWTH HPC Cluster.
