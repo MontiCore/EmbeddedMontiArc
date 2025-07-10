@@ -27,13 +27,14 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
-            cd /workspace
-            cd applications/reinforcement_learning/TopologyOptimizer
             apt-get update
             apt-get install -y maven
-            git clone https://gitlab-ci-token:${{ secrets.GITLABTOKEN }}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+            cd /workspace
+            cd generator
             cd EMAM2Middleware
             mvn clean install -s settings.xml
+            cd ../..
+            cd applications/reinforcement_learning/TopologyOptimizer
             cd target
             xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../../topologyoptimizer/cluster/rl/bin/"
             cd ../../topologyoptimizer/cluster/rl/
