@@ -27,6 +27,9 @@ java -cp "target/snimmt-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.game
 
 - 
 ```bash
+
+
+
 roscore #start ROS master
 java -cp "target/snimmt-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.snimmt.SnimmtEnv --gaming
 ```
