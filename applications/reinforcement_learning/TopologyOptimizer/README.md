@@ -27,10 +27,12 @@ The toolchain, driving the Reinforcement Learning, is split into two parts. A lo
 2. To prevent any dependency issues we create an own environment for the project via conda
 
         conda create -n topologyoptimizer python=3.9 pip
-3. Now activate the environment (In the future this must be done always before you run anything in this project)
+
+   
+4. Now activate the environment (In the future this must be done always before you run anything in this project)
 
         conda activate topologyoptimizer
-4. Create the `config.ini` file by copying `config.ini.template`and filling it with your settings. For information on what the specific values mean look at section
+5. Create the `config.ini` file by copying `config.ini.template`and filling it with your settings. For information on what the specific values mean look at section
    [Configuration](#configuration)
 
 
@@ -39,10 +41,10 @@ The toolchain, driving the Reinforcement Learning, is split into two parts. A lo
         cp config.ini.template config.ini
         #for windows command line
         copy config.ini.template config.ini
-5. Install python dependencies
+6. Install python dependencies
     
         pip install -r requirements.txt
-6. Create ssh keys for connecting to the cluster, see section [SSH Keys](#ssh-keys)
+7. Create ssh keys for connecting to the cluster, see section [SSH Keys](#ssh-keys)
 
 
 ## Configuration
