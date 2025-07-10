@@ -31,3 +31,6 @@ In order to not spam the user with too many automatically created pre-releases, 
 
 One can also create a release locally by executing build/make.bat.
 For this .NET 3.0 / PowerShell 2.0 (Windows7) or higher is required.
+
+
+
