@@ -1,0 +1,54 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller03;
+
+import VelocityController;
+import SearchParkingPlaceController;
+import ParkingController;
+
+component MainController{
+    ports 
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
+
+        in Q time,
+        in Q(0km/h:250km/h) velocity,
+
+        in Q(-200m:200m) x,
+        in Q(-200m:200m) y,
+
+        out Q(-2m/s^2:2m/s^2) acceleration,
+        out Q(-180:180) steering,
+        out B status;
+
+
+    instance VelocityController velocityController;
+
+    connect velocity->velocityController.velocity;
+    connect velocityController.acceleration->acceleration;
+
+    instance SearchParkingPlaceController searchParkingPlaceController;
+
+    connect frontLeftSideSensor->searchParkingPlaceController.frontLeftSideSensor;
+    connect backLeftSideSensor->searchParkingPlaceController.backLeftSideSensor;
+    
+    instance ParkingController parkingController;
+    
+    connect backLeftSensor->parkingController.backLeftSensor;
+    connect backRightSensor->parkingController.backRightSensor;
+    connect frontRightSensor->parkingController.frontRightSensor;
+    connect frontLeftSensor->parkingController.frontLeftSensor;
+    connect frontLeftSideSensor->parkingController.frontLeftSideSensor;
+    connect backLeftSideSensor->parkingController.backLeftSideSensor;
+    connect searchParkingPlaceController.foundPlace->velocityController.reverseMove;
+    connect searchParkingPlaceController.foundPlace->parkingController.reverseMove;
+    connect parkingController.steeringAngle->steering;
+    connect parkingController.status->status;
+    
+    connect parkingController.moveForward->velocityController.moveForward;
+}

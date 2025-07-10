@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller03;
+
+component ParkingController {
+    port
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
+        in B reverseMove,
+        out Q steeringAngle,
+        out B moveForward,
+        out B status;
+
+    implementation Math{
+        
+        // fix the state of moving direction
+        static Q forwardState = 0;
+        
+        moveForward = 0;
+        steeringAngle = 0;
+        
+        if reverseMove
+            steeringAngle = 1;
+        end
+        
+        if (reverseMove && (backLeftSensor < 2))
+            steeringAngle = -1;
+        end
+        
+        // Car has to be parallel to the road edge
+        // Go forward when the back closer then 3m
+        if (reverseMove && ((backRightSensor == backLeftSensor) || ((backRightSensor < 3) && (backLeftSensor < 3))))
+            forwardState = 1;
+        end
+        
+        // Stop when the car closer then 3m to front car
+        if (((frontRightSensor < 3) || (frontLeftSensor < 3)) && forwardState)
+            status = 1;
+        else
+            status = 0;
+        end
+        
+        // if car moving forward, does not change the car angle
+        if forwardState
+            steeringAngle = 0;
+        end
+        
+        // align the car
+        if (forwardState && (frontLeftSideSensor > backLeftSideSensor))
+            steeringAngle = -0.5;
+        end
+        
+        if (forwardState && (frontLeftSideSensor < backLeftSideSensor))
+            steeringAngle = 0.5;
+        end
+        
+        moveForward = forwardState;
+    }
+}
