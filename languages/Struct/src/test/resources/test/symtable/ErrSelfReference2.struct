@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.symtable;
+
+import test.symtable.sub1.S1;
+import test.symtable.sub1.S2;
+import test.symtable.sub1.S3;
+import test.symtable.sub2.*;
+
+struct ErrSelfReference2 {
+  Z f2;
+  S1[] f3;
+  S2 f4;
+  S3[][] f5;
+  T1 f6;
+  T2[][][] f7;
+  T3 f8;
+  T4[][][][][] f9;
+  T5 f10;
+  test.symtable.sub3.K1 f11;
+  test.symtable.sub3.K2[][] f12;
+  test.symtable.sub3.K3 f13;
+  ErrSelfReference2 next;
+}
