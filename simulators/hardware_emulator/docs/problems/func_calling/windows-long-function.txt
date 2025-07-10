@@ -1,0 +1,206 @@
+====
+    (c) https://github.com/MontiCore/monticore
+====
+
+[CALL] test_long_function_intern() at 0000000334C2175A
+                   RAX   000000000000000D
+                   RDX   000000000000000D
+                   RSP   0000000001114EF8
+                    R8   000000000000001F
+                    R9   000000000000001F
+                   RIP   0000000334C2175A
+                EFLAGS   0000000000000004
+                  XMM0   000000004159999A
+                  XMM1   0000000040A00000
+                  XMM2   403F000000000000
+                  XMM3   403F000000000000
+[C]    0000000334C2175A   55                   push rbp                                ticks: 3 (time: 4000ns)    (test_long_function_intern)
+[W]    0000000001114EF0   0000000000000000                                             time: 2000.0ns     [System:STACK]
+                   RSP   0000000001114EF0
+[C]    0000000334C2175B   4889E5               mov rbp, rsp                            ticks: 2 (time: 3000ns)    (test_long_function_intern[1])
+                   RBP   0000000001114EF0
+[C]    0000000334C2175E   4883EC40             sub rsp, 0x40                           ticks: 1 (time: 2000ns)    (test_long_function_intern[4])
+                   RSP   0000000001114EB0
+                EFLAGS   0000000000000000
+[C]    0000000334C21762   C745FC26000000       mov dword ptr [rbp-0x04], 0x26          ticks: 2 (time: 3000ns)              // int a = 19 * 2; a = 0x26
+[W]    0000000001114EEC   0000000000000026                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C21769   8345FC04             add dword ptr [rbp-0x04], 0x04          ticks: 5 (time: 6000ns)              // a += 4; a = 0x2A
+[R]    0000000001114EEC   00000026                                                     time: 1000.0ns     [System:STACK]
+[W]    0000000001114EEC   000000000000002A                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C2176D   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)              // eax = param 1 = 0x2A
+[R]    0000000001114EEC   0000002A                                                     time: 1000.0ns     [System:STACK]
+                   RAX   000000000000002A                                                                                   
+[C]    0000000334C21770   8D5005               lea edx, [rax+0x05]                     ticks: 4 (time: 5000ns)              //
+                   RDX   000000000000002F
+[C]    0000000334C21773   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EEC   0000002A                                                     time: 1000.0ns     [System:STACK]
+[C]    0000000334C21776   83C004               add eax, 0x04                           ticks: 5 (time: 6000ns)
+                   RAX   000000000000002E
+                EFLAGS   0000000000000004
+[C]    0000000334C21779   4898                 cdqe                                    ticks: 1 (time: 2000ns)
+[C]    0000000334C2177B   4989C0               mov r8, rax                             ticks: 2 (time: 3000ns)
+                    R8   000000000000002E
+[C]    0000000334C2177E   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EEC   0000002A                                                     time: 1000.0ns     [System:STACK]
+                   RAX   000000000000002A
+[C]    0000000334C21781   8D4803               lea ecx, [rax+0x03]                     ticks: 4 (time: 5000ns)
+                   RCX   000000000000002D
+[C]    0000000334C21784   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EEC   0000002A                                                     time: 1000.0ns     [System:STACK]
+[C]    0000000334C21787   83C002               add eax, 0x02                           ticks: 5 (time: 6000ns)
+                   RAX   000000000000002C
+                EFLAGS   0000000000000000
+[C]    0000000334C2178A   4898                 cdqe                                    ticks: 1 (time: 2000ns)
+[C]    0000000334C2178C   4989C3               mov r11, rax                            ticks: 2 (time: 3000ns)
+                   R11   000000000000002C
+[C]    0000000334C2178F   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EEC   0000002A                                                     time: 1000.0ns     [System:STACK]
+                   RAX   000000000000002A
+[C]    0000000334C21792   83C001               add eax, 0x01                           ticks: 5 (time: 6000ns)
+                   RAX   000000000000002B
+                EFLAGS   0000000000000004
+[C]    0000000334C21795   4189C2               mov r10d, eax                           ticks: 2 (time: 3000ns)
+                   R10   000000000000002B
+[C]    0000000334C21798   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EEC   0000002A                                                     time: 1000.0ns     [System:STACK]
+                   RAX   000000000000002A
+[C]    0000000334C2179B   89542428             mov [rsp+0x28], edx                     ticks: 2 (time: 3000ns)
+[W]    0000000001114ED8   000000000000002F                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C2179F   4C89442420           mov [rsp+0x20], r8                      ticks: 2 (time: 3000ns)
+[W]    0000000001114ED0   000000000000002E                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217A4   4189C9               mov r9d, ecx                            ticks: 2 (time: 3000ns)
+                    R9   000000000000002D
+[C]    0000000334C217A7   4D89D8               mov r8, r11                             ticks: 2 (time: 3000ns)
+                    R8   000000000000002C
+[C]    0000000334C217AA   4489D2               mov edx, r10d                           ticks: 2 (time: 3000ns)
+                   RDX   000000000000002B
+[C]    0000000334C217AD   89C1                 mov ecx, eax                            ticks: 2 (time: 3000ns)
+                   RCX   000000000000002A
+[C]    0000000334C217AF   E813000000           call 0x0000000334C217C7                 ticks: 3 (time: 4000ns)
+[W]    0000000001114EA8   0000000334C217B4                                             time: 2000.0ns     [System:STACK]
+                   RSP   0000000001114EA8
+[C]    0000000334C217C7   55                   push rbp                                ticks: 3 (time: 4000ns)    (MultiByteToWideChar_TEST)
+[W]    0000000001114EA0   0000000001114EF0                                             time: 2000.0ns     [System:STACK]
+                   RSP   0000000001114EA0
+[C]    0000000334C217C8   4889E5               mov rbp, rsp                            ticks: 2 (time: 3000ns)
+                   RBP   0000000001114EA0
+[C]    0000000334C217CB   4883EC10             sub rsp, 0x10                           ticks: 1 (time: 2000ns)
+                   RSP   0000000001114E90
+[C]    0000000334C217CF   894D10               mov [rbp+0x10], ecx                     ticks: 2 (time: 3000ns)
+[W]    0000000001114EB0   000000000000002A                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217D2   895518               mov [rbp+0x18], edx                     ticks: 2 (time: 3000ns)
+[W]    0000000001114EB8   000000000000002B                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217D5   4C894520             mov [rbp+0x20], r8                      ticks: 2 (time: 3000ns)
+[W]    0000000001114EC0   000000000000002C                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217D9   44894D28             mov [rbp+0x28], r9d                     ticks: 2 (time: 3000ns)
+[W]    0000000001114EC8   000000000000002D                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217DD   8B4510               mov eax, [rbp+0x10]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EB0   0000002A                                                     time: 1000.0ns     [System:STACK]
+[C]    0000000334C217E0   01C0                 add eax, eax                            ticks: 5 (time: 6000ns)
+                   RAX   0000000000000054
+                EFLAGS   0000000000000010
+[C]    0000000334C217E2   8945FC               mov [rbp-0x04], eax                     ticks: 2 (time: 3000ns)
+[W]    0000000001114E9C   0000000000000054                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217E5   8B5518               mov edx, [rbp+0x18]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EB8   0000002B                                                     time: 1000.0ns     [System:STACK]
+[C]    0000000334C217E8   89D0                 mov eax, edx                            ticks: 2 (time: 3000ns)
+                   RAX   000000000000002B
+[C]    0000000334C217EA   01C0                 add eax, eax                            ticks: 5 (time: 6000ns)
+                   RAX   0000000000000056
+                EFLAGS   0000000000000014
+[C]    0000000334C217EC   01C2                 add edx, eax                            ticks: 5 (time: 6000ns)
+                   RDX   0000000000000081
+[C]    0000000334C217EE   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114E9C   00000054                                                     time: 1000.0ns     [System:STACK]
+                   RAX   0000000000000054
+[C]    0000000334C217F1   01D0                 add eax, edx                            ticks: 5 (time: 6000ns)
+                   RAX   00000000000000D5
+                EFLAGS   0000000000000000
+[C]    0000000334C217F3   8945FC               mov [rbp-0x04], eax                     ticks: 2 (time: 3000ns)
+[W]    0000000001114E9C   00000000000000D5                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217F6   488B4520             mov rax, [rbp+0x20]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EC0   000000000000002C                                             time: 1000.0ns     [System:STACK]
+                   RAX   000000000000002C
+[C]    0000000334C217FA   C1E002               shl eax, 0x02                           ticks: 1 (time: 2000ns)
+                   RAX   00000000000000B0
+[C]    0000000334C217FD   0145FC               add [rbp-0x04], eax                     ticks: 5 (time: 6000ns)
+[R]    0000000001114E9C   000000D5                                                     time: 1000.0ns     [System:STACK]
+[W]    0000000001114E9C   0000000000000185                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C21800   8B5528               mov edx, [rbp+0x28]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EC8   0000002D                                                     time: 1000.0ns     [System:STACK]
+                   RDX   000000000000002D
+[C]    0000000334C21803   89D0                 mov eax, edx                            ticks: 2 (time: 3000ns)
+                   RAX   000000000000002D
+[C]    0000000334C21805   C1E002               shl eax, 0x02                           ticks: 1 (time: 2000ns)
+                   RAX   00000000000000B4
+                EFLAGS   0000000000000004
+[C]    0000000334C21808   01D0                 add eax, edx                            ticks: 5 (time: 6000ns)
+                   RAX   00000000000000E1
+                EFLAGS   0000000000000014
+[C]    0000000334C2180A   0145FC               add [rbp-0x04], eax                     ticks: 5 (time: 6000ns)
+[R]    0000000001114E9C   00000185                                                     time: 1000.0ns     [System:STACK]
+[W]    0000000001114E9C   0000000000000266                                             time: 2000.0ns     [System:STACK]
+                EFLAGS   0000000000000004
+[C]    0000000334C2180D   488B4530             mov rax, [rbp+0x30]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114ED0   000000000000002E                                             time: 1000.0ns     [System:STACK]
+                   RAX   000000000000002E
+[C]    0000000334C21811   89C2                 mov edx, eax                            ticks: 2 (time: 3000ns)
+                   RDX   000000000000002E
+[C]    0000000334C21813   89D0                 mov eax, edx                            ticks: 2 (time: 3000ns)
+[C]    0000000334C21815   01C0                 add eax, eax                            ticks: 5 (time: 6000ns)
+                   RAX   000000000000005C
+                EFLAGS   0000000000000014
+[C]    0000000334C21817   01D0                 add eax, edx                            ticks: 5 (time: 6000ns)
+                   RAX   000000000000008A
+                EFLAGS   0000000000000010
+[C]    0000000334C21819   01C0                 add eax, eax                            ticks: 5 (time: 6000ns)
+                   RAX   0000000000000114
+                EFLAGS   0000000000000014
+[C]    0000000334C2181B   0145FC               add [rbp-0x04], eax                     ticks: 5 (time: 6000ns)
+[R]    0000000001114E9C   00000266                                                     time: 1000.0ns     [System:STACK]
+[W]    0000000001114E9C   000000000000037A                                             time: 2000.0ns     [System:STACK]
+                EFLAGS   0000000000000000
+[C]    0000000334C2181E   8B5538               mov edx, [rbp+0x38]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114ED8   0000002F                                                     time: 1000.0ns     [System:STACK]
+                   RDX   000000000000002F
+[C]    0000000334C21821   89D0                 mov eax, edx                            ticks: 2 (time: 3000ns)
+                   RAX   000000000000002F
+[C]    0000000334C21823   C1E003               shl eax, 0x03                           ticks: 1 (time: 2000ns)
+                   RAX   0000000000000178
+                EFLAGS   0000000000000004
+[C]    0000000334C21826   29D0                 sub eax, edx                            ticks: 1 (time: 2000ns)
+                   RAX   0000000000000149
+                EFLAGS   0000000000000010
+[C]    0000000334C21828   0145FC               add [rbp-0x04], eax                     ticks: 5 (time: 6000ns)
+[R]    0000000001114E9C   0000037A                                                     time: 1000.0ns     [System:STACK]
+[W]    0000000001114E9C   00000000000004C3                                             time: 2000.0ns     [System:STACK]
+                EFLAGS   0000000000000014
+[C]    0000000334C2182B   8B45FC               mov eax, [rbp-0x04]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114E9C   000004C3                                                     time: 1000.0ns     [System:STACK]
+                   RAX   00000000000004C3
+[C]    0000000334C2182E   4883C410             add rsp, 0x10                           ticks: 5 (time: 6000ns)
+                   RSP   0000000001114EA0
+                EFLAGS   0000000000000004
+[C]    0000000334C21832   5D                   pop rbp                                 ticks: 2 (time: 3000ns)
+[R]    0000000001114EA0   0000000001114EF0                                             time: 1000.0ns     [System:STACK]
+                   RBP   0000000001114EF0
+                   RSP   0000000001114EA8
+[C]    0000000334C21833   C3                   ret                                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EA8   0000000334C217B4                                             time: 1000.0ns     [System:STACK]
+                   RSP   0000000001114EB0
+[C]    0000000334C217B4   8945F8               mov [rbp-0x08], eax                     ticks: 2 (time: 3000ns)
+[W]    0000000001114EE8   00000000000004C3                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217B7   816DF841010000       sub dword ptr [rbp-0x08], 0x141         ticks: 1 (time: 2000ns)
+[R]    0000000001114EE8   000004C3                                                     time: 1000.0ns     [System:STACK]
+[W]    0000000001114EE8   0000000000000382                                             time: 2000.0ns     [System:STACK]
+[C]    0000000334C217BE   8B45F8               mov eax, [rbp-0x08]                     ticks: 2 (time: 3000ns)
+[R]    0000000001114EE8   00000382                                                     time: 1000.0ns     [System:STACK]
+                   RAX   0000000000000382
+[C]    0000000334C217C1   4883C440             add rsp, 0x40                           ticks: 5 (time: 6000ns)    (MultiByteToWideChar_TEST[-6])
+                   RSP   0000000001114EF0
+[C]    0000000334C217C5   5D                   pop rbp                                 ticks: 2 (time: 3000ns)    (MultiByteToWideChar_TEST[-2])
+[R]    0000000001114EF0   0000000000000000                                             time: 1000.0ns     [System:STACK]
+                   RBP   0000000000000000
+                   RSP   0000000001114EF8
+[C]    0000000334C217C6   C3                   ret                                     ticks: 2 (time: 3000ns)    (MultiByteToWideChar_TEST[-1])
+[R]    0000000001114EF8   0000000001003000                                             time: 1000.0ns     [System:STACK]

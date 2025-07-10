@@ -1,0 +1,3 @@
+[submodule "extern/shared_cpp"]
+	path = extern/shared_cpp
+	url = ../shared_cpp
