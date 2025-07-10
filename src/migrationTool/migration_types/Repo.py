@@ -16,9 +16,12 @@ class Repo:
     self.stale_branches = stale_branches
     self.secrets = secrets
     self.secrets_to_create = secrets_to_create
+    self.__repo = None
 
   def get_repo(self):
-    return git.Repo(self.path)
+    if self.__repo is None:
+      self.__repo = git.Repo(self.path)
+    return self.__repo
 
   def __str__(self):
     Output = "---------"
@@ -44,6 +47,8 @@ class Repo:
     stale_branches = architecture.get("StaleBranches", [])
     namespace = architecture.get("Namespace", "")
     docker_images = architecture.get("DockerImages", [])
+    if docker_images is None:
+      docker_images = []
     path = os.path.join(os.getcwd(), "repos", name)
     id = architecture.get("ID", "")
     secrets = []
@@ -86,4 +91,4 @@ class Repo:
       data["StaleBranches"] = self.stale_branches
     if self.images:
       data["DockerImages"] = self.images
-    return {self.name: data}
+    return {self.name.replace(" ", ""): data}
