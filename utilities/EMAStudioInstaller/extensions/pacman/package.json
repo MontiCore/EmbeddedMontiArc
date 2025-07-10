@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@emastudio/pacman",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio PacMan Extension.",
+  "keywords": [
+    "EmbeddedMontiArcStudio"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/workspace": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/mini-browser": "latest",
+    "@emastudio/core": "^0.1.0",
+    "@emastudio/paths": "^0.1.0",
+    "@emastudio/static": "^0.1.0",
+    "@emastudio/scripts": "^0.1.0",
+    "@emastudio/executing": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/pacman-frontend-module",
+      "backend": "lib/node/pacman-backend-module"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+package example.model.units;
+
+component GPS {
+    port
+      in Boolean sensorIn,
+      out Boolean sensorOut;
+}

@@ -1,0 +1,19 @@
+package de.rwth.armin.modeling.autopilot.common;
+
+component EnsureBounds {
+  port
+    in Q lowerBound,
+    in Q upperBound,
+    in Q input,
+    out Q output;
+
+  implementation Math {
+    if input < lowerBound
+      output = lowerBound;
+    elseif input > upperBound
+      output = upperBound;
+    else
+      output = input;
+    end
+  }
+}
