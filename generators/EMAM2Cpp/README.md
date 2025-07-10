@@ -30,6 +30,8 @@
 ### Note on find_package
 If no search directory is specified CMake will search on default locations. For linux this is _/usr/lib_ , _usr/local/lib_ , _usr/include_ etc. Windows systems does not have a default library path. The generated CMake files also are using environment variables as hint. If a package could not be found but it is installed somewhere on the system please create an environment variable **PackageName_HOME**.  
 
+
+
 Here an example for Armadillo:
 Create a environment variable called _Armadillo_Home_ with the path to the base directory of your Armadillo installation.
 
