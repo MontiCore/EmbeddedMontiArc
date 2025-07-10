@@ -1,0 +1,13 @@
+# (c) https://github.com/MontiCore/monticore  
+stages:
+  - build
+
+LinuxBuild:
+  image: node:latest
+  stage: build
+  artifacts:
+    paths:
+      - emam-debug.vsix
+    expire_in: 8 weeks
+  script:
+    - ./build.sh
