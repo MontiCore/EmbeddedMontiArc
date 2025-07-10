@@ -29,7 +29,9 @@ schema Example {
 
     integer_parameter: Z
     rational_parameter: Q
-    string_parameter: string
+    string_paramete
+
+: string
     component_parameter: component
 }
 ```
