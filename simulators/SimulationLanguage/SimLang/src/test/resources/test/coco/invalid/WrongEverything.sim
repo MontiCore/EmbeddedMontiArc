@@ -1,0 +1,77 @@
+/* (c) https://github.com/MontiCore/monticore */
+sim WrongEverything {
+  sim_render_frequency 60km;
+  sim_render_frequency 60;
+  sim_loop_frequency (60K:1m:80mm);
+  sim_loop_frequency (0:1m:0);
+  sim_duration [50km,4km,5km,6mm];
+  sim_duration [50km,4mm,5mm,6mm];
+  sim_type maxfps;
+  sim_type realtime;
+  weather fixed {temperature 290s;
+                 humidity 0.2;
+                 pressure 100m;
+                 wind_strength 2km;
+                 wind_direction 38.0s;
+                 precipitation_type snow;
+                 precipitation_amount 5Pa;
+                 clouding stratus;
+                 sight unlimited;
+                 temperature -290s;
+                  humidity 2h;
+                  pressure -100Pa;
+                  wind_strength -2m;
+                  wind_direction 777;
+                  precipitation_type snow;
+                  precipitation_amount -5km;
+                  clouding stratus;
+                  sight unlimited;
+                 };
+  time 67:99:77:1009;
+  time 67s:99m:77h:1009h;
+  map_path Maps;
+  map_path Maps;
+  map_name HorsterDreieck.asdf;
+  map_name HorsterDreieck.asdf;
+  map_height flat;
+  map_height random;
+  map_overlap 10h;
+  map_overlap -10;
+  map_sector_width 100s;
+  map_sector_width -100;
+  map_sector_height 100s;
+  map_sector_height -100;
+  max_sector_users 1234s;
+  max_sector_users -1234;
+  timeout -12h;
+  timeout 12km;
+  gravity 12m;
+  gravity -12m;
+
+  pedestrian(10.10h, 10.0h, 10h)->(0s, 20.0s, 0.0s);
+  pedestrian_density 2.0s;
+  pedestrian_density -2;
+
+  vehicle car1(-22s, -34.0s, 90s)->(-1s, 0s, 10s);
+  vehicle(123s, -94s, 201s)->(1024s, 960s, 200s);
+  vehicle -1000s;
+  vehicle 1234s (-150s, -150s) -> (500s, 600s);
+
+  fixed channel LTE {
+    transfer_rate -20Hz;
+    latency -10;
+    outage 3Pa;
+    area global;
+    transfer_rate -20Hz;
+    latency -10;
+    outage 3Pa;
+    area global;
+  };
+
+  bound channel LTE {
+    transfer_rate 2Hz;
+    latency 1s;
+    outage 0.99;
+    area (10,10) 30;
+  };
+}

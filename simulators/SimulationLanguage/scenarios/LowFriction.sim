@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Low Friction
+ * Focus: Observe vehicles handling horrendous friction and strong directional influce by wind
+ * Details: freezing temperature, storm-like winds, precipitation, cars drive in opposite directions, a pedestrian walks over the road
+*/
+sim LowFriction {
+  sim_duration 4h;
+
+  weather fixed {
+    temperature -4°C;
+    windstrength 21m/s;
+    winddirection 33°;
+    precipitation_type freezing rain;
+    precipitation_amount 30mm;
+  };
+  
+  time 12:00;
+  
+  map_name LowFriction.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  car1(-1.0,0.0,10.0)->(-22.0,-34.0,90.0);
+  <p>(latitude,longitude,z)->(a,b,c);
+}

@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Area Channels
+ * Focus: Observe vehicle using different area channels
+ * Details: 1 vehicle traveling through the range of 3 different area channels, with no connectivity inbetween them.
+*/
+sim AreaChannels {
+  sim_duration 4h;
+  
+  time 12:00;
+  
+  map_name AreaChannels.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-100,0,0)->(100,0,0);
+  
+  fixed channel WestChannel {
+    transferrate 1Mbit/s;
+    latency 1ms;
+    outage 0;
+    area (-100,0) 33m;
+  };
+  
+  fixed channel CentralChannel {
+    transferrate 1Mbit/s;
+    latency 1ms;
+    outage 0;
+    area (0,0) 33m;
+  };
+  
+  fixed channel EastChannel {
+    transferrate 1Mbit/s;
+    latency 1ms;
+    outage 0;
+    area (100,0) 33m;
+  };
+}

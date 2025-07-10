@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Global Channel
+ * Focus: Observe vehicle using a global channel in different parts of the world
+ * Details: 1 vehicle traveling far, using 1 channel
+*/
+sim GlobalChannel {
+  sim_duration 4h;
+  
+  time 12:00;
+  
+  map_name GlobalChannel.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  
+  fixed channel GlobalTest {
+    transferrate 1Mbit/s;
+    latency 1ms;
+    outage 0;
+    area global;
+  };
+}
