@@ -20,7 +20,10 @@ ROS Kinetic (Follow [official installation guide](http://wiki.ros.org/Installati
 ### Ausführung 
 - Trainingsumgebung zum Training ausführen
 ```bash
-roscore #start ROS master
+roscore #start ROS maste
+
+
+
 java -cp "target/snimmt-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.snimmt.SnimmtEnv --training
 ```
 - Trainingsumgebung zum Spielen ausführen
