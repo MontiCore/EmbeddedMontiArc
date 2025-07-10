@@ -29,6 +29,7 @@ jobs:
           SCRIPT: |
             cd /workspace
             cd applications/rnnsearch_translator
+            chmod +x build.sh
             ./build.sh
             ./build/src/cpp/Translator resources/vocabularies/vocab.en resources/vocabularies/vocab.vi 'I am fine .'
         run: docker exec build-container bash -c "$SCRIPT"
