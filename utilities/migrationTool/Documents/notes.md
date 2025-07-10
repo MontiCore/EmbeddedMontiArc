@@ -217,3 +217,7 @@ ToDo
 - [ ] Recheck maven options
 
 - [ ] Docker image step only if images contained
+
+- [ ] Additional login at registry. for Docker migration
+
+- [ ] Remove submodule

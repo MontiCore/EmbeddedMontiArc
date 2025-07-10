@@ -30,8 +30,7 @@ class Config:
               "SourceUser": "Please add the name of the user on the GitLab system",
               "TargetRepoOwner": "Please add the name of the user on GitHub",
               "MonorepoNamespace": "Please add the namespace of the monorepo, this removed from the beginning of the "
-                                   "repo "
-                                   "namespaces", }
+                                   "repo namespaces", }
       with open(path, "w") as file:
         yaml.safe_dump(data, file)
       print(f"[green]Config file created at {path}[/green]")

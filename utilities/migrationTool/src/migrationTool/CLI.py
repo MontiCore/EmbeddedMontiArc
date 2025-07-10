@@ -113,7 +113,7 @@ def migrate_repos(config_path: str = typer.Option("config.yaml", help="Config fi
           logger.error(f"Branch {branch} could not be checked out in repo {repo.name}")
           summary[repo.name] = False
 
-        if split_large_files:
+        if split_large_files_flag:
           split_large_files(repo.path, output=verbose)
 
         if remove_lfs_flag:
@@ -127,7 +127,7 @@ def migrate_repos(config_path: str = typer.Option("config.yaml", help="Config fi
         git_repo.git.checkout("main")
 
   if remove_large_files_flag:
-    for repoID in track(architecture.repoIDs, description="Cleaning large files, this may take a while"):
+    for repoID in track(repoIDs, description="Cleaning large files, this may take a while"):
       repo_path = architecture.get_repo_by_ID(repoID).path
       run_git_filter_repo(repo_path)
 
