@@ -1,0 +1,11 @@
+package invalid
+
+typedef configuration DuplicateIdentifierConfiguration {
+    configuration identifier: CommonConfiguration {
+
+    }
+
+    configuration identifier: CommonConfiguration {
+
+    }
+}

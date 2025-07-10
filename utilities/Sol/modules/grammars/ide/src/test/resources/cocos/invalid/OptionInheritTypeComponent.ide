@@ -1,0 +1,15 @@
+package invalid
+
+typedef component configuration OptionInheritTypeComponent {
+    option sub1: Common {
+        label "Some Label"
+        required true
+    }
+
+    option sub2: CommonBoolean {
+        label "Some Label"
+        required true
+    }
+
+    frontend task main
+}

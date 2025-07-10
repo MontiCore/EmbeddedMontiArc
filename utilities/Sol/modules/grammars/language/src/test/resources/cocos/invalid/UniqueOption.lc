@@ -1,0 +1,19 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package invalid
+
+language UniqueOption {
+    template someTemplate {
+        path "SomePath"
+        label "Some Label"
+
+        option someOption: String {
+            label "Some Option"
+        }
+
+        option someOption: String {
+            label "Some Option"
+        }
+    }
+}

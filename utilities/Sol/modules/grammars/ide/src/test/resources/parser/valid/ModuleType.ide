@@ -1,0 +1,24 @@
+package parser.valid
+
+import parser.valid.CNCVisualization
+
+typedef module AtariPong {
+    label "ATARI Pong"
+    icon "fa-fa-fa"
+    category "EmbeddedMontiArc"
+
+    module pongModule: AtariPong
+    module pingModule: AtariPong
+
+    configuration visualize: CNCVisualization {
+        name "CNC Visualization"
+
+        fill someOption with ""
+    }
+
+    write pongModule to "pong"
+    write pingModule to "ping"
+
+    write someResource to "src/model/atari"
+    write someResource to "configs"
+}

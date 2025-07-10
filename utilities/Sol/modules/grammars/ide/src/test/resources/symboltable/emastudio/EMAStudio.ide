@@ -1,0 +1,16 @@
+package emastudio
+
+import oclstudio.OCLStudio
+import emastudio.modules.types.PacMan
+import oclstudio.modules.types.OCL
+import emastudio.configurations.EMAM2WASM
+
+ide EMAStudio extends OCLStudio {
+    registry "https://hub.docker.com/some/awesome/image:latest"
+    build "some/amazing/path" resolved from ROOT
+
+    include module type PacMan
+    include configuration type EMAM2WASM
+
+    exclude module type OCL
+}

@@ -1,0 +1,10 @@
+package valid
+
+typedef configuration OptionFillTypeConfiguration {
+    option common: Common {
+        label "Some option"
+        required true
+    }
+
+    frontend task main
+}

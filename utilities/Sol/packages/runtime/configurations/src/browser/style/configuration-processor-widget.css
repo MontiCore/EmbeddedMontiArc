@@ -1,0 +1,127 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+.sol-runtime-configurations.run-widget {
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    color:var(--theia-content-font-color1);
+}
+
+.sol-runtime-configurations.run-widget .loader-container {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+}
+
+.sol-runtime-configurations.run-widget .loader {
+    color:var(--theia-statusbar-color);
+}
+
+.sol-runtime-configurations.run-widget .top-row {
+    display:flex;
+}
+
+.sol-runtime-configurations.run-widget .bottom-row {
+    flex:1 1;
+    display:flex;
+    flex-direction:row;
+    height:100%;
+}
+
+.sol-runtime-configurations.run-widget .left-column {
+    min-width:30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+
+.sol-runtime-configurations.run-widget .right-column {
+    flex:1 1;
+    position:relative;
+}
+
+.sol-runtime-configurations.run-widget .right-column .message-container {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab {
+    display:flex;
+    flex-direction:row;
+    height:12px;
+    justify-content:center;
+    align-items:center;
+    padding:5px;
+    background-color:var(--theia-menu-color2);
+    border-bottom:solid 2px transparent;
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab:hover {
+    cursor:pointer;
+    background-color:var(--theia-menu-color1);
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab:first-child {
+    margin-left:30px;
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab:not(:first-child) {
+    margin-left:3px;
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab.selected {
+    border-bottom:solid 2px var(--theia-accent-color1);
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab .close {
+    margin-left:8px;
+    opacity:0.2;
+}
+
+.sol-runtime-configurations.run-widget .top-row .tab .close:hover {
+    opacity:1.0;
+}
+
+.sol-runtime-configurations.run-widget .left-column .control {
+    background-color:var(--theia-menu-color2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:30px;
+    height:30px;
+}
+
+.sol-runtime-configurations.run-widget .left-column .control:not(:first-child) {
+    margin-top:3px;
+}
+
+.sol-runtime-configurations.run-widget .left-column .control:hover {
+    background-color:var(--theia-menu-color1);
+    cursor:pointer;
+}
+
+.sol-runtime-configurations.run-widget .left-column .control.disabled {
+    opacity:0.2;
+}
+
+.sol-runtime-configurations.run-widget .left-column .control.disabled:hover {
+    cursor:default !important;
+    background-color:var(--theia-menu-color2) !important;
+}
+
+.sol-runtime-configurations.run-widget .left-column .control .fa-play {
+    color:var(--theia-added-color0);
+}
+
+.sol-runtime-configurations.run-widget .left-column .control .fa-stop {
+    color:var(--theia-error-color1);
+}
+
+.sol-runtime-configurations.run-widget .right-column .terminal-container {
+    padding:0;
+}

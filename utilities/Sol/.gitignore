@@ -1,0 +1,18 @@
+# Editors
+/.idea/
+*.iml
+
+# Build
+
+## Maven
+target/
+/public/pages/**/*
+
+## Yarn
+node_modules/
+
+/packages/**/lib/
+/packages/**/docs/
+
+yarn-error.log
+lerna-debug.log

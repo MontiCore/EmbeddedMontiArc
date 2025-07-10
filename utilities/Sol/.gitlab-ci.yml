@@ -1,0 +1,36 @@
+# (c) https://github.com/MontiCore/monticore  
+image: "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/sol/build:2019.09.26"
+
+variables:
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+
+before_script:
+  - apt-get update && apt-get install -y build-essential
+  - yarn install --ignore-scripts
+
+stages:
+  - install
+  - deploy
+
+install:
+  stage: install
+  script:
+    - mvn -B clean install --settings configs/settings.xml
+  artifacts:
+    reports:
+      junit:
+        - "*/*/*/target/surefire-reports/TEST-*.xml"
+  except:
+    - master
+
+pages:
+  stage: deploy
+  script:
+    - mvn -B clean install --settings configs/settings.xml # We need to install first as the custom plugins need to be installed.
+    - mvn -B deploy sonar:sonar -DskipTests -Dmaven.install.skip=true --settings configs/settings.xml
+  artifacts:
+    paths:
+      - "public"
+  only:
+    - master

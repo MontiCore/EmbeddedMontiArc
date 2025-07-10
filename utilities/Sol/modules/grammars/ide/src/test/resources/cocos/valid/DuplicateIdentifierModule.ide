@@ -1,0 +1,5 @@
+package valid
+
+typedef module DuplicateIdentifierModule {
+    module identifier: CommonModule
+}

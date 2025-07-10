@@ -1,0 +1,53 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.embeddedmontiarc
+
+import some.qualified.name.EmbeddedMontiArcDL
+
+language EmbeddedMontiArc extends EmbeddedMontiArcDL, EmbeddedMontiArcDynamics {
+    template emaComponent {
+        path "EmbeddedMontiArc.njk"
+        label "EmbeddedMontiArc Component"
+
+        /*
+         * Package
+         */
+        option packageName: String {
+            label "Package"
+            required true
+        }
+
+        /*
+         * Component
+         */
+        option componentName: String {
+            label "Component"
+            required true
+        }
+
+        /*
+         * Ports
+         */
+        option ports: List {
+            label "Add Port"
+
+            option direction: String {
+                label "Direction"
+                required true
+            }
+
+            option type: String {
+                label "Type"
+                required true
+            }
+
+            option name: String {
+                label "Name"
+                required true
+            }
+        }
+    }
+
+    exclude template someTemplate
+}

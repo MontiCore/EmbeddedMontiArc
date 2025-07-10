@@ -1,0 +1,30 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-tests-artifact-ide",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "prepare": "yarn run build",
+    "clean": "rimraf lib && rimraf src-gen && rimraf sol/artifacts",
+    "build": "tscx --flatten",
+    "watch": "tscx -w --flatten"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-artifact": "^2020.5.5-SNAPSHOT",
+    "@theia/process": "latest"
+  },
+  "devDependencies": {
+    "@embeddedmontiarc/sol-development-tsc": "^2020.5.5-SNAPSHOT"
+  },
+  "theiaExtensions": [
+    {
+      "backend": "lib/node/ping-backend-module"
+    }
+  ],
+  "sol": {
+    "directories": {
+      "models": "sol/models",
+      "artifacts": "sol/artifacts"
+    }
+  }
+}

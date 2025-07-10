@@ -1,0 +1,50 @@
+[
+  {
+    "name": "packageName",
+    "type": "LDExtractorImpl.String",
+    "props": {
+      "label": "Package",
+      "required": true
+    }
+  },
+  {
+    "name": "componentName",
+    "type": "LDExtractorImpl.String",
+    "props": {
+      "label": "Component",
+      "required": true
+    }
+  },
+  {
+    "name": "ports",
+    "type": "LDExtractorImpl.List",
+    "props": {
+      "options": [{
+        "name": "direction",
+        "type": "LDExtractorImpl.String",
+        "props": {
+          "label": "Direction",
+          "required": true
+        }
+      },
+      {
+        "name": "type",
+        "type": "LDExtractorImpl.String",
+        "props": {
+          "label": "Type",
+          "required": true
+        }
+      },
+      {
+        "name": "name",
+        "type": "LDExtractorImpl.String",
+        "props": {
+          "label": "Name",
+          "required": true
+        }
+      }
+      ],
+      "label": "Add Port"
+    }
+  }
+]

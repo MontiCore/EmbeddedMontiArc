@@ -1,0 +1,11 @@
+package parser.invalid
+
+import parser.invalid.SomeStrangeIDE;
+
+offline ide SomeStrangerIDE extends SomeStrangeIDE {
+    option noJustNo: string {
+        prop label = "No!"
+    }
+
+    registry https://host/path/to/registry:tag;
+}

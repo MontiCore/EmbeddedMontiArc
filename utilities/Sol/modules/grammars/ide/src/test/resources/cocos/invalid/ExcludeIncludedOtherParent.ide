@@ -1,0 +1,8 @@
+package invalid
+
+ide ExcludeIncludedOtherParent {
+    registry "https://hub.docker.com/some/awesome/image:latest"
+    build "some/amazing/path" resolved from ROOT
+
+    include module type ExcludeIncludedModule3
+}
