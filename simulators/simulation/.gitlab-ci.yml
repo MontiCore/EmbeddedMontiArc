@@ -1,0 +1,56 @@
+# (c) https://github.com/MontiCore/monticore
+
+
+stages:
+  - windows
+  - linux
+  - integration-test
+
+MasterJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  script:
+    - mvn -B -U clean deploy -s settings.xml
+  #- cat report/target/coverage-report/html/index.html
+  only:
+    - master
+
+BranchJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  script:
+    - mvn -B -U clean install -s settings.xml
+  #- cat report/target/coverage-report/html/index.html
+  except:
+    - master
+
+  # masterJobWindows:
+  #   stage: windows
+  #   script:
+  #   - mvn clean deploy -s settings.xml
+  #   - mvn package sonar:sonar -s settings.xml
+  #   tags:
+  #   - Windows10_OS
+  #   only:
+  #   - master
+
+# branchJobWindows:
+#  stage: windows
+#  script:
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+#  tags:
+#  - Windows10_OS
+#  except:
+#  - master
+
+
+
+#IntegrateionTest:
+#  tags:
+#    - docker
+#  stage: integration-test
+#  script:
+#    - cd runner
+#    - ./run_test.sh
+#  except:
+#    - master

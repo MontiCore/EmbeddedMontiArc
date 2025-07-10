@@ -1,0 +1,16 @@
+**/target
+**/nppBackup
+.project
+.settings
+.classpath
+.directory
+.idea
+.git
+*.iml
+*.log*
+*logs*
+.flattened-pom.xml
+.vscode/
+./lib/
+**/vis
+ROSInterface/build
