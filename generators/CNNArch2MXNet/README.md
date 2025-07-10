@@ -28,7 +28,9 @@ data_imbalance: image_augmentation {
     check_bias:true
 }
 ```
-- `rotation_angle`: a list specifying the rotation degrees to be applied on an original image
+- `rotation_angle`: a list specifying the rotation degrees to be applied on an ori
+-
+- ginal image
 - `shift`: speficies if a up, down, left and right shift should be applied
 - `scale_in` and `scale_out`: specifies if the image should be scaled in and scaled out
 - `check_bias`: specifies if the resulting up-sampled dataset should be checked for bias
