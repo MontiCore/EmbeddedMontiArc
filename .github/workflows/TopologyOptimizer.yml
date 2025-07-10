@@ -31,7 +31,7 @@ jobs:
             cd applications/reinforcement_learning/TopologyOptimizer
             apt-get update
             apt-get install -y maven
-            cp -r ../../../generators/EMAM2Middleware
+            cp -r ../../../generators/EMAM2Middleware .
             cd EMAM2Middleware
             mvn clean install -s settings.xml
             cd target
