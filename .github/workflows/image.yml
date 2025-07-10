@@ -15,21 +15,21 @@ jobs:
       - name: Log in to GitHub
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-      - name: Migrate Docker images from WebServerForDemonstrator
+      - name: Migrate Docker images from EmbeddedMontiArcStudio
         run: |
           LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
           IFS="," read -ra IMAGES <<< ""
           for IMAGE in "${IMAGES[@]}"; do
             if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/webserverfordemonstrator$IMAGE"
+              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/embeddedmontiarcstudio$IMAGE"
             else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/webserverfordemonstrator/$IMAGE"
+              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/embeddedmontiarcstudio/$IMAGE"
             fi
             LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
             if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/webserverfordemonstrator$LOWERCASE_IMAGE"
+              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/embeddedmontiarcstudio$LOWERCASE_IMAGE"
             else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/webserverfordemonstrator/$LOWERCASE_IMAGE"
+               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/embeddedmontiarcstudio/$LOWERCASE_IMAGE"
             fi
             echo "Pulling image from GitLab: $GITLAB_IMAGE"
             docker pull "$GITLAB_IMAGE"
@@ -40,321 +40,21 @@ jobs:
             echo "Removing local image: $GHCR_IMAGE"
             docker rmi -f $(docker images -q) || true
           done
-      - name: Migrate Docker images from vscode-ema-linter
+      - name: Migrate Docker images from Documentation
         run: |
           LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
           IFS="," read -ra IMAGES <<< ""
           for IMAGE in "${IMAGES[@]}"; do
             if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/vscode-ema-linter$IMAGE"
+              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/documentation$IMAGE"
             else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/vscode-ema-linter/$IMAGE"
+              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/documentation/$IMAGE"
             fi
             LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
             if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/vscode-ema-linter$LOWERCASE_IMAGE"
+              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/documentation$LOWERCASE_IMAGE"
             else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/vscode-ema-linter/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from SuperMario
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/supermario$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/supermario/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/supermario$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/supermario/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from Sol
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< "build:2019.09.26"
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/sol$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/sol/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/sol$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/sol/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from reporting
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/reporting$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/reporting/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/reporting$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/reporting/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from monticore-vscode-commons
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/monticore-vscode-commons$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/monticore-vscode-commons/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/monticore-vscode-commons$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/monticore-vscode-commons/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from monticore-lsp-commons
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/monticore-lsp-commons$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/monticore-lsp-commons/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/monticore-lsp-commons$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/monticore-lsp-commons/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from maven-package
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/maven-package$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/maven-package/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/maven-package$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/maven-package/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from GDLTools
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/gdltools$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/gdltools/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/gdltools$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/gdltools/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from EmbeddedMontiArcStudio3
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/embeddedmontiarcstudio3$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/embeddedmontiarcstudio3/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/embeddedmontiarcstudio3$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/embeddedmontiarcstudio3/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from EMAStudioInstaller
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emastudioinstaller$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emastudioinstaller/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emastudioinstaller$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emastudioinstaller/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from EMAStudioBuilderLinux
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emastudiobuilderlinux$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emastudiobuilderlinux/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emastudiobuilderlinux$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emastudiobuilderlinux/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from EMASInstallerManager
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emasinstallermanager$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emasinstallermanager/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emasinstallermanager$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emasinstallermanager/$LOWERCASE_IMAGE"
-            fi
-            echo "Pulling image from GitLab: $GITLAB_IMAGE"
-            docker pull "$GITLAB_IMAGE"
-            echo "Tagging image for GHCR: $GHCR_IMAGE"
-            docker tag "$GITLAB_IMAGE" "$GHCR_IMAGE"
-            echo "Pushing image to GHCR: $GHCR_IMAGE"
-            docker push "$GHCR_IMAGE"
-            echo "Removing local image: $GHCR_IMAGE"
-            docker rmi -f $(docker images -q) || true
-          done
-      - name: Migrate Docker images from emam-debugger-vscode
-        run: |
-          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-          IFS="," read -ra IMAGES <<< ""
-          for IMAGE in "${IMAGES[@]}"; do
-            if [[ $IMAGE == :* ]]; then
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emam-debugger-vscode$IMAGE"
-            else
-              GITLAB_IMAGE="registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/emam-debugger-vscode/$IMAGE"
-            fi
-            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")
-            if [[ $IMAGE == :* ]]; then
-              GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emam-debugger-vscode$LOWERCASE_IMAGE"
-            else
-               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/emam-debugger-vscode/$LOWERCASE_IMAGE"
+               GHCR_IMAGE="ghcr.io/$LOWERCASE_OWNER/documentation/$LOWERCASE_IMAGE"
             fi
             echo "Pulling image from GitLab: $GITLAB_IMAGE"
             docker pull "$GITLAB_IMAGE"
