@@ -1,0 +1,94 @@
+/* (c) https://github.com/MontiCore/monticore */
+html, body {
+    margin:0;
+    padding:0;
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:12px;
+    height:100%;
+    width:100%;
+}
+
+body {
+    background-color:#303130;
+    color:#cecece;
+}
+
+::-webkit-scrollbar-track-piece {
+    margin:4px 0;
+}
+
+::-webkit-scrollbar-thumb {
+    border:solid 0 rgba(0, 0, 0, 0);
+    border-right-width:4px;
+    border-left-width:4px;
+    -webkit-border-radius:9px 4px;
+    -webkit-box-shadow:inset 0 0 0 1px rgba(128, 128, 128, 0.2), inset 0 0 0 4px rgba(128, 128, 128, 0.2);
+}
+
+::-webkit-scrollbar-corner {
+    background:transparent;
+}
+
+::-webkit-scrollbar {
+    background:none;
+    width:16px;
+    height:16px;
+}
+
+/** SHARED *******************************/
+div.container {
+    position:absolute;
+}
+
+div.panel {
+    background-color:#252525;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+    padding:10px;
+}
+
+.shared-span {
+    padding:5px;
+    background-color:#252525;
+    user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    cursor:pointer;
+}
+
+.shared-span:hover {
+    background-color:#333333;
+    box-shadow:1px -1px 0 0 #000000, -1px 0 0 0 #000000, 0 1px 0 0 rgba(255, 255, 255, 0.15) inset;
+    color:#d4d4d4;
+}
+
+.label-form {
+    text-align:right;
+    padding-right:20px;
+}
+
+.input-form {
+    width:196px !important;
+    padding:2px;
+    background-color:#3D3D3D;
+    border:none;
+    color:#cecece;
+    font-size:12px;
+}
+
+br {
+    clear:left;
+}
+
+.shared-form {
+    display:block;
+    width:120px;
+    float:left;
+    margin-bottom:10px;
+}
+
+span.highlighted, a {
+    color:#89b1d3;
+}
