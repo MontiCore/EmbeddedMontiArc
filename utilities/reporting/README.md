@@ -37,7 +37,10 @@ Lists all grammars in EmbeddedMontiArc.
 
 - To create a different Report:
     - create a new html file similar to `report/exampleHTML.html` and add it to `report/`
-    - create a new js file similar to `report/js/exampleJS.js` and refer to it in your html file and add it to `report/js/`
+    - create a new js file similar to `report/js/exampleJS.js` and refer to it in your html file and add it to `repor
+    -
+    -
+    - t/js/`
     - generate a new json file similar to `report/data/exampleJSON.json` and refer to it in your html file and add it to `report/data/`
     - add your html file in the `deploy.sh` script
     - in order to generate the new json file, there are a few tools inside the project's code:
