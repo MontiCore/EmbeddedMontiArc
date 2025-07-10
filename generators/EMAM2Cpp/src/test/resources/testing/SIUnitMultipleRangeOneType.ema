@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+component SIUnitMultipleRangeOneType{
+	port in [(0  : 0.05  : 10  ) (10 : 0.1  : 45 km)] distance;
+} 

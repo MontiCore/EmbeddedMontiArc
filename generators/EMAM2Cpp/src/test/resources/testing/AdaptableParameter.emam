@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component AdaptableParameter(adaptable Q param1, Q param2){
+    port out Q out1;
+
+    implementation Math{
+        out1 = param1;
+    }
+}
