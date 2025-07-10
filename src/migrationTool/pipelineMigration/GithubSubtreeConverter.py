@@ -15,7 +15,7 @@ class GithubSubTreeConverter(GithubActionConverter):
     :param repoNames: IDs mapped to names of the repository
     :param repoPath: IDs mapped to paths to the repository
     """
-    super().__init__(architecture, pipeline, compatibleImages=compatibleImages, rebuild=rebuild, repoIDs=[repoID])
+    super().__init__(architecture, pipeline, compatibleImages=compatibleImages, rebuild=rebuild)
     self.repoPath = repoPath
     self.repoID = repoID
 
@@ -122,7 +122,8 @@ class GithubSubTreeConverter(GithubActionConverter):
     def replace_paths_with_prefix(match):
       full_block = match.group(1)
       paths = match.group(2).splitlines()
-      prefixed_paths = [f"            {prefix}{path.strip()}" for path in paths if path.strip()]
+      prefixed_paths = [(f"            {"- " + prefix if path.strip().startswith('- ') else prefix}"
+                         f"{path.strip()[4:] if path.strip().startswith('- ./') else path.strip()}") for path in paths]
       full_block_without_path = re.sub(r"path: \|.*", "", full_block, flags=re.DOTALL)
       return (full_block_without_path + "path: |\n" + "\n".join(prefixed_paths) + "\n")
 

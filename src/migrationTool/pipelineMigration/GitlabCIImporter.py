@@ -18,7 +18,14 @@ class GitlabCIImporter(Importer):
     :rtype: list[str]
     :return: Stages in the pipeline
     """
-    return self.yaml_data['stages']
+    if 'stages' in self.yaml_data:
+      return self.yaml_data['stages']
+    for name in self.yaml_data:
+      if name == "stages":
+        continue
+      if "script" in self.yaml_data[name] or "trigger" in self.yaml_data[name]:
+        self.yaml_data[name]["stage"] = "default"
+    return ["default"]
 
   def __readVariables(self) -> dict[str, str]:
     """
@@ -84,7 +91,7 @@ class GitlabCIImporter(Importer):
                          script=sc, needs=needs, when=parameter.get("when", ""), exc=parameter.get("except", []),
                          artifacts=parameter.get("artifacts", []), only=parameter.get("only", []),
                          allowFailure=parameter.get("allow_failure", False), rules=parameter.get("rules", []),
-                         trigger=parameter.get("trigger", {}))
+                         trigger=parameter.get("trigger", {}), variables=parameter.get("variables", {}))
     return jobs
 
   def __read_dependencies(self) -> tuple[dict[str, set[str]], dict[str, set[str]]]:

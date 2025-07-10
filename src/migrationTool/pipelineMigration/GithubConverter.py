@@ -15,8 +15,7 @@ class GithubActionConverter(Converter):
   This class converts a pipeline Object to GitHub Actions.
   """
 
-  def __init__(self, architecture: Architecture, pipeline: Pipeline, compatibleImages=set(), repoIDs=[],
-               rebuild: bool = False):
+  def __init__(self, architecture: Architecture, pipeline: Pipeline, compatibleImages=set(), rebuild: bool = False):
     """
     Initializes the GithubActionConverter class.
     :param architecture: Architecture object
@@ -31,13 +30,9 @@ class GithubActionConverter(Converter):
     self.rebuild = rebuild
     self.timeout = 120  # Default timeout in minutes
     self.architecture = architecture
-    if not repoIDs:
-      self.repoIDs = architecture.repoIDs
-    else:
-      self.repoIDs = repoIDs
     self.compatible_images = compatibleImages
     self.migrated_docker_images = {}
-    for repoID in self.repoIDs:
+    for repoID in architecture.repoIDs:
       repo = self.architecture.get_repo_by_ID(repoID)
       for image in repo.images:
         if repo.name not in self.migrated_docker_images:
@@ -70,6 +65,7 @@ class GithubActionConverter(Converter):
     if self.pipeline.variables:
       for var_name, var_value in self.pipeline.variables.items():
         pipeline_string += f"\t{var_name} : " + f"{var_value}\n"
+    pipeline_string += f"\tCI_PROJECT_ID: {repoID}\n"
 
     pipeline_string += "jobs:\n"
     # Check if job(s) exist that are only run if certain files changed
@@ -120,7 +116,7 @@ class GithubActionConverter(Converter):
       else:
         for i, j in enumerate(job.needs):
           if i == 0:
-            needs_string += (f"[ {j.replace("/", "_").replace(" ", "_")} ")
+            needs_string += (f"{j.replace("/", "_").replace(" ", "_")} ")
           else:
             needs_string += (f", {j.replace("/", "_").replace(" ", "_")}")
       i = self.pipeline.stages.index(job.stage)
@@ -164,6 +160,12 @@ class GithubActionConverter(Converter):
     # Construct the if condition for whether this job should be run
     job_string += self.if_condition(job)
 
+    # Add variables if the job has any
+    if job.variables:
+      job_string += "\t\tenv:\n"
+      for var_name, var_value in job.variables.items():
+        job_string += f"\t\t\t{var_name}: {var_value}\n"
+
     # Per default all jobs run on an ubuntu runner
     job_string += f"\t\truns-on: ubuntu-latest\n"
 
@@ -200,9 +202,8 @@ class GithubActionConverter(Converter):
 
     # If the job is not native, start the separate docker container
     if not native:
-      job_string += GithubActionConverter.start_docker_container(job.image, secrets, "")
+      job_string += GithubActionConverter.start_docker_container(job.image, secrets)
 
-    # ToDo: Test trigger, implement check, that triggered jobs exist
     if job.trigger:
       # If the job is a trigger job, add the trigger block
       repo_name = job.trigger["project"].split("/")[-1]
@@ -270,16 +271,18 @@ class GithubActionConverter(Converter):
         elif "reports" in job.artifacts:
           # If the job has reports, upload them using the reporting action
           if job.artifacts["reports"] and "junit" in job.artifacts["reports"]:
-            job_string += GithubActionConverter.reporting(job.artifacts["reports"]["junit"])
+            job_string += GithubActionConverter.reporting(job.artifacts["reports"]["junit"],
+                                                          job.name.replace("/", "_").replace(" ", "_"))
           elif type(job.artifacts["reports"]) == list:
             for report in job.artifacts["reports"]:
               if report.startswith("junit"):
                 # If the report is a junit report, upload it using the reporting action
-                job_string += GithubActionConverter.reporting([report.split(":")[1]])
+                job_string += GithubActionConverter.reporting([report.split(":")[1]],
+                                                              job.name.replace("/", "_").replace(" ", "_"))
     return Converter.set_indentation_to_two_spaces(job_string)
 
   @staticmethod
-  def add_checkout_step(repo: str = "", depth=1) -> str:
+  def add_checkout_step(repo: str = "", depth: int = 1) -> str:
     """
         Returns the block for the Github Actions checkout step.
     :param repo: Name of the repo to be checked out. If empty, the current repo is checked out
@@ -331,7 +334,7 @@ class GithubActionConverter(Converter):
     return restore
 
   @staticmethod
-  def start_docker_container(image: str, secrets: list[str], options: str) -> str:
+  def start_docker_container(image: str, secrets: list[str], options: str = "") -> str:
     """
         Returns the block for starting a separate docker container.
     :param image: URL to Image to be used. If the image is in the ghcr.io registry, the GITHUB_TOKEN is used to
@@ -349,13 +352,10 @@ class GithubActionConverter(Converter):
                 '--password-stdin\n')
     start += f"\t\t\t\t\tdocker pull {image.lower()}\n"
     start += f"\t\t\t\t\tdocker run --name build-container -d -v $(pwd):/workspace --network=host {options}"
+    start += f" -e CI_PROJECT_ID=$CI_PROJECT_ID"
     for secret in secrets:
       if type(secret) == str:
-        if secret != "CI_PROJECT_ID":
-          # Add Github secret as environment variable
-          start += f" -e {secret}=$" + "{{ secrets." + f"{secret}" + " }}"
-        else:
-          start += f" -e {secret}=${secret}"
+        start += f" -e {secret}=$" + "{{ secrets." + f"{secret}" + " }}"
       else:
         # Add environment variable for a variable that is not a secret
         start += f" -e {secret[0]}=${secret[0]}"
@@ -384,7 +384,7 @@ class GithubActionConverter(Converter):
     return upload
 
   @staticmethod
-  def reporting(paths: list[str]):
+  def reporting(paths: list[str], job_name: str) -> str:
     """
         Creates the string for the reporting action block.
     :param paths: Paths to the reports to be uploaded
@@ -393,8 +393,10 @@ class GithubActionConverter(Converter):
     report = ""
     report += "\t\t\t- name: Reporting\n"
     report += "\t\t\t\tuses: dorny/test-reporter@v2\n"
+    report += "\t\t\t\tcontinue-on-error: true\n"
     report += "\t\t\t\tif : ${{ always() }}\n"
     report += "\t\t\t\twith:\n"
+    report += f"\t\t\t\t\tname: {job_name}\n"
     report += f"\t\t\t\t\tpath: |\n"
     for path in paths:
       report += f"\t\t\t\t\t\t- {path}\n"
@@ -467,9 +469,11 @@ class GithubActionConverter(Converter):
     :return: String of the if condition
     """
     ifString = ""
-    if self.pipeline.stages.index(job.stage) != 0:
+    stage_index = self.pipeline.stages.index(job.stage)
+    if stage_index != 0:
       # If the job is not the first job in the pipeline, check if the previous stage was successful
-      ifString += "\t\tif: ${{ !cancelled() && !contains(needs.*.result, 'failure') "
+      pipeline_stage = self.pipeline.stages[stage_index - 1]
+      ifString += "\t\tif: ${{ !cancelled() && needs." + f"{pipeline_stage}_phase" + ".result == 'success'"
 
     # Handle only keyword
     if job.only:
@@ -477,7 +481,7 @@ class GithubActionConverter(Converter):
         # Job is only to be run if certain files changed
         if "changes" in job.only:
           if ifString == "":
-            ifString += "\t\tif: ${{"
+            ifString += "\t\tif: ${{ !cancelled() && "
           else:
             ifString += " && "
           # Check output of fileChangeJob whether it should be run or skipped
@@ -486,7 +490,7 @@ class GithubActionConverter(Converter):
       if type(job.only) == list:
         # Job is only to be run if certain branches are pushed
         if ifString == "":
-          ifString += "\t\tif: ${{"
+          ifString += "\t\tif: ${{ !cancelled() &&"
         else:
           ifString += " && "
         for i, branch in enumerate(job.only):
@@ -501,7 +505,7 @@ class GithubActionConverter(Converter):
         # Job is only to be run if certain files changed
         if "changes" in job.exc and "needs.FileChanges" not in ifString:
           if ifString == "":
-            ifString += "\t\tif: ${{"
+            ifString += "\t\tif: ${{ !cancelled() && "
           else:
             ifString += " && "
           # Check output of fileChangeJob whether it should be run or skipped
@@ -525,6 +529,15 @@ class GithubActionConverter(Converter):
             ifString += " && "
           # Check output of fileChangeJob whether it should be run or skipped
           ifString += f"needs.FileChanges.outputs.run{job.name.replace('/', '_').replace(' ', '_')} == 'true'"
+
+    if job.needs:
+      # Job is only to be run if all needs are successful
+      for job_name in job.needs:
+        if ifString == "":
+          ifString += "\t\tif: ${{ !cancelled() && "
+        else:
+          ifString += " && "
+        ifString += f"needs.{job_name.replace('/', '_').replace(' ', '_')}.result == 'success'"
 
     if ifString:
       ifString += " }}\n"
@@ -765,13 +778,12 @@ class GithubActionConverter(Converter):
                         'LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")')
     delete = []
     for i, command in enumerate(script):
-      if "mvn" in command:
-        command += (" -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 "
-                    "-Dmaven.wagon.http.readTimeout=600000000")
+      # if "mvn" in command and False:
+      # command += (" -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 "
+      #              "-Dmaven.wagon.http.readTimeout=600000000")
       command = command.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
-      # ToDo: Add docker, user replacement
       script[i] = command
     delete.reverse()
     for i in delete:

@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import subprocess
+import time
 
 import git
 import gitlab
@@ -179,7 +180,7 @@ class GitlabDownloader(Git, Downloader):
     :param clone_path: Path to clone the repository to
     """
     gitlab_repo = self.getRepo(repo_id)
-    clone_path = os.path.join(clone_path, gitlab_repo.name)
+    clone_path = os.path.join(clone_path, gitlab_repo.name.replace(" ", "").replace("/", "_"))
     # Create authorized URL with private token for cloning
     repo_url = gitlab_repo.http_url_to_repo.replace("https://", f"https://oauth2:{self.config.sourceToken}@")
     logging.info(f"Cloning {gitlab_repo.name} to {clone_path}")
@@ -194,10 +195,17 @@ class GitlabDownloader(Git, Downloader):
     # Clone
     default_branch = gitlab_repo.default_branch
     with CloneProgress() as progress:
-      git.Repo.clone_from(repo_url, clone_path, branch=default_branch, progress=progress)
+      git.Repo.clone_from(repo_url, clone_path, branch=default_branch, progress=progress, recurse_submodules=True)
 
     logging.info(f"Cloning {gitlab_repo.name} finished")
     print(f"[green]Cloning {gitlab_repo.name} finished [/green]")
+
+    if self.has_submodules(clone_path):
+      print("Submodule found, absorbing...")
+      logging.info(f"Submodule found in {gitlab_repo.name}, absorbing")
+      self.absorb_submodules(clone_path)
+      print(f"[green]Submodule absorbed [/green]")
+      logging.info(f"Submodule in {gitlab_repo.name}, absorbed")
 
     # Check if LFS is used and download LFS objects if necessary
     lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
@@ -216,9 +224,7 @@ class GitlabDownloader(Git, Downloader):
       logger.error(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       typer.echo(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       return (gitlab_repo.name, ":x: [red] Invalid Git repository, please delete the folder [/red]",)
-    # What does this do?
     self.checkout_branches(local_repo)
-    #Really necessary?
     self.remove_remote_origin(local_repo)
     return (gitlab_repo.name, ":white_check_mark: [green] Successfully cloned [/green]",)
 
@@ -229,23 +235,25 @@ class GitlabDownloader(Git, Downloader):
     """
     console = Console()
     table = Table("Branch", "Status")
+    default_branch = repo.active_branch.name
     repo.remotes.origin.fetch()  # Fetch all branches from the remote
     for branch in tqdm(repo.remotes.origin.refs, desc="Checking out all branches"):  # Iterate over all remote branches
       branch_name = branch.name.split("/")[-1]  # Extract branch name
-      if branch_name == "HEAD":
+      if branch_name == "HEAD" or branch_name == default_branch:
         continue
       try:
         repo.git.checkout("-B", branch_name, branch.name)  # Create and checkout local branch tracking the remote
         logging.info(f"Checked out branch {branch_name}.")
+        time.sleep(2)
         table.add_row(branch_name, ":white_check_mark: [green] Successfully checked out [/green]", )
       except Exception as e:
         logging.warning(f"Error checking out branch {branch_name}: {e}")
         table.add_row(branch_name, ":x: [red] Error checking out branch [/red]")
 
-      if "master" in repo.branches:
-        repo.git.checkout("master")  # Checkout the master branch
-      elif "main" in repo.branches:
-        repo.git.checkout("main")  # Checkout the main branch
+    if "master" in repo.branches:
+      repo.git.checkout("master")  # Checkout the master branch
+    elif "main" in repo.branches:
+      repo.git.checkout("main")  # Checkout the main branch
 
 
 class CloneProgress(RemoteProgress):

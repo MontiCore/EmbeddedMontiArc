@@ -214,7 +214,7 @@ class TestGithubActionConverter(TestCase):
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/davidblm/repoa/embedded_montiarc:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/repoa/embedded_montiarc:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/davidblm/repoa/embedded_montiarc:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -243,7 +243,7 @@ class TestGithubActionConverter(TestCase):
       - name: Start Docker Container
         run: |
           docker pull registry.gitlab.com/monticore/embeddedmontiarc/applications/repoa/embedded_montiarc2:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.gitlab.com/monticore/embeddedmontiarc/applications/repoa/embedded_montiarc2:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} registry.gitlab.com/monticore/embeddedmontiarc/applications/repoa/embedded_montiarc2:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -262,7 +262,7 @@ class TestGithubActionConverter(TestCase):
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  only_branch_job:
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ !cancelled() && github.ref_name == 'main' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -317,7 +317,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  only_files_job:
     needs: FileChanges
-    if: ${{needs.FileChanges.outputs.runonly_files_job == 'true' }}
+    if: ${{ !cancelled() && needs.FileChanges.outputs.runonly_files_job == 'true' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -343,7 +343,7 @@ class TestGithubActionConverter(TestCase):
                                                self.architecture.get_repo_by_ID("1").secrets)
     # @formatter:off
     expected = """  except_files_job:
-    if: ${{needs.FileChanges.outputs.runexcept_files_job == 'true' }}
+    if: ${{ !cancelled() && needs.FileChanges.outputs.runexcept_files_job == 'true' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -371,7 +371,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  only_except_files_job:
     needs: FileChanges
-    if: ${{needs.FileChanges.outputs.runonly_except_files_job == 'true' }}
+    if: ${{ !cancelled() && needs.FileChanges.outputs.runonly_except_files_job == 'true' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -398,6 +398,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  need_job:
     needs: artifact_job
+    if: ${{ !cancelled() && needs.artifact_job.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -430,7 +431,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  pages:
     needs: build_phase
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure')  }}
+    if: ${{ !cancelled() && needs.build_phase.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -468,7 +469,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  trigger_job:
     needs: build_phase
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure')  }}
+    if: ${{ !cancelled() && needs.build_phase.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -498,7 +499,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  docker_not_migrated_job:
     needs: test_phase
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure')  }}
+    if: ${{ !cancelled() && needs.test_phase.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -528,7 +529,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  docker_migrated_job:
     needs: test_phase
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure')  }}
+    if: ${{ !cancelled() && needs.test_phase.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -559,7 +560,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  maven_job:
     needs: test_phase
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure')  }}
+    if: ${{ !cancelled() && needs.test_phase.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
@@ -573,7 +574,7 @@ class TestGithubActionConverter(TestCase):
         shell: bash
         run: |
             echo "Building Maven project..."
-            mvn clean install -s settings.xml -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 -Dmaven.wagon.http.readTimeout=600000000
+            mvn clean install -s settings.xml
 """
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)
@@ -602,8 +603,10 @@ class TestGithubActionConverter(TestCase):
             echo "Test report content" > reports/test-report.txt
       - name: Reporting
         uses: dorny/test-reporter@v2
+        continue-on-error: true
         if : ${{ always() }}
         with:
+          name: report_job
           path: |
             - reports/test-report.xml
           reporter: java-junit
@@ -671,6 +674,7 @@ class TestGithubActionConverter(TestCase):
     # @formatter:off
     expected = """  dependencies_job:
     needs: need_job
+    if: ${{ !cancelled() && needs.need_job.result == 'success' }}
     runs-on: ubuntu-latest
     container:
       image: ubuntu:latest
