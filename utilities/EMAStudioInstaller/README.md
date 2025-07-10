@@ -36,3 +36,5 @@ compatible. As a consequence, only a single repository has to be maintained for 
 Copyright (C) 2018 SE RWTH.
 
 A concrete license is to be discussed.
+
+
