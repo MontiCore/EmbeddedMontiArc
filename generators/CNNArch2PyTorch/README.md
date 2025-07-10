@@ -30,6 +30,8 @@ For installing the DGL Library  [Follow the instructions from this link](https:/
     # A method to print a dictionary with
     # the names of the parameters of the layer (string) as keys and their data type (string) as value
 
+
+
     def print_parameters(self):
         print({'alpha': 'int', 'ones': 'int'})
 
