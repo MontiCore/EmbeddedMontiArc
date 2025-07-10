@@ -35,7 +35,9 @@ models, on the other hand, this task is achieved with ease because she can see t
 and their connections visually in front of her.
 
 In order to compensate for this fact, this project and [one of its
-dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/visualisation)
+dependencies](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/gene
+
+rators/visualisation)
 generate a visual representation of textual EmbeddedMontiArcMath models showing the
 relationships between components.
 
