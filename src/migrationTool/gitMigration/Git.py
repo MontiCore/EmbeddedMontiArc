@@ -208,3 +208,34 @@ class Git:
         table.add_row(branch, summary[repoID][branch])
       console.print(table)
       print()
+
+  def has_submodules(self, repo_path):
+    """Check if the repo has a .gitmodules file"""
+    return os.path.isfile(os.path.join(repo_path, ".gitmodules"))
+
+  def get_submodule_paths(self, repo_path):
+    """Extract submodule paths from .gitmodules"""
+    submodule_paths = []
+    gitmodules_path = os.path.join(repo_path, ".gitmodules")
+    if os.path.isfile(gitmodules_path):
+      with open(gitmodules_path, "r") as f:
+        for line in f:
+          if line.strip().startswith("path = "):
+            submodule_paths.append(line.strip().split("= ")[1])
+    return submodule_paths
+
+  def absorb_submodules(self, repo_path):
+    if not self.has_submodules(repo_path):
+      logger.warning(f"Absorb submodules called for {repo_path} but no submodules found.")
+      return
+    repo = git.Repo(repo_path)
+    for submodule_path in self.get_submodule_paths(repo_path):
+      logger.info(f"Absorbing submodule {submodule_path}")
+      repo.git.fetch(submodule_path, "HEAD")
+      gitmodules_file = os.path.join(repo_path, ".gitmodules")
+      if os.path.exists(gitmodules_file):
+        repo.git.rm(gitmodules_file)
+      repo.git.rm(submodule_path)
+      repo.git.commit("-m", "Prepare to absorb submodule " + submodule_path)
+      repo.git.subtree("add", "--prefix", submodule_path, "FETCH_HEAD")
+      logger.info(f"Finished absorbing submodule {submodule_path}")
