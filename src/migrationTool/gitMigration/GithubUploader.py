@@ -223,7 +223,7 @@ class GithubUploader(Git, Uploader):
     # Config needed to push large files
     # local_repo.git.config('http.postBuffer', '524288000', local=True)
     logger.info(f"Uploading {monorepo_name} to the {monorepo_name}...")
-    github_repo = self.get_or_create_remote_repo(self.config.monorepoName)
+    github_repo = self.get_or_create_remote_repo(self.config.targetUser + "/" + self.config.monorepoName)
     if disable_scanning:
       self.deactivate_push_protection(github_repo.url)
     self.create_secrets(github_repo, self.get_monorepo_secrets())
@@ -244,8 +244,8 @@ class GithubUploader(Git, Uploader):
           logger.info(f"Skipping branch {branch.name}.")
           continue
         else:
-          logger.warning("Forcing update of branch {branch.name}...")
-          print("[yellow]Forcing update of branch {branch.name}...[/yellow]")
+          logger.warning(f"Forcing update of branch {branch.name}...")
+          print(f"[yellow]Forcing update of branch {branch.name}...[/yellow]")
       print(f"Pushing branch {branch.name}...")
       try:
         local_repo.git.checkout(branch.name)
@@ -415,7 +415,7 @@ def dockerImageMigration(self, architecture, repoID):
     action += "    steps:\n"
     action += "      - name: Log in to GitLab\n"
     action += "        run: |\n"
-    action += '          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
+    action += '          docker login registry.git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
     action += "      - name: Log in to GitHub\n"
     action += "        run: |\n"
     action += '          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" 
@@ -478,7 +478,7 @@ def dockerImageMigration(self, architecture, repoID):
     action += "    steps:\n"
     action += "      - name: Log in to GitLab\n"
     action += "        run: |\n"
-    action += '          docker login https://git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
+    action += '          docker login registry.git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
     action += "      - name: Log in to GitHub\n"
     action += "        run: |\n"
     action += ('          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" '
