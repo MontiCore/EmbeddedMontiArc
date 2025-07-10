@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorts.visualization.lights;
+
+component LightTimer {
+    port
+        in (0s:oos) time,
+        out B status;
+
+    implementation Math {
+
+        status = time > 1s;
+    }
+}

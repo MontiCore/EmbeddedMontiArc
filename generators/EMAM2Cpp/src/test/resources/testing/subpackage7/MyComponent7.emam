@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing.subpackage7;
+
+component MyComponent7 {
+    port
+      in  Q (0.0 : 0.1 : 100.0)     in1,
+      out Q (0.0 : 0.1 : 100.0)     out1;
+
+    instance MyComponentWithParameter(3.5) cmp1;
+
+    connect in1 -> cmp1.in1;
+    connect cmp1.out1 -> out1;
+}
