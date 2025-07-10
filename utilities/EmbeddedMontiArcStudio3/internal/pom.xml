@@ -1,0 +1,96 @@
+<!--
+  ~ (c) https://github.com/MontiCore/monticore
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- == PROJECT COORDINATES =============================================== -->
+
+    <parent>
+        <groupId>de.monticore.lang.monticar</groupId>
+        <artifactId>embeddedmontiarcstudio</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>embeddedmontiarcstudio-internal</artifactId>
+
+    <!-- == PROJECT PROPERTIES ================================================ -->
+
+    <properties>
+
+        <!-- .. Libraries ..................................................... -->
+
+        <!-- .. Plugins ....................................................... -->
+
+        <!-- .. Classifiers ................................................... -->
+
+        <!-- .. Misc .......................................................... -->
+
+        <!-- .. Resources ..................................................... -->
+
+    </properties>
+
+    <!-- == PROJECT METAINFORMATION =========================================== -->
+
+    <name>EmbeddedMontiArcStudio - Internal</name>
+
+    <!-- == PROJECT DEPENDENCIES ============================================== -->
+
+    <dependencies>
+
+        <!-- .. Modules ................................................... -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embeddedmontiarcstudio-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- .. Libraries ................................................. -->
+
+        <!-- .. Language .................................................. -->
+
+        <!-- .. Test Libraries ............................................ -->
+
+    </dependencies>
+
+    <!-- == PROJECT BUILD SETTINGS ============================================ -->
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.sol</groupId>
+                <artifactId>plugin-environment</artifactId>
+                <version>${sol-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>Generation</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <rootModel>de.monticore.lang.monticar.EmbeddedMontiArcStudio</rootModel>
+                            <outputPath>${project.basedir}</outputPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
+
+    <!-- == PROJECT DISTRIBUTION ============================================== -->
+
+</project>
