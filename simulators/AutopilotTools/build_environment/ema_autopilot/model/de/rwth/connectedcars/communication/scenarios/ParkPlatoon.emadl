@@ -1,0 +1,18 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+import de.rwth.connectedcars.communication.packets.*;
+
+component ParkPlatoon {
+    ports
+        in LocationPacket pp_bc_in[6],
+        in B pp_updated_bc_in[6],
+        in LocationPacket pp_in[6],
+        in B pp_updated_in[6],
+
+        out B pp_updated_bc_out,
+        out LocationPacket pp_bc_out,
+        out B pp_updated_out[6],
+        out LocationPacket pp_out[6];
+
+    
+}

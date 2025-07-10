@@ -1,0 +1,26 @@
+package de.rwth.connectedcars.iir;
+
+component IIR {
+    ports
+        in Q a[3],
+        in Q b[4],
+        in Q x,
+        out Q y;
+        
+    instance IIRFeedForward forward;
+    instance IIRFeedBackward backward;
+    
+    connect a[1] -> backward.a[1];
+    connect a[2] -> backward.a[2];
+    connect a[3] -> backward.a[3];
+    connect b[1] -> forward.b[1];
+    connect b[2] -> forward.b[2];
+    connect b[3] -> forward.b[3];
+    connect b[4] -> forward.b[4];
+    
+    connect x -> forward.x;
+    
+    connect forward.out1 -> backward.in1;
+    
+    connect backward.y -> y;
+}
