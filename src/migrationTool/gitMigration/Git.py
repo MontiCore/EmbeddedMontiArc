@@ -283,7 +283,7 @@ class Git:
         logging.warning(f"Error checking out branch or submodule {branch_name}: {e}")
         table.add_row(branch_name, ":x: [red] Error checking out branch [/red]")
     repo.git.checkout(default_branch)
-    if absorb_submodules:
+    if absorb_submodules and self.has_submodules(repo.working_tree_dir):
       logger.info(f"Absorbing submodule {self.get_submodule_paths(repo.working_tree_dir)} in branch {default_branch}")
       repo.git.submodule("update", "--init", "--recursive")
       result = self.absorb_submodules(repo.working_tree_dir)
@@ -296,4 +296,6 @@ class Git:
         table.add_row(default_branch,
                       ":heavy_exclamation_mark: [yellow] Successfully checked out; Error absorbing submodules ["
                       "/yellow]", )
+    else:
+      table.add_row(default_branch, ":white_check_mark: [green] Successfully checked out [/green]", )
     console.print(table)
