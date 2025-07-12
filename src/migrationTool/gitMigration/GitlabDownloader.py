@@ -77,7 +77,7 @@ class GitlabDownloader(Git, Downloader):
     console.print(table)
     architecture.dump_yaml(verbose)
 
-  def clone(self):
+  def clone(self, absorb_submodules: bool = False):
     """
     Clone repositories from GitLab to the local machine.
     """
@@ -87,7 +87,7 @@ class GitlabDownloader(Git, Downloader):
     table = Table("Repository", "Status")
     for repoID in self.config.repoIDS:
       typer.echo("--------------------------------")
-      repo_name, status = self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"))
+      repo_name, status = self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"), absorb_submodules)
       table.add_row(repo_name, status)
     print()
     console.print(table)
@@ -172,7 +172,7 @@ class GitlabDownloader(Git, Downloader):
     """
     return repo.namespace["full_path"]
 
-  def clone_repo(self, repo_id, clone_path) -> tuple[str, str]:
+  def clone_repo(self, repo_id, clone_path, absorb_submodules) -> tuple[str, str]:
     """
     Clone a repository from GitLab to the local machine. Additionally it checks out all branches and removes the
     remote origin.
@@ -200,13 +200,6 @@ class GitlabDownloader(Git, Downloader):
     logging.info(f"Cloning {gitlab_repo.name} finished")
     print(f"[green]Cloning {gitlab_repo.name} finished [/green]")
 
-    if self.has_submodules(clone_path):
-      print("Submodule found, absorbing...")
-      logging.info(f"Submodule found in {gitlab_repo.name}, absorbing")
-      self.absorb_submodules(clone_path)
-      print(f"[green]Submodule absorbed [/green]")
-      logging.info(f"Submodule in {gitlab_repo.name}, absorbed")
-
     # Check if LFS is used and download LFS objects if necessary
     lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
     if lfs_check.stdout:
@@ -224,36 +217,9 @@ class GitlabDownloader(Git, Downloader):
       logger.error(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       typer.echo(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       return (gitlab_repo.name, ":x: [red] Invalid Git repository, please delete the folder [/red]",)
-    self.checkout_branches(local_repo)
+    self.checkout_branches(local_repo, absorb_submodules)
     self.remove_remote_origin(local_repo)
     return (gitlab_repo.name, ":white_check_mark: [green] Successfully cloned [/green]",)
-
-  def checkout_branches(self, repo):
-    """
-    Checkout all branches available in the remote repository.
-    :param repo: repository objec
-    """
-    console = Console()
-    table = Table("Branch", "Status")
-    default_branch = repo.active_branch.name
-    repo.remotes.origin.fetch()  # Fetch all branches from the remote
-    for branch in tqdm(repo.remotes.origin.refs, desc="Checking out all branches"):  # Iterate over all remote branches
-      branch_name = branch.name.split("/")[-1]  # Extract branch name
-      if branch_name == "HEAD" or branch_name == default_branch:
-        continue
-      try:
-        repo.git.checkout("-B", branch_name, branch.name)  # Create and checkout local branch tracking the remote
-        logging.info(f"Checked out branch {branch_name}.")
-        time.sleep(2)
-        table.add_row(branch_name, ":white_check_mark: [green] Successfully checked out [/green]", )
-      except Exception as e:
-        logging.warning(f"Error checking out branch {branch_name}: {e}")
-        table.add_row(branch_name, ":x: [red] Error checking out branch [/red]")
-
-    if "master" in repo.branches:
-      repo.git.checkout("master")  # Checkout the master branch
-    elif "main" in repo.branches:
-      repo.git.checkout("main")  # Checkout the main branch
 
 
 class CloneProgress(RemoteProgress):

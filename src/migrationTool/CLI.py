@@ -43,14 +43,15 @@ def create_config(output: str = typer.Option("config.yaml", help="Path for the c
 @app.command()
 def scan_clone(config_path: str = typer.Option("config.yaml", help="Config file path"),
                architecture: str = typer.Option("architecture.yaml", help="Scan file path"),
-               verbose: bool = typer.Option(False, help="Whether to show verbose output")):
+               verbose: bool = typer.Option(False, help="Whether to show verbose output"),
+               absorb_submodules: bool = typer.Option(True, help="Whether to absorb submodules into the main repo")):
   """Scan and clone repositories."""
   logger.info(f"Starting scan and clone using {config_path}")
   config = Config(config_path)
   print(f"Config at {config_path} loaded")
   print()
   gitlab_downloader = GitlabDownloader(config)
-  gitlab_downloader.clone()
+  gitlab_downloader.clone(absorb_submodules)
   print()
   gitlab_downloader.scan(architecture, verbose)
 

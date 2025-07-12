@@ -1,6 +1,6 @@
 import logging
 import os
-from datetime import datetime
+import time
 
 import git
 import typer
@@ -9,6 +9,7 @@ from rich.console import Console
 from rich.progress import Progress
 from rich.prompt import Confirm
 from rich.table import Table
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -227,11 +228,15 @@ class Git:
   def absorb_submodules(self, repo_path):
     if not self.has_submodules(repo_path):
       logger.warning(f"Absorb submodules called for {repo_path} but no submodules found.")
-      return
+      return True
     repo = git.Repo(repo_path)
     for submodule_path in self.get_submodule_paths(repo_path):
       logger.info(f"Absorbing submodule {submodule_path}")
-      repo.git.fetch(submodule_path, "HEAD")
+      try:
+        repo.git.fetch(submodule_path, "HEAD")
+      except git.exc.GitCommandError as e:
+        logger.error(f"Error fetching submodule {submodule_path}: {e}")
+        return False
       gitmodules_file = os.path.join(repo_path, ".gitmodules")
       if os.path.exists(gitmodules_file):
         repo.git.rm(gitmodules_file)
@@ -239,3 +244,56 @@ class Git:
       repo.git.commit("-m", "Prepare to absorb submodule " + submodule_path)
       repo.git.subtree("add", "--prefix", submodule_path, "FETCH_HEAD")
       logger.info(f"Finished absorbing submodule {submodule_path}")
+    return True
+
+  def checkout_branches(self, repo, absorb_submodules=False):
+    """
+    Checkout all branches available in the remote repository.
+    :param repo: repository objec
+    :param absorb_submodules: If True, absorb all submodules after checking out each branch
+    """
+    console = Console()
+    table = Table("Branch", "Status")
+    default_branch = repo.active_branch.name
+    repo.remotes.origin.fetch()  # Fetch all branches from the remote
+    for branch in tqdm(repo.remotes.origin.refs, desc="Checking out all branches"):  # Iterate over all remote branches
+      branch_name = branch.name.split("/")[-1]  # Extract branch name
+      if branch_name == "HEAD" or branch_name == default_branch:
+        continue
+      try:
+        repo.git.checkout("-B", branch_name, branch.name)  # Create and checkout local branch tracking the remote
+        logging.info(f"Checked out branch {branch_name}.")
+        time.sleep(1)
+        if absorb_submodules and self.has_submodules(repo.working_tree_dir):
+          logger.info(f"Absorbing submodules {self.get_submodule_paths(repo.working_tree_dir)} in branch {branch_name}")
+          repo.git.submodule("update", "--init", "--recursive")
+          result = self.absorb_submodules(repo.working_tree_dir)
+          if result:
+            logger.info(f"Submodules absorbed for branch {branch_name}.")
+            table.add_row(branch_name,
+                          ":white_check_mark: [green] Successfully checked out; Submodules absorbed[/green]", )
+          else:
+            logger.info(f"Submodules absorption failed for branch {branch_name}.")
+            table.add_row(branch_name,
+                          ":heavy_exclamation_mark: [yellow] Successfully checked out; Error absorbing submodules ["
+                          "/yellow]", )
+        else:
+          table.add_row(branch_name, ":white_check_mark: [green] Successfully checked out [/green]", )
+      except Exception as e:
+        logging.warning(f"Error checking out branch or submodule {branch_name}: {e}")
+        table.add_row(branch_name, ":x: [red] Error checking out branch [/red]")
+    repo.git.checkout(default_branch)
+    if absorb_submodules:
+      logger.info(f"Absorbing submodule {self.get_submodule_paths(repo.working_tree_dir)} in branch {default_branch}")
+      repo.git.submodule("update", "--init", "--recursive")
+      result = self.absorb_submodules(repo.working_tree_dir)
+      if result:
+        logger.info(f"Submodules absorbed for branch {default_branch}.")
+        table.add_row(default_branch,
+                      ":white_check_mark: [green] Successfully checked out; Submodules absorbed[/green]", )
+      else:
+        logger.info(f"Submodules absorption failed for branch {default_branch}.")
+        table.add_row(default_branch,
+                      ":heavy_exclamation_mark: [yellow] Successfully checked out; Error absorbing submodules ["
+                      "/yellow]", )
+    console.print(table)
