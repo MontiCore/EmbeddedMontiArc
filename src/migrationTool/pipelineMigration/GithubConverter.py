@@ -746,6 +746,8 @@ class GithubActionConverter(Converter):
     :param script: Script to be parsed
     :return: Parsed script
     """
+    if type(script) == str:
+      script = [script]
 
     login_indices = [i for i, command in enumerate(script) if "docker login" in command]
     build_indices = [i for i, command in enumerate(script) if "docker build" in command]
