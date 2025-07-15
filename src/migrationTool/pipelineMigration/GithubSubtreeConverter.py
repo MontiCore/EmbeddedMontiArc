@@ -155,7 +155,8 @@ class GithubSubTreeConverter(GithubActionConverter):
         workloflow_name = triggered_repo + ".yml"
 
       # Regex für die Werte
-      pattern = r"(WORKFLOW_FILE:\s+)(\{.*?\}\.yml)|(BRANCH:\s+)(\w+)|(REPO:\s+)(\w+)"
+      # pattern = r"(WORKFLOW_FILE:\s+)(\{.*?\}\.yml)|(BRANCH:\s+)(\w+)|(REPO:\s+)(\w+)"
+      pattern = r"(WORKFLOW_FILE:\s+)(\{.*?\}\.yml)|(BRANCH:\s+)([\w\-]+)|(REPO:\s+)([\w\-]+)"
 
       # Ersetzen der Werte
       jobString = re.sub(pattern, lambda m: m.group(1) + f"{workloflow_name}" if m.group(1) else m.group(
