@@ -466,6 +466,8 @@ class TestGithubActionConverter(TestCase):
     """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["trigger_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
+
+    print(pipeline)
     # @formatter:off
     expected = """  trigger_job:
     needs: build_phase
@@ -479,6 +481,9 @@ class TestGithubActionConverter(TestCase):
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
       - name: Trigger another-repo pipeline
         run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
         env:
@@ -486,6 +491,44 @@ class TestGithubActionConverter(TestCase):
           BRANCH: main
           REPO: another-repo
           GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \\
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: another-repo.yml
+          BRANCH: main
+          REPO: another-repo
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: another-repo
+      - name: Check Child Workflow result
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: another-repo
 """
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)
