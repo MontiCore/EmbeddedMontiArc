@@ -823,6 +823,7 @@ class GithubActionConverter(Converter):
       command = command.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
+      command = command.replace("$DEPLOY_KEY", "${{ secrets.GITLABTOKEN }}")
       script[i] = command
     delete.reverse()
     for i in delete:
