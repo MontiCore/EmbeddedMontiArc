@@ -1,8 +1,0 @@
-[submodule "ide"]
-	path = ide
-	url = https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git
-	ignore = dirty
-[submodule "manager"]
-	path = manager
-	url = https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMASInstallerManager.git
-	ignore = dirty
