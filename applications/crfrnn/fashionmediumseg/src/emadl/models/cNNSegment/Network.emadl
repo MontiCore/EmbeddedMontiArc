@@ -1,0 +1,60 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNSegment;
+
+component Network<Z(2:oo) classes = 10>{
+    ports in Z(0:255)^{1, 56, 56} data,
+         out Q(0:1)^{classes, 56, 56} softmax;
+
+        implementation CNN {
+
+            def conv(filter, channels, stride=(1,1)){
+                Convolution(kernel=(filter,filter), channels=channels, stride=stride) ->
+                Relu()
+            }
+
+            def vgg_block(num_conv, filter, channels){
+                conv(filter=filter, channels=channels, ->=num_conv) ->
+                Pooling(pool_type="max", kernel=(2,2), stride=(2,2))
+            }
+
+            data ->
+            /* vgg block 1 */
+            vgg_block(num_conv=2, filter=3, channels=64) ->
+            (
+                /* vgg block 2 */
+                vgg_block(num_conv=2, filter=3, channels=128) ->
+
+                (
+
+                    /* vgg block 3 */
+                    vgg_block(num_conv=2, filter=3, channels=256) ->
+
+                    /* fully convolutional block */
+                    conv(filter=1, channels=2048) ->
+                    Dropout(p=0.5) ->
+                    conv(filter=1, channels=2048) ->
+                    Dropout(p=0.5) ->
+                    Convolution(kernel=(1,1), channels=classes) ->
+                    UpConvolution(kernel=(2,2), channels=classes, stride=(2,2))
+
+                    |
+
+                    Convolution(kernel=(1,1), channels=classes)
+
+                ) ->
+
+                Concatenate() ->
+                UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
+
+                |
+
+                Convolution(kernel=(1,1), channels=classes)
+
+            ) ->
+
+            Concatenate() ->
+            UpConvolution(kernel=(4,4), channels=classes, stride=(2,2)) ->
+
+            softmax;
+        }
+  }

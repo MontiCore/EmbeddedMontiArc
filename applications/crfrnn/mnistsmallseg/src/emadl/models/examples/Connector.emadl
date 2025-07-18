@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNClassifier;
+
+component Connector {
+    ports in Z(0:255)^{1, 28, 28} image,
+          out Z(0:1998) res;
+
+    instance Network<10> predictor;
+    instance ArgMax<10> argmax;
+
+    connect image -> predictor.data;
+
+    connect predictor.softmax -> argmax.inputVector;
+
+    connect argmax.maxIndex -> res;
+
+}

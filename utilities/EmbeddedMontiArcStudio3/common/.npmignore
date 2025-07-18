@@ -1,0 +1,6 @@
+/pom.xml
+/*.iml
+/target/
+/tsconfig.json
+/.npmrc
+/.gitignore

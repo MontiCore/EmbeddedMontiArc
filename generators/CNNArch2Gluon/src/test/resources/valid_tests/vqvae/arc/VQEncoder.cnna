@@ -1,0 +1,8 @@
+architecture VQEncoder{
+    def input Q(0:1)^{1,28,28} data
+    def output Q(-oo:oo)^{1,28,28} encoding
+
+    data ->
+    VectorQuantize(num_embeddings=64,beta=0.25) ->
+    encoding;
+}

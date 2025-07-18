@@ -1,0 +1,44 @@
+package de.rwth.connectedcars.communication;
+
+import de.rwth.connectedcars.communication.packets.StatePacket;
+
+component DistanceEvaluator {
+    port
+        in  B                                   state_updated_in[6],
+        in  StatePacket                         state_in[6],
+        in  StatePacket                         own_state,
+        in  Q (0 m : 0.01 m : oo m)             distance[6],
+        in  Q (-oo : 0.001 : oo)                direction[6],
+        
+        out B                                   brake_recommendation;
+        
+    implementation Math {
+        Q ten = 10.0;
+        static Q (-oo : 0.001 : oo) headingThreshold = 40;	// degrees
+        Q (0 m : 0.001 : oo m) generalDistanceThreshold = max(ten * 2, (own_state.velocity / 3.6 * 3));
+        brake_recommendation = false;
+        for i = 1:6
+            if state_updated_in(i) 
+                StatePacket inState = state_in(i);
+                Q (0 m : 0.001 : oo m) safetyDistanceThreshold = max(ten, (own_state.velocity - inState.velocity));
+                Q absHeadingDiff = abs(own_state.heading - inState.heading);            // difference of own and other car's heading
+                if absHeadingDiff > 180
+                    absHeadingDiff = 360 - absHeadingDiff;
+                end
+                Q absDirectionDiff = abs(own_state.heading - direction(i));             // to check if other's position is in front of us
+                if absDirectionDiff > 180
+                    absDirectionDiff = 360 - absDirectionDiff;
+                end
+                // if car in front drives in the same direction
+                if absHeadingDiff < headingThreshold / 2 && distance(i) < safetyDistanceThreshold && absDirectionDiff < headingThreshold
+                    brake_recommendation = true;
+                end
+                // if another car is in front but drives in another direction
+                Q absHeadingDiff90 = abs(90 - absHeadingDiff);                          // roughly 90 degrees difference between own and other car's heading
+                if absHeadingDiff90 < headingThreshold && own_state.velocity > 0 && distance(i) < generalDistanceThreshold && absDirectionDiff < headingThreshold
+                    brake_recommendation = true;
+                end
+            end
+        end
+    }
+}

@@ -1,0 +1,10 @@
+package oclstudio
+
+import oclstudio.modules.types.OCL
+
+ide OCLStudio {
+    registry "https://hub.docker.com/some/image:latest"
+    build "some/awesome/path" resolved from CWD
+
+    include module types [OCL]
+}

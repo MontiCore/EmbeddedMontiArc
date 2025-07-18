@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package bumper;
+
+stream BumpBotTest for BumpBot{
+    // Input
+    orientation.x: 3.41;
+    orientation.y: -1.97;
+    orientation.z: -0.72;
+    orientation.w: -0.69;
+
+    collision_normale.x: 1.23;
+    collision_normale.y: -2.34;
+    collision_normale.z: 0.56;
+
+    // Output
+    // - means: all values are allowed
+    // 100 +/- 1 means: all values from 99 to 101 are allowed
+    vehicle_control.throttle: 0 +/- 1;
+    vehicle_control.steer: -;
+    vehicle_control.brake: -;
+    vehicle_control.hand_brake: false;
+    vehicle_control.reverse: true;
+    vehicle_control.gear: -;
+    vehicle_control.manual_gear_shift: false;
+
+    collision_normale_out.x: -;
+    collision_normale_out.y: -;
+    collision_normale_out.z: -;
+
+}

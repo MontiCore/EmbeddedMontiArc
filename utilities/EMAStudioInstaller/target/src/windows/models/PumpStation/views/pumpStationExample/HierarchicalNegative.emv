@@ -1,0 +1,16 @@
+package pumpStationExample;
+
+view HierarchicalNegative {
+  component PumpStation {
+    component PumpingSystem {
+      component PhysicsSimulation {}
+      instance PhysicsSimulation physicsSimulation;
+
+      component Controller {}
+      instance Controller controller;
+
+      connect physicsSimulation -> controller;
+    }
+    instance PumpingSystem pumpingSystem;
+}
+}

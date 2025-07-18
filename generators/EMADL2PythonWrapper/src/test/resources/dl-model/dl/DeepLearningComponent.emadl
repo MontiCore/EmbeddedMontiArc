@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package dl;
+
+component DeepLearningComponent {
+    ports
+       in Q^{3,28,28} data,
+       out Q(0:1)^{5} predictions;
+
+    implementation CNN {
+        data ->
+        FullyConnected(units=28) ->
+        FullyConnected(units=10) ->
+        FullyConnected(units=5) ->
+        Softmax ->
+        predictions;
+    }
+}

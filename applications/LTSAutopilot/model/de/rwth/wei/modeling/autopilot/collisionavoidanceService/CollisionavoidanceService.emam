@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.collisionavoidanceService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+dynamic component CollisionavoidanceService{
+  ports
+    // static ports
+    in  Q           position_x,
+    in  Q           position_y,
+    in  Z           trajectorylength,
+    in  Q^{1,100}   trajectory_x,
+    in  Q^{1,100}   trajectory_y,
+    in  Q           compass,
+    //status of the current vehicle
+
+    in  Z           isplatoonheader,
+    in  Z           status,
+    in  Q           length,
+    in  Q           width,
+    in  Q           velocity,
+
+    // dynamic ports
+    dynamic in Statusmessage status_msg[0:32],
+
+    // output is maximal velocity
+    out Q maximalallowedvelocity;
+
+    instance Collisionpointsingle  coll[0:32];
+    instance Statusduplicate        s_dup;
+    instance Collisionvelocity     cv;
+
+    //initial the output
+    connect 9999999.0 -> maximalallowedvelocity;
+    // for single vehicle(not in platoon)
+
+    @ status_msg::connect{
+      connect status_msg[?] -> s_dup.status_msg[?];
+    }
+
+    @ s_dup.status_msg1::connect{
+      connect s_dup.status_msg1[?] -> coll[?].status_message;
+
+      connect trajectorylength -> coll[?].trajectory_length_car1;
+      connect trajectory_x -> coll[?].trajectory_x_car1;
+      connect trajectory_y -> coll[?].trajectory_y_car1;
+      connect length -> coll[?].car1_length;
+      connect width -> coll[?].car1_width;
+
+      connect coll[?].isfrontvehicle -> cv.isfrontvehicle[?];
+      connect coll[?].distance  -> cv.distance[?];
+      connect coll[?].vehicleid -> cv.vehicleid[?];
+      connect statusmessage[?] -> cv.status_msg[?];
+
+    }
+
+    @ s_dup.status_msg2::connect{
+      connect s_dup.status_msg2[?] -> cv.status_msg[?]
+    }
+      connect isplatoonheader -> cv.isplatoonheader;
+      connect status -> cv.vehicle_staus;
+      connect length -> cv.length;
+      connect cv.maximalallowedvelocity -> maximalallowedvelocity;
+
+    @ s_dup.status_msg3::connect{}
+    @ s_dup.status_msg4::connect{}
+    @ s_dup.status_msg5::connect{}
+
+}

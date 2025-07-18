@@ -1,0 +1,8 @@
+
+import { isWindows } from "@theia/core/lib/common";
+
+export namespace {{context.name}}Scripts {
+    {% for button in context.getButtons() %}
+    export const {{button.getScriptAsConstant()}}: string = "{{button.script}}" + (isWindows ? ".bat" : ".sh");
+    {% endfor %}
+}

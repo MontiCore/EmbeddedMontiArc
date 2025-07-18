@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de;
+
+stream MultipleAssignmentsTest for MultipleAssignments{
+    a: 10;
+    c: 44;
+}

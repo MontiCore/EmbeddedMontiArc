@@ -1,0 +1,48 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test Quality</title>
+  <link href="images/favicon.ico" type="image/x-icon" rel="icon"/>
+  <script src="js/dataTable/jquery-3.3.1.min.js"></script>
+  <script src="js/dataTable/jquery.dataTables.min.js"></script>
+  <script src="js/dataTable/dataTables.fixedHeader.min.js"></script>
+  <script src="js/dataTable/dataTables.rowGroup.min.js"></script>
+  <script src="js/dataTable/dataTables.select.min.js"></script>
+  <script src="js/customDataTable.js"></script>
+  <link rel="stylesheet" media="all" href="css/bootstrap-2.3.2.min.css">
+  <link rel="stylesheet" media="all" href="css/fixedHeader.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/select.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/jquery.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/responsive.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/customTable.css">
+  <link rel="stylesheet" media="all" href="css/childControlImages.css">
+</head>
+<body>
+  <!-- <div class="myTableContainer"> -->
+    <table id="my-table" class="display column-border dataTable" role="grid" style="width: 100%;" width="100%" cellspacing="0">
+    
+      <thead>
+        <th class="grow"><div><span>Path</span></div></th>
+        <th class="grow"><div><span>Ends With Test</span></div></th>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  <!-- <div> -->
+     
+  <script src="js/testReport.js"></script>
+  <script>
+      var tableReference = "#my-table";
+      var dataFile = "data/dataEWT.json";
+      var table;
+
+      $(document).ready(function () {
+          loadJSON(dataFile, createTable);
+      });
+  </script>
+   
+</body>
+</html>

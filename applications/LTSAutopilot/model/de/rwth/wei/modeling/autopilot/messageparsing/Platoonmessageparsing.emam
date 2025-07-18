@@ -1,0 +1,44 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageparsing;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Platoonmessageparsing{
+  ports
+    in  Platoonmessage  plat_message,
+
+    out  Z  vehicleid,
+    out  Z  timestamp,
+    out  Q  position_x,
+    out  Q  position_y,
+    out  Q  compass,
+    out  Q  length,
+    out  Q  width,
+    out  Q  velocity,
+    out  Q  engine,
+    out  Q  brakes,
+    out  Q  steering,
+    out  Z  ifsplit,
+    out  Q  intsersection_x,
+    out  Q  intsersection_y,
+    out  Z  member_num,
+    out  Z^{1,100}  platoon_member;
+
+    implementation Math{
+      vehicleid = plat_message.vehicleid;
+      timestamp = plat_message.timestamp;
+      position_x = plat_message.position_x;
+      position_y = plat_message.position_y;
+      compass = plat_message.compass;
+      length = plat_message.length;
+      width = plat_message.width;
+      velocity = plat_message.velocity;
+      engine = plat_message.engine;
+      brakes = plat_message.brakes;
+      steering = plat_message.steering;
+      ifsplit = plat_message.ifsplit;
+      intsersection_x = plat_message.intsersection_x;
+      intsersection_y = plat_message.intsersection_y;
+      member_num = plat_message.member_num;
+      platoon_member = plat_message.platoon_member;
+    }
+}

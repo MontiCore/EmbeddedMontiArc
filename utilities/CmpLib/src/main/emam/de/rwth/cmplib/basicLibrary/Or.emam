@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.cmplib.basicLibrary;
+
+component Or<N1 n=2> {
+	port
+		in B in1[n],
+		out B out1;
+
+	implementation Math{
+	    B val = 1;
+	    for i=1:n
+            outVal= (outVal + in1(i)) % 2;
+        end
+        out1 = val;
+	}
+}

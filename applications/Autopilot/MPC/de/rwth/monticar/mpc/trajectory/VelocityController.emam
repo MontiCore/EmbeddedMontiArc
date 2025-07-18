@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Provides a desired velocity
+
+package de.rwth.monticar.mpc.trajectory;
+
+component VelocityController
+{
+    ports
+        out  Q (-oo m/s : oo m/s) desiredVelocity;
+
+    implementation Math
+    {
+        desiredVelocity = 10 m/s;
+    }
+}

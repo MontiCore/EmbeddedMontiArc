@@ -1,0 +1,11 @@
+package pumpStationExample;
+
+component ModeArbiter {
+  ports
+    in Boolean emsPumpState,
+    in Q emsValvePosition,
+    in Boolean userPumpState,
+    in Q userValvePosition,
+    out Boolean desiredPumpState,
+    out Q desiredValvePosition;
+}

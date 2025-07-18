@@ -1,0 +1,73 @@
+{
+    "state_dim": [
+        50
+    ],
+    "action_dim": [
+        3
+    ],
+    "ctx": "cpu(0)",
+    "discount_factor": 0.99,
+    "strategy_params": {
+        "method": "ornstein_uhlenbeck",
+        "epsilon": 1.0,
+        "min_epsilon": 0.0,
+        "epsilon_decay_method": "linear",
+        "epsilon_decay": 0.0004,
+        "epsilon_decay_start": 500,
+        "epsilon_decay_per_step": false,
+        "action_low": -1,
+        "action_high": 1,
+        "mu": [
+            0.0,
+            0.0,
+            0.0
+        ],
+        "theta": [
+            0.15,
+            0.15,
+            0.15
+        ],
+        "sigma": [
+            0.2,
+            0.2,
+            0.2
+        ],
+        "action_dim": [
+            3
+        ]
+    },
+    "replay_memory_params": {
+        "method": "buffer",
+        "memory_size": 1000000,
+        "sample_size": 500,
+        "state_dtype": "float32",
+        "action_dtype": "float32",
+        "rewards_dtype": "float32",
+        "state_dim": [
+            50
+        ],
+        "action_dim": [
+            3
+        ]
+    },
+    "training_episodes": 3000,
+    "start_training": 500,
+    "evaluation_samples": 3,
+    "self_play": "yes",
+    "train_interval": 1,
+    "snapshot_interval": 100,
+    "agent_name": "AutopilotAgent",
+    "max_episode_step": 5000,
+    "output_directory": "model/AutopilotAgent/2022-09-12-12-53-18",
+    "verbose": true,
+    "target_score": null,
+    "soft_target_update_rate": 0.005,
+    "actor_optimizer": "adam",
+    "actor_optimizer_params": {
+        "learning_rate": 0.0001
+    },
+    "critic_optimizer": "adam",
+    "critic_optimizer_params": {
+        "learning_rate": 0.001
+    }
+}
