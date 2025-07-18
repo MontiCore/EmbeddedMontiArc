@@ -1,0 +1,40 @@
+// add the following library files (contains the local path, and all zip url which need to be downloaded and unpacked in the local path
+//
+// if you need to update your library (e.g. new JAR file), then just upload it anywhere in a release at
+//  https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/
+// and update the link here in this dependency file
+// please do not commit large JAR files in the github master branch
+// based on the github master branch and this file automatically new self-extracting portable Windows 64 bit releases are created
+
+
+* EmbeddedMontiArcStudio/
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/apache-tomcat-9.0.5.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/precompiled.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/reporting.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.20.visualisation&files=visualisation.zip
+
+
+//armadillo-8.500.1-linux.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-armadillo-linux&files=armadillo-8.500.1-linux.zip
+//chrome-linux.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-chrome-linux&files=chrome-linux.zip
+//jdk-linux.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-jdk-linux&files=jdk-linux.zip
+//nodejs-linux.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-nodejs-linux&files=nodejs-linux.zip
+//emadl2cpp.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.21-emadl2cpp&files=emadl2cpp.zip
+//cifar10 images
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.21-cifar10&files=cifar10.zip
+// trained classifier model
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.21-trained-classifier&files=trained-classifier.zip
+//RosSimulationFramework.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fubuntu%2F18.06.20-RosSimulationFramework&files=RosSimulationFramework.zip
+
+* EmbeddedMontiArcStudio/distributed-simulator/
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/RMIModelServer.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/SmartFoxServer_2X.zip
