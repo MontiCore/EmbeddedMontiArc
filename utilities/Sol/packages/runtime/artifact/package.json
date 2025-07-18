@@ -1,0 +1,29 @@
+{
+  "name": "@embeddedmontiarc/sol-runtime-artifact",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": ["src", "lib"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-configurations": "^2020.5.5-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/process": "latest",
+    "string-argv": "^0.3.1",
+    "inversify": "^5.0.1"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "backend": "lib/node/artifact-backend-module"
+    }
+  ]
+}

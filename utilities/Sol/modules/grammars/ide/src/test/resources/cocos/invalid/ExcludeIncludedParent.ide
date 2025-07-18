@@ -1,0 +1,10 @@
+package invalid
+
+ide ExcludeIncludedParent extends ExcludeIncludedGrandParent {
+    registry "https://hub.docker.com/some/awesome/image:latest"
+    build "some/amazing/path" resolved from ROOT
+
+    include module type ExcludeIncludedModule2
+
+    exclude module type ExcludeIncludedModule4
+}

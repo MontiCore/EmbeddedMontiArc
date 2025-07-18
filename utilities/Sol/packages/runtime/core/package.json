@@ -1,0 +1,28 @@
+{
+  "name": "@embeddedmontiarc/sol-runtime-core",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": ["src", "lib"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/workspace": "latest",
+    "@theia/navigator": "latest",
+    "inversify": "^5.0.1"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/core-frontend-module",
+      "backend": "lib/node/core-backend-module"
+    }
+  ]
+}
