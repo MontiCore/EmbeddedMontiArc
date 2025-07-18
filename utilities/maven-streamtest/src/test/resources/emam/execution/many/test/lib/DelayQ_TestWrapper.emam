@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lib;
+
+component DelayQ_TestWrapper {
+    port
+        in Q in1,
+        out Q out1;
+
+    instance DelayQ(1) delayInstanceZ;
+
+    connect in1 -> delayInstanceZ.in1;
+    connect delayInstanceZ.out1 -> out1;
+
+}

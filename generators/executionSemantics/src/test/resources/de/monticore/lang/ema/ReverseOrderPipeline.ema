@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.ema;
+
+component ReverseOrderPipeline{
+
+    component Evaluation {
+        ports in String testData,
+              in String trainedModel,
+              out Z accuracy;
+    }
+
+    component DataAccess(String datasource) {
+        ports out String trainData,
+            in Z loss,
+            in Z loss2,
+            out String testData;
+            }
+
+    component Training(String network){
+        ports in String trainData,
+            out String trainedModel,
+            in Z accuracy,
+            out Z loss;
+    }
+
+    instance DataAccess data_access_step;
+    instance Training training_step;
+    instance Evaluation evaluation_step;
+
+
+    connect evaluation_step.accuracy -> training_step.accuracy;
+    connect evaluation_step.accuracy -> data_access_step.loss;
+    connect training_step.loss -> data_access_step.loss2;
+
+}

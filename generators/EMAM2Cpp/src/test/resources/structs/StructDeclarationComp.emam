@@ -1,0 +1,16 @@
+package structs;
+
+component StructDeclarationComp{
+    ports in SimpleStruct in1,
+          out SimpleStruct out1;
+
+    implementation Math{
+        Q tmpQ1;
+        Q tmpQ2 = 0;
+
+        SimpleStruct tmpSimpleStruct;
+        NestedStruct tmpNestedStruct;
+    }
+
+
+}
