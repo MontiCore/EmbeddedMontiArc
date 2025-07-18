@@ -1,0 +1,142 @@
+package de.rwth.connectedcars.communication;
+
+import de.rwth.connectedcars.communication.packets.*;
+import de.rwth.connectedcars.communication.scenarios.*;
+
+component VehicleCommunication {
+    port
+        in  B                                     state_updated_bc_in[6],
+        in  StatePacket                           state_bc_in[6],
+
+        //in  B                                     subject_updated_bc_in[6],
+        //in  SubjectPacket                         subject_bc_in[6],
+        //in  B                                     subject_updated_in[6],
+        //in  SubjectPacket                         subject_in[6],
+
+        //in  B                                     weather_updated_bc_in[6],
+        //in  WeatherConditionPacket                weather_bc_in[6],
+        //in  B                                     weather_updated_in[6],
+        //in  WeatherConditionPacket                weather_in[6],
+
+        //in  B                                     platoon_updated_bc_in[6],
+        //in  PlatoonPacket                         platoon_bc_in[6],
+        //in  B                                     platoon_updated_in[6],
+        //in  PlatoonPacket                         platoon_in[6],
+
+        //in  B                                     safety_distance_updated_bc_in[6],
+        //in  SafetyDistancePacket                  safety_distance_bc_in[6],
+        //in  B                                     safety_distance_updated_in[6],
+        //in  SafetyDistancePacket                  safety_distance_in[6],
+
+        //in  B                                     battery_level_updated_bc_in[6],
+        //in  BatteryLevelPacket                    battery_level_bc_in[6],
+        //in  B                                     battery_level_updated_in[6],
+        //in  BatteryLevelPacket                    battery_level_in[6],
+
+        //in  B                                     location_updated_bc_in[6],
+        //in  LocationPacket                        location_bc_in[6],
+        //in  B                                     location_updated_in[6],
+        //in  LocationPacket                        location_in[6],
+
+        //in  B                                     switching_lane_updated_bc_in[6],
+        //in  SwitchingLanePacket                   switching_lane_bc_in[6],
+        //in  B                                     switching_lane_updated_in[6],
+        //in  SwitchingLanePacket                   switching_lane_in[6],
+
+        //in  B                                     unsignalized_intersection_updated_bc_in[6],
+        //in  UnsignalizedIntersectionPacket        unsignalized_intersection_bc_in[6],
+        //in  B                                     unsignalized_intersection_updated_in[6],
+        //in  UnsignalizedIntersectionPacket        unsignalized_intersection_in[6],
+
+        in  Q (0.0 m/s : 0.01 m/s : oo m/s)       velocity,
+        in  Q (-oo m : 0.01 m : oo m)^2           position,
+        in  Q (-oo : 0.001 : oo)                  heading,
+
+        out B                                     state_updated_bc_out,
+        out StatePacket                           state_bc_out,
+
+        //out B                                     subject_updated_bc_out,
+        //out SubjectPacket                         subject_bc_out,
+        //out B                                     subject_updated_out[6],
+        //out SubjectPacket                         subject_out[6],
+
+        //out B                                     weather_updated_bc_out,
+        //out WeatherConditionPacket                weather_bc_out,
+        //out B                                     weather_updated_out[6],
+        //out WeatherConditionPacket                weather_out[6],
+
+        //out B                                     platoon_updated_bc_out,
+        //out PlatoonPacket                         platoon_bc_out,
+        //out B                                     platoon_updated_out[6],
+        //out PlatoonPacket                         platoon_out[6],
+
+        //out B                                     safety_distance_updated_bc_out,
+        //out SafetyDistancePacket                  safety_distance_bc_out,
+        //out B                                     safety_distance_updated_out[6],
+        //out SafetyDistancePacket                  safety_distance_out[6],
+
+        //out B                                     battery_level_updated_bc_out,
+        //out BatteryLevelPacket                    battery_level_bc_out,
+        //out B                                     battery_level_updated_out[6],
+        //out BatteryLevelPacket                    battery_level_out[6],
+
+        //out B                                     location_updated_bc_out,
+        //out LocationPacket                        location_bc_out,
+        //out B                                     location_updated_out[6],
+        //out LocationPacket                        location_out[6],
+
+        //out B                                     switching_lane_updated_bc_out,
+        //out SwitchingLanePacket                   switching_lane_bc_out,
+        //out B                                     switching_lane_updated_out[6],
+        //out SwitchingLanePacket                   switching_lane_out[6],
+
+        //out B                                     unsignalized_intersection_updated_bc_out,
+        //out UnsignalizedIntersectionPacket        unsignalized_intersection_bc_out,
+        //out B                                     unsignalized_intersection_updated_out[6],
+        //out UnsignalizedIntersectionPacket        unsignalized_intersection_out[6],
+        
+        out B                                     emergencyBraking;
+        
+        
+    // many communication scenarios are not yet finished and thereby commented out
+    
+    instance EmergencyBraking emergencyBrakingScenario;
+    //instance EmergencyCorridor emergencyCorridor;
+    //instance Platooning platooning;
+    //instance SwitchingLane switchLane;
+    instance StatePacketConverter converter;
+    
+    connect position            -> converter.position;
+    connect velocity            -> converter.velocity;
+    connect heading             -> converter.heading;
+    connect converter.state     -> state_bc_out;
+    connect converter.constTrue -> state_updated_bc_out;
+    
+    connect state_updated_bc_in[:] -> emergencyBrakingScenario.state_updated_in[:];
+    connect state_bc_in[:]         -> emergencyBrakingScenario.state_in[:];
+    connect converter.state        -> emergencyBrakingScenario.state_out;
+    connect emergencyBrakingScenario.emergency_braking -> emergencyBraking;
+
+    //connect subject_bc_in[:]                    -> emergencyCorridor.ec_in[:];
+    //connect subject_updated_bc_in[:]            -> emergencyCorridor.ec_updated_in[:];
+    //connect emergencyCorridor.ec_bc_out         -> subject_bc_out;
+    //connect emergencyCorridor.ec_updated_bc_out -> subject_updated_bc_out;
+
+    //connect platoon_bc_in[:]               -> platooning.plat_bc_in[:];
+    //connect platoon_updated_bc_in[:]       -> platooning.plat_updated_bc_in[:];
+    //connect platoon_in[:]                  -> platooning.plat_in[:];
+    //connect platoon_updated_in[:]          -> platooning.plat_updated_in[:];
+    //connect platooning.plat_bc_out         -> platoon_bc_out;
+    //connect platooning.plat_updated_bc_out -> platoon_updated_bc_out;
+    //connect platooning.plat_out[:]         -> platoon_out[:];
+    //connect platooning.plat_updated_out[:] -> platoon_updated_out[:];
+
+    //connect switching_lane_bc_in[:]         -> switchLane.sl_bc_in[:];
+    //connect switching_lane_updated_bc_in[:] -> switchLane.sl_updated_bc_in[:];
+    //connect switching_lane_in[:]            -> switchLane.sl_in[:];
+    //connect switching_lane_updated_in[:]    -> switchLane.sl_updated_in[:];
+    //connect switchLane.sl_bc_out            -> switching_lane_bc_out;
+    //connect switchLane.sl_updated_bc_out    -> switching_lane_updated_bc_out;
+    //connect switchLane.sl_out[:]            -> switching_lane_out[:];
+    //connect switchLane.sl_updated_out[:]    -> switching_lane_updated_out[:];
+}
