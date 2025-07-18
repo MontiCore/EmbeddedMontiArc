@@ -1,0 +1,6 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct WeatherConditionPacket {
+    Subject subject;
+    WeatherCondition weatherCondition;
+}
