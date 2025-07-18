@@ -1,0 +1,77 @@
+
+component ResnetSmall  {
+    ports in Z(0:255)^{3, 64, 64} data,
+        out Q(0:1)^{14} predictions;
+
+    implementation CNN {
+        def swish(){
+            (
+                [0]
+            |
+                Sigmoid() 
+            ) ->
+            BroadcastMultiply()
+        }
+
+        def depthwiseConv(kernel=kernel, stride, padding="same", idx) {
+            [idx] ->
+            Convolution(kernel=kernel, stride=stride, padding="same", channels=1)
+        }
+
+        def depthwiseSeparableConv(kernel=kernel, channels=channels, stride=(1,1), padding="same", inputChannels) {
+            Split(n=inputChannels) ->
+            depthwiseConv(kernel=kernel, stride=stride, padding="same", idx=[1|..|inputChannels -1]) ->
+            Concatenate() ->
+            Convolution(kernel=(1,1), channels=channels, stride=(1,1), padding="same") 
+        }
+
+        def conv(kernel=(3,3), channels, inputChannels){
+            (
+                [0]
+            |
+                depthwiseSeparableConv(kernel=kernel, channels=channels, stride=(1,1), padding="same", inputChannels=inputChannels) ->
+                BatchNorm() ->
+                swish() -> 
+                depthwiseSeparableConv(kernel=kernel, channels=channels, stride=(1,1), padding="same", inputChannels=inputChannels)   
+            ) ->
+            Add() ->
+            BatchNorm() ->
+            swish()
+        }
+
+        def convFirst(kernel=(3,3), channels, stride=(1,1), inputChannels=inputChannels){
+            (
+                [0] ->
+                Convolution(kernel=(1,1), channels=channels, stride=stride, padding="same")
+            |
+                [0] ->
+                depthwiseSeparableConv(kernel=kernel, channels=channels, stride=stride, padding="same", inputChannels=inputChannels) ->
+                BatchNorm() ->
+                swish() -> 
+                depthwiseSeparableConv(kernel=kernel, channels=channels, stride=(1,1), padding="same", inputChannels=inputChannels)  
+            ) ->
+            Add() ->
+            BatchNorm() ->
+            swish()
+        }    
+
+
+        data ->
+        depthwiseSeparableConv(kernel=(3,3), inputChannels=3, channels=64, stride=(1,1)) ->
+        BatchNorm() ->
+        swish() ->
+        Pooling(pool_type="max", kernel=(3,3), stride=(1,1)) ->
+        convFirst(channels=64, inputChannels=64) ->
+        conv(channels=64, inputChannels=64) ->
+        convFirst(channels=128, stride=(2,2), inputChannels=64) ->
+        conv(channels=128, inputChannels=128) ->
+        convFirst(channels=256, stride=(2,2), inputChannels=128) ->
+        conv(channels=256, inputChannels=256) ->
+        convFirst(channels=512, stride=(2,2), inputChannels=256) ->
+        conv(channels=512, inputChannels=512) ->
+        GlobalPooling(pool_type="avg") ->
+        FullyConnected(units=14) ->
+        Sigmoid() ->
+        predictions;
+    }
+}

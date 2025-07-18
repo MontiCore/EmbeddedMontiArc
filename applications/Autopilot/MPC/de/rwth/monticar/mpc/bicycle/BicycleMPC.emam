@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Kinematic Bicycle model
+
+package de.rwth.monticar.mpc.bicycle;
+
+component BicycleMPC<Q dt = 0.05>
+{
+    ports
+        // state vector z
+        in Q                                        x,
+        in Q                                        y,
+        in Q                                        yaw,
+        in Q (0.0 m/s : 0.01 m/s : oo m/s)          v,
+
+        // reference trajectory
+        in Q^{4, 5}                                 z_ref,
+		in Q 										x_previous,
+		in Q 										y_previous,
+		
+
+		out Q										x_out,									
+		out Q										y_out,				
+        out Q (-1 : 1)              				a,
+        out Q (-6 rad : 3 rad : 6 rad)  			steering;
+
+    implementation Math
+    {
+        // workaround for generator bug -> declare generic type arguments
+        Q dt = 0.05 s;
+        Q l_f = 1.07;
+        Q l_r = 1.605;
+		Q yw= 256;
+		Q xyw= 64;
+		Q Aw= 1;
+		
+		x_out = x;
+		y_out = y;
+
+		Q^{4} z;
+			z(1) = x;
+			z(2) = y;
+			z(3) = atan2((x - x_previous), (y - y_previous));
+			z(4) = v;
+		
+        // static bounds on u
+        Q^{2} u_min = [-1; -0.785];
+        Q^{2} u_max = [1; 0.785];
+   
+			
+	
+       Q mpcost = minimize(Q^{2, 2} u)
+			(abs((z(1) + z(4)*sin(z(3))*dt) - z_ref(1,1)) + abs((z(1) + z(4)*sin(z(3))*dt + (z(4) + u(1,1)*dt)*sin(z(3) + (z(4)/l_f)*u(2,1)*dt)*dt) - z_ref(1,2)))*xyw +
+			(abs((z(2) + z(4)*cos(z(3))*dt) - z_ref(2,1)) + abs((z(2) + z(4)*cos(z(3))*dt + (z(4)+u(1,1)*dt)*cos(z(3) + (z(4)/l_f)*u(2,1)*dt)*dt) - z_ref(2,2)))*xyw + 
+			(abs((z(3) + (z(4)/l_f)*u(2,1)*dt) - z_ref(3,1)) + abs((z(3) + (z(4)/l_f)*u(2,1)*dt + ((z(4)+u(1,1)*dt)/l_f)*u(2,2)*dt) -z_ref(3,2)))*yw +
+			(abs((z(4) + u(1,1)*dt) - z_ref(4,1)) + abs((z(4) + u(1,1)*dt + u(1,2)*dt) - z_ref(4,2)))*Aw;
+			
+        subject to
+            u_min(1) <= u(1,1) <= u_max(1);
+            u_min(2) <= u(2,1) <= u_max(2);
+			u_min(1) <= u(1,2) <= u_max(1);
+            u_min(2) <= u(2,2) <= u_max(2);
+			
+        end
+		
+        // assign output
+        a= u(1,1);
+        steering= u(2,1);
+    }
+}	

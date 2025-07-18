@@ -1,0 +1,61 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-4 {
+  component FAS {
+    ports
+	  in ? Distance_Object_m,
+	  in ? V_Obj_rel_kmh,
+	  in ? V_Vehicle_kmh,
+	  out ? BrakeForce_pc;
+	  
+	  component Distronic {
+	    ports
+		  in ? Distance_Object_m,
+		  in ? V_Obj_rel_kmh,
+		  in ? V_Vehicle_ms,
+		  out ? BrakeForce_Distronic_pc;
+	  }
+	  instance Distronic distronic;
+	  
+	  component EmergencyBrake {
+	    ports
+		  in ? Distance_Object_m,
+		  in ? V_Obj_rel_ms,
+		  in ? V_Vehicle_ms,
+		  out ? BrakeForce_Emergency_pc;
+	  }
+	  instance EmergencyBrake emBrake;
+	  
+	  component VelocityControl {
+	    ports
+		  in ? BrakeForce_Distronic_pc,
+		  in ? BrakeForce_Emergency_pc,
+		  out ? BrakeForce_pc;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  connect Distance_Object_m -> distronic.Distance_Object_m;
+	  connect Distance_Object_m -> emBrake.Distance_Object_m;
+	  connect V_Obj_rel_kmh -> distronic.V_Obj_rel_kmh;
+	  
+	  connect distronic.BrakeForce_Distronic_pc -> veloCont.BrakeForce_Distronic_pc;
+	  connect emBrake.BrakeForce_Emergency_pc -> veloCont.BrakeForce_Emergency_pc;
+	  
+	  connect veloCont.BrakeForce_pc -> BrakeForce_pc;
+	  
+	  effect V_Vehicle_kmh -> distronic.V_Vehicle_ms;
+	  effect V_Vehicle_kmh -> emBrake.V_Vehicle_ms;
+	  
+	  effect V_Obj_rel_kmh -> emBrake.V_Obj_rel_ms;
+	  
+	  effect distronic.Distance_Object_m -> veloCont.BrakeForce_pc;
+	  effect distronic.V_Obj_rel_kmh -> veloCont.BrakeForce_pc;
+	  effect distronic.V_Vehicle_ms -> veloCont.BrakeForce_pc;
+	  
+	  effect emBrake.Distance_Object_m -> veloCont.BrakeForce_pc;
+	  effect emBrake.V_Obj_rel_ms -> veloCont.BrakeForce_pc;
+	  effect emBrake.V_Vehicle_ms -> veloCont.BrakeForce_pc;
+	  
+  }
+}

@@ -1,0 +1,151 @@
+/* (c) https://github.com/MontiCore/monticore */
+.expandChildren-control {
+    width: 200px;
+}
+
+.atomicImage0 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.atomicImage1 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both2.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.atomicImage2 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both3.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.atomicImage3 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both4.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.atomicImage4 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both5.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.atomicImage5 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both6.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.atomicImage6 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_both7.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage0 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage0{
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_asc.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage1 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc2.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage1{
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_asc2.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage2 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc3.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage2{
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_asc3.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage3 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc4.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage3{
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_asc4.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage4 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc5.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage4{
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_asc5.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage5 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc6.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage5{
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_asc6.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.depthImage6 {
+    width: auto;
+    height: 19px;
+    background: url('../images/sort_desc7.png') no-repeat left center;
+    background-size: auto 19px;
+}
+
+.childrenShown .depthImage6{
+    width: 133px;
+    height: 19px;
+    background: url('../images/sort_asc7.png') no-repeat left center;
+    background-size: auto 19px;
+}

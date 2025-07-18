@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package bipedalwalker.agent;
+
+component WalkerCritic {
+    ports
+        in Q^{24} state,
+        in Q(-1:1)^{4} action,
+        out Q(-oo:oo)^{1} qvalues;
+    
+    implementation CNN {
+        (state | action) -> 
+        Concatenate() ->
+        FullyConnected(units=400) ->
+        Relu() ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=1) ->
+        qvalues;
+    }
+}

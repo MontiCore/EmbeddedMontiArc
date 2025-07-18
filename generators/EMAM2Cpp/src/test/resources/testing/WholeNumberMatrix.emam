@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component WholeNumberMatrix{
+    ports in Z^{3,3} matrix,
+          in Z^{3} columnVector;
+
+    implementation Math{
+        Z^{3,3} varMatrix;
+        Z^{3} varColumnVector;
+    }
+
+}

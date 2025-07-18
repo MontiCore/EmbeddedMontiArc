@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+view OldDesign {
+
+    component Body {
+        component Actuator { }
+        instance Actuator actuator;
+        
+        component Cylinder {
+            port
+                in int angle;
+        }
+        instance Cylinder cylinder;
+    }
+    instance Body body;
+    
+    connect actuator -> cylinder.angle;
+}

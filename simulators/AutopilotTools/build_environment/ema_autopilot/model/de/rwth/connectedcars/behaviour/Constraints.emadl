@@ -1,0 +1,19 @@
+package de.rwth.connectedcars.behaviour;
+
+component Constraints {
+
+  port
+      in  Q (0 km/h : oo km/h) ^ 9  maxAllVelocity,
+      in  Q (0 km/h : oo km/h) ^ 9  minAllVelocity,
+      
+      out Q (0 m/s : oo m/s) ^ 9    maxVelocity,
+      out Q (0 m/s : oo m/s) ^ 9    minVelocity;
+      
+  
+  implementation Math{
+    for i = 1:9
+      maxVelocity = maxAllVelocity /3.6;
+      minVelocity(i) = 0 m/s;
+    end
+  }  
+}

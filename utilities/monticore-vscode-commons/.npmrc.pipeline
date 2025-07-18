@@ -1,0 +1,3 @@
+@monticore:registry=https://git.rwth-aachen.de/api/v4/packages/npm/
+//git.rwth-aachen.de/api/v4/packages/npm/:_authToken=${CI_JOB_TOKEN}
+//git.rwth-aachen.de/api/v4/projects/38416/packages/npm/:_authToken=${CI_JOB_TOKEN}

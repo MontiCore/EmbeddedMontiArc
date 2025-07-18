@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+component NestedLoopComponent {
+    ports
+        in Boolean in1,
+        out Boolean out1;
+    
+    component SubComponent1 {
+        ports
+            in Boolean in1,
+            in Boolean in2,
+            in Boolean in3,
+            out Boolean out1,
+            out Boolean out2;
+    }
+    instance SubComponent1 subComponent1;
+    
+    component SubComponent2 {
+        ports
+            in Boolean in1,
+            out Boolean out1,
+            out Boolean out2;
+    }
+    instance SubComponent2 subComponent2;
+    
+    component SubComponent3 {
+        ports
+            in Boolean in1,
+            out Boolean out1;
+    }
+    instance SubComponent3 subComponent3;
+    
+    connect in1 -> subComponent1.in2;
+    connect subComponent1.out1 -> subComponent3.in1;
+    connect subComponent3.out1 -> subComponent1.in1;
+    connect subComponent1.out2 -> subComponent2.in1;
+    connect subComponent2.out1 -> out1;
+    connect subComponent2.out2 -> subComponent1.in3;
+}

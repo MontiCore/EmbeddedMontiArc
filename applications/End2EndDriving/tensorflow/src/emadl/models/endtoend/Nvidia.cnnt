@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Nvidia{
+     num_epoch:2
+     batch_size:20
+     normalize:true
+     context:gpu
+     load_checkpoint:false
+     loss:l2
+     optimizer:adam{
+     }
+}

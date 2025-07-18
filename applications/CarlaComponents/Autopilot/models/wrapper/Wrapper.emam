@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+package wrapper;
+import wrapper.structures.*;
+import wrapper.CalculateWrappedValues;
+import wrapper.CalculateWrappedOutValues;
+import autopilot.de.rwth.armin.modeling.autopilot.Autopilot;
+
+component Wrapper{
+
+	ports 	in Vehicle_Status vehicle_status,
+
+		in Z (0:100) trajectory_length,
+		in Q (-oo m : 0.01 m : oo m) ^ {1,100} trajectory_x,
+		in Q (-oo m : 0.01 m : oo m) ^ {1,100} trajectory_y,
+
+		out Ego_Vehicle vehicle_control;
+
+
+	//Connections for CARLA to Autopilot:
+
+	instance CalculateWrappedValues cwv;
+	instance Autopilot autopilot;
+	instance CalculateWrapperOutValues cwvOut;
+
+	connect vehicle_status			->	cwv.vehicle_status;
+
+	connect cwv.timeIncrement		->	autopilot.timeIncrement;
+	
+	connect cwv.throttle			-> 	autopilot.currentEngine;
+	connect cwv.steer				->	autopilot.currentSteering;
+	connect cwv.brake				->	autopilot.currentBrakes;
+	
+	connect cwv.velocity			-> 	autopilot.currentVelocity;
+	connect cwv.pos_x				-> 	autopilot.x;
+	connect cwv.pos_y				-> 	autopilot.y;
+	connect cwv.compass				-> 	autopilot.compass;
+
+	connect trajectory_x			->	autopilot.trajectory_x;
+	connect trajectory_y			->	autopilot.trajectory_y;
+	connect trajectory_length		->	autopilot.trajectory_length;
+
+	//Connections for Autopilot to CARLA:
+
+	connect autopilot.engine 		->	cwvOut.calculated_throttle;
+	connect autopilot.steering		->	cwvOut.calculated_steer;
+	connect autopilot.brakes		->	cwvOut.calculated_brake;
+
+	connect cwvOut.vehicle_control	->	vehicle_control;
+}

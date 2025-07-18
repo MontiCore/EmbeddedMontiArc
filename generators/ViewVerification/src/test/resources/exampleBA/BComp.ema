@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package exampleBA;
+
+component BComp {
+	ports 
+		in Boolean in1,
+		out Boolean out1,
+		out Boolean out2;
+		
+	instance CComp ccomp;
+	instance DComp dcomp3;
+	
+	connect in1 -> ccomp.in1;
+	connect ccomp.out1 -> out1;
+	connect ccomp.out2 -> dcomp3.in1;
+	connect dcomp3.out1 -> out2;
+}

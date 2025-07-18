@@ -1,0 +1,15 @@
+// negative 
+// aggregated value in model: 2 W
+
+package example.negative;
+
+component Sensors
+/* [LatencyCmp = 5 s, PowerCmp = 1 W] */
+{
+
+  ports
+    in Boolean s_controlSignalsIn,
+    out Boolean dataSaveInternalOut,
+    out Boolean dataAntennaOut;
+
+}

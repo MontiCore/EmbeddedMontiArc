@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package emam.test;
+
+component Specification {
+    port
+        out Q out1;
+
+    implementation Math {
+        symbolic Q var1;
+
+        out1(t=0) = 1;
+        var1(t=0) ~= 2;
+
+        out1 == var1;
+        var1 == 2;
+    }
+}

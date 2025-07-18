@@ -1,0 +1,20 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<mat-form-field color="accent">
+    <input matInput placeholder="Comment" [(ngModel)]="state.comment">
+    <mat-hint>A comment describing the nature of the artifact (e.g EMAM2CPP).</mat-hint>
+</mat-form-field>
+<mat-form-field floatLabel="always" class="mat-form-field--no-underline" color="accent">
+    <input matInput placeholder="Platforms" class="hidden">
+    <mat-checkbox (change)="onWindowsChange($event)" [checked]="isForWindows">Windows</mat-checkbox>
+    <mat-checkbox (change)="onLinuxChange($event)" [checked]="isForLinux">Linux</mat-checkbox>
+    <mat-hint>The platforms for which the artifact should be downloaded.</mat-hint>
+</mat-form-field>
+<mat-form-field color="accent">
+    <input matInput placeholder="From" [(ngModel)]="state.from" #from="ngModel">
+    <mat-hint>The URL from which the ZIP archive should be downloaded.</mat-hint>
+    <mat-error *ngIf="state.hasErrorWithControl('from', from.control)">{{state.getError('from')}}</mat-error>
+</mat-form-field>
+<mat-form-field color="accent">
+    <input matInput placeholder="To" [(ngModel)]="state.to">
+    <mat-hint>The destination to which the ZIP archive should be decompressed (often just 'resources').</mat-hint>
+</mat-form-field>

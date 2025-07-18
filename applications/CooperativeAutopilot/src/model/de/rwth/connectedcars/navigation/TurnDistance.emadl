@@ -1,0 +1,88 @@
+package de.rwth.connectedcars.navigation;
+
+component TurnDistance {
+
+  port 
+      in  Q (-oo m : oo m)        nextDirection_x,
+      in  Q (-oo m : oo m)        nextDirection_y,
+      in  N (0:10)                driveToSegment,
+      in  Q (-oo m : oo m) ^ 10   traj_x,
+      in  Q (-oo m : oo m) ^ 10   traj_y,
+      in  Q (0:10)                traj_length,
+      in  Q (0:180)               critTurnAngle,
+      in  Q (-oo m : oo m)        closestPointX,
+      in  Q (-oo m : oo m)        closestPointY,
+      
+      out Q (0 m : oo m)          dist2critAngle,
+      out Q (-180 : 180)          nextTurnAngle; //Turn angle negative indicates drive to last point
+      
+  implementation Math{
+  
+  //calculate next critical turn angle and distance
+    Q x; //x and y used as temporary variables
+    Q y;
+    
+    if traj_length == 1
+        nextTurnAngle = -180;
+        dist2critAngle = sqrt(nextDirection_x * nextDirection_x + nextDirection_y * nextDirection_y);
+        
+    else
+        Q ^ 10 trajj_x = traj_x;
+        Q ^ 10 trajj_y = traj_y;
+        Q absDif = 180;
+        Q (0 m : oo m) dist = 500 m;
+        N (0:10) limit = traj_length - driveToSegment;
+        N (0:1) done = 0;
+        
+        for i = 1:limit
+            if done == 0
+              Q street1; //angle of first street
+              Q street2; //angle of second street
+              
+              if i == 1    
+                  //calc angles of streets
+                  street1 = atan2(-nextDirection_y, -nextDirection_x);
+                  street2 = atan2(trajj_y(driveToSegment + 1) - closestPointY, trajj_x(driveToSegment + 1) - closestPointX);
+                  
+                  //calc distance to intersection
+                  dist = sqrt((nextDirection_x * nextDirection_x) + (nextDirection_y * nextDirection_y));
+                  absDif = abs(street1 - street2);
+              else             
+                  //calc angles of streets
+                  y = -1*(trajj_y(driveToSegment + i-1) - trajj_y(driveToSegment + i-2));
+                  x = -1*(trajj_x(driveToSegment + i-1) - trajj_x(driveToSegment + i-2));
+                  street1 = atan2(y,x);
+                  
+                  y = trajj_y(driveToSegment + i) - trajj_y(driveToSegment + i-1);
+                  x = trajj_x(driveToSegment + i) - trajj_x(driveToSegment + i-1);
+                  street2 = atan2(y,x);
+                  
+                  //calc new distance to intersection
+                  y = (trajj_y(driveToSegment + i-1) - trajj_y(driveToSegment + i-2));
+                  x = (trajj_x(driveToSegment + i-1) - trajj_x(driveToSegment + i-2));
+                  dist = dist + sqrt(x*x + y*y);
+                  absDif = abs(street1 - street2);
+              end
+             
+              //need to correct angle if >180 degrees
+              if absDif > M_PI
+                  absDif = 2 * M_PI - absDif;
+              end
+                  absDif = (absDif/(M_PI)) * 180;
+              
+              //done if turn with critical angle found
+              if dist > 200 m || absDif < critTurnAngle
+                  done = 1;
+              end
+            
+            end
+            
+        end
+            
+        nextTurnAngle = absDif;
+        dist2critAngle = dist;
+    
+    end
+  }
+  
+}

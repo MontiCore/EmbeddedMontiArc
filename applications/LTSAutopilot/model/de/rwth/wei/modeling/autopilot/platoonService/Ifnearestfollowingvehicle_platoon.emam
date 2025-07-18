@@ -1,0 +1,152 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Ifnearestfollowingvehicle_platoon{
+  ports
+  dynamic in Statusmessage      status_msg[0:32],
+  dynamic in Platoonmessage     plat_msg[0:32],
+
+  in Z^{1,32}          new_vehicleid,
+  in Z^{1,32}          new_jointvehicleid,
+  in Q^{1,32}          new_position_x,
+  in Q^{1,32}          new_position_y,
+  in Z^{1,32}          new_currentstate,
+  in Z^{1,32}          new_platoon_num,
+  in Z^{32,100}        new_platoonlist,
+  in Z                 vehicle_num,
+  in Q                 position_x,
+  in Q                 position_y,
+
+  in Z^{1,100}         currentplatoonlist,
+  in Z                 currentplatoon_member_num,
+
+
+  out Z                if_followrequest,
+  out Z                platoon_num,
+  out Z^{1,100}        platoonlist,
+  out Platoonmessage   pmsg,
+  out Statusmessage    smsg;
+
+  @ status_msg::connect{}
+  @ plat_msg::connect{}
+
+  implementation Math{
+    if_followrequest = 0;
+    platoon_num = 0;
+    platoonlist(1,1) = 0;
+    Q maximaldis = 99999.0;
+    Z ifplatoonfollows = 0;
+    Q position_x_car1 = 0.0;
+    Q position_y_car1 = 0.0;
+    Z followid = 0;
+    platoon_num = currentplatoon_member_num;
+    currentplatoonlist = currentplatoonlist;
+
+    if vehicle_num >= 1
+       for i = 1:vehicle_num
+          Q dx = new_position_x(1,i);
+          Q dy = new_position_y(1,i);
+          Q sqrt_dis = (dx - position_x)*(dx - position_x) +(dy - position_y)*(dy - position_y);
+          Q dis = sqrt(sqrt_dis);
+          if dis < maximaldis && new_jointvehicleid(1,i) == vehicleid
+             ifplatoonfollows = new_currentstate(1,i);
+             followid = new_vehicleid(1,i);
+             position_x_car1 = new_position_x(1,i);
+             position_y_car1 = new_position_y(1,i);
+             platoon_num = new_platoon_num(1,i);
+             for kk = 1:platoon_num
+               platoonlist(1,(kk + currentplatoon_member_num)) = new_platoonlist(i,kk);
+             end
+             platoon_num = platoon_num + currentplatoon_member_num;
+             if_followrequest = 1;
+          end
+       end
+    end
+   // there is no other platoon between
+   for i = 1:32
+      if is_connected(plat_msg,i)
+         pmsg = plat_msg(i);
+         if pmsg.vehicleid != followid
+             Q Px = pmsg.position_x;
+             Q Py = pmsg.position_y;
+             // Line segment AB
+             Q Ax = position_x;
+             Q Ay = position_y;
+             Q Bx = position_x_car1;
+             Q By = position_y_car1;
+             // AP·AB
+             Q cross = (Bx - Ax)*(Px - Ax)+(By - Ay)*(Py - Ay);
+             // sqrt of mode of AB
+             Q d2 = (Bx - Ax)*(Bx - Ax)+(By - Ay)*(By - Ay);
+             Q r = cross/d2;
+             Q dis_pab = 0.0;
+             if r <= 0.0
+               // short distance is AP
+               Q sqrt_dis = (Px - Ax)*(Px - Ax)+(Py - Ay)*(Py - Ay);
+               dis_pab = sqrt(sqrt_dis);
+             elseif r >= 1.0
+               // short distance is BP
+               Q sqrt_dis1 = (Px - Ax)*(Px - Ax)+(Py - Ay)*(Py - Ay);
+               dis_pab = sqrt(sqrt_dis1);
+             else
+               // short distance is CP , C on AB
+               Q dx = Ax + (Bx - Ax) * r;
+               Q dy = Ay + (By - Ay) * r;
+               Q sqrt_dis2 = (Px - dx)*(Px - dx)+(Py - dy)*(Py - dy);
+               dis_pab = sqrt(sqrt_dis2);
+             end
+             if dis_pab < 1
+                if_followrequest = 0;
+             end
+         end
+      end
+   end
+    // there is no other vehicle between
+   for j = 1:32
+       if is_connected(status_msg,j)
+          smsg = status_msg(j);
+          B tag = 1;
+          for i1 = 1:currentplatoon_member_num
+              if smsg.vehicleid == currentplatoonlist(1,i1)
+                 tag = 0;
+              end
+          end
+          if smsg.vehicleid != followid && tag == 1
+              Q Px = smsg.position_x;
+              Q Py = smsg.position_y;
+              // Line segment AB
+              Q Ax = position_x;
+              Q Ay = position_y;
+              Q Bx = position_x_car1;
+              Q By = position_y_car1;
+              // AP·AB
+              Q cross = (Bx - Ax)*(Px - Ax)+(By - Ay)*(Py - Ay);
+              // sqrt of mode of AB
+              Q d2 = (Bx - Ax)*(Bx - Ax)+(By - Ay)*(By - Ay);
+              Q r = cross/d2;
+              Q dis_pab = 0.0;
+              if r <= 0.0
+                // short distance is AP
+                Q sqrt_dis = (Px - Ax)*(Px - Ax)+(Py - Ay)*(Py - Ay);
+                dis_pab = sqrt(sqrt_dis);
+              elseif r >= 1.0
+                // short distance is BP
+                Q sqrt_dis1 = (Px - Ax)*(Px - Ax)+(Py - Ay)*(Py - Ay);
+                dis_pab = sqrt(sqrt_dis1);
+              else
+                // short distance is CP , C on AB
+                Q dx = Ax + (Bx - Ax) * r;
+                Q dy = Ay + (By - Ay) * r;
+                Q sqrt_dis2 = (Px - dx)*(Px - dx)+(Py - dy)*(Py - dy);
+                dis_pab = sqrt(sqrt_dis2);
+              end
+              if dis_pab < 1.5
+                 if_followrequest = 0;
+              end
+          end
+       end
+   end
+
+  }
+}

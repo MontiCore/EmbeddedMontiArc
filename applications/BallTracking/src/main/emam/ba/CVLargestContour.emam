@@ -1,0 +1,11 @@
+package ba;
+
+component CVLargestContour{
+    port
+    in Q contours,
+    out Q lContour;
+
+    implementation Math{
+        lContour = largestContour(contours);
+    }
+}
