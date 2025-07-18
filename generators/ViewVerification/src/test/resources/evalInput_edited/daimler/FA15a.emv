@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package daimler;
+
+view FA15a {
+
+  component EmergencyBrake {
+  }
+  instance EmergencyBrake emergencyBrake;
+  
+  component VelocityControl {
+  }
+  instance VelocityControl velocityControl;
+  
+  effect emergencyBrake -> velocityControl;
+}

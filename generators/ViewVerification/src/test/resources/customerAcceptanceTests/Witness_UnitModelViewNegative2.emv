@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view Witness_UnitModelViewNegative2 {
+component UnitModel {
+	ports out (-1 km/h : 5 km/h) velocity;
+}
+}
