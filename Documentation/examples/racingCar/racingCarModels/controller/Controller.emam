@@ -1,0 +1,110 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+import BrakeComputation;
+import carInfo;
+import ErrorSummation;
+import extractTuple;
+import gasPedalScale;
+import Gearcomputation;
+import MaxSpeedPerSegmentComputation;
+import PID;
+import PIDTupleAggregation;
+import Point;
+import roadInfo;
+import SteerComputation;
+import steerScale;
+import Subtract;
+import targetSpeedComputation;
+
+component Controller{
+	ports 
+		in Q(-45° : 0.001° : 45°) steering,
+		in Point targetPos,
+		in Point currPos,
+		in Q(-180° : 0.001° : 180°) carYaw,
+		in Z(-1:1:6) currGear,
+		in carInfo carSpecs,
+		in Q(0 m/s : 0.001 m/s : 75 m/s) currVelocity,
+		in Q(0 m/s : 0.001 m/s : 75 m/s) allowedSpeed,
+		in roadInfo roadSpecs[20],
+		in Q(0 : 0.0001 :1 ) gasPedal,
+		in PIDTupleAggregation  PIDParams,
+		in Z(0 : 1 : 300) currLap,
+	
+		out Q(-45°:0.001°:45°) steering,
+		out Q(0:0.0001:1) gasPedal,
+		out Z(-1:1:6) gear,
+		out Q(0:0.0001:1) brakePedal,
+		out Q(0:0.01:oo) errors, 
+		out Z(0:1:300) lap;	
+
+		instance SteerComputation steerComputation;
+		instance Gearcomputation gearcomputation;
+		instance MaxSpeedPerSegmentComputation maxSpeedPerSegmentComputation;
+		instance TargetSpeedComputation targetSpeedComputation;
+		instance BrakeComputation brakeComputation;
+		instance Subtract subtractSteer;
+		instance Subtract subtractSpeed;
+		instance Subtract subtractAccel;
+		instance SteerScale steerScale;
+		instance GasPedalScale gasPedalScale;
+		instance ErrorSummation errorSummation;
+		instance ExtraTuple<0> extractSteer;
+		instance ExtraTuple<1> extractSpeed;
+		instance ExtraTuple<2> extractAccel;
+		instance PID pidSteer;
+		instance PID pidSpeed;
+		instance PID pidAccel;
+
+		connect steering -> subtractSteer.targetVal;
+		connect targetPos -> steerComputation.targetPoint;
+		connect currPos -> steerComputation.currPos;
+		connect carYaw -> steerComputation.carYaw;
+		connect currGear -> gearcomputation.currGear;
+		connect carSpecs -> gearcomputation.carSpecs;
+		connect currVelocity -> gearcomputation.currSpeed;
+		connect currVelocity -> brakeComputation.currSpeed;
+		connect currVelocity -> subtractSpeed.targetVal;
+		connect allowedSpeed -> targetSpeedComputation.allowedSpeed;
+		connect allowedSpeed -> brakeComputation.allowedSpeed;
+		connect roadSpecs[:] -> maxSpeedPerSegmentComputation.segments[:];
+		connect roadSpecs[:] -> brakeComputation.segments[:];
+		connect gasPedal -> subtractAccel.targetVal;
+
+		connect PIDParams -> extractSteer.tupleAgg;
+		connect extractSteer.tuple -> pidSteer.tuple;
+
+		connect PIDParams -> extractSpeed.tupleAgg;
+		connect extractSpeed.tuple -> pidSpeed.tuple;
+
+		connect PIDParams -> extractAccel.tupleAgg;
+		connect extractAccel.tuple -> pidAccel.tuple;
+
+		
+		connect steerComputation.targetSteerAngle -> subtractSteer.mesuredVal;
+		connect targetSpeedComputation.desiredSpeed -> subtractSpeed.mesuredVal;
+		connect maxSpeedPerSegmentComputation[:] -> brakeComputation.maxSpeed[:];
+		connect maxSpeedPerSegmentComputation[:] -> targetSpeedComputation.maxSpeed[:];
+		
+		connect brakeComputation.brakePedal -> brakePedal;
+		
+		connect subtractSteer.errorVal -> pidsteer.error;
+		connect pidsteer.output -> steerScale.unscaledSteering;
+		connect steerScale.steering -> steering;
+		
+		connect subtractSpeed.errorVal -> pidspeed.error;
+		connect pidspeed.output -> subtractAccel.mesuredVal;
+		connect subtractAccel.errorVal -> pidAccel.error;
+		connect pidAccel.output -> gasPedalScale.unscaledGasPedal;
+		connect gasPedalScale.gasPedal -> gasPedal;
+		
+		connect subtractAccel.errorVal -> ErrorSummation.error1;
+		connect subtractAccel.errorVal -> ErrorSummation.error2;
+		connect subtractAccel.errorVal -> ErrorSummation.error3;
+		
+		connect ErrorSummation.errorSum -> errors;
+
+		connect lap -> currLap;
+	
+
+}
