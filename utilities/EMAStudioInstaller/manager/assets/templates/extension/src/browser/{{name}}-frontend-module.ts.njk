@@ -1,0 +1,28 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+import { ContainerModule } from "inversify";
+import { {{context.name}}MenuContribution } from "./{{context.name | lower}}-menu-contribution";
+import { {{context.name}}CommandContribution } from "./{{context.name | lower}}-command-contribution";
+import { {{context.name}}Conditions } from "./{{context.name | lower}}-conditions";
+import { CommandContribution } from "@theia/core/lib/common";
+import { MenuContribution } from "@theia/core/lib/common";
+
+import "../../src/browser/style/index.css";
+
+export default new ContainerModule(bind => {
+    bind({{context.name}}Conditions).toSelf().inSingletonScope();
+
+    bind({{context.name}}CommandContribution).toSelf().inSingletonScope();
+    bind(CommandContribution).toDynamicValue(
+        ctx => ctx.container.get({{context.name}}CommandContribution)
+    ).inSingletonScope();
+
+    bind({{context.name}}MenuContribution).toSelf().inSingletonScope();
+    bind(MenuContribution).toDynamicValue(
+        ctx => ctx.container.get({{context.name}}MenuContribution)
+    ).inSingletonScope();
+});
