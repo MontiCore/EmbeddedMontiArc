@@ -1,0 +1,14 @@
+architecture DGLNetwork{
+    def input Q(0:1)^{2708, 2708} graph
+    def input Q(0:1)^{2708, 1433} features
+    def output Q(0:oo)^{2708, 7} predictions
+
+    layer Relu() layerOne;
+
+    (graph | features) ->
+    GraphConv(input_dim=1433, output_dim=16, nodes=2708) ->
+    layerOne ;
+    (graph | layerOne.output) ->
+    GraphConv(input_dim=16, output_dim=7, nodes=2708) ->
+    predictions;
+}
