@@ -20,25 +20,6 @@
 
   <profiles>
     <profile>
-      <id>sonar</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <properties>
-        <!-- Optional URL to server. Default value is http://localhost:9000 -->
-        <sonar.host.url>
-          https://metric.se.rwth-aachen.de
-        </sonar.host.url>
-        <sonar.login>
-      jenkins
-    </sonar.login>
-    <sonar.password>
-      ${env.sonar}
-    </sonar.password>
-      </properties>
-    </profile>
-  
-    <profile>
       <id>se-nexus</id>
       <!-- enable snapshots for the built in central repo to direct -->
       <!-- all requests to nexus via the mirror -->
