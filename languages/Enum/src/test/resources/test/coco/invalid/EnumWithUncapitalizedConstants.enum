@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.coco.invalid;
+
+enum EnumWithUncapitalizedConstants {
+  CONSTANT1 |  COnstANT2
+}
