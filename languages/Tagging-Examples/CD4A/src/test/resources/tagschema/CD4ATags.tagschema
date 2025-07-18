@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tagschema;
+
+import de.monticore.umlcd4a.symboltable.*;
+
+tagschema CD4ATags {
+  tagtype ClassTag:String for CDType;
+  tagtype VariableTag:String for CDField;
+}
+
+// This file is only needed for documentation purposes and the TaggingGenrator,
+// which generated CD4ATags.java *TagSymbol.java and *TagSymbolCreator.java
