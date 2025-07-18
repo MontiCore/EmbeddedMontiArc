@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component SensorReading {
+  ports
+	in Boolean button,
+	in Z level1,
+	in Boolean pump,
+	in Z valve,
+	out Boolean pumpState,
+	out Enum userButtonOut,
+	out Q valvePosition,
+	out Z waterLevel1;
+  
+
+  instance PumpSensorReader pumpSensorReader;
+  instance UserButtonReader userButtonReader;
+  instance TankSensorReader tankSensorReader;
+  instance ValveSensorReader valveSensorReader;
+  
+  connect pump -> pumpSensorReader.pump;
+  connect pumpSensorReader.pumpState -> pumpState;
+  
+  connect button -> userButtonReader.button;
+  connect userButtonReader.userButton -> userButtonOut;
+
+  connect level1 -> tankSensorReader.level1;
+  connect tankSensorReader.waterLevel1 -> waterLevel1;
+  
+  connect valve -> valveSensorReader.valve;
+  connect valveSensorReader.valvePosition -> valvePosition;
+}
+   
