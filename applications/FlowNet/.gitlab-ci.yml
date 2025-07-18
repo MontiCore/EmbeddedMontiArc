@@ -1,0 +1,13 @@
+# (c) https://github.com/MontiCore/monticore  
+variables:
+ GIT_DEPTH: 1
+
+stages:
+- linux
+
+TestTENSORFLOW:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/flownet
+  script:
+  - cd tensorflow
+  - ./build.sh
