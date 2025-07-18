@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.collisionavoidanceService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+
+dynamic component CollisionavoidanceService_helper{
+  ports
+
+    in  Q           position_x,
+    in  Q           position_y,
+    in  Z           trajectorylength,
+    in  Q^{1,100}   trajectory_x,
+    in  Q^{1,100}   trajectory_y,
+    in  Q           compass,
+    in  Q           length,
+    in  Q           width,
+    in  B           status,
+    in  B           isplatoonheader,
+
+    // dynamic ports
+    dynamic in Statusmessage status_message[0:32],
+    // output is maximal velocity
+    out Q maximalallowedvelocity;
+
+    instance collisionpoint coll[0:32];
+    instance collision_velocity  cv;
+
+    //initial output
+    connect 9999999.0 -> maximalallowedvelocity;
+    // for single vehicle(not in platoon)
+    @ status_message::connect{
+      connect trajectorylength -> coll[?].trajectory_length_car1;
+      connect trajectory_x -> coll[?].trajectory_x_car1;
+      connect trajectory_y -> coll[?].trajectory_y_car1;
+      connect length -> coll[?].car1_length;
+      connect width -> coll[?].car1_width;
+      connect status_message[?] -> coll[?].status_message;
+      connect coll[?].isfrontvehicle -> cv.isfrontvehicle[?];
+      connect coll[?].distance  -> cv.distance[?];
+      connect coll[?].vehicleid -> cv.vehicleid[?];
+      connect statusmessage[?] -> cv.status_msg[?];
+      connect staus -> cv.vehicle_staus;
+      connect csv.maximalallowedvelocity -> maximalallowedvelocity;
+    }
+}

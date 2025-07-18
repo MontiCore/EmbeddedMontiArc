@@ -1,0 +1,55 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Platoonmessagegenerator1{
+  ports
+     in Z               send_plat_message,
+     in Z               timestamp,
+     in Z               platoon_num,
+     in Z^{1,100}       platoonlist,
+     in Z               ifsplit,
+     in Q               position_x,
+     in Q               position_y,
+     in Z               vehicleid,
+     in Q               compass,
+     in Q               length,
+     in Q               width,
+     in Q               engine,
+     in Q               brake,
+     in Q               steering,
+     in Q               velocity,
+
+     dynamic out Platoonmessage plat_msg[0:32],
+     out Platoonmessage pmsg,
+     out Z after_platnum,
+     out Z^{1,100} after_platlist;
+
+     implementation Math{
+       after_platnum = platoon_num;
+       after_platlist = platoonlist;
+        if send_plat_message == 1
+            pmsg.vehicleid = vehicleid;
+            pmsg.timestamp = timestamp;
+            pmsg.position_x = position_x;
+            pmsg.position_y = position_y;
+            pmsg.compass = compass;
+            pmsg.length = length;
+            pmsg.width = width;
+            pmsg.velocity = velocity;
+            pmsg.engine = engine;
+            pmsg.brakes = brake;
+            pmsg.steering = steering;
+            pmsg.ifsplit = ifsplit;
+            pmsg.member_num = platoon_num;
+            pmsg.platoon_member = platoonlist;
+            after_platnum = platoon_num;
+            after_platlist = platoonlist;
+            Z a = 1;
+            if ports_connect(plat_msg,a,pmsg)
+               plat_msg(a) = pmsg;
+            end
+            Z r = ports_free(plat_msg,a);
+        end
+     }
+}

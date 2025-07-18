@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagestruct;
+
+struct Collisionmessage{
+     Z  vehicleid;
+     Z  timestamp;
+     Z  vehicle_number;
+     Q  intersection_x;
+     Q  intersection_y;
+     AssignmentType vehicleid_list;
+     AssignmentType priority_tother;
+}

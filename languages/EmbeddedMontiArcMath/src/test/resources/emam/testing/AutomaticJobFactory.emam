@@ -1,0 +1,52 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component AutomaticJobFactory {
+    ports in Z(1:oo)           algorithms[l],    
+          in Q(-oo:oo)^{n,m}         vectors,
+          in Z(0:oo)      distancemetrics[k],
+          in Z(0:oo)   groundtruthlabels[n],
+            
+          out Z(0:oo)      labels[n],
+          out Q(-oo:oo)         score,
+          out Z(-oo:oo) parameters[q];
+             
+     component SimilarityDistanceMatrixCalculator {
+         ports in  Q(oo:oo)^{n,m}    vectors,
+               in Z(0:oo) distancemetrics[n],
+                  
+               out Q(0:0.0001:oo)^{n,n} similaritymatrix;
+     } 
+     
+     component ClusteringCalculator {
+         ports in Q(0:oo)^{n,n} similaritymatrix,
+               in Q(0:oo)^{n,n}   distancematrix,
+               in Z(1:oo)          algorithms[l],
+           
+               out Z(0:oo) labels[n];  
+     }
+     
+     component ScoreCalculator {
+         ports in Z(0:oo)            labels[n],
+               in Z(0:oo) groundtruthlabels[n],
+
+               out Q(-oo:oo) score;     
+     }
+     
+     component Params {
+         ports in Z(1:oo) algorithms[l],
+                  
+               out Z(-oo:oo) parameters[q];
+     }
+     
+     connect vectors -> SimilarityDistanceMatrixCalculator.vectors;
+     connect algorithms -> ClusteringCalculator.algorithms;
+     connect algorithms -> Params.algorithms;
+     connect distancemetrics -> SimilarityDistanceMatrixCalculator.distancemetrics;
+     connect groundtruthlabels -> ScoreCalculator.groundtruthlabels;
+     connect SimilarityDistanceMatrixCalculator.similaritymatrix -> ClusteringCalculator.similaritymatrix;
+     connect Params.parameters -> ClusteringCalculator.parameters;
+     connect ClusteringCalculator.labels -> ScoreCalculator.labels;
+     connect ClusteringCalculator.labels -> labels;
+     connect ScoreCalculator.score -> score;
+}

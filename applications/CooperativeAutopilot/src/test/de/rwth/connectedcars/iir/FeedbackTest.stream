@@ -1,0 +1,8 @@
+package de.rwth.connectedcars.iir;
+
+stream FeedbackTest for FeedbackTestWrapper{
+
+	feedbackIn2: 1 tick 4 tick 10 tick 18;
+	feedbackOut2: 1 tick 6 tick 25 tick 90;
+	
+}

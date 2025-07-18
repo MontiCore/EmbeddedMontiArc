@@ -1,0 +1,111 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagematch;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component messagematch{
+ ports
+   dynamic in statusmessage            status_msg[0:32],
+   dynamic in trajectorymessage        traj_msg[0:32],
+   dynamic in platoonmessage           plat_msg[0:32],
+// dynamic in emergencybreakmessage    emer_msg[0:32],
+
+   dynamic out statusmessage           single_status_msg[0:32],
+   dynamic out trajectorymessage       single_traj_msg[0:32],
+   dynamic out platoonmessage          platoon_status_msg[0:32],
+   dynamic out trajectorymessage       platoon_traj_msg[0:32],
+   dynamic out statusmessage           unmatched_status_msg[0:32],
+   dynmaic out trajectorymessage       unmatched_traj_msg[0:32],
+   dynmaic out platoonmessage          unmatched_plat_msg[0:32],
+   out statusmessage           s_msg,
+   out trajectorymessage       t_msg,
+   out platoonmessage          p_msg;
+
+   implementation Math{
+     Q index  = 1.0;
+     Q index1 = 1.0;
+     Q index2 = 1.0;
+     Q index3 = 1.0;
+     Q index4 = 1.0;
+     Z tag  = 0;
+     Z tag1 = 0;
+     Z tag2 = 0;
+     // to match message of single vehicle and unmatched statusmessage
+     for i = 1:32
+       if is_connected(status_msg,i)
+         s_msg = status_msg(i);
+         for j = 1:32
+            if is_connected(traj_msg,j)
+               t_msg = traj_msg(j);
+               if (s_msg.vehicleid == t_msg.vehicleid)
+                  if port_connected(single_status_msg,index,s_msg) && port_connected(single_traj_msg,index,t_msg)
+                    single_status_msg(index) = s_msg;
+                    single_traj_msg(index) = t_msg;
+                    index = index + 1;
+                    tag = 1;
+                  end
+               end
+            end
+         end
+         if tag == 0
+           if port_connected(unmatched_status_msg,index1,s_msg)
+             unmatched_status_msg(index1) = s_msg;
+             index1 = index1 +1;
+           end
+         end
+       end
+     end
+     // to match message of platoon header vehicle and unmatched platoonmessage
+     for m = 1:32
+       if is_connected(plat_msg,m)
+         p_msg = plat_msg(m);
+         for n = 1:32
+            if is_connected(traj_msg,n)
+              t_msg = traj_msg(n);
+               if (p_msg.vehicleid == t_msg.vehicleid)
+                  if port_connected(platoon_status_msg,index2,p_msg)&&port_connected(platoon_traj_msg,index2,t_msg)
+                    platoon_status_msg(index2) = p_msg;
+                    platoon_traj_msg(index2) = t_msg;
+                    index2 = index2 + 1;
+                    tag1 = 1;
+                  end
+               end
+            end
+          end
+          if tag1 == 0
+             if port_connected(unmatched_plat_msg, index3, p_msg)
+               unmatched_plat_msg(index3) = plat_msg(m);
+               index3 = index3 + 1;
+             end
+          end
+       end
+     end
+     // to match unmatched trajectory message.
+     for k = 1:32
+       if is_connected(traj_msg, k)
+          t_msg = traj_msg(k);
+          for h = 1:32
+            if is_connected(status_msg, h)
+               s_msg = status_msg(h);
+               if t_msg.vehicleid == s_msg.vehicleid
+                  tag2 = 1;
+               end
+            end
+          end
+          for w = 1:32
+            if is_connected(plat_msg, w)
+               p_msg = plat_msg(w);
+               if t_msg.vehicleid == p_msg.vehicleid
+                  tag2 = 1;
+               end
+            end
+          end
+          if tag2 == 0
+            if port_connected(unmatched_traj_msg, index4, t_msg)
+              unmatched_traj_msg(index4) = traj_msg(k);
+              index4 = index4 +1;
+            end
+          end
+       end
+     end
+   }
+}
