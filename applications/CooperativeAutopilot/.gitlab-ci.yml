@@ -3,7 +3,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
-  - integration
+  - linux
 
 
 TestSaaS:
