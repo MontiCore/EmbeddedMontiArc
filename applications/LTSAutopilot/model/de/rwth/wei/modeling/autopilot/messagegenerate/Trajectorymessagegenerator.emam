@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Trajectorymessagegenerator{
+  ports
+    in       Z          vehicleid,
+    in       Z          timestamp,
+    in       Z          trajectory_length,
+    in       Q^{1,100}  trajectory_x,
+    in       Q^{1,100}  trajectory_y,
+    in       Q          nextintersection_x,
+    in       Q          nextintersection_y,
+
+    dynamic  out   Trajectorymessage  traj_msg[0:32],
+    out Trajectorymessage tmsg;
+
+  implementation Math{
+    tmsg.vehicleid = vehicleid;
+    tmsg.timestamp = timestamp;
+    tmsg.trajectory_length = trajectory_length;
+    tmsg.trajectory_x = trajectory_x;
+    tmsg.trajectory_y = trajectory_y;
+    tmsg.nextintersection_x = nextintersection_x;
+    tmsg.nextintersection_y = nextintersection_y;
+    Z a = 1;
+    if ports_connect(traj_msg,a,tmsg)
+       traj_msg(a) = tmsg;
+    end
+  }
+}

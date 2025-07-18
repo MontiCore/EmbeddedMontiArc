@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot;
+
+component AcutatorSelect{
+ports
+ in  Q  engine,
+ in  Q  brakes,
+ in  Q  platengine,
+ in  Q  platbrakes,
+ in  Z  if_take,
+
+ out Q  out_engine,
+ out Q  out_brakes;
+
+ implementation Math{
+
+   if if_take == 1
+       out_engine = platengine;
+       out_brakes = platbrakes;
+   else
+       out_engine = engine;
+       out_brakes = brakes;
+   end
+ }
+}

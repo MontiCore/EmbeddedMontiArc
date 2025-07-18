@@ -1,0 +1,82 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Changestatus_platoonmemeber{
+ ports
+ dynamic in Platoonmessage plat_msg[0:32],
+ in  Z                  if_split,
+ in  Z                  if_willsplit,
+ in  Z                  vehicleid,
+ in  Z                  platoonheadid,
+ in  Z^{1,100}          platoonlist,
+ in  Z                  platoon_member_num,
+
+
+
+ out Z               current_status,
+ out Z               currentplatoonheadid,
+ out Z               ifcurrentwillsplit,
+ out Z               current_platnum,
+ out Z^{1,100}        currentplatoonlist,
+ out Z^{1,100}        platoonlist1,
+ out Platoonmessage  pmsg;
+
+ @ plat_msg::connect{}
+
+ implementation Math{
+  Z num = 0;
+  Z headid = 0;
+  if if_split == 1
+      current_status = 0;
+      currentplatoonheadid = vehicleid;
+      current_platnum = 0;
+      ifcurrentwillsplit = 0;
+      currentplatoonlist = platoonlist;
+  elseif if_willsplit == 1
+      current_status = 1;
+      currentplatoonheadid = platoonheadid;
+      current_platnum = platoon_member_num;
+      ifcurrentwillsplit = 1;
+      currentplatoonlist = platoonlist;
+  else
+     current_status = 1;
+     currentplatoonheadid = platoonheadid;
+     ifcurrentwillsplit = 0;
+     current_platnum = platoon_member_num;
+     currentplatoonlist = platoonlist;
+     for i = 1:32
+        if is_connected(plat_msg,i)
+           pmsg = plat_msg(i);
+           platoonlist1 = pmsg.platoon_member;
+           num = pmsg.member_num;
+           headid = pmsg.vehicleid;
+           Z tag = 0;
+           for k = 1:platoon_member_num
+              tag = 0;
+              Q id1 = platoonlist(1,k);
+              for j = 1:num
+                Q id2 = platoonlist1(1,j);
+                if id1 == id2
+                   tag = 1;
+                end
+              end
+           end
+           Z tag1 = 0;
+           for j1 = 1:num
+              if platoonheadid == platoonlist1(1,j1)
+                 tag1 = 1;
+              end
+           end
+           if tag == 1 && tag1 == 1 && platoonlist(1,platoon_member_num) == platoonlist1(1,num)
+                current_status = 1;
+                currentplatoonheadid = headid;
+                ifcurrentwillsplit = 0;
+                currentplatoonlist = platoonlist1;
+                current_platnum = num;
+           end
+        end
+     end
+  end
+ }
+}

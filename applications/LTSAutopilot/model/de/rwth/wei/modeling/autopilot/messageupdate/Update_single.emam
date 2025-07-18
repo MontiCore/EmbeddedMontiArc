@@ -1,0 +1,48 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.behavior.*;
+
+component Update_single{
+ ports
+   in  statusmessage        status_msg,
+   in  trajectorymessage    traj_msg,
+   in  Z   update_type,
+
+   out statusmessage       update_status_msg,
+   out trajectorymessage   update_traj_msg;
+
+   instance  set_statusmsg              set_smsg;
+   instance  set_trajectorymsg          set_tmsg;
+   instance  statusmessageparsing       status_parse;
+   instance  trajectorymessageparsing   traj_parse;
+   instance  TrimPath                   tp;
+   @ update_type::value(0){
+     connect status_msg -> update_status_msg;
+     connect traj_msg -> update_traj_msg;
+   }
+   @ update_type::value(1){
+     connect status_msg -> set_smsg.status_msg;
+     connect traj_msg -> set_smsg.traj_msg;
+     connect set_smsg.set_status_msg -> update_status_msg;
+     connect traj_msg ->  update_traj_msg;
+   }
+   @ update_type::value(2){
+     connect status_msg -> status_parse.status_message;
+     connect traj_msg ->  traj_parse.traj_message;
+     connect status_parse.position_x -> tp.currentPositionX;
+     connect status_parse.position_y -> tp.currentPositionY;
+     connect traj_parse.trajectory_length -> tp.plannedTrajectoryLength;
+     connect traj_parse.trajectroy_x -> tp.plannedTrajectoryX;
+     connect traj_parse.trajectroy_y -> tp.plannedTrajectoryY;
+     connect traj_parse.isintersection -> tp.plannedIsintersection;
+     connect tp.trimmedTrajectoryLength -> set_tmsg.trajectory_length;
+     connect tp.trimmedTrajectoryX -> set_tmsg.trajectory_x;
+     connect tp.trimmedTrajectoryY -> set_tmsg.trajectory_y;
+     connect tp.trimmedIsintersection -> set_tmsg.isintersection;
+     connect traj_parse.timestamp -> set_tmsg.timestamp;
+     connect traj_parse.vehicleid -> set_tmsg.vehicleid;
+     connect set_tmsg.set_traj_msg -> update_traj_msg;
+     connect status_msg -> update_status_msg;
+   }
+}

@@ -1,0 +1,75 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+
+dynamic component Checkpathsame_front{
+
+ ports
+  in  Z                   trajectory_length,
+  in  Q^{1,100}           trajectory_x,
+  in  Q^{1,100}           trajectory_y,
+  in  Q                   nextintersection_x,
+  in  Q                   nextintersection_y,
+  in  Z                   potentialid,
+  in  Z                   if_potentialheaderexists,
+  in  Z                   if_sendjointmsg,
+  in  Z                   checkpathsimilarity,
+  in  Trajectorymessage   checktrajectorymessage,
+
+  out  Z                  checked_potentialid,
+  out  Z                  checked_if_potentialheaderexists,
+  out  Z                  checked_if_sendjointmsg;
+
+  instance  Trajectorymessageparsing       t_parse;
+  instance  Trajectoryafterintersection    t_after1,t_after2;
+  instance  Path_similarity                path_same;
+  instance  Checkpathsame_fronthelper      check_fronthelper;
+
+ @ checkpathsimilarity::value(0){
+   connect potentialid -> checked_potentialid;
+   connect if_potentialheaderexists -> checked_if_potentialheaderexists;
+   connect if_sendjointmsg -> checked_if_sendjointmsg;
+ }
+ @ checkpathsimilarity::value(1){
+  connect   checktrajectorymessage -> t_parse.traj_message;
+  connect   t_parse.trajectory_length -> t_after1.trajectory_length;
+  connect   t_parse.trajectory_x -> t_after1.trajectory_x;
+  connect   t_parse.trajectory_y -> t_after1.trajectory_y;
+  connect   t_parse.nextintersection_x -> t_after1.nextintersection_x;
+  connect   t_parse.nextintersection_y -> t_after1.nextintersection_y;
+  connect   checkpathsimilarity -> t_after1.iftrimmed;
+
+  connect   trajectory_length -> t_after2.trajectory_length;
+  connect   trajectory_x -> t_after2.trajectory_x;
+  connect   trajectory_y -> t_after2.trajectory_y;
+  connect   nextintersection_x -> t_after2.nextintersection_x;
+  connect   nextintersection_y -> t_after2.nextintersection_y;
+  connect   checkpathsimilarity -> t_after2.iftrimmed;
+
+  connect   checkpathsimilarity -> path_same.if_check;
+  connect   t_after1.if_enoughlong -> path_same.if_enoughlong_car1;
+  connect   t_after1.after_trajectory_length -> path_same.trajectory_length_car1;
+  connect   t_after1.after_trajectory_x -> path_same.trajectory_x_car1;
+  connect   t_after1.after_trajectory_y -> path_same.trajectory_y_car1;
+  connect   t_after1.distance -> path_same.distance_car1;
+
+  connect   t_after2.if_enoughlong -> path_same.if_enoughlong;
+  connect   t_after2.after_trajectory_length -> path_same.trajectory_length;
+  connect   t_after2.after_trajectory_x -> path_same.trajectory_x;
+  connect   t_after2.after_trajectory_y -> path_same.trajectory_y;
+  connect   t_after2.distance -> path_same.distance;
+
+  connect   path_same.hasmeasure -> check_fronthelper.hasmeasure;
+  connect   path_same.similarity -> check_fronthelper.similarity;
+  connect   if_sendjointmsg -> check_fronthelper.if_sendjointmsg;
+  connect   potentialid -> check_fronthelper.potentialid;
+  connect   if_potentialheaderexists -> check_fronthelper.if_potentialheaderexists;
+  connect   checkpathsimilarity -> check_fronthelper.checkpathsimilarity;
+
+  connect   check_fronthelper.new_potentialid -> checked_potentialid;
+  connect   check_fronthelper.new_if_potentialheaderexists -> checked_if_potentialheaderexists;
+  connect   check_fronthelper.new_if_sendjointmsg -> checked_if_sendjointmsg;
+}
+
+}
