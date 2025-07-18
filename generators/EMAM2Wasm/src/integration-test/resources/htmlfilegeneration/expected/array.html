@@ -1,0 +1,189 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en-us">
+<style>
+  .model {
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  .ports {
+    overflow: hidden;
+  }
+
+  .inports {
+    float: left;
+    margin: 10px;
+  }
+
+  .outports {
+    float: left;
+    margin: 10px;
+  }
+
+  .header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .type {
+    width: max-content;
+    margin: 2px 15px 2px 2px;
+    color: grey;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px;
+  }
+
+  .button {
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100px;
+  }
+
+  #reset {
+    background-color: #d22b23;
+  }
+
+  #execute {
+    background-color: #24d231;
+  }
+
+  .error {
+    color: red;
+    margin: 10px;
+  }
+
+  textarea {
+    height: 1em;
+    width: 200px;
+    padding: 3px;
+  }
+</style>
+<head>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.1/math.min.js"></script>
+  <script type="text/javascript" src="array_wrapper.js"></script>
+  <script type="text/javascript" src="array.js"></script>
+  <title>Array</title>
+</head>
+<body>
+<div class="container">
+  <div class="model">
+    <div class="header">
+      <h2>Array</h2>
+    </div>
+    <div class="ports">
+      <div class="inports">
+        <div class="header">
+          <h3>Inports</h3>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Q(-10 : 5 )^{3}</div>
+            </td>
+            <td>
+              <div class="label">
+                inArray:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-inArray"></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="outports">
+        <div class="header">
+          <h3>Outports</h3>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Q(-10/3 m/s : 10 km/h)^{4}</div>
+            </td>
+            <td>
+              <div class="label">
+                outArray:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-outArray" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="buttons">
+      <div class="reset">
+        <button class="button" id="reset" onclick="reset()">Reset</button>
+      </div>
+      <div class="execute">
+        <button class="button" id="execute" onclick="exec()">Execute</button>
+      </div>
+    </div>
+  </div>
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-inArray").value = url.searchParams.get("inArray");
+
+    function exec() {
+        clearOutportFields();
+        clearErrors();
+
+        try {
+            setInArray(document.getElementById("inport-field-inArray").value);
+
+            execute();
+
+            document.getElementById("outport-field-outArray").value = getOutArray();
+        }
+        catch (err) {
+            if (err.message === undefined) {
+                document.getElementById("error").innerText = err;
+            }
+            else {
+                document.getElementById("error").innerHTML = err.message;
+            }
+        }
+    }
+
+    function reset() {
+        init();
+        clearInportFields();
+        clearOutportFields();
+        clearErrors();
+    }
+
+    function clearInportFields() {
+        document.getElementById("inport-field-inArray").value = "";
+    }
+
+    function clearOutportFields() {
+        document.getElementById("outport-field-outArray").value = "";
+    }
+
+    function clearErrors() {
+        document.getElementById("error").innerHTML = "";
+    }
+</script>
+</body>
+</html>

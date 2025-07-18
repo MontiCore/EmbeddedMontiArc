@@ -1,0 +1,38 @@
+# (c) https://github.com/MontiCore/monticore  
+language: java
+
+cache:
+  directories:
+    - $HOME/.m2/repository
+
+script: true
+install: true
+
+stages:
+  - build
+  - test
+  - integration-test
+  - acceptance-test
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - mvn clean test-compile --settings "settings.xml"
+    - stage: test
+      script:
+        - mvn test jacoco:report coveralls:report --settings "settings.xml"
+    - stage: integration-test
+      sudo: required
+      services:
+        - docker
+      script:
+        - mvn verify -Pintegration-test jacoco:report --settings "settings.xml"
+    - stage: acceptance-test
+      script:
+        - mvn verify -Pacceptance-test jacoco:report --settings "settings.xml"
+      after_success:
+        - if [ "${TRAVIS_BRANCH}" == "master" ]; then mvn -B deploy --settings "./settings.xml"; fi
+
+after_success:
+ - bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
