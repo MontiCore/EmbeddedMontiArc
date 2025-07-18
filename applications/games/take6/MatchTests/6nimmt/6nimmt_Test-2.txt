@@ -1,0 +1,323 @@
+6nimmt/6nimmt.gdl
+
+# random (deal stack ?stack ?card)
+# random (deal hand ?player ?pos ?card)
+# random (gameReady)
+# <player> (play ?pos)
+# <player> (put ?stack ?pos)
+
+COMMAND
+random (deal stack a 84)
+COMMAND
+random (deal stack b 50)
+COMMAND
+random (deal stack c 66)
+COMMAND
+random (deal stack d 38)
+COMMAND
+random (deal hand red 1 49)
+COMMAND
+random (deal hand red 2 73)
+COMMAND
+random (deal hand red 3 54)
+COMMAND
+random (deal hand red 4 9)
+COMMAND
+random (deal hand red 5 8)
+COMMAND
+random (deal hand red 6 75)
+COMMAND
+random (deal hand red 7 30)
+COMMAND
+random (deal hand red 8 71)
+COMMAND
+random (deal hand red 9 90)
+COMMAND
+random (deal hand red 10 91)
+COMMAND
+random (deal hand blue 1 89)
+COMMAND
+random (deal hand blue 2 45)
+COMMAND
+random (deal hand blue 3 26)
+COMMAND
+random (deal hand blue 4 5)
+COMMAND
+random (deal hand blue 5 79)
+COMMAND
+random (deal hand blue 6 92)
+COMMAND
+random (deal hand blue 7 41)
+COMMAND
+random (deal hand blue 8 35)
+COMMAND
+random (deal hand blue 9 94)
+COMMAND
+random (deal hand blue 10 25)
+COMMAND
+random (deal hand green 1 48)
+COMMAND
+random (deal hand green 2 97)
+COMMAND
+random (deal hand green 3 33)
+COMMAND
+random (deal hand green 4 40)
+COMMAND
+random (deal hand green 5 21)
+COMMAND
+random (deal hand green 6 51)
+COMMAND
+random (deal hand green 7 46)
+COMMAND
+random (deal hand green 8 65)
+COMMAND
+random (deal hand green 9 3)
+COMMAND
+random (deal hand green 10 17)
+COMMAND
+random (deal hand yellow 1 1)
+COMMAND
+random (deal hand yellow 2 15)
+COMMAND
+random (deal hand yellow 3 39)
+COMMAND
+random (deal hand yellow 4 103)
+COMMAND
+random (deal hand yellow 5 57)
+COMMAND
+random (deal hand yellow 6 2)
+COMMAND
+random (deal hand yellow 7 76)
+COMMAND
+random (deal hand yellow 8 60)
+COMMAND
+random (deal hand yellow 9 86)
+COMMAND
+random (deal hand yellow 10 85)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 0)
+(currPoints red 0)
+(currPoints yellow 0)
+COMMAND
+random (gameReady)
+# Round 1
+COMMAND
+red (play 1)
+COMMAND
+blue (play 6)
+COMMAND
+green (play 10)
+COMMAND
+yellow (play 1)
+COMMAND
+yellow (put d 6)
+COMMAND
+green (put d 2)
+COMMAND
+red (put d 3)
+COMMAND
+blue (put a 2)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 0)
+(currPoints red 0)
+(currPoints yellow 1)
+# Round 2
+COMMAND
+red (play 8)
+COMMAND
+blue (play 3)
+COMMAND
+green (play 5)
+COMMAND
+yellow (play 6)
+COMMAND
+yellow (put b 6)
+COMMAND
+green (put b 2)
+COMMAND
+blue (put b 3)
+COMMAND
+red (put c 2)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 0)
+(currPoints red 0)
+(currPoints yellow 4)
+# Round 3
+COMMAND
+red (play 5)
+COMMAND
+blue (play 4)
+COMMAND
+green (play 9)
+COMMAND
+yellow (play 2)
+COMMAND
+green (put b 6)
+COMMAND
+blue (put b 2)
+COMMAND
+red (put b 3)
+COMMAND
+yellow (put b 4)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 3)
+(currPoints red 0)
+(currPoints yellow 4)
+# Round 4
+COMMAND
+red (play 4)
+COMMAND
+blue (play 10)
+COMMAND
+green (play 3)
+COMMAND
+yellow (play 3)
+COMMAND
+red (put a 6)
+COMMAND
+blue (put b 5)
+COMMAND
+green (put b 6)
+COMMAND
+yellow (put b 2)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 11)
+(currPoints red 2)
+(currPoints yellow 4)
+# Round 5
+COMMAND
+red (play 7)
+COMMAND
+blue (play 8)
+COMMAND
+green (play 4)
+COMMAND
+yellow (play 5)
+COMMAND
+red (put a 2)
+COMMAND
+blue (put a 3)
+COMMAND
+green (put b 3)
+COMMAND
+yellow (put d 4)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 11)
+(currPoints red 2)
+(currPoints yellow 4)
+# Round 6
+COMMAND
+red (play 3)
+COMMAND
+blue (play 7)
+COMMAND
+green (play 6)
+COMMAND
+yellow (play 8)
+COMMAND
+blue (put b 4)
+COMMAND
+green (put b 5)
+COMMAND
+red (put b 6)
+COMMAND
+yellow (put d 5)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 11)
+(currPoints red 13)
+(currPoints yellow 4)
+# Round 7
+COMMAND
+red (play 9)
+COMMAND
+blue (play 2)
+COMMAND
+green (play 7)
+COMMAND
+yellow (play 7)
+COMMAND
+blue (put a 4)
+COMMAND
+green (put a 5)
+COMMAND
+yellow (put c 3)
+COMMAND
+red (put c 4)
+PARTIAL_STATE
+(currPoints blue 0)
+(currPoints green 11)
+(currPoints red 13)
+(currPoints yellow 4)
+# Round 8
+COMMAND
+red (play 10)
+COMMAND
+blue (play 9)
+COMMAND
+green (play 1)
+COMMAND
+yellow (play 10)
+COMMAND
+green (put a 6)
+COMMAND
+yellow (put d 6)
+COMMAND
+red (put c 5)
+COMMAND
+blue (put c 6)
+PARTIAL_STATE
+(currPoints blue 11)
+(currPoints green 20)
+(currPoints red 13)
+(currPoints yellow 11)
+# Round 9
+COMMAND
+red (play 2)
+COMMAND
+blue (play 1)
+COMMAND
+green (play 8)
+COMMAND
+yellow (play 9)
+COMMAND
+green (put b 2)
+COMMAND
+red (put b 3)
+COMMAND
+yellow (put d 2)
+COMMAND
+blue (put d 3)
+PARTIAL_STATE
+(currPoints blue 11)
+(currPoints green 20)
+(currPoints red 13)
+(currPoints yellow 11)
+# Round 10
+COMMAND
+red (play 6)
+COMMAND
+blue (play 5)
+COMMAND
+green (play 2)
+COMMAND
+yellow (play 4)
+COMMAND
+red (put b 4)
+COMMAND
+blue (put b 5)
+COMMAND
+green (put c 2)
+COMMAND
+yellow (put c 3)
+PARTIAL_STATE
+(currPoints blue 11)
+(currPoints green 20)
+(currPoints red 13)
+(currPoints yellow 11)

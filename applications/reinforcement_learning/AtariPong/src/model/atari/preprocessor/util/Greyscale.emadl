@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package atari.preprocessor.util;
+
+component Greyscale<Z height=2, Z width=2> {
+    ports
+        in Q^{height, width, 3} screen,
+        out Q^{height, width} greyscale;
+
+    implementation Math {
+        for h=1:height
+            for w=1:width
+                greyscale(h,w) = (screen(h,w,1) + screen(h,w,2) + screen(h,w,3))/3;
+            end
+        end
+    } 
+}

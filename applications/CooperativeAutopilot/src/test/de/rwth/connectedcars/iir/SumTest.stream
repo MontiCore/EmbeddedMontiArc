@@ -1,0 +1,9 @@
+package de.rwth.connectedcars.iir;
+
+stream SumTest for Sum_TestWrapper {
+    summand1: 1 tick 5 tick 83;
+    summand2: 2 tick 4 tick 1;
+    summand3: 3 tick 3 tick -16;
+    
+    sum1: 6 tick 12 tick 68;
+}

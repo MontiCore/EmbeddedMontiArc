@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+component grammar ConfLangLiterals extends de.monticore.MCLiterals, de.monticore.MCBasicTypes1 {
+
+    token ConfLangName = (Name | '-')*;
+
+    interface ConfLangLiteral extends SignedLiteral;
+    TypelessLiteral implements ConfLangLiteral = (value:Name | value:ConfLangName);
+    ComponentLiteral implements ConfLangLiteral = value:QualifiedName;
+    ListLiteral implements ConfLangLiteral = value:"(" SignedLiteral ("," SignedLiteral)* ")";
+    ComplexNumberLiteral implements ConfLangLiteral = (negRe:"-")? real:NumericLiteral ("+" | negIm:"-") im:NumericLiteral Name;
+    InfinityLiteral implements ConfLangLiteral = "oo";
+    RangeLiteral implements ConfLangLiteral = value:"(" SignedLiteral ":" ( SignedLiteral ":")?  SignedLiteral ")";
+
+}

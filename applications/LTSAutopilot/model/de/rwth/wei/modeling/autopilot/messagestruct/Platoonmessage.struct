@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagestruct;
+
+struct Platoonmessage{
+//
+    Z  vehicleid;
+    Z  timestamp;
+    Q  position_x;
+    Q  position_y;
+    Q  compass;
+    Q  length;
+    Q  width;
+    Q  velocity;
+    Q  engine;
+    Q  brakes;
+    Q  steering;
+    Z  ifsplit;
+    Q  intsersection_x;
+    Q  intsersection_y;
+    Z  member_num;
+    AssignmentType platoon_member;
+}

@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/main/emadl",
+    "outputDir": "generator-target/agent",
+    "rootModel": "chess.agent.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}

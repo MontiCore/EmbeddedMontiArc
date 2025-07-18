@@ -1,0 +1,115 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Intersectionsvehicle{
+// to find the vehicle or platoon which is need to be processed in the current processing intersection
+ ports
+   dynamic in Statusmessage       status_msg[0:32],
+   dynamic in Trajectorymessage   traj_msg[0:32],
+   dynamic in Platoonmessage      plat_msg[0:32],
+   in   Q                next_x,
+   in   Q                next_y,
+   in   Q                length,
+
+   out  Z ^ 32           vehicle_atintersection,
+   out  Z ^ 32           platoon_atintersection,
+   out  Z                vehicle_num,
+   out  Z                platoon_num,
+   //used as public variables
+   out  Statusmessage       smsg,
+   out  Trajectorymessage   tmsg,
+   out  Platoonmessage      pmsg,
+   out  Statusmessage       smsg1,
+   out  Trajectorymessage   tmsg1,
+   out  Platoonmessage      pmsg1;
+
+   @ status_msg::connect{}
+   @ traj_msg::connect{}
+   @ plat_msg::connect{}
+
+   // consider the minimal distance
+   implementation Math{
+    Z counter = 1;
+    Z counter1 = 1;
+    // single vehicle at next intersection
+    for i = 1:32
+       if is_connected(status_msg,i)
+          smsg = status_msg(i);
+          Z tag = 0;
+          Q single_x = smsg.position_x;
+          Q single_y = smsg.position_y;
+          for a = 1:32
+             if is_connected(plat_msg,a)
+               pmsg1 = plat_msg(a);
+               // platoon msg update, vehicle is not single
+               if pmsg1.vehicleid == smsg.vehicleid && pmsg1.timestamp > smsg.timestamp
+                  tag = 1;
+               end
+             end
+          end
+          for j = 1:32
+            if is_connected(traj_msg,j)
+               tmsg = traj_msg(j);
+               if smsg.vehicleid == tmsg.vehicleid
+                  Q next_inx = tmsg.nextintersection_x;
+                  Q next_iny = tmsg.nextintersection_y;
+                  if next_inx != 0 && next_iny != 0
+                      Q sqrt_distance = (next_x - next_inx)*(next_x - next_inx)+(next_y - next_iny)*(next_y - next_iny);
+                      Q distance = sqrt(sqrt_distance);
+                      Q sqrt_dis2intersection = (single_x - next_inx)*(single_x - next_inx) +(single_y - next_iny)*(single_y - next_iny);
+                      Q dis2intersection = sqrt(sqrt_dis2intersection);
+                      if distance <= 6.0 && tag != 1 && dis2intersection <= 6.8 * length && smsg.platoon_headid == 0
+                         vehicle_atintersection(counter) = smsg.vehicleid;
+                         counter = counter + 1;
+                      end
+                  end
+               end
+             end
+           end //for j = 1:32
+         end //if is_connected(status_msg,i)
+      end //for i = 1:32
+
+      // platoon(information from header) at intersection
+      for x = 1:32
+         if is_connected(plat_msg,x)
+            pmsg = plat_msg(x);
+            Z tag1 = 0;
+            Q plat_x = smsg.position_x;
+            Q plat_y = smsg.position_y;
+            for y = 1:32
+               if is_connected(status_msg,y)
+                 smsg1 = status_msg(y);
+                 // status msg update, vehicle is not a platoon header
+                 if pmsg.vehicleid == smsg1.vehicleid && pmsg.timestamp < smsg1.timestamp
+                    tag1 = 1;
+                 end
+               end
+            end
+            for z = 1:32
+              if is_connected(traj_msg,z)
+                 tmsg1 = traj_msg(z);
+                 if pmsg.vehicleid == tmsg1.vehicleid
+                    Q next_inx1 = tmsg1.nextintersection_x;
+                    Q next_iny1 = tmsg1.nextintersection_y;
+                    if next_inx1 != 0.0 && next_iny1 != 0.0
+                      // find the first intersection of platoon header
+                      Q sqrt_distance2 = (next_x - next_inx1)*(next_x - next_inx1)+(next_y - next_iny1)*(next_y - next_iny1);
+                      Q distance2 = sqrt(sqrt_distance2);
+                      // if located at the same intersection with current vehicle
+                      Q sqrt_dis2intersection2 = (plat_x - next_inx1)*(plat_x - next_inx1) + (plat_y - next_iny1)*(plat_y - next_iny1);
+                      Q dis2intersection2 = sqrt(sqrt_dis2intersection2);
+                      if distance2 <= 6.0 && tag1 != 1 && dis2intersection2 <= 6.8 * length
+                        platoon_atintersection(counter1) = pmsg.vehicleid;
+                        counter1 = counter1 + 1;
+                      end
+                    end
+                 end
+               end //if is_connected(traj_msg,z)
+             end //for z = 1:32
+           end //if is_connected(plat_msg,x)
+        end //for x = 1:32
+        vehicle_num = counter - 1;
+        platoon_num = counter1 - 1;
+     }
+  }

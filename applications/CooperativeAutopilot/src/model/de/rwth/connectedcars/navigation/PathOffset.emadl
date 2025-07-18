@@ -1,0 +1,77 @@
+package de.rwth.connectedcars.navigation;
+
+component PathOffset {
+
+  port
+      in  N (0 : 10)                     traj_length,
+      in  Q (-oo m : oo m) ^ 10          traj_x,
+      in  Q (-oo m : oo m) ^ 10          traj_y,
+      in  Q (0 m :oo m)                  distance2mid, //distance of the center of the car to the middle of the road
+      
+      out Q (-oo m : oo m) ^ 10          traj_off_x,
+      out Q (-oo m : oo m) ^ 10          traj_off_y;
+      
+  implementation Math{
+      
+    //change trajectory so that the car drives on the right side of the street  
+      
+    if traj_length > 1
+        //should be N (0:10) but for some reason does not work then
+        Q (0:10) range= traj_length - 1;
+        
+        // Q (-oo m : oo m) ^ 10 a;  would be correct but units with arrays do not work for some reason
+        Q ^ 10 a;
+        Q ^ 10 b;
+        
+        //calculate offsets for each individual point with respect to the next node
+        for i = 1:range
+          Q (-oo m : oo m) deltaX = traj_x(i+1) - traj_x(i);
+          Q (-oo m : oo m) deltaY = traj_y(i+1) - traj_y(i);
+          if deltaX == 0 m
+              b(i) = 0;
+              a(i) = distance2mid * (deltaY/abs(deltaY));
+          else  
+              b(i) = distance2mid/(sqrt(1+((deltaY/deltaX) * (deltaY/deltaX))));
+              if deltaX > 0 m
+                  b(i) = b(i) * (-1);
+              end
+              a(i) = -((deltaY/deltaX) * b(i));
+          end
+          
+        end
+        a(traj_length) = a(range);
+        b(traj_length) = b(range);
+        
+        //calculate intersection point of each straight between 2 neighbouring points with the offset
+        //edge cases need to be handled seperately
+        traj_off_x(1) = traj_x(1) + a(1);
+        traj_off_y(1) = traj_y(1) + b(1);
+        traj_off_x(traj_length) = traj_x(traj_length) + a(traj_length);
+        traj_off_y(traj_length) = traj_y(traj_length) + b(traj_length);
+        
+        
+        for i = 2:range
+       // -2+1 as index currently needed due to a bug in the generator when using i-1 directly with input arrays
+          Q (-oo m : oo m) deltaX1 = traj_x(i) - traj_x(i-2+1); 
+          Q (-oo m : oo m) deltaY1 = traj_y(i) - traj_y(i-2+1); 
+          Q (-oo m : oo m) deltaX2 = traj_x(i+1) - traj_x(i);
+          Q (-oo m : oo m) deltaY2 = traj_y(i+1) - traj_y(i);
+          Q (-oo m : oo m) deltaA = a(i) - a(i-1);
+          Q (-oo m : oo m) deltaB = b(i) - b(i-1);
+          
+          if (deltaX2 * deltaY1) - (deltaY2 * deltaX1) == 0
+              traj_off_x(i) = traj_x(i) + a(i);
+              traj_off_y(i) = traj_y(i) + b(i);
+          else 
+              Q s;
+              s = ((deltaB * deltaX1) - (deltaA * deltaY1)) / ((deltaX2 * deltaY1) - (deltaY2 * deltaX1));
+              traj_off_x(i) = traj_x(i) + a(i) + (s * (deltaX2)); 
+              traj_off_y(i) = traj_y(i) + b(i) + (s * (deltaY2));
+          end
+
+        end
+    end
+    
+  }
+  
+}

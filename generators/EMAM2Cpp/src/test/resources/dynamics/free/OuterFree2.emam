@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package free;
+
+dynamic component OuterFree2{
+
+    ports
+        dynamic in Q a[1:7],
+        dynamic out Q b[1:7];
+
+    component Inner {
+        ports
+            in Q x,
+            out Q y;
+        connect x -> y;
+    }
+
+    instance Free f;
+    instance Inner g[0:5];
+
+
+    @ a::connect && b::connect {
+        connect a[?] -> g[?].x;
+        connect g[?].y -> f.a[?];
+        connect f.b[?] -> b[?];
+    }
+
+    @ b::free {
+        connect 1024 ->   b[?];
+    }
+}

@@ -1,0 +1,78 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.collisionavoidanceService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+dynamic component Collisionvelocity{
+  //
+  //
+  ports
+   dynamic in Z isfrontvehicle[0:32],
+   dynamic in Q distance[0:32],
+   dynamic in Z vehicleid[0:32],
+   dynamic in Statusmessage status_msg[0:32],
+
+   in Q velocity,
+   in B status,
+   in B isplatoonheader,
+   in Q length,
+
+   out Q maximalallowedvelocity,
+   // use as public variable
+   out Statusmessage smsg;
+
+   @ isfrontvehicle::connect{}
+   @ distance::connect{}
+   @ vehicleid::connect{}
+   @ status_msg::connect{}
+
+   implementation Math{
+    Q max_value = 9999999.0;
+    Q sector = 4.0;
+    Q min_distance = max_value;
+    Z vid = 0;
+    Z tag = 0;
+    Z tag1 = 0;
+
+    if status == 1 && isplatoonheader == 0
+       maximalallowedvelocity = max_value;
+       tag1 = 1;
+    end
+    // find the nearest front vehicle
+    for i = 1:32
+       if is_connected(isfrontvehicle,i)
+           if is_connected(distance,i)
+              if is_connected(vehicleid,i)
+                if isfrontvehicle(i) == 1 && distance(i) < min_distance
+                   min_distance = distance(i);
+                   vid = vehicleid(i);
+                end
+              end
+           end
+        end
+     end
+    Q velocity_car1 = 0.0;
+    if vid != 0
+      for j = 1:32
+        if is_connected(status_msg,j)
+           smsg = status_msg(j);
+           if smsg.vehicleid == vid
+              velocity_car1 = smsg.velocity;
+              tag = 1;
+           end
+        end
+      end
+    end
+
+    if tag == 1 && tag1 == 0
+       if velocity_car1 < velocity
+         Q abs_distance = 2 * velocity_car1;
+         if abs_distance > min_distance
+            maximalallowedvelocity = 0.0;
+         elseif min_distance - abs_distance <= sector * 4
+            maximalallowedvelocity = velocity_car1;
+         end
+       end
+    else
+        maximalallowedvelocity = max_value;
+    end
+  }
+}

@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package snimmt.agent.network;
+
+component SnimmtQNet {
+    ports
+        in Q(0:1)^{3675} state,
+        out Q(-oo:oo)^{31} qvalues; 
+
+    implementation CNN {
+        state ->
+        Relu() ->
+        FullyConnected(units=3675) ->
+        Relu() ->
+        FullyConnected(units=1690) ->
+        Relu() ->
+        FullyConnected(units=2893) ->
+        Relu() ->
+        FullyConnected(units=31) ->
+        qvalues;
+    }
+}

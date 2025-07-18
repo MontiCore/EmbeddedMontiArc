@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Network{
+     num_epoch:15
+     batch_size:32
+     normalize:false
+     context:gpu
+     load_checkpoint:false
+     load_pretrained:true
+     loss:softmax_cross_entropy{
+        loss_axis:1
+     }
+     optimizer:sgd{
+         learning_rate:0.001
+         learning_rate_decay:0.85
+         step_size:250
+         weight_decay:0.0
+     }
+}
