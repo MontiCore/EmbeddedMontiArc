@@ -1,0 +1,19 @@
+package {{packageName}};
+
+component {{componentName}} {
+{% if ports.length > 0 %}
+    ports
+    {% for port in ports %}
+    {{port.direction}} {{port.type}} {{port.name}}{% if loop.last %};{% else %},{% endif %}
+
+    {% endfor %}
+{% endif %}
+
+{% for instance in instances %}
+    instance {{instance.type}} {{instance.name}};
+{% endfor %}
+
+{% for connector in connectors %}
+    connect {{connector.source}} -> {% for target in connector.targets %}{{target.target}}{% if not loop.last %}, {% endif %}{% endfor %};
+{% endfor %}
+}

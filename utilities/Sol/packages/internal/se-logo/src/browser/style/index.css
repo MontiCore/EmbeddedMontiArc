@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+.sol-se-logo {
+    background-image:url("../images/se.rwth.cropped.png");
+    height:32px;
+    width:38px;
+    margin:5px;
+    position:absolute;
+    right:8px;
+    cursor:pointer;
+    background-position:center;
+    background-repeat:no-repeat;
+    top:-7px;
+    background-size:38px;
+}

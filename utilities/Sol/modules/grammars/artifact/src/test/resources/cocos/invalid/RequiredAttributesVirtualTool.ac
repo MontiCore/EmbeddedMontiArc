@@ -1,0 +1,6 @@
+package invalid
+
+virtual tool RequiredAttributesVirtualTool {
+    artifact SOME_RESOURCE {
+    }
+}

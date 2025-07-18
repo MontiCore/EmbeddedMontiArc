@@ -1,0 +1,12 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+
+.sol-runtime-options.string-option {
+    display:flex;
+    flex-direction:column;
+}
+
+.sol-runtime-options.string-option input {
+    flex:1;
+}

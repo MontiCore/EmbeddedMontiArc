@@ -1,0 +1,132 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ * Language is the language description language which holds information on the language to be integrated into
+ * the IDE.
+ */
+grammar Language extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.lang.monticar.sol.grammars.Common,
+                         de.monticore.lang.monticar.sol.grammars.Option {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /**
+     * ASTLanguageElement is an interface which represents the elements supported by the "language" section.
+     */
+    interface LanguageElement;
+
+    /**
+     * ASTTemplateElement is an interface which represents the elements supported in a template declaration.
+     */
+    interface TemplateElement;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     * LanguageCompilationUnit is the root parser rule which acts as container for the language elements.
+     */
+    LanguageCompilationUnit =
+        package:PackageStatement
+        import:ImportStatement*
+        Language
+    ;
+
+    start LanguageCompilationUnit;
+
+    /**
+     * Language represents the declaration of a language.
+     */
+    symbol scope Language =
+        "language" Name ( "extends" parent:(Name || ",")+ )?  "{" element:LanguageElement* "}"
+    ;
+
+    /**
+     * Server represents the path to the language server artifact.
+     */
+    Server implements LanguageElement =
+        "server" path:ProjectPath
+    ;
+
+    /**
+     * Extension represents the extension of language artifacts.
+     */
+    Extension implements LanguageElement =
+        "extension" extension:StringLiteral
+    ;
+
+    /**
+     * Keywords represents the inclusion / exclusion / definition of keywords.
+     */
+    Keywords implements LanguageElement =
+        (inclusion:["include"] | exclusion:["exclude"])? "keywords" "[" keyword:(StringLiteral || ",")+ "]"
+    ;
+
+    /**
+     * TemplateDeclaration represents the declaration of a template.
+     */
+    symbol scope TemplateDeclaration implements LanguageElement =
+        "template" Name "{" element:TemplateElement* "}"
+    ;
+
+    /**
+     * TemplateAttribute represents an attribute of the template.
+     */
+    TemplateAttribute implements TemplateElement =
+        (["path"] | ["label"]) literal:StringLiteral
+    ;
+
+    /**
+     * TemplateOption represents an option to be filled out when creating a file from the template.
+     */
+    TemplateOption implements TemplateElement =
+        Option
+    ;
+
+    /**
+     * TemplateExclusion represents the exclusion of a template.
+     */
+    symbol TemplateExclusion implements LanguageElement =
+        "exclude" "template" Name@TemplateDeclaration
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+
+    ast LanguageCompilationUnit =
+        method public java.util.List<String> getPackageList() {
+            return this.getPackage().getPackageList();
+        }
+    ;
+
+    ast TemplateAttribute =
+        method public String getValue() {
+            return this.getLiteral().getValue();
+        }
+    ;
+
+    ast Server =
+        method public de.monticore.lang.monticar.sol.grammars.common._ast.CommonLiterals getOrigin() {
+            return this.getPath().getOriginValue();
+        }
+
+        method public String getRelativePath() {
+            return this.getPath().getPathValue();
+        }
+    ;
+
+    ast Extension =
+        method public String getValue() {
+            return this.getExtension().getValue();
+        }
+    ;
+}
