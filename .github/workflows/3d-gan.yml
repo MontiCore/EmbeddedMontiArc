@@ -81,8 +81,8 @@ jobs:
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             cd Gluon/.test/docker
             LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emam2mqtt/:latest .
-            docker push ghcr.io/$LOWERCASE_OWNER/emam2mqtt/:latest
+            docker build -t ghcr.io/$LOWERCASE_OWNER/emam2mqtt:latest .
+            docker push ghcr.io/$LOWERCASE_OWNER/emam2mqtt:latest
 
   Train3D-GAN:
     needs: jar_phase

@@ -31,6 +31,7 @@ jobs:
             cd /workspace
             cd applications/FlowNet
             cd tensorflow
+            chmod +x build.sh
             ./build.sh
         run: docker exec build-container bash -c "$SCRIPT"
 
