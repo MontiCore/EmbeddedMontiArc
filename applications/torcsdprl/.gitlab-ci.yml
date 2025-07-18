@@ -1,0 +1,33 @@
+stages: 
+ - docker
+ - linux
+
+
+
+buildDocker:
+  stage: docker
+  tags:
+    - shell
+  before_script:
+    - docker login registry.git.rwth-aachen.de -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  script:
+    - cd Docker
+#    - docker login registry.git.rwth-aachen.de -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+#    - docker login registry.git.rwth-aachen.de -u someUserName -p yEep-tAt19HbsmNQJMNo
+    - docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/torcsdprl/dockerimages/mxnet17 .
+    - docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/torcsdprl/dockerimages/mxnet17
+  only:
+    changes:
+    - Docker/**/*
+
+
+TestBuild:
+ stage: linux
+ image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/torcsdprl/dockerimages/mxnet17:latest
+ #tags:
+ # - shell
+ script: 
+ #- docker pull registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/torcsdprl/dockerimages/mxnet17:latest
+ #- docker run -d --name container registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/torcsdprl/dockerimages/mxnet17:latest
+ #- docker exec container echo "hello world"
+ - chmod +x scripts/ci-script.sh && ./scripts/ci-script.sh
