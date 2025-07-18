@@ -1,0 +1,155 @@
+package de.rwth.connectedcars.movement;
+
+component VelocityCalc {
+
+  port 
+      in  Q (0.0 m/s : oo m/s)   currentVel,
+      in  Q (-180 : 180)         nextTurnAngle, //180 equals to going straight, 0 is a U-turn, -180 indicates last point
+      in  Q (-30 : 30)           currentSteer,
+      in  Q (0 m/s : oo m/s) ^ 9 maxVelocity,
+      in  Q (0 m/s : oo m/s) ^ 9 minVelocity,     
+      in  Q (0 : 180)            critTurnAngle,     //angle of turn at whcih car has to slow down
+      in  Q (0 m : oo m)         dist2critAngle,    //distance to next turn where car has to sow down
+      in  Q (0 m/s : oo m/s)     normalTurnSpeed,   //desired speed in turns
+      in  Q (0 m/s : oo m/s)     sharpTurnSpeed,    //desired speed in extra sharp turns
+      in  Q (0 : 180)            extraCritAngle,    //defines at which angle a turn is considered to be sharp
+      in  Q (0 : oo)             velCoef,           //value for aggressivenes of acceleration and deceleration
+      in  Q (0 m : oo m)         lowSpeedLimitDist, //distance to next speed limit lower than the current
+      in  Q (0 m/s : oo m/s)     lowerSpeedLimit,   //value of next speed limit lower than the current
+            
+      out Q (-oo m/s : oo m/s)   desiredVelocity;
+
+      
+  implementation Math{
+
+    static N (0:2) done = 1;
+    static Q (-oo m/s : 0.001 m/s : oo m/s) a = -10 m/s;
+    static Q b = 0.5;
+    static Q (-oo m/s : 0.001 m/s : oo m/s) c = 10 m/s;
+    static Q (0 s : 0.01 s : oo s) deltaT = 0 s;
+    static N (0:2) acc = 0; //acc 0->braking for turn, acc=1-> accelerating, acc=2->braking for next speed limit
+    static Q (0 m/s : 0.001 m/s : oo m/s) target_upper_speed = 50/3.6 m/s;
+    Q (-oo m : oo m) brakeDist;
+    Q t;
+    Q (0 m/s : oo m/s) turnSpeed; //target speed at entry of turn depending on the angle of the turn
+    
+    //desired velocity follows function v(deltaT) = a * exp(-b * deltaT) + c
+    //with c = end velocity, a = current - end vel 
+    
+    //calculate the speed for the next turn
+        if nextTurnAngle < 0 //turnAngle < 0 indicates last point
+            turnSpeed = 0;
+        elseif nextTurnAngle <= extraCritAngle //very sharp turns need to be taken even slower
+            if sharpTurnSpeed > minVelocity(1)
+                turnSpeed = sharpTurnSpeed;
+            else 
+                turnSpeed = minVelocity(1);
+            end
+        else
+            if normalTurnSpeed > minVelocity(1)
+                turnSpeed = normalTurnSpeed; 
+            else 
+                turnSpeed = minVelocity(1);
+            end
+        end
+    
+    
+    if abs(currentSteer) >= 29
+        done = 1; 
+        desiredVelocity = 10/3.6 m/s;   
+        deltaT = 0;
+        acc = 0;
+    else 
+            
+          //calculate braking distance to take next turn
+          Q (-oo m : oo m) testDist;
+          Q (-oo m/s : oo m/s) testA = (currentVel - turnSpeed);
+          Q testB = abs(velCoef/testA);
+          Q (0 s : oo s) testT = (-log(0.7/(testA*3.6)))/testB;
+          testDist = ((turnSpeed) * testT) - ((testA/testB) * exp(-testB * testT)) + (testA/testB);
+          
+          //calculate whether braking for next speed limit change needs to be initiated
+          Q (0 m : oo m) speedDist;
+          if currentVel - lowerSpeedLimit > 0 m/s
+          
+              Q (-oo m/s : oo m/s) speedA = (currentVel - lowerSpeedLimit);
+              Q speedB = abs(velCoef/speedA);
+              Q (0 s : oo s) speedT = (-log(0.7/(speedA*3.6)))/speedB;
+              speedDist = (lowerSpeedLimit * speedT) - ((speedA/speedB) * exp(-speedB * speedT)) + (speedA/speedB);
+          else
+              speedDist = 0 m;
+          end   
+           
+        //test whether braking needs to be initiated regardless of whether car is following acc function 
+        if acc == 1
+          if speedDist >= lowSpeedLimitDist
+              done = 2;
+          end
+          if ((testDist  >= dist2critAngle) && nextTurnAngle < critTurnAngle)  || maxVelocity(1) != target_upper_speed
+              done = 1;
+          end
+          
+          
+        end
+        //needed so that after braking without taking a turn the acceleration can be started
+        if acc == 0        
+            if testDist + 20 < dist2critAngle || nextTurnAngle > critTurnAngle
+                done = 1;
+            end
+        end
+        
+        //acc = 2 if car currently in process of reducing speed to match new upper speed limit
+        //process done if area with new speed limit is reached or turn braking needs to be initiated
+        if acc == 2
+            if target_upper_speed == maxVelocity(1) || ((testDist  >= dist2critAngle) && nextTurnAngle < critTurnAngle)
+                done = 1;
+            end
+        end 
+        
+        
+        if done == 0 
+            deltaT = deltaT + 0.1 s;
+        end
+          
+        if done == 1
+            //calc braking distance with current velocity to turnspeed + 0.7km/h
+            if currentVel < (turnSpeed + (1/3.6))
+                brakeDist = 0 m;
+                acc = 0;
+            else
+                //coefficients for turn braking process
+                a = currentVel - turnSpeed; 
+                b = abs(velCoef/a);
+                c = turnSpeed;
+                t = (-log(0.7/(a*3.6)))/b; 
+                brakeDist = (c * t) - ((a/b) * exp(-b * t)) + (a/b); 
+                acc = 0;
+            end
+            //if turn far away acceleration to maximum speed limit can be initiated
+            if brakeDist < dist2critAngle || nextTurnAngle > critTurnAngle
+                a = (currentVel - maxVelocity(1));
+                b = abs(velCoef/a);
+                c = maxVelocity(1);
+                acc = 1;
+                target_upper_speed = maxVelocity(1);
+            end
+            done = 0;
+            deltaT = 0 s;
+        end
+        
+        //done =2 if braking for next speed limit needs to be initiated
+        if done == 2
+            a = currentVel - lowerSpeedLimit;
+            b = abs(velCoef/a);
+            c = lowerSpeedLimit;
+            acc = 2;
+            target_upper_speed = lowerSpeedLimit;
+            done = 0;
+            deltaT = 0 s;
+        end
+        desiredVelocity = a * exp(-b * deltaT) + c;
+    end
+            
+  }
+  
+}

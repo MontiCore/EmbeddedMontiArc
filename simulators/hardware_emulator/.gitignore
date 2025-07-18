@@ -1,0 +1,16 @@
+build/
+bindings
+hardware-emulator-test.exe
+hardware_emulator/Release/
+hardware_emulator/Debug/
+hardware_emulator/CMakeLists_with_comments.txt
+hardware_emulator/Makefile
+.project
+.settings/
+.vscode/
+.classpath
+target/
+src/main/resources/linux/
+src/main/resources/windows/
+*.o
+*.so
