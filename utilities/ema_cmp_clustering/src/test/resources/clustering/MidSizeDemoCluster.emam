@@ -1,0 +1,85 @@
+/* (c) https://github.com/MontiCore/monticore */
+package clustering;
+
+/*
+
+0----1----4---6
+| \/ |     \ /
+| /\ |      5
+2----3
+
+*/
+
+component MidSizeDemoCluster {
+
+    // 0
+    component NoInThreeOut{
+        ports out Q out1,
+              out Q out2,
+              out Q out3;
+    }
+
+    // 1
+    component OneInThreeOut{
+        ports in Q in1,
+              out Q out1,
+              out Q out2,
+              out Q out3;
+    }
+
+    // 2
+    component TwoInOneOut{
+        ports in Q in1,
+              in Q in2,
+              out Q out1;
+    }
+
+    // 3
+    component ThreeInNoneOut{
+        ports in Q in1,
+              in Q in2,
+              in Q in3;
+    }
+
+    // 4
+    component OneInTwoOut{
+        ports in Q in1,
+              out Q out1,
+              out Q out2;
+    }
+
+    // 5
+    component TwoInNoneOut{
+        ports in Q in1,
+              in Q in2;
+    }
+
+    // 6
+    component OneInOneOut{
+        ports in Q in1,
+              out Q out1;
+    }
+
+    instance NoInThreeOut comp0;
+    instance OneInThreeOut comp1;
+    instance TwoInOneOut comp2;
+    instance ThreeInNoneOut comp3;
+    instance OneInTwoOut comp4;
+    instance TwoInNoneOut comp5;
+    instance OneInOneOut comp6;
+
+    connect comp0.out1 -> comp1.in1;
+    connect comp0.out2 -> comp2.in1;
+    connect comp0.out3 -> comp3.in1;
+
+    connect comp1.out1 -> comp2.in2;
+    connect comp1.out2 -> comp3.in2;
+    connect comp1.out3 -> comp4.in1;
+
+    connect comp2.out1 -> comp3.in3;
+
+    connect comp4.out1 -> comp5.in1;
+    connect comp4.out2 -> comp6.in1;
+
+    connect comp6.out1 -> comp5.in2;
+}
