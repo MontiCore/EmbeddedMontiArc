@@ -20,12 +20,6 @@
       <id>se-nexus</id>
       <username>cibuild</username>
       <password>${env.cibuild}</password>
-    </server> 
-
-     <server>
-      <id>github</id>
-      <username>travisbuilduser</username>
-      <password>${env.travisbuilduserpassword}</password>
     </server>
   </servers>
 
