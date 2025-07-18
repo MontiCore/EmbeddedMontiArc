@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller03;
+
+component VelocityController {
+	port                                    
+		in Q(0km/h : 250km/h) velocity,
+		in B reverseMove,
+		in B moveForward,
+		out Q(-2m/s^2:2m/s^2) acceleration; 
+
+	implementation Math{                    
+
+    	if (velocity > 1 m/s)
+    	    acceleration = 0m/s^2;
+    	else
+    		acceleration = 1m/s^2;
+        end
+        
+        if reverseMove
+        	acceleration = -0.5 m/s^2;
+        end
+        
+        if (velocity < -0.5 m/s)
+        	acceleration = 0m/s^2;
+        end
+        
+        if (reverseMove && moveForward)
+            acceleration = 0.5 m/s^2;
+        end
+        
+        if (reverseMove && moveForward && (velocity > 0.5 m/s))
+            acceleration = 0m/s^2;
+        end
+        
+	}
+}

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component Array_RangeNoUnit {
+  ports
+    in Q(-10 : 0.1 : 10) inRangeNoUnit[4],
+    out Q(-10 : 0.1 : 10) outRangeNoUnit[4];
+}

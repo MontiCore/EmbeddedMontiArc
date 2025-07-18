@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view EnvironmentPhysics {
+
+  component Environment {
+
+    component PhysicsSimulation {
+      port
+        in boolean valveOpen,
+        in boolean valveClose,
+        out int level1;
+    }
+    instance PhysicsSimulation physicsSimulation;
+   
+    component SimulationPanel {
+      port
+        out boolean button;
+    }
+    instance SimulationPanel simulationPanel;
+  }
+  instance Environment environment;
+
+  component PumpingSystem {
+    port
+      in int level1,
+      in boolean button,
+      out boolean valveOpen,
+      out boolean valveClose;
+  }
+  instance PumpingSystem pumpingSystem;
+    
+    connect physicsSimulation.level1 -> pumpingSystem.level1;
+    connect simulationPanel.button -> pumpingSystem.button;
+    connect pumpingSystem.valveOpen -> physicsSimulation.valveOpen;
+    connect pumpingSystem.valveClose -> physicsSimulation.valveClose;
+}

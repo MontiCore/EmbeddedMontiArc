@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view Witness_NestedLoopPositiveEffector2 {
+    component NestedLoopComponent {
+   
+    component SubComponent1 {
+        ports
+            in Boolean in3, 
+            out Boolean out2;
+            effect in3 -> out2;
+    }
+    instance SubComponent1 subComponent1;
+    
+    component SubComponent2 {
+        ports  
+            out Boolean out2;
+    }
+    instance SubComponent2 subComponent2;
+    
+   connect subComponent2.out2 -> subComponent1.in3;
+}
+}

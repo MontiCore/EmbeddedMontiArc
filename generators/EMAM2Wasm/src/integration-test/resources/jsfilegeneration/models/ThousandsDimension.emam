@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component ThousandsDimension {
+  ports
+    in Q(2 m: oo m)^{1234, 3, 1200300} inThousandsMatrixArray[1111],
+    out Q(-oo m : oo m)^{1234, 3, 1200300} outThousandsMatrixArray[1111];
+}

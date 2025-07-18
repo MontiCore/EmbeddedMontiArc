@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops;
+
+component OscillationAsSymbol {
+    port
+        in Q in1,
+        out Q out1;
+
+    implementation Math {
+        symbolic Q y;
+        symbolic Q yDiff;
+        symbolic Q yDiffDiff;
+
+        y(t=0) = 2;
+        yDiff(t=0) = 0;
+
+        diff(y) == yDiff;
+        diff(yDiff) == yDiffDiff;
+        yDiffDiff == -2/5*y;
+        out1 == y;
+    }
+}
