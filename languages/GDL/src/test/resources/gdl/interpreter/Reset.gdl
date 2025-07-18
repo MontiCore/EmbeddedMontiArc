@@ -1,0 +1,11 @@
+(init (state x))
+(init (sees none (state y)))
+
+(<= (legal test (do))
+    (true (state x))
+    (true (sees none (state y)))
+)
+
+(<= (next (state a))
+    (does test (do))
+)
