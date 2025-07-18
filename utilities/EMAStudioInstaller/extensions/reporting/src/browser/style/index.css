@@ -1,0 +1,13 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.emastudio-report-icon {
+    background-image:url("../images/reporting.png");
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color:#FFF;
+}

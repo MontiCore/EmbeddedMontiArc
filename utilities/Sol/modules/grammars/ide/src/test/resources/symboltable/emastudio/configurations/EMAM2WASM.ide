@@ -1,0 +1,10 @@
+package emastudio.configurations
+
+typedef component configuration EMAM2WASM {
+    option rootModel: String {
+        label "Root Model"
+        required true
+    }
+
+    backend task main
+}

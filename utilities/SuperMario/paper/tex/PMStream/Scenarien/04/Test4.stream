@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman;
+
+stream Test4 for PacManWrapper {
+    ghostX: [44cm,166cm,140cm,60cm] tick [46cm,164cm,140cm,60cm] tick [48cm,162cm,140cm,60cm] tick [50cm,160cm,140cm,60cm] tick [52cm,158cm,142cm,62cm] tick [54cm,156cm,144cm,64cm] tick [56cm,154cm,146cm,66cm] tick [58cm,152cm,148cm,68cm] tick [60cm,150cm,150cm,70cm] tick [62cm,148cm,152cm,72cm];
+    ghostY: [10cm,40cm,46cm,54cm] tick [10cm,40cm,44cm,56cm] tick [10cm,40cm,42cm,58cm] tick [10cm,40cm,40cm,60cm] tick [10cm,40cm,40cm,60cm] tick [10cm,40cm,40cm,60cm] tick [10cm,40cm,40cm,60cm] tick [10cm,40cm,40cm,60cm] tick [10cm,40cm,40cm,60cm] tick [10cm,40cm,40cm,60cm];
+    ghostDirection: [3,2,0,1] tick [3,2,0,1] tick [3,2,0,1] tick [3,2,0,1] tick [3,2,3,3] tick [3,2,3,3] tick [3,2,3,3] tick [3,2,3,3] tick [3,2,3,3] tick [3,2,3,3];
+    ghostEatable: [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0];
+    ghostEaten: [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0] tick [0,0,0,0];
+    pacManX: 120cm tick 120cm tick 120cm tick 120cm tick 122cm tick 124cm tick 126cm tick 128cm tick 130cm tick 132cm;
+    pacManY: 166cm tick 164cm tick 162cm tick 160cm tick 160cm tick 160cm tick 160cm tick 160cm tick 160cm tick 160cm;
+    pacManEaten: 0 tick 0 tick 0 tick 0 tick 0 tick 0 tick 0 tick 0 tick 0 tick 0;
+    pacManLives: 2 tick 2 tick 2 tick 2 tick 2 tick 2 tick 2 tick 2 tick 2 tick 2;
+    pacManScore: 260 tick 260 tick 260 tick 260 tick 270 tick 270 tick 270 tick 270 tick 270 tick 280;
+    map: ...
+
+    newPacManDirection: 0 tick 0 tick 0 tick 3 tick 3 tick 3 tick 3 tick 3 tick 3 tick 3;
+}

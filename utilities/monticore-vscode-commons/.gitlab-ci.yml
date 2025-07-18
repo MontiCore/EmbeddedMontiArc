@@ -1,0 +1,19 @@
+buildBranch:
+  except:
+    - master
+  image: node:latest
+  stage: build
+  script:
+  - npm install
+  - npm run compile
+
+buildMaster:
+  only:
+  - master
+  image: node:latest
+  stage: build
+  script:
+  - mv .npmrc.pipeline .npmrc
+  - npm install
+  - npm run compile
+  - npm publish

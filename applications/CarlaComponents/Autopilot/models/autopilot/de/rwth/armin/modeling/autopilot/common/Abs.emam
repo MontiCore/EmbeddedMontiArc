@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package autopilot.de.rwth.armin.modeling.autopilot.common;
+
+component Abs {
+  port
+    in Q input,
+    out Q output;
+
+  implementation Math {
+    if input < 0
+        output = (-1) * input;
+    else
+        output = input;
+    end
+  }
+}

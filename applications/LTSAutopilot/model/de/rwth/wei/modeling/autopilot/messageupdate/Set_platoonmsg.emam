@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Set_platoonmsg{
+
+ ports
+   in  platoonmessage     plat_msg,
+   in  trajectorymessage  traj_msg,
+
+   out  platoonmessage      set_plat_msg,
+   out  Q^{1,100} trajectroy_x,
+   out  Q^{1,100} trajectroy_y;
+   implementation Math{
+     set_plat_msg.vehicleid = plat_msg.vehicleid;
+     set_plat_msg.timestamp = plat_msg.timestamp;
+     set_plat_msg.compass = plat_msg.compass;
+     //set_plat_msg.platoon_headid = status_msg.platoon_headid;
+     set_plat_msg.length = plat_msg.length;
+     set_plat_msg.width = plat_msg.width;
+     set_plat_msg.velocity = plat_msg.velocity;
+
+     trajectroy_x = trajectorymessage.trajectory_x;
+     trajectroy_y = trajectorymessage.trajectory_y;
+     set_plat_msg.position_x = trajectroy_x(1,1);
+     set_plat_msg.position_y = trajectroy_y(1,1);
+   }
+}

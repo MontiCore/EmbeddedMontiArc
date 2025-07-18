@@ -1,0 +1,242 @@
+[
+  {
+    "Root": "group1",
+    "DataForColumn1": "data011",
+    "DataForColumn2": "data012",
+    "DataForColumn3": "data013"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data021",
+    "DataForColumn2": "data022",
+    "DataForColumn3": "data023"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data031",
+    "DataForColumn2": "data032",
+    "DataForColumn3": "data033"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data041",
+    "DataForColumn2": "data042",
+    "DataForColumn3": "data043"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data051",
+    "DataForColumn2": "data052",
+    "DataForColumn3": "data053"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data061",
+    "DataForColumn2": "data062",
+    "DataForColumn3": "data063"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data071",
+    "DataForColumn2": "data072",
+    "DataForColumn3": "data073"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data081",
+    "DataForColumn2": "data082",
+    "DataForColumn3": "data083"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data091",
+    "DataForColumn2": "data092",
+    "DataForColumn3": "data093"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data101",
+    "DataForColumn2": "data102",
+    "DataForColumn3": "data103"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data111",
+    "DataForColumn2": "data112",
+    "DataForColumn3": "data113"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data121",
+    "DataForColumn2": "data122",
+    "DataForColumn3": "data123"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data131",
+    "DataForColumn2": "data132",
+    "DataForColumn3": "data133"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data141",
+    "DataForColumn2": "data142",
+    "DataForColumn3": "data143"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data151",
+    "DataForColumn2": "data152",
+    "DataForColumn3": "data153"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data161",
+    "DataForColumn2": "data162",
+    "DataForColumn3": "data163"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data171",
+    "DataForColumn2": "data172",
+    "DataForColumn3": "data173"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data181",
+    "DataForColumn2": "data182",
+    "DataForColumn3": "data183"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data191",
+    "DataForColumn2": "data192",
+    "DataForColumn3": "data193"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data201",
+    "DataForColumn2": "data202",
+    "DataForColumn3": "data203"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data311",
+    "DataForColumn2": "data312",
+    "DataForColumn3": "data313"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data321",
+    "DataForColumn2": "data322",
+    "DataForColumn3": "data323"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data331",
+    "DataForColumn2": "data332",
+    "DataForColumn3": "data333"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data341",
+    "DataForColumn2": "data342",
+    "DataForColumn3": "data343"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data351",
+    "DataForColumn2": "data352",
+    "DataForColumn3": "data353"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data361",
+    "DataForColumn2": "data362",
+    "DataForColumn3": "data363"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data371",
+    "DataForColumn2": "data372",
+    "DataForColumn3": "data373"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data381",
+    "DataForColumn2": "data382",
+    "DataForColumn3": "data383"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data391",
+    "DataForColumn2": "data392",
+    "DataForColumn3": "data393"
+  },
+  {
+    "Root": "group2",
+    "DataForColumn1": "data401",
+    "DataForColumn2": "data402",
+    "DataForColumn3": "data403"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data411",
+    "DataForColumn2": "data412",
+    "DataForColumn3": "data413"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data421",
+    "DataForColumn2": "data422",
+    "DataForColumn3": "data423"
+  },
+  {
+    "Root": "group1",
+    "DataForColumn1": "data431",
+    "DataForColumn2": "data432",
+    "DataForColumn3": "data433"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data441",
+    "DataForColumn2": "data442",
+    "DataForColumn3": "data443"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data451",
+    "DataForColumn2": "data452",
+    "DataForColumn3": "data453"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data461",
+    "DataForColumn2": "data462",
+    "DataForColumn3": "data463"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data471",
+    "DataForColumn2": "data472",
+    "DataForColumn3": "data473"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data481",
+    "DataForColumn2": "data482",
+    "DataForColumn3": "data483"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data491",
+    "DataForColumn2": "data492",
+    "DataForColumn3": "data493"
+  },
+  {
+    "Root": "group3",
+    "DataForColumn1": "data501",
+    "DataForColumn2": "data502",
+    "DataForColumn3": "data503"
+  }
+]

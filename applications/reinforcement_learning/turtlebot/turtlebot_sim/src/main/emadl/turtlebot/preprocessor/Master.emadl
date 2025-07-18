@@ -1,0 +1,27 @@
+package turtlebot.preprocessor;
+
+import turtlebot.preprocessor.util.LidarScan;
+import turtlebot.preprocessor.util.ScanDiscretization;
+
+component Master {
+    ports
+        in  Q^{360}  ranges,
+        in  Q        gazebo_reward,
+        in  B        gazebo_terminal,
+        in  Q^{4}    cur_position,
+        out Q^{29}    state,
+        out Q        reward,
+        out B        terminal;
+
+        
+    instance LidarScan lidarScan;
+    instance ScanDiscretization scanDisc;
+
+    connect ranges                 -> lidarScan.msgRanges; 
+    connect lidarScan.distancesOut -> scanDisc.distances;
+    connect cur_position           -> scanDisc.position;
+    connect scanDisc.state         -> state;
+    connect gazebo_reward          -> reward;
+    connect gazebo_terminal        -> terminal;
+
+}

@@ -1,0 +1,66 @@
+{
+    "name": "basic_interface",
+    "version": "1.0",
+    "ports": [
+        {
+            "name": "true_velocity",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "true_position",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "vec2" }
+        },
+        {
+            "name": "true_compass",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "trajectory_length",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "N" }
+        },
+        {
+            "name": "trajectory_x",
+            "direction": "INPUT",
+            "data_type": { "type": "vector", "data_type": { "type": "basic", "base_type": "Q" }, "size": 10 }
+        },
+        {
+            "name": "trajectory_y",
+            "direction": "INPUT",
+            "data_type": { "type": "vector", "data_type": { "type": "basic", "base_type": "Q" }, "size": 10 }
+        },
+        {
+            "name": "steering",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "gas",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "braking",
+            "direction": "INPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "set_steering",
+            "direction": "OUTPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "set_gas",
+            "direction": "OUTPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        },
+        {
+            "name": "set_braking",
+            "direction": "OUTPUT",
+            "data_type": { "type": "basic", "base_type": "Q" }
+        }
+    ]
+}

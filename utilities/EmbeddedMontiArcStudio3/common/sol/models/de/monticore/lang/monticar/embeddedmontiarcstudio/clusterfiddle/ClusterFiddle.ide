@@ -1,0 +1,27 @@
+package de.monticore.lang.monticar.embeddedmontiarcstudio.clusterfiddle
+
+import de.monticore.lang.monticar.utilities.ClusterFiddleModel
+import de.monticore.lang.monticar.embeddedmontiarcstudio.common.Visualize
+
+typedef module ClusterFiddle {
+    label "ClusterFiddle"
+    category "EmbeddedMontiArcStudio"
+
+    configuration visualize: Visualize {
+        name "ClusterFiddle :: Visualize Model"
+
+        fill model with "detection.objectDetector1"
+        fill modelPath with "${this.relative(context, destination, 'src')}"
+        fill outputPath with "${this.relative(context, destination, 'target/visualization')}"
+    }
+
+    configuration execute: ClusterFiddleExecute {
+        name "ClusterFiddle :: Open ClusterFiddle"
+
+        fill rootModel with "detection.objectDetector1"
+        fill modelsDirectory with "${this.relative(context, destination, 'src')}"
+        fill outputDirectory with "${this.relative(context, destination, 'target/clusterfiddle')}"
+    }
+
+    write ClusterFiddleModel to "src"
+}

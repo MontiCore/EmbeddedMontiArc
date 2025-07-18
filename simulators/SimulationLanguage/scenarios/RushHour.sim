@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Rush Hour
+ * Focus: Observe vehicles during the most busy time of the week
+ * Details: masses of vehicles innercity, highway, handling construction sites
+*/
+sim RushHour {
+  sim_duration 4h;
+  
+  time 12:00;
+  
+  map_name RushHour.osm;
+  
+  pedestrian_density 2;
+  
+  <v>(-22.0,-34.0,90.0)->(-1.0,0.0,10.0) 1000;
+  <v>(-1.0,0.0,10.0)->(-22.0,-34.0,90.0) 1000;
+}

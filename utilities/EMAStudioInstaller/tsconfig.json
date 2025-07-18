@@ -1,0 +1,32 @@
+{
+  "extends": "./ide/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@emastudio/core": ["packages/core/src/*"],
+      "@emastudio/markers": ["packages/markers/src/*"],
+      "@emastudio/monaco": ["packages/monaco/src/*"],
+      "@emastudio/process": ["packages/process/src/*"],
+      "@emastudio/workspace": ["packages/workspace/src/*"],
+      "@emastudio/dashboard": ["extensions/dashboard/src/*"],
+      "@emastudio/emam2wasm": ["extensions//src/*"],
+      "@emastudio/executing": ["extensions/executing/src/*"],
+      "@emastudio/models": ["extensions/models/src/*"],
+      "@emastudio/nfpverification": ["extensions/nfpverification/src/*"],
+      "@emastudio/oclverification": ["extensions/oclverification/src/*"],
+      "@emastudio/pacman": ["extensions/pacman/src/*"],
+      "@emastudio/paths": ["extensions/paths/src/*"],
+      "@emastudio/relay": ["extensions/relay/src/*"],
+      "@emastudio/reporting": ["extensions/reporting/src/*"],
+      "@emastudio/scripts": ["extensions/scripts/src/*"],
+      "@emastudio/static": ["extensions/static/src/*"],
+      "@emastudio/supermario": ["extensions/supermario/src/*"],
+      "@emastudio/testing": ["extensions/testing/src/*"],
+      "@emastudio/visualization": ["extensions/visualization/src/*"]
+    }
+  },
+  "include": [
+    "packages/*/src",
+    "extensions/*/src"
+  ]
+}

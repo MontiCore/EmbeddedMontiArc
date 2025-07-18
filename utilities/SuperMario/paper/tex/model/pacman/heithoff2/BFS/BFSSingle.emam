@@ -1,0 +1,61 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.heithoff2.BFS;
+import de.rwth.pacman.heithoff2.BFS.single.*;
+// check whether the current tile is safe and then calculate the next tile position
+component BFSSingle {
+    ports
+      in (0m: 20m) ghostX[4],
+      in (1m: 23m) ghostY[4],
+      in (0 : 1 : 3) ghostDirection[4],
+      in B ghostEatable[4],
+      in Z^{22,19} map,
+      in (0m: 20m) currentX,
+      in (1m: 23m) currentY,
+      in (0m: 20m) oldX,
+      in (1m: 23m) oldY,
+      in B oldSafe,
+      in B oldSafeFound,
+      in Z oldDirection,
+      out (0m: 20m) newX,
+      out (1m: 23m) newY,
+      out B safeFound,
+      out B safe,
+      out Z newDirection;
+    
+    instance ControlFlow control;
+    instance ReenterMap reenterMap;
+    instance SearchFinished searchFinished;
+    instance SafePosition safePosition;
+    instance CalcNewPosition calcNewPosition;
+    connect currentX -> reenterMap.currentX;
+    connect currentY -> reenterMap.currentY;
+    connect oldX     -> reenterMap.oldX;
+    connect oldY     -> reenterMap.oldY;
+    connect reenterMap.newCurrentX -> searchFinished.currentX, safePosition.currentX, calcNewPosition.currentX, control.currentX;
+    connect reenterMap.newCurrentY -> searchFinished.currentY, safePosition.currentY, calcNewPosition.currentY, control.currentY;
+    connect map                    -> searchFinished.map, calcNewPosition.map;
+    connect oldSafe                -> searchFinished.oldSafe;
+    connect oldSafeFound           -> searchFinished.oldSafeFound;
+    connect ghostX[:]         -> safePosition.ghostX[:];
+    connect ghostY[:]         -> safePosition.ghostY[:];
+    connect ghostDirection[:] -> safePosition.ghostDirection[:];
+    connect ghostEatable[:]   -> safePosition.ghostEatable[:];
+    connect oldDirection      -> safePosition.oldDirection, control.oldDirection;
+    connect reenterMap.newOldX      -> calcNewPosition.oldX;
+    connect reenterMap.newOldY      -> calcNewPosition.oldY;
+    connect searchFinished.finished -> calcNewPosition.searchFinished;
+    connect safePosition.safe       -> calcNewPosition.positionIsSafe;
+    connect searchFinished.finished      -> control.searchFinished;
+    connect searchFinished.safe          -> control.safeFromSearchFinished;
+    connect searchFinished.safeFound     -> control.safeFoundFromSearchFinished;
+    connect safePosition.safe            -> control.positionIsSafe;
+    connect calcNewPosition.safeFound    -> control.safeFoundFromNewPosition;
+    connect calcNewPosition.newX         -> control.newXFromNewPosition;
+    connect calcNewPosition.newY         -> control.newYFromNewPosition;
+    connect calcNewPosition.newDirection -> control.newDirectionFromNewPosition;
+    connect control.newX -> newX;
+    connect control.newY -> newY;
+    connect control.safeFound -> safeFound;
+    connect control.safe -> safe;
+    connect control.newDirection -> newDirection;
+}

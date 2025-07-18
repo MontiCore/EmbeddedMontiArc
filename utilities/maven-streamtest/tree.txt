@@ -1,0 +1,36 @@
+
+maven-streamtest -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/maven-streamtest
+\- embedded-montiarc-math-middleware-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware
+   +- embedded-montiarc-math-roscpp-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosCpp
+   |  \- embedded-montiarc-math-rosmsg-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2RosMsg
+   |     +- embedded-montiarc-math -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArcMath
+   |     |  +- embedded-montiarc-dynamics
+   |     |  |  \- embedded-montiarc -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArc
+   |     |  +- embedded-montiarc-behaviour
+   +- embedded-montiarc-math-emam2someip-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2someip
+   |  \- embedded-montiarc-math-rosmsg-generator -> ok
+   +- embedded-montiarc-math-mqtt-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt
+   |  \- embedded-montiarc-math-rosmsg-generator -> ok
+   +- embedded-montiarc-emadl-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP
+   |  +- cnnarch-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/cnnarch2x
+   |  |  +- cnn-arch -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNArchLang
+   |  |  +- cnn-train -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/CNNTrainLang
+   |  |  +- embedded-montiarc-math-generator -> ok
+   |  +- cnnarch-mxnet-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2MXNet
+   |  |  +- cnnarch-generator -> ok
+   |  +- cnnarch-gluon-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Gluon
+   |  |  +- cnnarch-generator -> ok
+   |  |  \- embedded-montiarc-emadl-pythonwrapper-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emadl2pythonwrapper
+   |  |     +- embedded-montiarc-deeplearning
+   |  +- cnnarch-tensorflow-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/cnnarch2tensorflow
+   |  |  +- cnnarch-generator -> ok
+   |  |  \- embedded-montiarc-emadl-pythonwrapper-generator -> ok
+   |  +- cnnarch-caffe2-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Caffe2
+   |  |  +- cnnarch-generator -> ok
+   |  +- cnn-train -> ok
+   |  \- embedded-montiarc-deeplearning -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/languages/EmbeddedMontiArcDL
+   \- embedded-montiarc-component-clustering -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/ema_cmp_clustering
+      \- embedded-montiarc-math-generator -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Cpp
+         +- executionSemantics -> https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/executionSemantics
+            - embedded-montiarc-math
+         \- montisim:commons

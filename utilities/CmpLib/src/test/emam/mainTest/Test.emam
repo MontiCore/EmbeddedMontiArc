@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mainTest;
+
+import de.rwth.cmplib.advancedLibrary.trigger.*;
+import de.rwth.cmplib.basicLibrary.*;
+
+component Test {
+
+    instance AndTest andtestInstance;
+    instance DelayTest dtI;
+    instance GreaterEqualsTest greaterequalstestInstance;
+    instance Not notInstance;
+    instance OrTest ortestInstance;
+
+}

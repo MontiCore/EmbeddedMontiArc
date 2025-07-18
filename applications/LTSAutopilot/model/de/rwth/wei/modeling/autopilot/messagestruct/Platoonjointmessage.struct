@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagestruct;
+
+struct Platoonjointmessage{
+    Z  timestamp;
+    Z  vehicleid;
+    Z  jointvehicleid;
+    Z  currentstate;
+    Q  position_x;
+    Q  position_y;
+    Z  platoon_num;
+    AssignmentType platoonlist;
+}

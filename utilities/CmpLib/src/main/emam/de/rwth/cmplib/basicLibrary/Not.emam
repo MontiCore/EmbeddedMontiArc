@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.cmplib.basicLibrary;
+
+component Not {
+	port
+		in B in1,
+		out B out1;
+
+	implementation Math{
+	    if in1==0
+	        out1=1;
+	    else
+	        out1=0;
+	     end
+	}
+}

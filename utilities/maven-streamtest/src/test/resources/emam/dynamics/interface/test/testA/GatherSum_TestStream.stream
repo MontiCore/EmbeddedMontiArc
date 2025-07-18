@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testA;
+
+stream GatherSum_TestStream for GatherSum_TestWrapper {
+
+    connectNew: false tick false;
+    sumValueIn: 42.1234 tick 84.2468;
+    out1: 42.1234 tick 84.2468;
+
+}

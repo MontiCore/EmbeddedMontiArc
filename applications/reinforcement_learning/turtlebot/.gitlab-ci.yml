@@ -1,0 +1,46 @@
+image: zoroac/turtle_ci:latest
+
+stages:
+- build
+- train
+- validate
+
+TestBuild:
+  stage: build
+  artifacts:
+    paths:
+      - "turtlebot_real/target/"
+  script:
+  # get generator start
+  #- git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+  #- cd EMAM2Middleware
+  #- mvn clean package -s settings.xml -DskipTests
+  #- cd ..
+  #- cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" turtlebot_real/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
+  # get generator end
+  - cd turtlebot_real/
+  - chmod 777 *.sh
+  - ./install.sh
+
+TestTrain:
+  stage: train
+  artifacts:
+    paths:
+      - "turtlebot_real/excel_traj_files/"
+  script: 
+  - source ~/catkin_ws/devel/setup.bash
+  - export TURTLEBOT3_MODEL=burger
+  - sleep 15
+  - cd turtlebot_real/
+  - chmod 777 *.sh
+  - ./run_env.sh
+
+ValidateTrain:
+  stage: validate
+  artifacts:
+    paths:
+      - "turtlebot_real/pdf_traj_plot/"
+  script: 
+  - cd turtlebot_real/
+  - chmod 777 *.sh
+  - ./run_check.sh

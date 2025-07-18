@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Update_condition{
+ ports
+   in  Q   status_ts,
+   in  Q   traj_ts,
+   in  Q   position_x,
+   in  Q   position_y,
+   in  Q^{1,100}  trajectroy_x,
+   in  Q^{1,100}  trajectroy_y,
+
+   out Z  update_type;
+
+   implementation Math{
+     // update the car position or trajectory of vehicle, cause of the delay of message
+     update_type = 0;
+     Q dx = position_x - trajectroy_x(1,1);
+     Q dy = position_y - trajectroy_y(1,1);
+     Q sqrt_dis = dx*dx + dy*dy;
+     Q distance = sqrt(sqrt_dis);
+     // parameter should be tested
+     if(status_ts < traj_ts)&&(distance > 2.0)
+        update_type = 1;
+     else if (status_ts > traj_ts)&&(distance > 2.0)
+        update_type = 2;
+     end
+   }
+}

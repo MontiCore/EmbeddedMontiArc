@@ -1,0 +1,36 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<div class="uk-flex uk-flex-column uk-height-1-1">
+    <mat-toolbar class="toolbar">
+        <span flex></span>
+        <button type="button" mat-icon-button (click)="onMinimizeClick()">
+            <mat-icon>remove</mat-icon>
+        </button>
+        <button type="button" mat-icon-button (click)="onCloseClick()">
+            <mat-icon>clear</mat-icon>
+        </button>
+    </mat-toolbar>
+    <div *ngIf="!isLoading()">
+        <nav mat-tab-nav-bar class="navigation" backgroundColor="accent">
+            <a mat-tab-link routerLink="use-cases"
+               routerLinkActive #useCases="routerLinkActive"
+               [active]="useCases.isActive">Use Cases</a>
+            <a mat-tab-link routerLink="artifacts"
+               routerLinkActive #artifacts="routerLinkActive"
+               [active]="artifacts.isActive">Artifacts</a>
+            <a mat-tab-link routerLink="control-scripts"
+               routerLinkActive #controlScripts="routerLinkActive"
+               [active]="controlScripts.isActive">Control Scripts</a>
+            <a mat-tab-link routerLink="extensions"
+               routerLinkActive #extensions="routerLinkActive"
+               [active]="extensions.isActive">Extensions</a>
+        </nav>
+    </div>
+    <div *ngIf="!isLoading()" class="uk-flex-1 content-container">
+        <router-outlet></router-outlet>
+    </div>
+    <div *ngIf="isLoading()" class="uk-flex-1">
+        <div class="uk-position-center spinner-container">
+            <mat-spinner color="accent" diameter="600"></mat-spinner>
+        </div>
+    </div>
+</div>

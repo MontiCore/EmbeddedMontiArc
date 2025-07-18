@@ -1,0 +1,6 @@
+deploy-pretrained:
+  image: maven:3.6-jdk-8
+  script:
+      - 'mvn emadl:deploy-pretrained -s ci_settings.xml'
+  when: manual
+

@@ -1,0 +1,14 @@
+package agent.processing;
+
+component SetSpeed {
+	ports
+		in Q^{14} affordance, 
+        in Q^{29} state,
+        out Q^{14} affordanceUpdated;
+
+	implementation Math {
+        Q speed = state(22);
+		affordanceUpdated = affordance;
+        affordanceUpdated(14) = speed;
+    }
+}
