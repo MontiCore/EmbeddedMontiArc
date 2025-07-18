@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package referencemodels.gan;
+
+component InfoGAN<T,F,S,L>(N1 number_latent_codes) {
+
+    component Discriminator {
+        ports
+            in T data,
+            out F features,
+            out S dis;
+    }
+
+    component Generator {
+        ports
+            in U noise,
+            in L c[1],
+            out T data;
+    }
+
+    component QNetwork {
+        ports
+            in F features,
+            out L c[1];
+    }
+
+    instance Generator generator;
+    instance Discriminator discriminator;
+    instance QNetwork qnetwork;
+
+    connect generator.data -> discriminator.data;
+    connect discriminator.features -> qnetwork.features;
+    connect qnetwork.c[:] -> generator.c[:];
+}
