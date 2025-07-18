@@ -472,21 +472,6 @@
     <profiles>
 
         <profile>
-            <id>SonarQube</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <sonar.host.url>https://metric.se.rwth-aachen.de</sonar.host.url>
-                <sonar.login>jenkins</sonar.login>
-                <!-- For IDE --><!--suppress UnresolvedMavenProperty -->
-                <sonar.password>${env.sonar}</sonar.password>
-                <sonar.exclusions>**/*Module.java,**/*.ts,**/*.js</sonar.exclusions>
-                <sonar.test.exclusions>**/*Module.java</sonar.test.exclusions>
-            </properties>
-        </profile>
-
-        <profile>
             <id>Default</id>
            <activation>
                <property>
