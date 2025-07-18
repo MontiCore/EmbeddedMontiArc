@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test;
+
+component Diagonal{
+    port
+        out (0 m: oo m) c[4];
+
+    implementation Math{
+        c = [1 m 0 m ; 0 m 1 m];
+    }
+
+}
