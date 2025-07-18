@@ -1,0 +1,41 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+
+import MSE;
+import EvaluateTuple;
+import GenerateNewPop;
+
+component Evolution(PIDTupleAggregation population[20]{
+	in Z(1:1:300) lap,
+	in Q(0 : 0.001 : oo) errors,
+
+	out PIDTupleAggregation tupleOut;
+
+	instance MSE mse;
+	instance EvaluateTuple evaluate;
+	instance GenerateNewPop genNewGen;
+
+	connect errors -> mse.errors;
+	
+	connect TRUE -> mse.reset [prevLap != Lap];
+	connect FALSE -> mse.reset [prevLap == lap];
+	
+	connect population[:] -> evaluate.population [prevLap != lab && prevLap % 20 != 0];
+	connect mse.mseOut -> evaluate.mserror [prevLap != lab && prevLap % 20 != 0];
+	connect tupleIndex -> evaluate.tupleIndex [prevLap != lab && prevLap % 20 != 0];
+	connect evaluate.updatedTupleIndex -> tupleIndex [prevLap != lab && prevLap % 20 != 0];
+	connect evaluate.updatedPopulation[:] -> population[:];
+
+	connect population[:] -> genNewPop.oldPop [prevLap != lab && prevLap % 20 == 0]; 
+	connect genNewPop.newPop[:] -> population[:] [prevLap != lab && prevLap % 20 == 0];	
+
+	connect population[tupleIndex] -> tupleOut;
+	
+
+	implementation Math{
+		static PIDTuple tupleIndex = 0;
+		static Z(1:1:300) prevLap = 1;
+		if(prevLap != lap){
+			lap = prevLap;
+		}
+	}

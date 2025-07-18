@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+component Subtract{
+	ports
+		in Q(-oo : 0.001 : oo) targetVal,
+		in Q(-oo : 0.001 : oo) mesuredVal,
+		
+		out Q(-oo : 0.001 : oo) errorVal;
+	
+	implementation Math{
+		errorVal = targetVal - mesuredVal;
+	}
+}

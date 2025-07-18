@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package sensor;
+
+component Distortion<Q(-oo: 0.001:oo) distortion>{
+	ports
+		in Q(-oo:0:001:oo) perfectVal,
+		
+		out Q(-oo:0:001:oo) distortedVal;
+
+	implementation Math{
+		distortedVal = perfectVal + (randn()-0.5)*distortion;
+	}
+}
