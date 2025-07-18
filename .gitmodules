@@ -1,6 +1,0 @@
-[submodule "externals/armadillo"]
-	path = externals/armadillo
-	url = https://gitlab.com/conradsnicta/armadillo-code
-[submodule "externals/shared_cpp"]
-	path = externals/shared_cpp
-	url = https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/shared_cpp
