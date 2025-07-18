@@ -1,0 +1,57 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller04;
+
+component ConeRunner {
+    port
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) xPosition,
+        out Q(-180:180) steering,
+        out B status;
+
+    implementation Math{
+        
+        static Q passRight = 0;
+        static Q passLeft = 0;
+        static Q count = 0;
+        status = 0;
+
+        // deal with the first cone
+        if ((frontRightSensor < 10) && (passLeft == 0) && (passRight == 0))
+            steering = -1;
+        else
+            steering = 0;
+        end
+        
+        if (frontRightSideSensor < 1)
+            passRight = 1;
+            passLeft = 0;
+            count = 0;
+        end
+        
+        if passRight && (count < 48)
+            steering = 1;
+            count +=1;
+        end
+        
+        if passRight && (frontLeftSideSensor < 1)
+            passLeft = 1;
+            passRight = 0;
+            count = 0;
+        end
+        
+        if passLeft && (count < 55)
+            steering = -1;
+            count +=1;
+        end
+        
+        // Stop after passing the last cone
+        if (xPosition > 30)
+            status = 1;
+        end
+    }
+}
