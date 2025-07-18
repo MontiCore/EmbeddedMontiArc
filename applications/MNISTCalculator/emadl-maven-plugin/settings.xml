@@ -88,16 +88,6 @@
                      <releases><enabled /></releases>
                     <snapshots><enabled /></snapshots>
                </repository>
-               <repository>
-                  <id>jena</id>
-                  <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss</url>
-                  <releases>
-                        <enabled />
-                    </releases>
-                    <snapshots>
-                        <enabled />
-                    </snapshots>
-                </repository>
                 <repository>
                     <id>eclipse</id>
                     <url>https://repo.eclipse.org/content/groups/releases/</url>
@@ -215,16 +205,6 @@
                     </releases>
                     <snapshots>
                         <enabled>true</enabled>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                  <id>jena</id>
-                  <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss</url>
-                  <releases>
-                        <enabled />
-                    </releases>
-                    <snapshots>
-                        <enabled />
                     </snapshots>
                 </pluginRepository>
             </pluginRepositories>
