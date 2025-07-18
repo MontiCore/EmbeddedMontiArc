@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pendulum.postprocessor;
+
+import pendulum.postprocessor.util.ActionRangeChanger;
+
+component Master {
+    ports
+        in Q(-1:1)^{1} action,
+        out Q(-2:2)^{1} postAction;
+
+    instance ActionRangeChanger rangeChanger;
+
+    connect action -> rangeChanger.action;
+    connect rangeChanger.changedRangeAction -> postAction;
+}
