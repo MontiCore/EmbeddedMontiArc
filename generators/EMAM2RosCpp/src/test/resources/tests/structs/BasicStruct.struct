@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.structs;
+
+struct BasicStruct{
+    Q fieldQ1;
+    Q fieldQ2;
+    Z fieldZ1;
+    Z fieldZ2;
+    B fieldB1;
+}

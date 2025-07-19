@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view Witness_ConnectorTestView2 {
+component ConnectorTestModel {
+    component FirstComponent {
+        ports 
+            out Boolean out1;
+    }
+    instance FirstComponent firstComponent;
+    
+    component SecondComponent {
+        ports
+            in Boolean in1;
+    }
+    instance SecondComponent secondComponent;
+    
+    connect firstComponent.out1 -> secondComponent.in1;
+}
+}

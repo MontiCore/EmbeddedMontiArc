@@ -1,0 +1,595 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Onlysingle_priority{
+  ports
+   dynamic in Collisionmessage coll_message[0:32],
+
+   //basic information of current vehicle
+   in     Q            velocity,
+   in     Q            length,
+   in     Q            dis2intersection,
+   in     Z            if_frontvehicleexists,
+   // higher priority vehicle
+   in     Z            higher_vehicle_n,
+   in     Z^{1,32}     higher_iscollision,
+   in     Z^{1,32}     higher_collision_id,
+   in     Q^{1,32}     higher_angletocurrent,
+   in     Q^{1,32}     higher_velocity_car1,
+   in     Q^{1,32}     higher_dis2intersection,
+
+   // lower priotity vehicle
+   in     Z            lower_vehicle_n,
+   in     Z^{1,32}     lower_iscollision,
+   in     Z^{1,32}     lower_collision_id,
+   in     Q^{1,32}     lower_angletocurrent,
+   in     Q^{1,32}     lower_velocity_car1,
+   in     Q^{1,32}     lower_dis2intersection,
+
+   // uncertain priority vehicle
+   in     Z            uncertain_vehicle_n,
+   in     Z^{1,32}     uncertain_iscollision,
+   in     Z^{1,32}     uncertain_collision_id,
+   in     Q^{1,32}     uncertain_velocity_car1,
+   in     Q^{1,32}     uncertain_dis2intersection,
+
+   out    Z            is_highestpriority,
+   // use as the public variable
+   out    Collisionmessage   cmsg,
+   out    Collisionmessage   cmsg1,
+   out    Collisionmessage   cmsg2,
+   out    Z^{1,100}  uncertain_collision_vehicleid_list,
+   out    Z^{1,100}  dl_higher_collision_vehicleid_list,
+   out    Z^{1,100}  dl_uncertain_collision_vehicleid_list,
+   out    Z^32 higher_sort_id,
+   out    Z^32 uncertain_sort_id,
+   out    Z^32 lower_sort_id;
+
+   @ coll_message::connect{/*interface for the dynamic port*/}
+
+   implementation Math{
+      // if slow down before the intersection
+      is_highestpriority = 1;
+      // copy the higher priority vehicle to the sort list
+      if higher_vehicle_n >= 0
+        // if length is 1
+        if higher_vehicle_n == 1
+            higher_sort_id(1) = higher_collision_id(1,1);
+        else
+        // Bubble Sort of the distance, length > 0
+            for i = 1 : higher_vehicle_n
+               higher_sort_id(i) = higher_collision_id(1,i);
+            end
+            for j = 0 : (higher_vehicle_n - 2)
+                for k = 1 : (higher_vehicle_n - j -1)
+                   if(higher_dis2intersection(1,k) > higher_dis2intersection(1,k+1))
+                      Z temp = higher_sort_id(k);
+                      higher_sort_id(k) = higher_sort_id(k+1);
+                      higher_sort_id(k+1) = temp;
+                   end
+                end
+            end
+        end // if higher_vehicle_n == 1
+      end
+      // copy the uncertain priority vehicle to the sort list
+      if uncertain_vehicle_n >= 0
+      // use to sign the coming order
+        // if length is 1
+        if uncertain_vehicle_n == 1
+            uncertain_sort_id(1) = uncertain_collision_id(1,1);
+        else
+        // Bubble Sort of the distance, length > 0
+            for i2 = 1 : uncertain_vehicle_n
+               uncertain_sort_id(i2) = uncertain_collision_id(1,i2);
+            end
+            for j2 = 0 : (uncertain_vehicle_n - 2)
+                for k2 = 1 : (uncertain_vehicle_n - j2 -1)
+                   if(uncertain_dis2intersection(1,k2) > uncertain_dis2intersection(1,k2+1))
+                      Z temp2 = uncertain_sort_id(k2);
+                      uncertain_sort_id(k2) = uncertain_sort_id(k2+1);
+                      uncertain_sort_id(k2+1) = temp2;
+                   end
+                end
+            end
+        end
+      end
+      // copy the lower priority vehicle to the sort list
+      if lower_vehicle_n >= 0
+        // use to sign the coming order
+        // if length is 1
+        if lower_vehicle_n == 1
+            lower_sort_id(1) = lower_collision_id(1,1);
+        else
+        // Bubble Sort of the distance, length > 0
+            for i4 = 1 : lower_vehicle_n
+               lower_sort_id(i4) = lower_collision_id(1,i4);
+            end
+            for j4 = 0 : (lower_vehicle_n - 2)
+                for k4 = 1 : (lower_vehicle_n - j4 -1)
+                   if(lower_dis2intersection(1,k4) > lower_dis2intersection(1,k4+1))
+                      Z temp3 = lower_sort_id(k4);
+                      lower_sort_id(k4) = lower_sort_id(k4+1);
+                      lower_sort_id(k4+1) = temp3;
+                   end
+                end
+            end
+        end
+      end
+
+      // if there is no front vehicle
+      if if_frontvehicleexists == 0
+          // consider if lower vehicle can brake the rule, just for the first vehicle, cause rule can just established for the first vehicle
+          // once lower brake the rule, don't consider the deadlock
+          Z if_lowerbrake = 0;
+          Z lower_brakeid = 0;
+          if lower_vehicle_n != 0
+              Z lowerid = lower_sort_id(1);
+              for i5 = 1:lower_vehicle_n
+                 if lower_collision_id(1,i5) == lowerid && lower_iscollision(1,i5) == 0
+                     Q v1 =  lower_velocity_car1(1,i5);
+                     Q dis1 = lower_dis2intersection(1,i5);
+                     // if lower into the non stop area
+                     if dis1 < 1.3 * length
+                       if_lowerbrake = 1;
+                     // if lower in the waiting area and current is far
+                     elseif dis1 >= 1.3 * length && dis1 <= 1.8 * length && dis2intersection > 3.8 * length
+                        if_lowerbrake = 1;
+                        if dis2intersection > 1.8 * length && velocity == 0
+                           if_lowerbrake = 1;
+                        end
+                     end
+                 end
+              end // for i5 = 1:lower_vehicle_n
+          end //if lower_vehicle_n != 0
+          // if there exists higher vehicles
+          Z find_highervehicleid = 0;
+          Z find_higherwaitingid = 0;
+          Z find_higher_priority = 0;
+          Z if_currentbrake = 0;
+          if higher_vehicle_n != 0
+             for i3 = 1:higher_vehicle_n
+                Z higherid = higher_sort_id(i3);
+                for j3 = 1:higher_vehicle_n
+                    if higher_collision_id(1,j3) == higherid && higher_iscollision(1,j3) == 1
+                        Q v =  higher_velocity_car1(1,j3);
+                        Q dis2higher = higher_dis2intersection(1,j3);
+                        // higher vehicle drives into non stop area
+                        if dis2higher < 1.3 * length && find_higher_priority == 0
+                              find_higher_priority = 1;
+                        // higher vehicle in waiting area
+                        elseif dis2higher >= 1.3 * length && dis2higher <= 1.8 * length && find_higher_priority == 0
+                           if dis2intersection > 1.3 * length
+                              find_higher_priority = 1;
+                           end
+                        elseif find_higher_priority == 0
+                           // if higher vehicle velocity is not 0
+                           if v != 0
+                              //current in waiting area
+                              if dis2intersection >= 1.3 * length && dis2intersection <= 1.8 * length
+                                  // higher is not far
+                                  if dis2higher <= 3.8 * length
+                                     // current velocity is 0
+                                     if velocity == 0
+                                        find_higher_priority = 1;
+                                     elseif velocity >= 0
+                                         Q t11 = (dis2higher - 1.3*length)/v;
+                                         Q t12 = (dis2higher + 1.3*length)/v;
+                                         Q t13 = (dis2intersection - 1.3*length)/velocity;
+                                         Q t14 = (dis2intersection + 1.3*length)/velocity;
+                                         if t14 > t11 && t13 < t12
+                                            find_higher_priority = 1;
+                                         end
+                                     end
+                                  end
+                              elseif dis2intersection > 1.8 * length && velocity != 0
+                                  Q t21 = (dis2higher - 1.3*length)/v;
+                                  Q t22 = (dis2higher + 1.3*length)/v;
+                                  Q t23 = (dis2intersection - 1.3*length)/velocity;
+                                  Q t24 = (dis2intersection + 1.3*length)/velocity;
+                                  if t24 > t21 && t23 < t22
+                                     find_higher_priority = 1;
+                                  end
+                              end
+                           end
+                        end //if dis2higher < 1.3 * length && find_higher_priority == 0
+                    end// if higher_collision_id(1,j3) == higherid
+                 end // for j3 = 1:higher_vehicle_n
+              end //for i3 = 1:higher_vehicle_n
+          end //if higher_vehicle_n != 0
+          if if_lowerbrake == 1 || find_higher_priority == 1
+             // no priority(lower brake the rule or higher take the priority)
+             is_highestpriority = 0;
+          else
+             if uncertain_vehicle_n != 0
+                Z uncertain_lowerbrake = 0;
+                Z uncertain_findhigherpriority = 0;
+                // check the first uncertain vehicle, cause the follows vehicle always take the priority
+                Q uncertainid = uncertain_sort_id(1);
+                Z ifcollision = 0;
+                for j6 = 1: uncertain_vehicle_n
+                   if uncertainid == uncertain_collision_id(1,j6)
+                      if uncertain_iscollision(1,j6) == 1
+                        ifcollision = 1;
+                      end
+                      Z ifmacthcollisionmessage = 0;
+                      Q uncertain_velocity = uncertain_velocity_car1(1,j6);//uncertain velocity
+                      Q dis3uncertain = uncertain_dis2intersection(1,j6);
+                      for k6 = 1:32
+                          if is_connected(coll_message, k6)
+                             cmsg = coll_message(k6);
+                          end
+                          if cmsg.vehicleid == uncertainid
+                             ifmacthcollisionmessage = 1;
+                             Z uncertain_collison_vehicle_num = cmsg.vehicle_number;
+                             uncertain_collision_vehicleid_list = cmsg.vehicleid_list;
+                             // if lower vehicle to uncertain brake the rule
+                             Z first_lowerid = higher_sort_id(1);
+                             for j7 = 1: uncertain_collison_vehicle_num
+                                 if uncertain_collision_vehicleid_list(1,j7) == first_lowerid
+                                    for i7 = 1 : higher_vehicle_n
+                                       if higher_collision_id(1,i7) == first_lowerid
+                                          Q v2 = higher_velocity_car1(1,i7);
+                                          Q dis3lower = higher_dis2intersection(1,i7);
+                                          // if lower into the non stop area
+                                          if dis3lower < 1.3 * length
+                                            uncertain_lowerbrake = 1;
+                                          // if lower in the waiting area and uncertain is far
+                                          elseif dis3lower >= 1.3 * length && dis3lower <= 1.8 * length && dis3uncertain > 3.8 * length
+                                             uncertain_lowerbrake = 1;
+                                             if dis3uncertain > 1.8 * length && uncertain_velocity == 0
+                                                uncertain_lowerbrake = 1;
+                                             end
+                                          end
+                                       end
+                                    end
+                                 end
+                             end // for j7 = 1: vehicle_number
+                             // if exits higher have priority
+                             for i8 = 1 : lower_vehicle_n
+                                 Z uncertain_higherid = lower_sort_id(i8);
+                                 for j8 = 1: lower_vehicle_n
+                                    if uncertain_higherid == lower_collision_id(1,j8)
+                                       Q v3 = lower_velocity_car1(1,j8);//higher vehicle velocity
+                                       Q dis4higher = lower_dis2intersection(1,j8);// higher distance to velocity
+                                       // check if uncertain vehicle
+                                       for k8 = 1:uncertain_collison_vehicle_num
+                                          // if higher vehicle have the collision with the uncertain vehicle
+                                          if uncertain_collision_vehicleid_list(1,k8) == uncertain_higherid
+                                            // higher vehicle drives into non stop area
+                                            if dis4higher < 1.3 * length && uncertain_findhigherpriority == 0
+                                                  uncertain_findhigherpriority = 1;
+                                            // higher vehicle in waiting area
+                                            elseif dis4higher >= 1.3 * length && dis4higher <= 1.8 * length && uncertain_findhigherpriority == 0
+                                               if dis3uncertain > 1.3 * length
+                                                  uncertain_findhigherpriority = 1;
+                                               end
+                                            elseif uncertain_findhigherpriority == 0
+                                               if v3 != 0
+                                                  if dis3uncertain >= 1.3 * length && dis3uncertain <= 1.8 * length
+                                                      if dis4higher <= 3.8 * length
+                                                         if uncertain_velocity == 0
+                                                            uncertain_findhigherpriority = 1;
+                                                         elseif uncertain_velocity >= 0
+                                                             Q t31 = (dis4higher - 1.3*length)/v3;//higher into non stop area
+                                                             Q t32 = (dis4higher + 1.3*length)/v3;//higher left non stop area
+                                                             Q t33 = (dis3uncertain - 1.3*length)/uncertain_velocity;//uncertain into non stop area
+                                                             Q t34 = (dis3uncertain + 1.3*length)/uncertain_velocity;//uncertain left non stop area
+                                                             if t34 > t31 && t33 < t32
+                                                                uncertain_findhigherpriority = 1;
+                                                             end
+                                                         end
+                                                      end
+                                                  elseif dis3uncertain > 1.8 * length && uncertain_velocity != 0
+                                                      Q t41 = (dis4higher - 1.3*length)/v3;//higher into non stop area
+                                                      Q t42 = (dis4higher + 1.3*length)/v3;//higher left non stop area
+                                                      Q t43 = (dis3uncertain - 1.3*length)/uncertain_velocity;//uncertain into non stop area
+                                                      Q t44 = (dis3uncertain + 1.3*length)/uncertain_velocity;//uncertain left non stop area
+                                                      if t44 > t41 && t43 < t42
+                                                         uncertain_findhigherpriority = 1;
+                                                      end
+                                                  end
+                                               end
+                                            end // dis4higher < 1.3 * length && uncertain_findhigherpriority == 0
+                                          end // if uncertain_collision_vehicleid_list(1,k8) == uncertain_hihgerid
+                                       end // for k8 = 1:uncertain_collison_vehicle_num
+                                    end // if uncertain_higherid == lower_collision_id(1,j8)
+                                 end // for j8 = 1: lower_vehicle_n
+                              end // for i8 = 1 : lower_vehicle_n
+                           end // cmsg.vehicleid == uncertainid
+                        end // for k6 = 1:32
+
+                        // if don't get the collisionmessage from the uncertain vehicle, assume that the vehicle find priority, means current won't slow down
+                        if ifmacthcollisionmessage == 0
+                           uncertain_findhigherpriority = 1;
+                        end
+                        if uncertain_lowerbrake == 0 && uncertain_findhigherpriority == 0 && ifcollision == 1
+                           // uncertain vehicle drives into the non stop area
+                           if dis3uncertain < 1.3 * length && dis2intersection >= 1.3 * length
+                              is_highestpriority = 0;
+                           // uncertain in waiting area
+                           elseif dis3uncertain >= 1.3 * length && dis3uncertain <= 1.8 * length
+                              // current also in waiting area
+                                if dis2intersection >= 1.3 * length && dis2intersection <= 1.8 * length
+                                    // if uncertain is closer than current, current give the priority to uncertain
+                                    if dis3uncertain < dis2intersection
+                                       is_highestpriority = 0;
+                                    end
+                                elseif dis2intersection > 1.8 * length
+                                    is_highestpriority = 0;
+                                end
+                           elseif dis2intersection > 1.8 * length
+                                 if uncertain_velocity != 0 && velocity != 0
+                                     Q t51 = (dis2intersection - 1.3*length)/velocity;//current into non stop area
+                                     Q t52 = (dis2intersection + 1.3*length)/velocity;//current left non stop area
+                                     Q t53 = (dis3uncertain - 1.3*length)/uncertain_velocity;//uncertain into non stop area
+                                     Q t54 = (dis3uncertain + 1.3*length)/uncertain_velocity;//uncertain left non stop area
+                                     if t54 > t51 && t53 < t52
+                                         if dis3uncertain < dis2intersection
+                                            is_highestpriority = 0;
+                                         end
+                                     end
+                                 end
+                             end
+                       end // if uncertain_lowerbrake == 0 && uncertain_findhigherpriority == 0 && ifcollision == 1
+                    end//if uncertainid == uncertain_collision_id(1,j6)
+                 end //for j6 = 1: uncertain_vehicle_n
+             end // uncertain_vehicle_n != 0
+          end // if_lowerbrake == 1 || find_higher_priority == 1
+          // check if there is deadlock
+          if uncertain_vehicle_n != 0 && higher_vehicle_n != 0 && lower_vehicle_n != 0
+            // find the the first vehicle from the sorted list
+            Z deadlock_higherid = higher_sort_id(1);
+            Z deadlock_uncertainid = uncertain_sort_id(1);
+            Z deadlock_lowerid = lower_sort_id(1);
+            Q dl_dis2higher = 0.0;
+            Q dl_higher_velocity = 0.0;
+            Q dl_dis2uncertain = 0.0;
+            Q dl_uncertain_velocity = 0.0;
+            Q dl_dis2lower = 0.0;
+            Q dl_lower_velocity = 0.0;
+            // first higher vehicle
+            Z if_firsthigher_collision = 0;
+
+            for i9 = 1 : higher_vehicle_n
+               if higher_collision_id(1,i9) == deadlock_higherid && higher_iscollision(1,i9) == 1
+                  if_firsthigher_collision = 1;
+                  dl_dis2higher = higher_dis2intersection(1,i9);
+                  dl_higher_velocity = higher_velocity_car1(1,i9);
+               end
+            end
+            // if first higher vehicle matches the collisionmessage
+            Z if_firsthigher_macthcollmessage = 0;
+            Z if_havecollision_firstuncertain = 0;
+            for i10 = 1 : 32
+               if is_connected(coll_message, i10)
+                  cmsg1 = coll_message(i10);
+               end
+               if cmsg1.vehicleid == deadlock_higherid
+                  if_firsthigher_macthcollmessage = 1;
+                  Z  dl_higher_collision_vehicle_num = cmsg1.vehicle_number;
+                  dl_higher_collision_vehicleid_list = cmsg1.vehicleid_list;
+                  for i11 = 1 : dl_higher_collision_vehicle_num
+                    if dl_higher_collision_vehicleid_list(1,i11) == deadlock_uncertainid
+                       if_havecollision_firstuncertain = 1;
+                    end
+                  end
+               end
+            end
+
+            // first uncertain vehicle
+            for j9 = 1 : uncertain_vehicle_n
+               if uncertain_collision_id(1,j9) == deadlock_uncertainid
+                   dl_dis2uncertain = uncertain_dis2intersection(1,j9);
+                   dl_uncertain_velocity = uncertain_velocity_car1(1,j9);
+               end
+            end
+            // if first uncertain vehicle matches the collisionmessage
+            Z if_firstuncertain_macthcollmessage = 0;
+            Z if_havecollision_firstlower = 0;
+            for j10 = 1 : 32
+               if is_connected(coll_message, j10)
+                  cmsg2 = coll_message(j10);
+               end
+               if cmsg2.vehicleid == deadlock_uncertainid
+                  if_firstuncertain_macthcollmessage = 1;
+                  Z  dl_uncertain_collision_vehicle_num = cmsg1.vehicle_number;
+                  dl_uncertain_collision_vehicleid_list = cmsg2.vehicleid_list;
+                  for i12 = 1 : dl_uncertain_collision_vehicle_num
+                    if dl_uncertain_collision_vehicleid_list(1,i12) == deadlock_lowerid
+                       if_havecollision_firstlower = 1;
+                    end
+                  end
+               end
+            end
+
+            //first lower vehicle
+            Z if_havecollision_tocurrent = 0;
+            for k9 = 1 : lower_vehicle_n
+               if lower_collision_id(1,k9) == deadlock_lowerid && lower_iscollision(1,k9) == 1
+                  if_havecollision_tocurrent = 1;
+                  dl_dis2lower = lower_dis2intersection(1,k9);
+                  dl_lower_velocity = lower_velocity_car1(1,k9);
+               end
+            end
+
+            // current have collision to higher
+            Z if_prioritytohigher = 0;
+            Z if_prioritytouncertain = 0;
+            Z if_prioritytolower = 0;
+            Z if_prioritytocurrent = 0;
+
+            if if_firsthigher_collision == 1
+               // higher in waiting area
+               if dl_dis2higher >= 1.3 * length && dl_dis2higher <= 1.8 * length
+                  if dis2intersection > 1.3 * length
+                     if_prioritytohigher = 1;
+                  end
+               elseif dl_dis2higher > 1.8 * length && dl_dis2higher <= 3.8
+                  if dl_higher_velocity != 0
+                     if velocity == 0  //although current in waiting area, also need to be computed
+                        if_prioritytohigher = 1;
+                     elseif velocity > 0
+                         Q t61 = (dl_dis2higher - 1.3*length)/dl_higher_velocity;//higher into non stop area
+                         Q t62 = (dl_dis2higher + 1.3*length)/dl_higher_velocity;//higher left non stop area
+                         Q t63 = (dis2intersection - 1.3*length)/velocity;//current into non stop area
+                         Q t64 = (dis2intersection + 1.3*length)/velocity;//current left non stop area
+                         if t64 > t61 && t63 < t62
+                            if_prioritytohigher = 1;
+                         end
+                     end
+                  end
+               else
+                   if dl_higher_velocity != 0 && velocity != 0
+                     if dis2intersection > 1.8 *length
+                         Q t71 = (dl_dis2higher - 1.3*length)/dl_higher_velocity;//higher into non stop area
+                         Q t72 = (dl_dis2higher + 1.3*length)/dl_higher_velocity;//higher left non stop area
+                         Q t73 = (dis2intersection - 1.3*length)/velocity;//current into non stop area
+                         Q t74 = (dis2intersection + 1.3*length)/velocity;//current left non stop area
+                         if t74 > t71 && t73 < t72
+                            if_prioritytohigher = 1;
+                         end
+                     end
+                  end
+               end
+            end//if if_firsthigher_collision == 1
+
+            //higher give the priority to uncertain
+            if if_prioritytohigher == 1 && if_havecollision_firstuncertain == 1
+                // uncertain in waiting area
+                if dl_dis2uncertain >= 1.3 * length && dl_dis2uncertain <= 1.8 * length
+                   if dl_dis2higher > 1.3 * length
+                      if_prioritytouncertain = 1;
+                   end
+                elseif dl_dis2uncertain > 1.8 * length && dl_dis2uncertain <= 3.8
+                   if dl_uncertain_velocity != 0
+                      if dl_higher_velocity == 0  //although current in waiting area, also need to be computed
+                         if_prioritytouncertain = 1;
+                      elseif dl_higher_velocity > 0
+                          Q t81 = (dl_dis2uncertain - 1.3*length)/dl_uncertain_velocity;//uncertain into non stop area
+                          Q t82 = (dl_dis2uncertain + 1.3*length)/dl_uncertain_velocity;//uncertain left non stop area
+                          Q t83 = (dl_dis2higher - 1.3*length)/dl_higher_velocity;//higher into non stop area
+                          Q t84 = (dl_dis2higher + 1.3*length)/dl_higher_velocity;//higher left non stop area
+                          if t84 > t81 && t83 < t82
+                             if_prioritytouncertain = 1;
+                          end
+                      end
+                   end
+                else
+                    if dl_higher_velocity != 0 && dl_uncertain_velocity != 0
+                      if dl_dis2higher > 1.8 *length
+                          Q t91 = (dl_dis2uncertain - 1.3*length)/dl_uncertain_velocity;//uncertain  into non stop area
+                          Q t92 = (dl_dis2uncertain + 1.3*length)/dl_uncertain_velocity;//uncertain  left non stop area
+                          Q t93 = (dl_dis2higher - 1.3*length)/dl_higher_velocity;//higher into non stop area
+                          Q t94 = (dl_dis2higher + 1.3*length)/dl_higher_velocity;//higher left non stop area
+                          if t94 > t91 && t93 < t92
+                             if_prioritytouncertain = 1;
+                          end
+                      end
+                   end
+                end
+            end//if if_prioritytohigher == 1 && if_havecollision_firstuncertain == 1
+
+            // uncertain give the priority to the lower
+            if if_prioritytouncertain == 1 && if_havecollision_firstlower == 1
+                // higher in waiting area
+                if dl_dis2lower >= 1.3 * length && dl_dis2lower <= 1.8 * length
+                   if dl_dis2uncertain > 1.3 * length
+                      if_prioritytolower = 1;
+                   end
+                elseif dl_dis2lower > 1.8 * length && dl_dis2lower <= 3.8
+                   if dl_lower_velocity != 0
+                      if dl_uncertain_velocity == 0
+                         if_prioritytolower = 1;
+                      elseif dl_uncertain_velocity > 0
+                          Q t101 = (dl_dis2lower - 1.3*length)/dl_lower_velocity;//lower into non stop area
+                          Q t102 = (dl_dis2lower + 1.3*length)/dl_lower_velocity;//lower left non stop area
+                          Q t103 = (dl_dis2uncertain - 1.3*length)/dl_uncertain_velocity;//uncertain into non stop area
+                          Q t104 = (dl_dis2uncertain + 1.3*length)/dl_uncertain_velocity;//uncertain left non stop area
+                          if t104 > t101 && t103 < t102
+                             if_prioritytolower = 1;
+                          end
+                      end
+                   end
+                else
+                    if dl_lower_velocity != 0 && dl_uncertain_velocity != 0
+                      if dl_dis2uncertain > 1.8 *length
+                          Q t111 = (dl_dis2lower - 1.3*length)/dl_lower_velocity;//current into non stop area
+                          Q t112 = (dl_dis2lower + 1.3*length)/dl_lower_velocity;//current left non stop area
+                          Q t113 = (dl_dis2uncertain - 1.3*length)/dl_uncertain_velocity;//lower into non stop area
+                          Q t114 = (dl_dis2uncertain + 1.3*length)/dl_uncertain_velocity;//lower left non stop area
+                          if t114 > t111 && t113 < t112
+                             if_prioritytolower = 1;
+                          end
+                      end
+                   end
+                end
+            end // if if_prioritytouncertain == 1 && if_havecollision_firstlower == 1
+
+            // lower give the priority to the current
+            if if_prioritytolower == 1 && if_havecollision_tocurrent == 1
+                // higher in waiting area
+                if dis2intersection >= 1.3 * length && dis2intersection <= 1.8 * length
+                   if dl_dis2lower > 1.3 * length
+                      if_prioritytocurrent = 1;
+                   end
+                elseif dis2intersection > 1.8 * length && dis2intersection <= 3.8
+                   if velocity != 0
+                      if dl_lower_velocity == 0
+                         if_prioritytocurrent = 1;
+                      elseif dl_lower_velocity > 0
+                          Q t121 = (dis2intersection - 1.3*length)/velocity;//uncertain into non stop area
+                          Q t122 = (dis2intersection + 1.3*length)/velocity;//uncertain left non stop area
+                          Q t123 = (dl_dis2lower - 1.3*length)/dl_lower_velocity;//higher into non stop area
+                          Q t124 = (dl_dis2lower + 1.3*length)/dl_lower_velocity;//higher left non stop area
+                          if t124 > t121 && t123 < t122
+                             if_prioritytocurrent = 1;
+                          end
+                      end
+                   end
+                else
+                    if dl_lower_velocity != 0 && velocity != 0
+                      if dl_dis2lower > 1.8 *length
+                          Q t131 = (dis2intersection - 1.3*length)/velocity;//uncertain into non stop area
+                          Q t132 = (dis2intersection + 1.3*length)/velocity;//uncertain left non stop area
+                          Q t133 = (dl_dis2lower - 1.3*length)/dl_lower_velocity;//higher into non stop area
+                          Q t134 = (dl_dis2lower + 1.3*length)/dl_lower_velocity;//higher left non stop area
+                          if t134 > t131 && t133 < t132
+                             if_prioritytocurrent = 1;
+                          end
+                      end
+                   end
+                end
+            end // if if_prioritytolower == 1 && if_havecollision_tocurrent == 1
+            if if_prioritytocurrent == 1
+                if dis2intersection > dl_dis2higher && dis2intersection > dl_dis2uncertain && dis2intersection > dl_dis2lower
+                   is_highestpriority = 1;
+                else
+                   is_highestpriority = 0;
+                end
+            end
+
+            // if all front vehicle in the waiting area
+            if if_firsthigher_collision == 1 && if_havecollision_firstuncertain == 1 && if_havecollision_firstlower == 1 && if_havecollision_tocurrent == 1
+               if dis2intersection >= 1.3 * length && dis2intersection <= 1.8 *length
+                  if dl_dis2higher >= 1.3 * length && dl_dis2higher <= 1.8 *length
+                     if dl_dis2uncertain >= 1.3 * length && dl_dis2uncertain <= 1.8 *length
+                        if dl_dis2lower >= 1.3 * length && dl_dis2lower <= 1.8 *length
+                           if dis2intersection > dl_dis2higher && dis2intersection > dl_dis2uncertain && dis2intersection > dl_dis2lower
+                              is_highestpriority = 1;
+                           else
+                              is_highestpriority = 0;
+                           end
+                        end
+                     end
+                  end
+               end
+            end// if if_firsthigher_collision == 1 && if_firsthigher_macthcollmessage == 1
+          end//if uncertain_vehicle_n != 0 && higher_vehicle_n != 0 && lower_vehicle_n != 0
+      end // if if_frontvehicleexists == 0
+      // if there is front vehicle, don't calculate the priority
+      if if_frontvehicleexists != 0
+         is_highestpriority = 1;
+      end
+   }
+}

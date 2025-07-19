@@ -1,0 +1,64 @@
+package de.monticore.lang.monticar.sol.tests.ide.configurations
+
+import de.monticore.lang.monticar.sol.tests.ide.configurations.EMAM2WASM
+import de.monticore.lang.monticar.sol.option.types.Path
+import de.monticore.lang.monticar.sol.option.types.String
+import de.monticore.lang.monticar.sol.tests.ide.tools.Java
+
+typedef configuration PacMan {
+    label "Launch PacMan"
+    icon "some-icon-class"
+    category "EMAStudio"
+    tool Java
+
+    option model: String {
+        label "Model"
+        required true
+    }
+
+    option modelPath: Path {
+        label "Model Path"
+        required true
+    }
+
+    configuration emam2wasm: EMAM2WASM<0> {
+        inherit rootModel from model
+        fill someText with ""
+    }
+
+    configuration emam2wasm7: EMAM2WASM<-2> {
+        inherit rootModel from model
+        fill someText with "7"
+    }
+
+    configuration emam2wasm2: EMAM2WASM<-1> {
+        inherit rootModel from model
+        fill someText with "2"
+    }
+
+    configuration emam2wasm3: EMAM2WASM<-1> {
+        inherit rootModel from model
+        fill someText with "3"
+    }
+
+    configuration emam2wasm4: EMAM2WASM<1> {
+        inherit rootModel from model
+        fill someText with "4"
+    }
+
+    configuration emam2wasm5: EMAM2WASM<1> {
+        inherit rootModel from model
+        fill someText with "5"
+    }
+
+    configuration emam2wasm6: EMAM2WASM<3> {
+        inherit rootModel from model
+        fill someText with "3"
+    }
+
+    backend task generate depends validate
+    frontend task window depends generate
+    backend task validate
+    backend task configure
+    frontend task prepare
+}

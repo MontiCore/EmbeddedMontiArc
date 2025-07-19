@@ -1,0 +1,69 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNSegment;
+
+component FCN<Z(2:oo) classes = 21>{
+    ports in Q(-1:1)^{3, 480, 480} data,
+         out Q(-oo:oo)^{classes, 480, 480} softmax;
+
+        implementation CNN{
+
+            def conv(filter, channels){
+                Convolution(kernel=(filter,filter), channels=channels) ->
+                Relu()
+            }
+
+            def vgg_block(num_conv, filter, channels){
+                conv(filter=filter, channels=channels, ->=num_conv) ->
+                Pooling(pool_type="max", kernel=(2,2), stride=(2,2))
+            }
+
+            def fully_conv(filter, channels, dropout){
+                conv(filter=filter, channels=channels) ->
+                Relu() ->
+                Dropout(p=dropout)
+            }
+
+            data ->
+
+            /* vgg block 1 */
+            vgg_block(num_conv=2, filter=3, channels=64) ->
+
+            /* vgg block 2 */
+            vgg_block(num_conv=2, filter=3, channels=128) ->
+
+            /* vgg block 3 */
+            vgg_block(num_conv=3, filter=3, channels=256) ->
+            (
+                /* vgg block 4 */
+                vgg_block(num_conv=3, filter=3, channels=512) ->
+                (
+                    /* vgg block 5 */
+                    vgg_block(num_conv=3, filter=3, channels=512) ->
+
+                    /* fully convolutional layers, replacing fully connected layers */
+                    fully_conv(filter=7, channels=4096, dropout=0.5) ->
+                    fully_conv(filter=7, channels=4096, dropout=0.5) ->
+                    Convolution(kernel=(1,1), channels=classes) ->
+
+                    /* upsampling */
+                    UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
+
+                |
+
+                    Convolution(kernel=(4,4), channels=classes)
+
+                ) ->
+                /* skip4 */
+                Concatenate() ->
+                UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
+            |
+                /* skip 3 */
+                Convolution(kernel=(1,1), channels=classes)
+            ) ->
+
+            Concatenate() ->
+            UpConvolution(kernel=(16,16), channels=classes, stride=(8,8)) ->
+
+            softmax;
+        }
+}

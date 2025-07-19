@@ -1,0 +1,84 @@
+/* (c) https://github.com/MontiCore/monticore */
+/* 
+ * advanced weather language v1.0
+*/
+package de.monticore.lang.montisim;
+
+grammar Weather extends de.monticore.NumberUnit, de.monticore.lang.monticar.Ranges {
+
+  Coordinate = "(" posX:NumberWithUnit "," posY:NumberWithUnit ")";
+  NumberWithUnitList = "[" NumberWithUnit ("," NumberWithUnit)* "]";
+  AlternativeInput = (NumberWithUnit | NumberWithUnitList | Range);
+
+  interface WeatherSetting;
+  interface WeatherEntity;
+  WeatherScope = "{" ((WeatherSetting | WeatherEntity) ";")* "}";
+
+  Temperature implements WeatherSetting = "temperature" AlternativeInput;
+
+  Humidity implements WeatherSetting = "humidity" AlternativeInput;
+
+  Pressure implements WeatherSetting = "pressure" AlternativeInput;
+
+  WindStrength implements WeatherSetting = "wind_strength" AlternativeInput;
+
+  WindDirection implements WeatherSetting = "wind_direction" AlternativeInput;
+
+  PrecipitationType implements WeatherSetting = "precipitation_type" precipitationType:["none"|
+                                            "drizzle"|
+                                            "rain"|
+                                            "freezingdrizzle"|
+                                            "freezingrain"|
+                                            "snowrain"|"snain"|
+                                            "snow"|
+                                            "snowgrains"|
+                                            "icepellets"|"sleet"|
+                                            "hail"|
+                                            "snowpellets"|"graupel"|
+                                            "icecrystals"] ;
+
+  PrecipitationAmount implements WeatherSetting = "precipitation_amount" AlternativeInput;
+  
+  Clouding implements WeatherSetting = "clouding" cloudingType:["none"|
+                         "cirrostratus"|
+                         "altostratus"|
+                         "stratus"|
+                         "nimbostratus"|
+                         "noctilucent"|
+                         "polarstratospheric"|
+                         "cirrus"|
+                         "cirrocumulus"|
+                         "altocumulus"|
+                         "stratocumulus"|
+                         "cumulushumilis"|
+                         "cumulusmediocris"|
+                         "cumuluscongestus"|
+                         "cumulonimbus"] ;
+
+  Sight implements WeatherSetting = "sight" (AlternativeInput | ["unlimited"]) ;
+  
+  WeatherPhenomena implements WeatherEntity = "weather_phenomena" phenomenaType:["fog"|
+                                           "ropetornado"|
+                                           "conetornado"|
+                                           "wedgetornado"|
+                                           "multivortextornado"|
+                                           "landspout"|
+                                           "waterspout"|
+                                           "gustnado"|
+                                           "dustdevil"|
+                                           "steamdevil"|
+                                           "thunderstorm"]
+                    (Coordinate)? ;
+                                    
+  OpticalPhenomena implements WeatherEntity = "optical_phenomena" phenomenaType:["rainbow"|
+                                           "northernlights"|
+                                           "circumzenithalarc"|
+                                           "zodiacallight"|
+                                           "crepuscularrays"|
+                                           "mirage"|
+                                           "fogbow"] ;
+                                           
+  ArtificialPhenomena implements WeatherEntity = "artificial_phenomena" phenomenaType:["contrails"|
+                                                 "smog"|
+                                                 "rocketexhausttrails"] ;
+}

@@ -1,0 +1,22 @@
+[{
+  "uri": "file://cd/EmbeddedMontiArc.cd",
+  "opener": "code-editor-opener",
+  "options": {
+    "widgetOptions": {
+      "area": "main",
+      "mode": "split-left"
+    }
+  }
+}, {
+  "uri": "file://ocl/portCoCo1.ocl",
+  "opener": "code-editor-opener",
+  "options": {
+    "widgetOptions": {
+      "area": "main",
+      "mode": "split-right"
+    }
+  }
+}, {
+  "uri": "file://README.md",
+  "opener": "code-editor-preview"
+}]

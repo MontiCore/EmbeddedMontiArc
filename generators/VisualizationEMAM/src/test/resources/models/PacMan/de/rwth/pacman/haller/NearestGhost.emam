@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.haller;
+
+component NearestGhost {
+    ports
+        in Z(0cm: 342cm) ghostX[4],
+        in Z(0cm: 426cm) ghostY[4],
+        in Z(0cm: 342cm) pacManX,
+        in Z(0cm: 426cm) pacManY,
+      
+        out Z(0:1:3) nearestIndex;
+      
+    implementation Math {
+        Q min = 3430;
+        Z index = 0;
+        
+        for i = 0:4
+            Q distX = ghostX(i) - pacManX;
+            Q distY = ghostY(i) - pacManY;
+            if (distX < 0)
+                distX = distX * (-1);
+            end
+            if (distY < 0)
+                distY = distY * (-1);
+            end
+            Z dist_sqr = distX + distY;
+            Q dist = sqrt(dist_sqr);
+            if(dist < min)
+                min = dist;
+                index = i;
+            end
+        end
+        
+        nearestIndex = index;
+    }
+}

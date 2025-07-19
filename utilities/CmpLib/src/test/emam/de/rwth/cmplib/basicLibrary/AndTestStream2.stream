@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.cmplib.basicLibrary;
+
+
+
+stream AndTestStream2 for AndTest {
+    in1: true tick true ;
+    in2: true tick false;
+
+    out1: true tick false ;
+}

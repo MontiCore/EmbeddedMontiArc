@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.a;
+
+component CompA{
+    port in Q in1;
+    port in Q in2;
+    port in N in3;
+    port in Z in4;
+    port in B in5;
+    port out Q out1;
+    port out Q out2;
+    port out N out3;
+    port out Z out4;
+    port out B out5;
+}

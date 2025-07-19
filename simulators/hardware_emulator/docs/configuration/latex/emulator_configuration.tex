@@ -1,0 +1,221 @@
+% (c) https://github.com/MontiCore/monticore
+
+\usepackage{graphicx}
+%\usepackage{ngerman}
+\usepackage[utf8x]{inputenc}
+\usepackage{fancyvrb}
+\usepackage{courier}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{helvet}
+\usepackage{pbox}
+\usepackage{xcolor}
+\usepackage{pdfpages}
+\usepackage[strict]{changepage}
+\usepackage{calc}  
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{tikzmark}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{datavisualization}
+\usepackage[htt]{hyphenat}
+\usepackage{float}
+\newfloat{example}{tbh}{exa}[chapter]
+\floatname{example}{Example}
+\usepackage{siunitx}
+\usepackage{pgfplots}
+%\usepackage{hyperref}
+%\usepackage{url}
+
+\pgfplotsset{compat=newest} % Allows to place the legend below plot
+\usepgfplotslibrary{units} % Allows to enter the units nicely
+
+%\the\textwidth = 426.79pt
+%\the\arrayrulewidth  = 0.4pt
+
+\pdfoptionpdfminorversion=6
+
+% \definecolor{se_dark_blue}{RGB}{0,103,166} % powerpoint
+\definecolor{se_dark_blue}{RGB}{0,96,178} % website
+% \definecolor{se_light_blue}{RGB}{119,158,201} % powerpoint
+\definecolor{se_light_blue}{RGB}{129,160,225} % website
+
+
+\graphicspath{{src/pic/}}
+
+%%\newcommand{\tc}[1]{\Large{\fontfamily{ph v}\selectfont{#1}}}
+\newcommand{\tc}[1]{\normalsize{#1}}
+\newcommand{\tm}[1]{\scriptsize{#1}}
+\newcommand{\ttt}[1]{\scriptsize{\texttt{#1}}}
+\newcommand{\tsf}[1]{\scriptsize{\textsf{#1}}}
+\newcommand{\tit}[1]{\scriptsize{\textit{#1}}}
+
+%% setup listings
+\usepackage{listings}
+\lstset{
+  language=C++,
+  frame=none,
+  basicstyle=\small\ttfamily,
+}
+\lstset{
+  language=Java,
+  frame=none,
+  basicstyle=\small\ttfamily,
+}
+\lstdefinestyle{MontiArcStyle}{
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=5pt,
+    xleftmargin=11pt,
+    xrightmargin=4pt,
+    frame=single,
+    aboveskip=0pt,
+    belowskip=-6pt,
+    sensitive=true,
+    float=!t,
+    breaklines=false,
+    captionpos=b,
+    tabsize=2,
+    showstringspaces=false,
+    basicstyle=\small\ttfamily,
+    morecomment=[l]{//},
+    morecomment=[s][\itshape]{/**}{*/}
+}
+
+
+
+%% defines the listings laguage named 'MontiArc' derived from the language 'Java' 
+%% adding the below listed keywords. See 
+%% ftp://ftp.tex.ac.uk/tex-archive/macros/latex/contrib/listings/listings.pdf
+%% for listings documentation
+\lstdefinelanguage{MontiArc}[]{Java}{
+  morekeywords={component, port, in, out, inv, package, import, connect, autoconnect}
+}
+
+% Seite einrichten
+\setlength{\voffset}{-1in}
+\setlength{\hoffset}{-1in}
+
+\setlength{\topmargin}{2.5cm}		   
+\setlength{\headheight}{0cm}		   
+\setlength{\headsep}{0cm}		   
+\setlength{\oddsidemargin}{3,3cm}  % innen ein wenig mehr Rand für die Klebebindung
+\setlength{\evensidemargin}{2,7cm} % dafür außen ein wenig weniger
+\setlength{\textwidth}{15cm}		   
+\setlength{\textheight}{23,5cm}		   
+\setlength{\parindent}{0cm}
+
+\newcommand{\emptyLine}{{\LARGE ~\\}}
+
+\begin{document}
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+
+\section{Configuration}
+\label{emuconfig}
+
+The HardwareEmulator and the EmulatorManager support a simple fail-safe way of configuring them and making queries to them. A message is made of a String where each line (separated by a newline character) is a name followed by optional parameters.
+
+The syntax is whitespace insensitive and as follows:
+\begin{verbatim}
+    name = param1, param2, param...
+    or
+    name
+\end{verbatim}
+Whitespace is optional, and the only separating characters are the equal sign ($=$), the comma (,) and the newline character (\texttt{\textbackslash n}).
+
+\subsection{Configuration}
+
+The current settings supported when allocating an emulator are shown in Table~\ref{tab:emuconfig}.
+\begin{table}[!htb]
+    \begin{tabularx}{\textwidth}{ | X |}
+        \hline
+        \texttt{autopilot=name} \\
+        Name of the autopilot program file, without extension.\\ \hline
+        \texttt{os=name} \\
+        Name of the operating system used. Currently \texttt{linux} or \texttt{windows}. This implies the extension of the autopilot file searched. If the os command is not given, the Emulator will search for any autopilot with the given name in the search folder. \\ \hline
+        \texttt{debug=flag1,flag2,\dots} \\
+        Enable the debugging outputs for the specified flags, where the flags are any of \texttt{mem}, \texttt{regs}, \texttt{reg\_update}, \texttt{syscalls}, \texttt{unsupported\_syscalls}, \texttt{code} or \texttt{call}. \\\hline
+        \texttt{cpu\_frequency=value} \\
+        The CPU frequency in Hertz used to evaluate the computation time. \\\hline
+        \texttt{memory\_frequency=value} \\
+        The RAM frequency in Hertz used to evaluate the computation time. \\\hline
+        \texttt{cache\_name=size,read\_ticks,write\_ticks} \\
+        Where \texttt{name} is \texttt{IL1}, \texttt{DL1}, \texttt{L2} or \texttt{L3}.
+        This setting enables and sets the parameters of the named cache layer. Set \texttt{size} to 0 to disable this cache level. The ticks refer to the CPU ticks.\\\hline
+        \texttt{no\_time} \\
+        Disables the delaying of the autopilot in the simulation. \\\hline
+        \texttt{test\_real} \\
+        If the RMIModelServer and the autopilot are of the same operating system type, this flag makes the emulator load the autopilot directly as a library (not emulated) and uses its outputs to validate those of the emulated instance. \\
+        \texttt{export} \\
+        Enables the \texttt{HardwareEmulator} to export the deviation from the planned trajectory and the evaluated execution time of the autopilot. Data is currently exported for the first 60 seconds of the simulation. The output files are \texttt{autopilot\_dist.txt} and \texttt{autopilot\_time.txt}.
+        \\\hline
+    \end{tabularx}
+    \caption{HardwareEmulator Configuration}
+    \label{tab:emuconfig}
+\end{table}
+
+The \texttt{EmulatorManager} itself also supports a config string on initialization. Table~\ref{tab:managerconfig} shows the supported config.
+\begin{table}[!htb]
+    \begin{tabularx}{\textwidth}{ | X |}
+        \hline
+        \texttt{autopilots\_folder=folder} \\
+        Sets the folder in which to look for autopilot programs.\\ \hline
+    \end{tabularx}
+    \caption{EmulatorManager Configuration}
+    \label{tab:managerconfig}
+\end{table}
+
+\subsection{Queries}
+
+The query system uses the same presented syntax, but also sends a response for every query, using the same syntax.
+
+Queries supported by the \texttt{EmulatorManager} are shown in Table~\ref{tab:managerqueries}.
+
+\begin{table}[!htb]
+    \begin{tabularx}{\textwidth}{ >{\em}l | X |}
+        \cline{2-2}
+        Query       & \texttt{get\_error\_msg} \\ 
+        Response    & \texttt{error\_msg=msg}  \\
+                    & Returns the last error message that occurred while allocating an autopilot emulator. \\ \cline{2-2}
+        Query       & \texttt{get\_available\_autopilots} \\ 
+        Response    & \texttt{available\_autopilots=autopilot1, autopilot2, \dots}  \\
+                    & Returns the list of autopilot files available in the autopilot folder. \\ \cline{2-2}
+        Query       & \texttt{get\_available\_threads} \\ 
+        Response    & \texttt{available\_threads=thread\_count}  \\
+                    & Returns the number of concurrent threads the machine running the RMIModelServer supports.\\ \cline{2-2}
+        Query       & \texttt{get\_autopilots\_folder} \\ 
+        Response    & \texttt{autopilots\_folder=folder}  \\
+                    & Returns the current autopilots folder.\\ \cline{2-2}
+    \end{tabularx}
+    \caption{EmulatorManager queries.}
+    \label{tab:managerqueries}
+\end{table}
+
+Queries supported by querying a specific emulator are shown in Table~\ref{tab:emuqueries}.
+
+\begin{table}[!htb]
+    \begin{tabularx}{\textwidth}{ >{\em}l | X |}
+        \cline{2-2}
+        Query       & \texttt{get\_avg\_runtime} \\ 
+        Response    & \texttt{avg\_runtime=time} \\
+                    & Returns the mean average time of autopilot execution.\\ \cline{2-2}
+        Query       & \texttt{is\_computing} \\ 
+        Response    & \texttt{computing=1 or 0} \\
+                    & Returns 1 if the computer is considered to be computing in simulation time.\\ \cline{2-2}
+        Query       & \texttt{get\_computer\_time} \\ 
+        Response    & \texttt{computer\_time=time} \\
+                    & Returns the time counter of the computer, in microseconds.\\ \cline{2-2}
+    \end{tabularx}
+    \caption{HardwareEmulator queries.}
+    \label{tab:emuqueries}
+\end{table}
+
+
+\end{document}

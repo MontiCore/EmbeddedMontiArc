@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+package translator;
+
+component RNNsearch {
+    ports in Z(0:17191)^{30} source,
+         out Z(0:7709)^{1} target[30];
+
+    implementation CNN {
+        layer GRU(units=700, dropout=0.25, bidirectional=true) encoder;
+
+        source -> Embedding(output_dim=250) -> Dropout(p=0.25) -> encoder;
+
+        2 -> target[0];
+
+        layer GRU(units=700, dropout=0.25) decoder;
+        encoder.state -> Split(n=2) -> [1] -> decoder.state;
+
+        timed<t> BeamSearch(max_length=30, width=1) {
+            (
+                (
+                    (
+                        decoder.state ->
+                        Repeat(n=30, axis=0)
+                    |
+                        encoder.output
+                    ) ->
+                    Concatenate(axis=1) ->
+                    FullyConnected(units=700, flatten=false) ->
+                    Tanh() ->
+                    FullyConnected(units=30) ->
+                    Softmax() ->
+                    ExpandDims(axis=0)
+                |
+                    encoder.output
+                ) ->
+                Dot()
+            |
+                target[t-1] ->
+                Embedding(output_dim=250) ->
+                Dropout(p=0.25)
+            ) ->
+            Concatenate(axis=1) ->
+            decoder ->
+            FullyConnected(units=7710) ->
+            ArgMax() ->
+            target[t]
+        };
+    }
+}

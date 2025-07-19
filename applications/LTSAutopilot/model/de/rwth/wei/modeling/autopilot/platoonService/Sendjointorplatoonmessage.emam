@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+
+component Sendjointorplatoonmessage{
+ports
+  in Z if_followrequest,
+  in Z if_potentialheaderexists,
+  in Z if_sendjointmsg,
+
+  out  Z  send_joint_message,
+  out  Z  send_plat_message;
+
+  implementation Math{
+    send_joint_message = 0;
+    send_plat_message = 0;
+
+    if if_potentialheaderexists == 0 && if_followrequest == 1
+       send_plat_message = 1;
+    end
+    if if_potentialheaderexists == 1 && if_sendjointmsg == 1
+       send_joint_message = 1;
+    end
+  }
+}

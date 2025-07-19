@@ -1,0 +1,75 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Statusmessagegenerator{
+  ports
+    // if it's a platooneader, won't send the statusmessage
+    in Z               ifsplitnow,
+    in Z               ifwillsplit,
+    in Z               platoonheadid,
+    in Z               vehicleid,
+    in Z               timestamp,
+    in Q               position_x,
+    in Q               position_y,
+    in Q               compass,
+    in Q               length,
+    in Q               width,
+    in Q               engine,
+    in Q               brake,
+    in Q               steering,
+    in Q               velocity,
+
+    out Z  if_split,
+    out Z  if_willsplit,
+    dynamic out Statusmessage status_msg[0:32],
+    out Statusmessage smsg,
+    out Statusmessage smsg1;
+
+    implementation Math{
+    static Z timestamp_store = 0;
+    if ifsplitnow == 1
+        smsg.vehicleid = vehicleid;
+        smsg.timestamp = timestamp;
+        smsg.position_x = position_x;
+        smsg.position_y = position_y;
+        smsg.compass = compass;
+        smsg.platoon_headid = 0;
+        smsg.length = length;
+        smsg.width = width;
+        smsg.engine = engine;
+        smsg.brakes = brake;
+        smsg.steering = steering;
+        smsg.velocity = velocity;
+        Z a = 1;
+        if ports_connect(status_msg,a,smsg)
+           status_msg(a) = smsg;
+        end
+        Z r = ports_free(status_msg,a);
+        timestamp_store = timestamp;
+    else
+        if timestamp - timestamp_store >= 5
+            smsg1.vehicleid = vehicleid;
+            smsg1.timestamp = timestamp;
+            smsg1.position_x = position_x;
+            smsg1.position_y = position_y;
+            smsg1.compass = compass;
+            smsg1.platoon_headid = platoonheadid;
+            smsg1.length = length;
+            smsg1.width = width;
+            smsg1.engine = engine;
+            smsg1.brakes = brake;
+            smsg1.steering = steering;
+            smsg1.velocity = velocity;
+            Z a1 = 1;
+            if ports_connect(status_msg,a1,smsg1)
+               status_msg(a1) = smsg1;
+            end
+            Z r1 = ports_free(status_msg,a1);
+            timestamp_store = timestamp;
+        end
+    end
+    if_split = ifsplitnow;
+    if_willsplit = ifwillsplit;
+}
+}

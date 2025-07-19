@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorModel;
+
+component StatusController {
+    port
+        in Q(-200m:200m) x,
+        in Q(-200m:200m) y, 
+        out B status;
+
+    implementation Math{
+
+        // the track boundaries
+        B boundariesX = (x > 200m) || (x < -200m);
+        B boundariesY = (y > 120m) || (y < -50m);      
+  
+        status = boundariesX || boundariesY;
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "dummy",
+  "sol": {
+    "directories": {
+      "models": "models"
+    }
+  }
+}

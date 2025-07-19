@@ -1,0 +1,57 @@
+package turtlebot.preprocessor.move;
+
+component SetInitialValues {
+    ports
+        out Q^{2}      inital_position,
+        out Q^{1,6}    goalXArray,
+        out Q^{1,6}    goalYArray;
+
+    implementation Math {
+        
+        Z map = 3;
+        //inital Postion
+        Q initlPosX = 1.5;
+        Q initlPosY = 1.5;
+        
+        //Goal position arrays # Training map 1 
+        Q^{1,6} X_map1 = [0.9, 1.5, 1.5, 0.2, -1.0, -1.5];
+        Q^{1,6} Y_map1 = [-0.9, 0.0, 1.3, 1.5, 0.9, 0.0] ;
+
+        //Goal position arrays # Training Map 2
+        Q^{1,6} X_map2  = [0,    1.4,   -1.5, 0,  -1.5, 1.6];
+        Q^{1,6} Y_map2  = [-1.5, -1.5,  -1.5, 1.4, 1.4, 1.4];
+
+        //Goal position arrays # Evaluation Map 3 (Gazebo-World)
+        Q^{1,6} X_map3  = [2, 0.5, -1.1,  0.5,  1.0, -0.4];
+        Q^{1,6} Y_map3  = [1, 2.2,  2.1, -0.1, -2.2,  1.0];
+
+        //Goal position arrays # Evaluation Map 4
+        Q^{1,6} X_map4  = [0,    1.4,   -1.5, 0,  -1.5, 1.6];
+        Q^{1,6} Y_map4  = [-1.5, -1.5,  -1.5, 1.4, 1.4, 1.4];
+
+        //Goal position arrays # Evaluation Map 5
+        Q^{1,6} X_map5  = [ 2.0, -2.0, -2.0, -1.0, 0.0,  2.0];
+        Q^{1,6} Y_map5  = [-2.0, -2.0, -2.0,  0.0, -2.0, 2.0];
+
+        if map == 1
+            goalXArray = X_map1;
+            goalYArray = Y_map1;
+        elseif map == 2
+            goalXArray = X_map2;
+            goalYArray = Y_map2;
+        elseif map == 3
+            goalXArray = X_map3;
+            goalYArray = Y_map3;
+        elseif map == 4
+            goalXArray = X_map4;
+            goalYArray = Y_map4;
+        elseif map == 5
+            goalXArray = X_map5;
+            goalYArray = Y_map5;
+        end
+        
+        inital_position(1) = initlPosX;
+        inital_position(2) = initlPosY;
+
+    }
+}

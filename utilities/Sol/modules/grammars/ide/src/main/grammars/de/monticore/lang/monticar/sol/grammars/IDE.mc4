@@ -1,0 +1,217 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ *
+ */
+grammar IDE extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.lang.monticar.sol.grammars.Common,
+                    de.monticore.lang.monticar.sol.grammars.Option {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /**
+     *
+     */
+    interface IDEElement;
+
+    /**
+     *
+     */
+    interface ModuleTypeElement;
+
+    /**
+     *
+     */
+    // interface ModuleElement;
+
+    /**
+     *
+     */
+    interface ConfigurationTypeElement;
+
+    /**
+     *
+     */
+    interface ConfigurationElement;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     *
+     */
+    IDECompilationUnit =
+        package:PackageStatement
+        import:ImportStatement*
+        (IDE | ConfigurationType | ModuleType)
+    ;
+
+    start IDECompilationUnit;
+
+    /**
+     *
+     */
+    symbol scope IDE =
+        ["online"]? "ide" Name ("extends" parent:(Name || ",")+)? "{" element:IDEElement* "}"
+    ;
+
+    /**
+     *
+     */
+    symbol scope ConfigurationType =
+        "typedef" ["component"]? "configuration" Name "{" element:ConfigurationTypeElement* "}"
+    ;
+
+    /**
+     *
+     */
+    symbol scope ModuleType =
+        "typedef" "module" Name "{" element:ModuleTypeElement* "}"
+    ;
+
+    /**
+     *
+     */
+    TypeOption implements ConfigurationTypeElement =
+        Option
+    ;
+
+    /**
+     *
+     */
+    symbol Write implements ModuleTypeElement =
+        "write" Name "to" path:StringLiteral
+    ;
+
+    /**
+     *
+     */
+    symbol scope Task implements ConfigurationTypeElement =
+        (["frontend"] | ["backend"]) "task" Name ("depends" predecessor:(Name || ",")+)?
+    ;
+
+    /**
+     *
+     */
+    symbol scope Module implements ModuleTypeElement =
+        "module" Name ":" type:Name /* "{" element:ModuleElement* "}" */
+    ;
+
+    /**
+     *
+     */
+    symbol scope Configuration implements ConfigurationTypeElement, ModuleTypeElement =
+        "configuration" Name ":" type:Name ("<" order:SignedIntLiteral ">")? "{" element:ConfigurationElement* "}"
+    ;
+
+    /**
+     *
+     */
+    symbol OptionFill implements ConfigurationElement =
+        "fill" Name "with" (literal:SignedLiteral | literalList:SignedLiteralList)
+    ;
+
+    /**
+     *
+     */
+    symbol OptionInherit implements ConfigurationElement =
+        "inherit" Name "from" parent:Name
+    ;
+
+    /**
+     *
+     */
+    ConfigurationName implements ConfigurationElement =
+        "name" name:StringLiteral
+    ;
+
+    /**
+     *
+     */
+    Build implements IDEElement =
+        "build" path:ProjectPath
+    ;
+
+    /**
+     *
+     */
+    Artifacts implements ConfigurationTypeElement =
+        ((["tool"] | ["product"]) identifier:Name) |
+        ((["tools"] | ["products"]) "[" identifier:(Name || ",")+ "]")
+    ;
+
+    /**
+     *
+     */
+    Registry implements IDEElement =
+        "registry" registry:StringLiteral
+    ;
+
+    /**
+     *
+     */
+    ContributionTypeAttribute implements ConfigurationTypeElement, ModuleTypeElement =
+        (["label"] | ["icon"] | ["category"]) literal:StringLiteral
+    ;
+
+    /**
+     *
+     */
+    ContributionType implements IDEElement =
+        (inclusion:["include"] | exclusion:["exclude"])
+        (["module"] | ["configuration"])
+        (("type" identifier:Name) | ("types" "[" identifier:(Name || ",")+ "]"))
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+
+    ast IDECompilationUnit =
+        method public java.util.List<String> getPackageList() {
+            return this.getPackage().getPackageList();
+        }
+    ;
+
+    ast Write =
+        method public String getPathValue() {
+            return this.getPath().getValue();
+        }
+    ;
+
+    ast Build =
+        method public de.monticore.lang.monticar.sol.grammars.common._ast.CommonLiterals getOrigin() {
+            return this.getPath().getOriginValue();
+        }
+
+        method public String getRelativePath() {
+            return this.getPath().getPathValue();
+        }
+    ;
+
+    ast Registry =
+        method public String getRegistryValue() {
+            return this.getRegistry().getValue();
+        }
+    ;
+
+    ast ConfigurationName =
+        method public String getNameValue() {
+            return this.getName().getValue();
+        }
+    ;
+
+    ast ContributionTypeAttribute =
+        method public String getLiteralValue() {
+            return this.getLiteral().getValue();
+        }
+    ;
+}

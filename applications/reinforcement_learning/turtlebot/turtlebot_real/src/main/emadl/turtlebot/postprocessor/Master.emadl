@@ -1,0 +1,15 @@
+package turtlebot.postprocessor;
+
+import turtlebot.postprocessor.util.StepRobot;
+
+component Master {
+    ports
+        in  Z        step,
+        out Q^{3}    cmd_vel_msg;
+        
+    instance StepRobot stepRobot;
+
+    connect step                   -> stepRobot.step;
+    connect stepRobot.vel_cmd      -> cmd_vel_msg;
+
+}

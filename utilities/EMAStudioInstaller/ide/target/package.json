@@ -1,0 +1,65 @@
+{
+  "private": true,
+  "name": "@elysium/ide",
+  "description": "",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/output": "latest",
+    "@theia/languages": "latest",
+    "@theia/editor": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/workspace": "latest",
+    "@theia/navigator": "latest",
+    "@theia/markers": "latest",
+    "@theia/outline-view": "latest",
+    "@theia/monaco": "latest",
+    "@theia/callhierarchy": "latest",
+    "@theia/userstorage": "latest",
+    "@theia/preferences": "latest",
+    "@theia/keymaps": "latest",
+    "@theia/messages": "latest",
+    "@theia/mini-browser": "latest",
+    "@theia/preview": "latest",
+    "@elysium/access-controller": "^0.1.0",
+    "@elysium/cd": "^0.1.0",
+    "@elysium/core": "^0.1.0",
+    "@elysium/dashboard": "^0.1.0",
+    "@elysium/downloader": "^0.1.0",
+    "@elysium/embeddedmontiarc": "^0.1.0",
+    "@elysium/embeddedmontiarcmath": "^0.1.0",
+    "@elysium/embeddedmontiview": "^0.1.0",
+    "@elysium/filesystem": "^0.1.0",
+    "@elysium/languages": "^0.1.0",
+    "@elysium/macocoviz": "^0.1.0",
+    "@elysium/messages": "^0.1.0",
+    "@elysium/mini-browser": "^0.1.0",
+    "@elysium/monaco": "^0.1.0",
+    "@elysium/montimath": "^0.1.0",
+    "@elysium/query-controller": "^0.1.0",
+    "@elysium/navigator": "^0.1.0",
+    "@elysium/workspace": "^0.1.0",
+    "@elysium/monticore": "^0.1.0",
+    "@elysium/ocl": "^0.1.0",
+    "@elysium/se-logo": "^0.1.0",
+    "@elysium/streamunits": "^0.1.0",
+    "@elysium/workspace-initiator": "^0.1.0"
+  },
+  "scripts": {
+    "start": "nps -c ../configs/scripts --no-scripts"
+  },
+  "devDependencies": {
+    "@theia/cli": "latest"
+  }
+}

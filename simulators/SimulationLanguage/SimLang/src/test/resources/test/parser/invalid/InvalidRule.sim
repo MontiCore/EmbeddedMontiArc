@@ -1,0 +1,5 @@
+/* (c) https://github.com/MontiCore/monticore */
+sim InvalidRule {
+  foobar 60ms;
+  map_name HorsterDreieck.osm;
+}

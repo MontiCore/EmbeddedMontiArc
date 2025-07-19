@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component EMSOperation {
+  ports
+    in Z waterLevel1,
+    out Boolean desiredPumpState,
+    out Q desiredValvePosition;
+}      

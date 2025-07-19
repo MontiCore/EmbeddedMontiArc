@@ -1,0 +1,44 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNSegment;
+
+component SmallSeg<Z(2:oo) classes = 11>{
+    ports in Z(0:255)^{1, 28, 28} data,
+         out Q(0:1)^{classes, 28, 28} softmax;
+
+    implementation CNN {
+        def conv(filter, channels, stride=(1,1)){
+            Convolution(kernel=(filter,filter), channels=channels, stride=stride) ->
+            Relu()
+        }
+        def encode(num_conv, filter, channels){
+            conv(filter=filter, channels=channels, ->=num_conv) ->
+            Pooling(pool_type="max", kernel=(2,2), stride=(2,2))
+        }
+
+        // try filter sizes 4 for consistency
+        data ->
+        encode(num_conv=2, filter=5, channels=64) ->
+
+        (
+
+            encode(num_conv=2, filter=5, channels=128) ->
+
+            conv(filter=1, channels=1024) ->
+            Dropout(p=0.5) ->
+            conv(filter=1, channels=1024) ->
+            Dropout(p=0.5) ->
+            Convolution(kernel=(1,1), channels=classes) ->
+            UpConvolution(kernel=(2,2), channels=classes, stride=(2,2))
+
+            |
+
+            Convolution(kernel=(1,1), channels=classes)
+
+        ) ->
+        Concatenate() ->
+
+        UpConvolution(kernel=(4,4), channels=classes, stride=(2,2)) ->
+
+        softmax;
+    }
+  }

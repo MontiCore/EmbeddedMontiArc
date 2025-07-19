@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    (c) https://github.com/MontiCore/monticore
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- PARENT PROJECT -->
+    <parent>
+        <groupId>montisim</groupId>
+        <artifactId>simulation</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <!-- OUR OWN PROJECT -->
+    <groupId>montisim</groupId>
+    <artifactId>simulator</artifactId>
+    <version>${revision}</version>
+
+    <properties>
+
+        <!-- Set root directory to ensure same execution context in subprojects 
+            (e.g. for Log in test mode) -->
+        <!-- <main.basedir>${project.parent.basedir}</main.basedir> -->
+
+        <!-- Specify Java 8 as version to avoid compile warnings -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+    </properties>
+
+    <!-- PROJECT DEPENDENCIES -->
+    <dependencies>
+        <!-- <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>eesimulator</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>environment</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>vehicle</artifactId>
+            <version>${revision}</version>
+        </dependency> -->
+        <dependency>
+            <groupId>montisim</groupId>
+            <artifactId>eecomponents</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>org.glassfish:javax.json</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
+                            <minimizeJar>true</minimizeJar>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>de.rwth.montisim.simulation.simulator.visualization.DebugVisualizer
+                                    </mainClass>
+                                </transformer>
+                            </transformers>
+                            <outputFile>${project.basedir}/vis/${project.name}.jar</outputFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- PROJECT PLUGINS AND PROPERTIES -->
+    <!-- <build>
+        <resources>
+            <resource>
+                <directory>src/test/data</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    // Set root directory to ensure same execution context in subprojects 
+                    //    (e.g. for Log in test mode)
+                    <workingDirectory>${project.parent.basedir}</workingDirectory>
+                    <forkCount>1</forkCount>
+                    <reuseForks>true</reuseForks>
+                    <argLine>-Xmx2048m -XX:MaxPermSize=1024m</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build> -->
+
+</project>

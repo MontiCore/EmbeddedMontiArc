@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Innercity
+ * Focus: Observe vehicles handling the innercity traffic
+ * Details: Several vehicles, moderate pedestrian density, several crossings, traffic lights 
+*/
+sim Basics {
+  sim_duration 4h;
+
+  time 12:00;
+  
+  map_name basics.osm;
+  
+  pedestrian_density 1.5;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  //etc.
+}

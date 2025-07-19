@@ -1,0 +1,51 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+
+dynamic component Platoonjoint2array{
+  ports
+
+    dynamic in   Z           vehicleid[0:32],
+    dynamic in   Z           jointvehicleid[0:32],
+    dynamic in   Z           currentstate[0:32],
+    dynamic in   Q           position_x[0:32],
+    dynamic in   Q           position_y[0:32],
+    dynamic in   Z           platoon_num[0:32],
+    dynamic in   Z^{1,100}   platoonlist[0:32],
+
+
+    out Z^{1,32}    new_vehicleid,
+    out Z^{1,32}    new_jointvehicleid,
+    out Z^{1,32}    new_currentstate,
+    out Q^{1,32}    new_position_x,
+    out Q^{1,32}    new_position_y,
+    out Z^{1,32}    new_platoon_num,
+    out Z^{32,100}  new_platoonlist,
+    out Z^{1,100}   platoonlist1,
+    out Z           vehicle_num;
+
+
+    @ vehicleid::connect{}
+    @ currentstate::connect{}
+    @ position_x::connect{}
+    @ position_y::connect{}
+
+    implementation Math{
+      Z counter = 1;
+      for i = 1:32
+         if is_connected(vehicleid,i) && is_connected(jointvehicleid,i) && is_connected(currentstate,i) && is_connected(position_x,i) && is_connected(position_y,i) && is_connected(platoon_num,i) && is_connected(platoonlist,i)
+            new_vehicleid(1,counter) = vehicleid(i);
+            new_jointvehicleid(1,counter) = jointvehicleid(i);
+            new_currentstate(1,counter) = currentstate(i);
+            new_position_x(1,counter) = position_x(i);
+            new_position_y(1,counter) = position_y(i);
+            new_platoon_num(1,counter) = platoon_num(i);
+            platoonlist1 = platoonlist(i);
+            for k = 1:100
+              new_platoonlist(counter,k) = platoonlist1(1,k);
+            end
+            counter = counter + 1;
+         end
+      end
+      vehicle_num = counter - 1;
+    }
+}

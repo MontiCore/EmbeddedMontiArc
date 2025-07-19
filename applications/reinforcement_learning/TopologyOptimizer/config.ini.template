@@ -1,0 +1,10 @@
+[DEFAULT]
+ClusterHost=login18-1.hpc.itc.rwth-aachen.de
+ClusterUser= # username on the hpc cluster
+ClusterKeyPassword= # passphrase for ssh key
+ClusterWorkingDirectory= # Absolute path to the working directory on the cluster
+ClusterLogFolder= # Absolute path to the log directory on the cluster
+ClusterProjectAccount= # project account to use for sbatch jobs
+SSHKeyFolder= #Absolute path to the ssh keys on the local machine
+LocalLogFolder= #Absolute path to the log folder on the local machine
+ntopcl= #Absolute path to the ntopcl executable

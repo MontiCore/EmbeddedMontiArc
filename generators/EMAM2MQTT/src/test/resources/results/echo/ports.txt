@@ -1,0 +1,15 @@
+
+Component name: tests.a.compA
+
+Ports:
+
+portA : incoming (mqtt, topic: /clock)
+portB : incoming (unknown symbol)
+portC : outgoing (mqtt, topic: /clock)
+portD : outgoing (unknown symbol)
+portE : incoming (mqtt, topic: /clock)
+portF : outgoing (unknown symbol)
+portG : incoming (mqtt, topic: /clock)
+portH : outgoing (unknown symbol)
+portI : incoming (mqtt, topic: /clock)
+portJ : outgoing (unknown symbol)

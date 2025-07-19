@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Network{
+     num_epoch:2
+     batch_size:16
+     normalize:false
+     context:gpu
+     load_checkpoint:false
+     loss:epe
+     loss_weights:(0.32, 0.08, 0.02, 0.01, 0.005)
+     optimizer:adam{
+        learning_rate:0.0001
+	learning_rate_decay:0.5
+        step_size:2
+        weight_decay:0.0004
+        epsilon:0.00000001
+     }
+}

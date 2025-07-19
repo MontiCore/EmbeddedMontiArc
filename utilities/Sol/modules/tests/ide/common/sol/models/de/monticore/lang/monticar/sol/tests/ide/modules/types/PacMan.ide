@@ -1,0 +1,19 @@
+package de.monticore.lang.monticar.sol.tests.ide.modules.types
+
+import de.monticore.lang.monticar.sol.tests.ide.configurations.PacMan
+import de.monticore.lang.monticar.sol.tests.artifact.Artifact
+
+typedef module PacMan {
+    label "PacMan"
+    icon "some-icon-class"
+    category "EMAStudio"
+
+    configuration pacman: PacMan {
+        name "Run PacMan"
+
+        fill model with "de.rwth.se.PacMan"
+        fill modelPath with "."
+    }
+
+    write Artifact to "artifact.txt"
+}

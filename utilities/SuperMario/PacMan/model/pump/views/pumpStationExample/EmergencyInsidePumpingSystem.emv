@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view EmergencyInsidePumpingSystem {
+component PumpStation {
+  component PumpingSystem {
+    component EmergencyController {
+    }
+    instance EmergencyController emergencyController;
+  }
+  instance PumpingSystem pumpingSystem;
+}
+}

@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture IllegalName(inputs=10, classes=2, Tg = 1){
+    def input Q(-oo:+oo)^{inputs} in1
+    def output Q(0:1)^{classes} out1
+
+    def Fc(){
+        FullyConnected(units=10)
+    }
+
+    in1 ->
+    FullyConnected(units=64) ->
+    Tanh() ->
+    FullyConnected(units=classes) ->
+    Softmax() ->
+    out1;
+}

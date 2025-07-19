@@ -1,0 +1,4 @@
+option supportedPropCoCo: String {
+    label = "A Label"
+    glen = "Maggie No! This is my private area, my place of zen and peace!"
+}

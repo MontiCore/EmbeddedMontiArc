@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package exampleBA;
+
+view ExampleView2 {
+	component AComp {
+		component CComp { }
+		instance CComp ccomp;
+	
+		component DComp { }	
+		instance DComp dcomp1;	
+		
+		connect ccomp -> dcomp1;
+	}
+}

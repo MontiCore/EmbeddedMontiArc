@@ -1,0 +1,46 @@
+/* (c) https://github.com/MontiCore/monticore */
+package daimler.v4;
+
+view FA15 {
+
+  component DEMO_FAS_1 {
+    component FollowToStop {}
+    instance FollowToStop followToStop;
+    
+    component Distronic {}
+    instance Distronic distronic;
+    component Tempomat {}
+    instance Tempomat tempomat;
+    component EmergencyBrake {}
+    instance EmergencyBrake emergencyBrake;
+    component Limiter {
+      port
+        in ? v_Sign_kmhIn6;
+    }
+    instance Limiter limiter;
+    component BrakeAssistant {}
+    instance BrakeAssistant brakeAssistant;
+    component Distancewarner {}
+    instance Distancewarner distancewarner;
+    
+    component VelocityControl {}
+    instance VelocityControl velocityControl;
+  }
+  instance DEMO_FAS_1 dEMO_FAS_1;
+  
+  component Umgebung {}
+  instance Umgebung umgebung;
+  
+  effect followToStop -> distronic;
+  effect distronic -> velocityControl;
+  
+  effect tempomat -> velocityControl;
+  effect emergencyBrake -> velocityControl;
+  
+  effect umgebung -> limiter.v_Sign_kmhIn6;
+  effect limiter -> velocityControl;
+  
+  effect brakeAssistant -> velocityControl;
+  effect velocityControl -> dEMO_FAS_1;
+  effect distancewarner -> dEMO_FAS_1;
+}

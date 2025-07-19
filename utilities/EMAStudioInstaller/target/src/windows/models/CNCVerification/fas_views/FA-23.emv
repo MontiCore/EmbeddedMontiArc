@@ -1,0 +1,34 @@
+package fas_views;
+
+view FA-23 {
+  component FAS {
+    ports
+	  in ? V_Vehicle_kmh,
+	  out ? Acceleration_pc,
+	  out ? BrakeForce_pc;
+	  
+	  component Tempomat {
+	    ports
+	      in ? V_Vehicle_kmh,
+	      out ? V_CC_delta_kmh;
+	  
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    ports
+		  in ? V_CC_delta_kmh,
+		  out ? Acceleration_pc,
+		  out ? BrakeForce_pc;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect tempo.V_Vehicle_kmh -> veloCont.Acceleration_pc;
+	  effect tempo.V_Vehicle_kmh -> veloCont.BrakeForce_pc;
+	  
+	  connect tempo.V_CC_delta_kmh -> veloCont.V_CC_delta_kmh;
+	  connect V_Vehicle_kmh -> tempo.V_Vehicle_kmh;
+      connect veloCont.Acceleration_pc -> Acceleration_pc;
+	  connect veloCont.BrakeForce_pc -> BrakeForce_pc;
+  }
+}

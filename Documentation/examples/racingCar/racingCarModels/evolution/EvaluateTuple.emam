@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+
+import PIDTupleAggregation;
+
+component EvaluateTuple{
+	in  Q(0:0.001:oo) mserror,
+	in Z(0:1:19) tupleIndex,
+	in PIDTupleAggregation population[20],
+
+	out PIDTupleAggregation updatedPopulation[20],
+	out Z(0:1:19) updatedTupleIndex;
+
+	implementation Math{
+		population.[tupleIndex].fitness = -mserror;
+		updatedTupleIndex = tupleIndex + 1;
+		updatedPopulation = population;
+	}
+}

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package a;
+
+stream StructUseStream for StructUse_TestWrapper {
+    in1X: 1 tick 2;
+    in1Y: 3 tick 4;
+    out1: 4 tick 6;
+}

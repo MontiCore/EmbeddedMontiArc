@@ -1,0 +1,41 @@
+image: "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/sol/build:2019.09.26"
+
+variables:
+  MAVEN_OPTS: "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn"
+  NODE_OPTIONS: "--max-old-space-size=4096"
+
+before_script:
+  - yarn install --ignore-scripts
+
+stages:
+  - install
+  - deploy
+
+install:
+  stage: install
+  script:
+    - mvn -B clean install
+    - yarn install --ignore-scripts
+    - cd common
+    - yarn prepare
+  except:
+    - master
+
+#
+# TODO: Build Docker image.
+# TODO: Upload external application.
+# TODO: Build for different operating systems.
+#
+deploy:
+  stage: deploy
+  script:
+    - mvn -B clean install
+    - yarn install --ignore-scripts --frozen-lockfile
+    - cd common
+    - echo "" >> .npmrc
+    - echo "email=cibuild@se-rwth.de" >> .npmrc
+    - echo "always-auth=true" >> .npmrc
+    - echo "_auth=\${cibuildb64}" >> .npmrc
+    - yarn publish
+  only:
+    - master

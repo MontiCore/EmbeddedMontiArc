@@ -1,0 +1,111 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Platoonmessagegenerator3{
+ ports
+    in   Z                 if_split_me,
+    in   Z                 if_split_in,
+    in   Q                 split_next_x,
+    in   Q                 split_next_y,
+    in   Z^{1,100}         platoonlist,
+    in   Q                 platoon_member_num,
+    in   Z                 timestamp,
+    in   Q                 position_x,
+    in   Q                 position_y,
+    in   Z                 vehicleid,
+    in   Q                 compass,
+    in   Q                 length,
+    in   Q                 width,
+    in   Q                 engine,
+    in   Q                 brake,
+    in   Q                 steering,
+    in   Q                 velocity,
+
+
+    dynamic out Platoonmessage plat_msg[0:32],
+    out Z  if_splitnow,
+    out Z  if_willsplit,
+    out Platoonmessage pmsg,
+    out Platoonmessage pmsg1,
+    out Platoonmessage pmsg2;
+
+
+    implementation Math{
+     static Z timestamp_store = 0;
+     if if_split_me == 1
+       pmsg.vehicleid = vehicleid;
+       pmsg.timestamp = timestamp;
+       pmsg.position_x = position_x;
+       pmsg.position_y = position_y;
+       pmsg.compass = compass;
+       pmsg.length = length;
+       pmsg.width = width;
+       pmsg.velocity = velocity;
+       pmsg.engine = engine;
+       pmsg.brakes = brake;
+       pmsg.steering = steering;
+       pmsg.ifsplit = 1;
+       pmsg.intsersection_x = 0.0;
+       pmsg.intsersection_y = 0.0;
+       pmsg.member_num = platoon_member_num;
+       pmsg.platoon_member = platoonlist;
+       Z a = 1;
+       if ports_connect(plat_msg,a,pmsg)
+          plat_msg(a) = pmsg;
+       end
+       Z r = ports_free(plat_msg,a);
+     end
+
+     if if_split_me == 0 && if_split_in == 1;
+       pmsg1.vehicleid = vehicleid;
+       pmsg1.timestamp = timestamp;
+       pmsg1.position_x = position_x;
+       pmsg1.position_y = position_y;
+       pmsg1.compass = compass;
+       pmsg1.length = length;
+       pmsg1.width = width;
+       pmsg1.velocity = velocity;
+       pmsg1.engine = engine;
+       pmsg1.brakes = brake;
+       pmsg1.steering = steering;
+       pmsg1.ifsplit = 1;
+       pmsg1.intsersection_x = split_next_x;
+       pmsg1.intsersection_y = split_next_y;
+       pmsg1.member_num = platoon_member_num;
+       pmsg1.platoon_member = platoonlist;
+       Z a1 = 1;
+       if ports_connect(plat_msg,a1,pmsg1)
+          plat_msg(a1) = pmsg1;
+       end
+       Z r1 = ports_free(plat_msg,a1);
+     end
+
+     if if_split_me == 0 && if_split_in == 0 && timestamp - timestamp_store >= 5
+       pmsg2.vehicleid = vehicleid;
+       pmsg2.timestamp = timestamp;
+       pmsg2.position_x = position_x;
+       pmsg2.position_y = position_y;
+       pmsg2.compass = compass;
+       pmsg2.length = length;
+       pmsg2.width = width;
+       pmsg2.velocity = velocity;
+       pmsg2.engine = engine;
+       pmsg2.brakes = brake;
+       pmsg2.ifsplit = 0;
+       pmsg2.intsersection_x = 0.0;
+       pmsg2.intsersection_y = 0.0;
+       pmsg2.steering = steering;
+       pmsg2.member_num = platoon_member_num;
+       pmsg2.platoon_member = platoonlist;
+       Z a2 = 1;
+       if ports_connect(plat_msg,a2,pmsg2)
+          plat_msg(a2) = pmsg2;
+       end
+       Z r2 = ports_free(plat_msg,a2);
+       timestamp_store = timestamp;
+     end
+     if_splitnow = if_split_me;
+     if_willsplit = if_split_in;
+    }
+}

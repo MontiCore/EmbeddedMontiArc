@@ -1,0 +1,29 @@
+package fas_views;
+
+view FA-25 {
+  component FAS {
+    ports
+	  in ? LeverUp_stat,
+	  out ? CC_active_b;
+	  
+	  component Tempomat {
+	    ports
+	      in ? LeverUp_stat,
+		  out ? V_CC_delta_kmh,
+	      out ? CC_active_b;
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    port
+		  in ? V_CC_delta_kmh;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect tempo.LeverUp_stat -> tempo.V_CC_delta_kmh;
+	  
+	  connect LeverUp_stat -> tempo.LeverUp_stat;
+	  connect tempo.CC_active_b -> CC_active_b;
+	  connect tempo.V_CC_delta_kmh -> veloCont.V_CC_delta_kmh;
+  }
+}

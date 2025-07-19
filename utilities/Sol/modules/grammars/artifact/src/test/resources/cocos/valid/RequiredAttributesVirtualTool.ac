@@ -1,0 +1,9 @@
+package valid
+
+virtual tool RequiredAttributesVirtualTool {
+    command "g++.exe"
+
+    artifact SOME_RESOURCE {
+         path "some/other/awesome/path" resolved from CWD
+     }
+}

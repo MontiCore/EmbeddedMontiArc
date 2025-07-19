@@ -1,0 +1,37 @@
+package de.rwth.connectedcars.iir;
+
+component IIRFeedBackward {
+    ports
+        in Q in1,
+        in Q a[3],
+        out Q y;
+        
+    instance Delay delay1;
+    instance Delay delay2;
+    instance Delay delay3;
+    
+    instance Multiply mult1;
+    instance Multiply mult2;
+    instance Multiply mult3;
+    
+    instance Sum<4> sum;
+    
+    connect a[1] -> mult1.a;
+    connect a[2] -> mult2.a;
+    connect a[3] -> mult3.a;
+    
+    connect sum.sum -> delay1.a;
+    connect delay1.b -> delay2.a;
+    connect delay2.b -> delay3.a;
+    
+    connect delay1.b -> mult1.b;
+    connect delay2.b -> mult2.b;
+    connect delay3.b -> mult3.b;
+    
+    connect mult1.product -> sum.summands[1];
+    connect mult2.product -> sum.summands[2];
+    connect mult3.product -> sum.summands[3];
+    connect in1 -> sum.summands[4];
+    
+    connect sum.sumResult -> y;
+}

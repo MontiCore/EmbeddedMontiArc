@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "name": "@emastudio/manager",
+  "version": "2018.12.17",
+  "main": "electron.js"
+}

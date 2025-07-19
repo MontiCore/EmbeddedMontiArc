@@ -1,0 +1,7 @@
+package invalid
+
+typedef module OptionFillType {
+    configuration config: OptionFillTypeConfiguration {
+        fill common with true
+    }
+}

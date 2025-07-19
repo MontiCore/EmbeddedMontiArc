@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+
+import PIDTupleAggregation;
+
+function PIDTupleAggregation tupleOut = arithCrossOver(PIDTupleAggregation father, PIDTupleAggregation mother)
+	Q(0 : 0.0001 : 1) = rand();
+	PIDTupleAggregation tuple;
+	tuple.fitness = 0;
+	tuple.PIDTuples[0].P = p*father.PIDTuples[0].P + (1-p)*mother.PIDTuples[0].P;
+	tuple.PIDTuples[0].I = p*father.PIDTuples[0].I + (1-p)*mother.PIDTuples[0].I;
+	tuple.PIDTuples[0].D = p*father.PIDTuples[0].D + (1-p)*mother.PIDTuples[0].D;
+	tuple.PIDTuples[1].P = p*father.PIDTuples[1].P + (1-p)*mother.PIDTuples[1].P;
+	tuple.PIDTuples[1].I = p*father.PIDTuples[1].I + (1-p)*mother.PIDTuples[1].I;
+	tuple.PIDTuples[1].D = p*father.PIDTuples[1].D + (1-p)*mother.PIDTuples[1].D;
+	tuple.PIDTuples[2].P = p*father.PIDTuples[2].P + (1-p)*mother.PIDTuples[2].P;
+	tuple.PIDTuples[2].I = p*father.PIDTuples[2].I + (1-p)*mother.PIDTuples[2].I;
+	tuple.PIDTuples[2].D = p*father.PIDTuples[2].D + (1-p)*mother.PIDTuples[2].D;
+	
+	tupleOut = tuple;
+end

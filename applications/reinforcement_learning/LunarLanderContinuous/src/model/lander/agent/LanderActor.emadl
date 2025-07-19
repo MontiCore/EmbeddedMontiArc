@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lander.agent;
+
+component LanderActor {
+    ports
+        in Q^{8} state,
+        out Q(-1:1)^{2} action;
+    
+    implementation CNN {
+        state ->
+        FullyConnected(units=400) ->
+        Relu() ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=2) ->
+        Tanh() ->
+        action;
+    }
+}

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tagDef.caseStudy;
+
+import tagDef.CnCExt;
+import tagDef.NFPExt;
+
+ocl rule2_CompPower {
+    context CTDef ct inv:
+            let
+                selectedVals = ct.CSubs;
+                aggregatedTags = List{max(s.CType.compTypePower, 0W) | s in selectedVals};
+                aggregatedValue = sum(aggregatedTags, "W");
+            in
+                aggregatedValue < min(ct.compTypePower, +oo W);
+}

@@ -1,0 +1,13 @@
+package ba;
+
+component CVFindContours<N n=960,N m=720> {
+    port
+        in Q^{n,m} image,
+        in Z mode,
+        in Z method,
+        out Q contours;
+
+    implementation Math {
+        contours = findContours(image, mode, method);
+    }
+}

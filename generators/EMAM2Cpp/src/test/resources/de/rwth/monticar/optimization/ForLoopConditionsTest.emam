@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.monticar.optimization;
+
+component ForLoopConditionsTest{
+
+    ports out Q^{3} xOut,
+          out Q yOut;
+
+    implementation Math{
+        minimize
+          Q^{3} x;
+        in
+          Q y = x(1) * x(1) + x(2) * x(2) + x(3) * x(3);
+        subject to
+          for i = 1:3
+            x(i) >= 0;
+            0 <= 2 * x(i) <= 2;
+          end
+        end
+        xOut = x;
+        yOut = y;
+    }
+}

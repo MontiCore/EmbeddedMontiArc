@@ -1,0 +1,133 @@
+<!--
+  ~ (c) https://github.com/MontiCore/monticore
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- == PROJECT COORDINATES =============================================== -->
+
+    <parent>
+        <groupId>de.monticore.lang.monticar.sol</groupId>
+        <artifactId>tests-language</artifactId>
+        <version>2020.5.5-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tests-language-ls</artifactId>
+
+    <!-- == PROJECT PROPERTIES ================================================ -->
+
+    <properties>
+
+        <!-- .. Libraries ..................................................... -->
+
+        <!-- .. Plugins ....................................................... -->
+
+        <!-- .. Classifiers ................................................... -->
+
+        <!-- .. Misc .......................................................... -->
+
+        <!-- .. Resources ..................................................... -->
+
+    </properties>
+
+    <!-- == PROJECT METAINFORMATION =========================================== -->
+
+    <name>Sol - Tests - Language - Language Server</name>
+
+    <!-- == PROJECT DEPENDENCIES ============================================== -->
+
+    <dependencies>
+
+        <!-- .. Modules ................................................... -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>runtime-language-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- .. Libraries ................................................. -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math</artifactId>
+            <version>0.1.9-SNAPSHOT</version>
+        </dependency>
+
+        <!-- .. Language .................................................. -->
+
+        <!-- .. Test Libraries ............................................ -->
+
+    </dependencies>
+
+    <!-- == PROJECT BUILD SETTINGS ============================================ -->
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.sol</groupId>
+                <artifactId>plugin-language-server</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <grammar>de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcMath</grammar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>tests-language-ls</finalName>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>de.monticore.lang.embeddedmontiarc.embeddedmontiarcmath.ls.EmbeddedMontiArcMathServerLauncher</mainClass>
+                                </transformer>
+                            </transformers>
+                            <minimizeJar>true</minimizeJar>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
+
+    <!-- == PROJECT DISTRIBUTION ============================================== -->
+
+</project>

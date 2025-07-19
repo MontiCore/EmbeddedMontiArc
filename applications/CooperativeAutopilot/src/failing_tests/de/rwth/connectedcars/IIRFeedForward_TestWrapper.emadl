@@ -1,0 +1,17 @@
+package de.rwth.connectedcars.iir;
+
+component IIRFeedForward_TestWrapper {
+    ports
+        in Q x,
+        out Q out1;
+    
+    instance IIRFeedForward forward;
+    
+    connect x -> forward.x;
+    connect 1 -> forward.b[1];
+    connect 2 -> forward.b[2];
+    connect 3 -> forward.b[3];
+    connect 4 -> forward.b[4];
+    
+    connect forward.out1 -> out1;
+}

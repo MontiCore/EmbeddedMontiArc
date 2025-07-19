@@ -1,0 +1,9 @@
+{
+    "dataset_path" : "/home/paul/random/torcsdprl/training-data-small-img/train.h5",
+    "debugging_dataset_path": "/home/paul/random/torcsdprl/training-data-debugging-small/",
+    "small_img_dataset_path": "/home/paul/random/torcsdprl/training-data-small-img",
+    "debugging_dataset_size" : 1000,
+    "split" : 0.8,
+    "mxnet_image_format" : true,
+    "show_test_image" : false
+}

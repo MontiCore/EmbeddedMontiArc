@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-27 {
+  component FAS {
+    ports
+	  in ? Acceleration_pedal_pc,
+	  out ? Acceleration_pc;
+	  
+	  component Tempomat {
+	    port
+		  out ? V_CC_delta_kmh;
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    ports
+		  in ? V_CC_delta_kmh,
+		  in ? Acceleration_pedal_pc;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect veloCont.Acceleration_pedal_pc -> Acceleration_pc;
+	  
+	  connect Acceleration_pedal_pc -> veloCont.Acceleration_pedal_pc;
+	  connect tempo.V_CC_delta_kmh -> veloCont.V_CC_delta_kmh;
+  }
+}

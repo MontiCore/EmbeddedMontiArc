@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+.icon-generate {
+    background:url("../images/report.png") #c0c2c3 no-repeat center;
+    background-color: #c0c2c3;
+    background-size:100% 100%;
+	cursor:pointer !important;
+	top:-1px;
+}

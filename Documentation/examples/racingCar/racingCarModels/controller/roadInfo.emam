@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+enum SegmentType { STRAIGHT | CURVED }
+
+struct roadInfo{ Q(0 : 0.0001 : 50) frictionCoefficient;
+					 SegmentType segType;
+					 Q(0 m : 0.0001 m : 10 m) length;
+					 Q(0 m : 0.0001 m : oo m) radius;
+					 Q(0 m : 0.0001 m : 10 m) distToSegEnd;}

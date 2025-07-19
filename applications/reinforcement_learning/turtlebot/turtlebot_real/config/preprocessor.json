@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/main/emadl",
+    "outputDir": "target/preprocessor",
+    "rootModel": "turtlebot.preprocessor.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}

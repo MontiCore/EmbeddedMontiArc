@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component UserButtonReader {
+  ports
+    in Boolean button,
+    out Enum userButton;
+}

@@ -1,0 +1,184 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+dynamic component IntersectionService{
+ports
+  dynamic in  Statusmessage           status_msg[0:32],
+  dynamic in  Trajectorymessage       traj_msg[0:32],
+  dynamic in  Platoonmessage          plat_msg[0:32],
+  dynamic in  Collisionmessage        coll_msg[0:32],
+
+  in  Z               status,
+  in  Z               isplatoonheader,
+  in  Z               ifcurrentsplit,
+  in  Z               platoon_length,
+  in  Z               timestamp,
+  in  Z               vehicleid,
+
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Z               trajectory_length,
+
+  in  Z               isnextintersection,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+  in  Q               dis2intersection,
+
+  in  Q               velocity,
+  in  Q               length,
+  in  Q               width,
+
+
+  out Q               maximalallowedvelocity,
+  dynamic out Collisionmessage  coll_message[0:32];
+
+
+  instance Statusduplicate                   status_dup;
+  instance Trajduplicate                     traj_dup;
+  instance Platduplicate                     plat_dup;
+  instance If_frontcarexists                 if_front;
+  instance Intersectionsvehicle              inter_v;
+  instance Intersectionsort2velocity         inter_sort;
+  instance Nonstopareawithsingle             non_single;
+  instance Nonstopareawithplatoon            non_plat;
+  instance Maxvelocity_intersection          max_v;
+
+
+  @ isnextintersection::value(0){
+    connect 99999.0 -> maximalallowedvelocity;
+  }
+
+  @ isnextintersection::value(1) && status_msg::connect{
+    connect status_msg[?] -> status_dup.status_msg[?];
+  }
+  @ isnextintersection::value(1) && traj_msg::connect{
+    connect traj_msg[?] -> traj_dup.traj_msg[?];
+  }
+  @ isnextintersection::value(1) && platoon_msg::connect{
+    connect plat_msg[?] -> plat_dup.plat_msg[?];
+  }
+  // if front exits
+  @ isnextintersection::value(1){
+  connect nextintersection_x -> if_front.nextintersection_x;
+  connect nextintersection_y -> if_front.nextintersection_y;
+  connect trajectory_length -> if_front.trajectory_length;
+  connect trajectory_x -> if_front.trajectory_x;
+  connect trajectory_y -> if_front.trajectory_y;
+  connect length -> if_front.length;
+  connect width -> if_front.width;
+  }
+  @ isnextintersection::value(1) && status_dup.status_msg1::connect{
+    connect status_dup.status_msg1[?] -> if_front.status_msg[?];
+  }
+  @ isnextintersection::value(1) && traj_dup.traj_msg1::connect{
+    connect traj_dup.traj_msg1[?] -> if_front.traj_msg[?];
+  }
+  @ isnextintersection::value(1) && plat_dup.plat_msg1::connect{
+    connect plat_dup.plat_msg1[?] -> if_front.plat_msg[?];
+  }
+
+  @ isnextintersection::value(1) && status_dup.status_msg2::connect{
+    connect status_dup.status_msg2[?] -> inter_v.status_msg[?];
+  }
+  @ isnextintersection::value(1) && traj_dup.traj_msg2::connect{
+    connect traj_dup.traj_msg2[?] -> inter_v.traj_msg[?];
+  }
+  @ isnextintersection::value(1) && plat_dup.plat_msg2::connect{
+    connect plat_dup.plat_msg2[?] -> inter_v.plat_msg[?];
+  }
+  @ isnextintersection::value(1){
+    connect nextintersection_x -> inter_v.next_x;
+    connect nextintersection_y -> inter_v.next_y;
+    connect length -> inter_v.length;
+  }
+
+  @ isnextintersection::value(1) && status_dup.status_msg3::connect{
+    connect status_dup.status_msg3[?] -> inter_sort.status_msg[?];
+  }
+  @ isnextintersection::value(1) && traj_dup.traj_msg3::connect{
+    connect traj_dup.traj_msg3[?] -> inter_sort.traj_msg[?];
+  }
+  @ isnextintersection::value(1) && plat_dup.plat_msg3::connect{
+    connect plat_dup.plat_msg3[?] -> inter_sort.platoon_msg[?];
+  }
+  @ isnextintersection::value(1) && coll_msg::connect{
+    connect coll_msg[?] -> inter_sort.collision_msg[?];
+  }
+
+  @ isnextintersection::value(1){
+    // intersection sort
+    connect inter_v.vehicle_atintersection -> inter_sort.vehicle_atintersection;
+    connect inter_v.vehicle_num -> inter_sort.vehicle_num;
+    connect inter_v.platoon_atintersection -> inter_sort.platoon_atintersection;
+    connect inter_v.platoon_num -> inter_sort.platoon_num;
+
+    connect status -> inter_sort.status;
+    connect isplatoonheader -> inter_sort.isplatoonheader;
+    connect platoon_length -> inter_sort.platoon_length;
+    connect timestamp -> inter_sort.timestamp;
+    connect vehicleid -> inter_sort.vehicleid;
+    connect nextintersection_x -> inter_sort.nextintersection_x;
+    connect nextintersection_y -> inter_sort.nextintersection_y;
+    connect dis2intersection -> inter_sort.dis2intersection;
+    connect ifcurrentsplit -> inter_sort.ifcurrentsplit;
+
+    connect if_front.if_frontvehicleexists -> inter_sort.if_frontvehicleexists;
+
+    connect trajectory_x -> inter_sort.trajectory_x;
+    connect trajectory_y -> inter_sort.trajectory_y;
+    connect trajectory_length -> inter_sort.trajectory_length;
+    connect length -> inter_sort.length;
+    connect width -> inter_sort.width;
+    connect velocity -> inter_sort.velocity;
+    connect inter_sort.maximalallowedvelocity -> max_v.intermax;
+  }
+  @ isnextintersection::value(1) && inter_sort.coll_message::connect{
+    connect inter_sort.coll_message[?] -> coll_message[?];
+  }
+
+  @ isnextintersection::value(1) && status_dup.status_msg4::connect{
+    connect status_dup.status_msg4[?] -> non_single.status_msg[?];
+  }
+  @ isnextintersection::value(1){
+    connect nextintersection_x -> non_single.nextintersection_x;
+    connect nextintersection_y -> non_single.nextintersection_y;
+    connect trajectory_length -> non_single.trajectory_length;
+    connect trajectory_x -> non_single.trajectory_x;
+    connect trajectory_y -> non_single.trajectory_y;
+    connect length -> non_single.length;
+    connect width -> non_single.width;
+  }
+
+  @ isnextintersection::value(1) && status_dup.status_msg5::connect{
+    connect status_dup.status_msg5[?] -> non_plat.status_msg[?];
+  }
+  @ isnextintersection::value(1) && plat_dup.plat_msg4::connect{
+    connect plat_dup.plat_msg4[?] -> non_plat.plat_msg[?];
+  }
+  @ isnextintersection::value(1) && traj_dup.traj_msg4::connect{
+    connect traj_dup.traj_msg4[?] -> non_plat.traj_msg[?];
+  }
+  @ isnextintersection::value(1){
+    connect nextintersection_x -> non_plat.nextintersection_x;
+    connect nextintersection_y -> non_plat.nextintersection_y;
+    connect trajectory_length -> non_plat.trajectory_length;
+    connect trajectory_x -> non_plat.trajectory_x;
+    connect trajectory_y -> non_plat.trajectory_y;
+    connect length -> non_plat.length;
+    connect width -> non_plat.width;
+  }
+  @ isnextintersection::value(1){
+    connect non_single.if_collinnonstop -> max_v.if_singleinnon;
+    connect non_plat.if_collinnonstop -> max_v.if_platinnon;
+    connect dis2intersection -> max_v.dis2intersection;
+    connect length -> max_v.length;
+    connect max_v.maximalallowedvelocity -> maximalallowedvelocity;
+  }
+
+  @ plat_dup.plat_msg5::connect{}
+  @ plat_dup.plat_msg6::connect{}
+  @ traj_dup.traj_msg5::connect{}
+
+}

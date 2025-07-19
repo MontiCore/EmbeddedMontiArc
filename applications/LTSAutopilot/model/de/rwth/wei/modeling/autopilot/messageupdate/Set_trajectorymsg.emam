@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Set_trajectorymsg{
+ ports
+  //
+   in  Q            timestamp,
+   in  Q            vehicleid,
+   in  Q            trajectory_length,
+   in  Q^{1,100}    trajectory_x,
+   in  Q^{1,100}    trajectory_y,
+   in  Z^{1,100}    isintersection,
+
+   out  trajectorymessage   set_traj_msg;
+
+   implementation Math{
+     set_traj_msg.timestamp = timestamp;
+     set_traj_msg.vehicleid = vehicleid;
+     set_traj_msg.trajectory_length = trajectory_length;
+     set_traj_msg.trajectory_x = trajectory_x;
+     set_traj_msg.trajectory_y = trajectory_y;
+     set_traj_msg.isintersection = isintersection;
+   }
+}

@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-26 {
+  component FAS {
+    ports
+	  in ? LeverDown_stat,
+	  out ? CC_active_b;
+	  
+	  component Tempomat {
+	    ports
+	      in ? LeverDown_stat,
+		  out ? V_CC_delta_kmh,
+	      out ? CC_active_b;
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    port
+		  in ? V_CC_delta_kmh;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect tempo.LeverDown_stat -> tempo.V_CC_delta_kmh;
+	  
+	  connect LeverDown_stat -> tempo.LeverDown_stat;
+	  connect tempo.CC_active_b -> CC_active_b;
+	  connect tempo.V_CC_delta_kmh -> veloCont.V_CC_delta_kmh;
+  }
+}

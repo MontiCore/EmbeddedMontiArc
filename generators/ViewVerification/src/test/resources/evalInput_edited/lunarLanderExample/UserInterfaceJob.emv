@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// The job of the user interface component is to
+// display the current status of the lander using
+// information from both the calculation and the
+// data store components.
+
+view UserInterfaceJob {
+
+  component UserInterface { }
+  instance UserInterface userInterface;
+
+  component Calculation { }
+  instance Calculation calculation;
+  
+  component DataStore { }
+  instance DataStore dataStore;
+  
+  connect calculation -> userInterface;
+  connect dataStore -> userInterface;
+    
+}

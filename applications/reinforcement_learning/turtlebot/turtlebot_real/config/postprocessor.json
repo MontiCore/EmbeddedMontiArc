@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/main/emadl",
+    "outputDir": "target/postprocessor",
+    "rootModel": "turtlebot.postprocessor.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}

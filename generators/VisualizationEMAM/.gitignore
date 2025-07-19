@@ -1,0 +1,9 @@
+# Editor
+/.idea
+
+# Build
+/target
+/src/main/resources/math-pretty-printer/
+/src/main/resources/visualisation/
+/src/main/resources/visualization.zip
+/src/main/resources/math-pretty-printer.zip

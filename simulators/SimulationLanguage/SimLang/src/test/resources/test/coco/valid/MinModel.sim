@@ -1,0 +1,4 @@
+/* (c) https://github.com/MontiCore/monticore */
+sim MinModel {
+  map_name MaschenerKreuz.osm;
+}

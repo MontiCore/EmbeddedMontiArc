@@ -1,0 +1,10 @@
+package valid
+
+ide IncludeExcluded extends IncludeExcludedParent, IncludeExcludedOtherParent {
+    registry "https://hub.docker.com/some/awesome/image:latest"
+    build "some/amazing/path" resolved from ROOT
+
+    include module type IncludeExcludedModule1
+
+    exclude module type IncludeExcludedModule4
+}

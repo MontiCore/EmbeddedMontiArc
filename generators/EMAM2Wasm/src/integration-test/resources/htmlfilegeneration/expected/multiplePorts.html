@@ -1,0 +1,242 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en-us">
+<style>
+  .model {
+    overflow: hidden;
+    width: fit-content;
+  }
+
+  .ports {
+    overflow: hidden;
+  }
+
+  .inports {
+    float: left;
+    margin: 10px;
+  }
+
+  .outports {
+    float: left;
+    margin: 10px;
+  }
+
+  .header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .type {
+    width: max-content;
+    margin: 2px 15px 2px 2px;
+    color: grey;
+  }
+
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px;
+  }
+
+  .button {
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100px;
+  }
+
+  #reset {
+    background-color: #d22b23;
+  }
+
+  #execute {
+    background-color: #24d231;
+  }
+
+  .error {
+    color: red;
+    margin: 10px;
+  }
+
+  textarea {
+    height: 1em;
+    width: 200px;
+    padding: 3px;
+  }
+</style>
+<head>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.1/math.min.js"></script>
+  <script type="text/javascript" src="multiplePorts_wrapper.js"></script>
+  <script type="text/javascript" src="multiplePorts.js"></script>
+  <title>MultiplePorts</title>
+</head>
+<body>
+<div class="container">
+  <div class="model">
+    <div class="header">
+      <h2>MultiplePorts</h2>
+    </div>
+    <div class="ports">
+      <div class="inports">
+        <div class="header">
+          <h3>Inports</h3>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Q(0 m : 0.1 m : 10 km)^{2, 3}</div>
+            </td>
+            <td>
+              <div class="label">
+                m1:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-m1"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q(5 Hz : 20 kHz)^{3, 1}</div>
+            </td>
+            <td>
+              <div class="label">
+                m2:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-m2"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q(-2 mm/h : 2 km/s)</div>
+            </td>
+            <td>
+              <div class="label">
+                c:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-c"></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="outports">
+        <div class="header">
+          <h3>Outports</h3>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Q(-oo km/h : oo km/h)^{2, 1}</div>
+            </td>
+            <td>
+              <div class="label">
+                v:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-v" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q(-oo km^-1 : oo m^-1)</div>
+            </td>
+            <td>
+              <div class="label">
+                k:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-k" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="buttons">
+      <div class="reset">
+        <button class="button" id="reset" onclick="reset()">Reset</button>
+      </div>
+      <div class="execute">
+        <button class="button" id="execute" onclick="exec()">Execute</button>
+      </div>
+    </div>
+  </div>
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    document.getElementById("inport-field-m1").value = url.searchParams.get("m1");
+    document.getElementById("inport-field-m2").value = url.searchParams.get("m2");
+    document.getElementById("inport-field-c").value = url.searchParams.get("c");
+
+    function exec() {
+        clearOutportFields();
+        clearErrors();
+
+        try {
+            setM1(document.getElementById("inport-field-m1").value);
+            setM2(document.getElementById("inport-field-m2").value);
+            setC(document.getElementById("inport-field-c").value);
+
+            execute();
+
+            document.getElementById("outport-field-v").value = getV();
+            document.getElementById("outport-field-k").value = getK();
+        }
+        catch (err) {
+            if (err.message === undefined) {
+                document.getElementById("error").innerText = err;
+            }
+            else {
+                document.getElementById("error").innerHTML = err.message;
+            }
+        }
+    }
+
+    function reset() {
+        init();
+        clearInportFields();
+        clearOutportFields();
+        clearErrors();
+    }
+
+    function clearInportFields() {
+        document.getElementById("inport-field-m1").value = "";
+        document.getElementById("inport-field-m2").value = "";
+        document.getElementById("inport-field-c").value = "";
+    }
+
+    function clearOutportFields() {
+        document.getElementById("outport-field-v").value = "";
+        document.getElementById("outport-field-k").value = "";
+    }
+
+    function clearErrors() {
+        document.getElementById("error").innerHTML = "";
+    }
+</script>
+</body>
+</html>

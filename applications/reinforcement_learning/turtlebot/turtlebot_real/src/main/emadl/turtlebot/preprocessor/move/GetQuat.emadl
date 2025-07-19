@@ -1,0 +1,17 @@
+package turtlebot.preprocessor.move;
+
+component GetQuat {
+    ports
+        in  Q^{6} positions,
+        out  Q^{2} robotPosition,
+        out Q^{4}     quat;
+
+    implementation Math {
+        robotPosition(1) =  positions(1);
+        robotPosition(2) =  positions(2);
+        quat(1) =  positions(3);
+        quat(2) =  positions(4);
+        quat(3) =  positions(5);
+        quat(4) =  positions(6);
+    }
+}

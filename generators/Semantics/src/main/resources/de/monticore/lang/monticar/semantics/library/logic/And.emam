@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.logic;
+
+component And<N1 n=2> {
+	port 
+		in B in1[n],
+		out B out1;
+
+	implementation Math{
+	    out1 = and(in1);
+	}
+}

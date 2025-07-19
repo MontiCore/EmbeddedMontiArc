@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lander.agent.network;
+
+component LanderQNet {
+    ports
+        in Q(-oo:oo)^{8} observation,
+        out Q(-oo:oo)^{4} qvalues;
+
+    implementation CNN {
+        observation ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=600) ->
+        Relu() ->
+        FullyConnected(units=4) ->
+        qvalues;
+    }
+}

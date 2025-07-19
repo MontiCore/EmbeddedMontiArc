@@ -1,0 +1,20 @@
+
+{
+    "scopeName": "monticore.comment",
+    "patterns": [{ "include": "#expression" }],
+    "injectionSelector": "L:keywords",
+    "repository": {
+      "expression": {
+        "patterns": [{ "include": "#multiLineComment" },{ "include": "#singleLineComment" }]
+      },
+      "singleLineComment":{
+        "match": "^(?:(?![/][*]).)*//[^\n\r]*",
+        "name": "comment.line"
+      },
+      "multiLineComment":{
+        "begin":"/[*]",
+        "end":"[*]/",
+        "name": "comment.block.star"
+      }
+    }
+  }

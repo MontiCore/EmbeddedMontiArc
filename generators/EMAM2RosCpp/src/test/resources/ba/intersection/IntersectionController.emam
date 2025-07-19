@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba.intersection;
+
+import ba.util.RelToAbsTrajectory;
+
+component IntersectionController{
+    port in Z objectIdIn[4];
+    port in Q^{3,5} relTrajectoryIn[4];
+    port in Q^{2,1} absPositionIn[4];
+
+    port in Q cutoffPos;
+    port in Q cutoffTime;
+
+    port out Z objectIdOut[4];
+    port out B stopOut[4];
+
+    instance TrajectoryToStop<4,6,5> trajectoryToStop;
+    instance RelToAbsTrajectory relToAbsTrajectory;
+
+    connect objectIdIn[:] -> objectIdOut[:];
+
+    connect cutoffPos -> trajectoryToStop.cutoffPos;
+    connect cutoffTime -> trajectoryToStop.cutoffTime;
+
+    connect relTrajectoryIn[:] -> relToAbsTrajectory.relTrajectoryIn[:];
+    connect absPositionIn[:] -> relToAbsTrajectory.absPositionIn[:];
+    connect relToAbsTrajectory.absTrajectoryOut[:] -> trajectoryToStop.trajectoryIn[:];
+
+    connect trajectoryToStop.stop[:] -> stopOut[:];
+
+}

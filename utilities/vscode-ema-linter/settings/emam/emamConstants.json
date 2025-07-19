@@ -1,0 +1,10 @@
+{
+    "languageName":"EmbeddedMontiArcMath",
+    "pomRoot":"settings/emam",
+    "relativeMvnSettingsPath":"../settings.xml",
+    "useRunningServer":false,
+    "manualPort": 0,
+    "bufferSize": 1000,
+    "keywordsFile": "settings/emam/keywords.txt",
+    "fileExtension": ".emam"
+}

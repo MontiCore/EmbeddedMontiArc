@@ -1,0 +1,117 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messagematch.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+
+dynamic component Potentialcondition{
+ ports
+   dynamic in  Statusmessage            status_msg[0:32],
+   dynamic in  Trajectorymessage        traj_msg[0:32],
+   dynamic in  Platoonmessage           plat_msg[0:32],
+   in  Z               trajectory_length,
+   in  Q^{1,100}       trajectory_x,
+   in  Q^{1,100}       trajectory_y,
+   in  Z               isnextintersection,
+   in  Q               nextintersection_x,
+   in  Q               nextintersection_y,
+   in  Z               if_inplatoon,
+   in  Z               if_tailid,
+   in  Z               frontplatoonid,
+   in  Z               frontvehicleid,
+   in  Q               position_x,
+   in  Q               position_y,
+
+
+   out Z               potentialid,
+   out Z               if_potentialheaderexists,
+   out Z               if_sendjointmsg;
+
+   instance  Trajduplicate              t_dup;
+   instance  Statusduplicate            s_dup;
+   instance  Idmatchtrajectorymessage   id_traj_plat,id_traj_single;
+   instance  Idmatchstatusmessage       id_status,id_tail;
+   instance  Idmatchplatoonmessage      id_plat;
+   instance  Platoonformcondition       platform;
+   instance  Checkpathsame_front        check_front;
+
+
+   @ status_msg::connect{
+     connect status_msg[?] -> s_dup.status_msg[?];
+   }
+   @ traj_msg::connect{
+     connect traj_msg[?] -> t_dup.traj_msg[?];
+   }
+
+   @ t_dup.traj_msg1::connect{
+     connect t_dup.traj_msg1[?] -> id_traj_plat.traj_msg[?];
+   }
+     connect frontplatoonid -> id_traj_plat.vehicleid;
+     connect id_traj_plat.matched_traj_msg -> platform.matched_traj_msg_plat;
+     connect id_traj_plat.ifmatchsuccess -> platform.ifmatchsuccess_plat;
+
+   @ t_dup.traj_msg2::connect{
+     connect traj_msg[?] -> id_traj_single.traj_msg[?];
+   }
+     connect frontvehicleid -> id_traj_single.vehicleid;
+     connect id_traj_single.matched_traj_msg -> platform.matched_traj_msg_single;
+     connect id_traj_single.ifmatchsuccess -> platform.ifmatchsuccess_single;
+
+   @ s_dup.status_msg1::connect{
+     connect s_dup.status_msg1[?] -> id_status.status_msg[?];
+   }
+     connect frontvehicleid -> id_status.vehicleid;
+     connect id_status.match_status_msg -> platform.match_status_msg;
+
+   @ s_dup.status_msg2::connect{
+     connect s_dup.status_msg2[?] -> id_tail.status_msg[?];
+   }
+     connect if_tailid -> id_tail.vehicleid;
+     connect id_tail.match_status_msg -> platform.match_tail_status_msg;
+     connect id_tail.ifmatchsuccess -> platform.if_tailmatchsuccess;
+
+   @ plat_msg::connect{
+     connect plat_msg[?] -> id_plat.plat_msg[?];
+   }
+     connect frontplatoonid -> id_plat.near_platoonid;
+     connect id_plat.match_plat_msg -> platform.match_plat_msg;
+
+
+     connect trajectory_length -> platform.trajectory_length;
+     connect trajectory_x -> platform.trajectory_x;
+     connect trajectory_y -> platform.trajectory_y;
+     connect isnextintersection -> platform.isnextintersection;
+     connect nextintersection_x -> platform.nextintersection_x;
+     connect nextintersection_y -> platform.nextintersection_y;
+     connect if_inplatoon -> platform.if_inplatoon;
+     connect frontplatoonid -> platform.frontplatoonid;
+     connect frontvehicleid -> platform.frontvehicleid;
+     connect position_x -> platform.position_x;
+     connect position_y -> platform.position_y;
+
+     connect platform.checkpathsimilarity -> check_front.checkpathsimilarity;
+     connect platform.potentialid -> check_front.potentialid;
+     connect platform.if_potentialheaderexists -> check_front.if_potentialheaderexists;
+     connect platform.checktrajectorymessage -> check_front.checktrajectorymessage;
+     connect platform.if_sendjointmsg -> check_front.if_sendjointmsg;
+
+     connect trajectory_length -> check_front.trajectory_length;
+     connect trajectory_x -> check_front.trajectory_x;
+     connect trajectory_y -> check_front.trajectory_y;
+     connect nextintersection_x -> check_front.nextintersection_x;
+     connect nextintersection_y -> check_front.nextintersection_y;
+
+     connect check_front.checked_potentialid -> potentialid;
+     connect check_front.checked_if_potentialheaderexists -> if_potentialheaderexists;
+     connect check_front.checked_if_sendjointmsg -> if_sendjointmsg;
+
+     @ t_dup.traj_msg3::connect{}
+     @ t_dup.traj_msg4::connect{}
+     @ t_dup.traj_msg5::connect{}
+     @ s_dup.status_msg3::connect{}
+     @ s_dup.status_msg4::connect{}
+     @ s_dup.status_msg5::connect{}
+
+
+}

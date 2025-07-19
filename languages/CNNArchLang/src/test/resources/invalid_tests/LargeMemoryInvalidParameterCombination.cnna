@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture LargeMemoryInvalidParameterCombination{
+    def input Z(0:255)^{128} data
+    def output Q(0:1)^{33} softmax
+
+    data ->
+    LargeMemory(subKeySize=10, k=50) ->
+    FullyConnected(units=33) ->
+    Softmax() ->
+    softmax;
+}

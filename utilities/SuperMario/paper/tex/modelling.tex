@@ -1,0 +1,12 @@
+
+
+\subsection{Modeling (by Heithoff)}
+
+This chapter introduces the models of Pacman and Supermario respectively.
+The models should always follow certain rules defined in the EmbeddedMontiArc documentation (see \cite{emadoc}). The math implementation of all atomic components should be short and have a short runtime. This way not only the clarity of the code is enhanced but also the runtime of the components is fixed. C\&C models should, at some point, be runnable on microchips and due to the fact that those models are designed for real-time systems the runtime has to be fix.
+To achieve this a lot of functionality can be extracted into subcomponents. In general, loops should be avoided and split up into subcomponents if possible. Because while loops are not ensured to terminate, those should never be used.
+
+\input{modelling-pacman}
+
+
+\input{modelling-supermario}

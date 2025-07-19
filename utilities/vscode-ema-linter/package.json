@@ -1,0 +1,153 @@
+{
+  "name": "ema-linter",
+  "displayName": "ema-linter",
+  "description": "Linter for EmbeddedMontiArc Languages",
+  "publisher": "se-rwth",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.33.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:EmbeddedMontiArcMath",
+    "onLanguage:Struct",
+    "onLanguage:Stream",
+    "onLanguage:EmbeddedMontiArc",
+    "onLanguage:EmbeddedMontiArcDL",
+    "onLanguage:CNNTrainLang",
+    "onLanguage:CNNArchLang"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "EmbeddedMontiArc Linter",
+      "properties": {
+        "emalinter.autoupdate": {
+          "type": "string",
+          "default": "Ask",
+          "enum": [
+            "Ask",
+            "Always",
+            "Never"
+          ]
+        }
+      }
+    },
+    "grammars": [
+      {
+        "language": "EmbeddedMontiArcMath",
+        "scopeName": "keywords.EmbeddedMontiArcMath",
+        "path": "syntax/gen/EmbeddedMontiArcMath.gen.tmGrammar.json"
+      },
+      {
+        "language": "Struct",
+        "scopeName": "keywords.Struct",
+        "path": "syntax/gen/Struct.gen.tmGrammar.json"
+      },
+      {
+        "language": "Stream",
+        "scopeName": "keywords.Stream",
+        "path": "syntax/gen/Stream.gen.tmGrammar.json"
+      },
+      {
+        "language": "EmbeddedMontiArc",
+        "scopeName": "keywords.EmbeddedMontiArc",
+        "path": "syntax/gen/EmbeddedMontiArc.gen.tmGrammar.json"
+      },
+      {
+        "language": "EmbeddedMontiArcDL",
+        "scopeName": "keywords.EmbeddedMontiArcDL",
+        "path": "syntax/gen/EmbeddedMontiArcDL.gen.tmGrammar.json"
+      },
+      {
+        "language": "CNNTrainLang",
+        "scopeName": "keywords.CNNTrainLang",
+        "path": "syntax/gen/CNNTrainLang.gen.tmGrammar.json"
+      },
+      {
+        "language": "CNNArchLang",
+        "scopeName": "keywords.CNNArchLang",
+        "path": "syntax/gen/CNNArchLang.gen.tmGrammar.json"
+      },
+      {
+        "injectTo": [
+          "keywords.EmbeddedMontiArcMath",
+          "keywords.Struct",
+          "keywords.Stream",
+          "keywords.EmbeddedMontiArc",
+          "keywords.EmbeddedMontiArcDL",
+          "keywords.CNNTrainLang",
+          "keywords.CNNArchLang"
+        ],
+        "scopeName": "monticore.comment",
+        "path": "./syntax/comment.tmGrammar.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "EmbeddedMontiArcMath",
+        "extensions": [
+          ".emam"
+        ]
+      },
+      {
+        "id": "Struct",
+        "extensions": [
+          ".struct"
+        ]
+      },
+      {
+        "id": "Stream",
+        "extensions": [
+          ".stream"
+        ]
+      },
+      {
+        "id": "EmbeddedMontiArc",
+        "extensions": [
+          ".ema"
+        ]
+      },
+      {
+        "id": "EmbeddedMontiArcDL",
+        "extensions": [
+          ".emadl"
+        ]
+      },
+      {
+        "id": "CNNTrainLang",
+        "extensions": [
+          ".cnnt"
+        ]
+      },
+      {
+        "id": "CNNArchLang",
+        "extensions": [
+          ".cnna"
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node scripts/createSyntax.js ./settings/global.json && npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.1",
+    "vscode": "^1.1.28",
+    "tslint": "^5.12.1",
+    "@types/node": "^12.12.12",
+    "@types/mocha": "^2.2.42"
+  },
+  "dependencies": {
+    "log4js": "~6.1.0",
+    "circularbuffer": "^0.1.1",
+    "@monticore/monticore-vscode-commons": "~1.0.3",
+    "vscode-languageclient": "~5.2.1"
+  }
+}

@@ -1,0 +1,67 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Synthesized C&C model for C&C views specification
+
+component LunarLanderApplication {
+
+  component Calculation {
+    port
+      out Type0 callerNotification,
+      in Type0 updateHeight,
+      in Type0 updateBurnRate,
+      in Type0 simTime,
+      in Type0 fuel,
+      in Type0 velocity,
+      in Type0 height,
+      out Type0 newSimTime,
+      out Type0 newFuel,
+      out Type0 newVelocity,
+      out Type0 newHeight;
+
+  }
+  instance Calculation calculation;
+  component DataStore {
+    port
+      out Type0 fuel,
+      out Type0 velocity,
+      out Type0 height,
+      in Type0 updateSimTime,
+      in Type0 updateFuel,
+      in Type0 updateVelocity,
+      in Type0 updateHeight,
+      out Type0 simTime;
+
+  }
+  instance DataStore dataStore;
+  component UserInterface {
+    port
+      in Type0 callerNotification,
+      in Type0 newSimTime,
+      out Type0 burnRate;
+
+  }
+  instance UserInterface userInterface;
+  connect calculation.newSimTime -> dataStore.updateSimTime;
+
+  connect calculation.newFuel -> dataStore.updateFuel;
+
+  connect calculation.newFuel -> userInterface.newSimTime;
+
+  connect calculation.newVelocity -> dataStore.updateVelocity;
+
+  connect calculation.newHeight -> dataStore.updateHeight;
+
+  connect dataStore.fuel -> calculation.updateHeight;
+
+  connect dataStore.fuel -> calculation.fuel;
+
+  connect dataStore.velocity -> calculation.velocity;
+
+  connect dataStore.height -> userInterface.callerNotification;
+
+  connect dataStore.height -> calculation.height;
+
+  connect dataStore.simTime -> calculation.simTime;
+
+  connect userInterface.burnRate -> calculation.updateBurnRate;
+
+}

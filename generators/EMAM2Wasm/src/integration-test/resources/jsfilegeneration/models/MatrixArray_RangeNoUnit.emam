@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component MatrixArray_RangeNoUnit {
+  ports
+	in Q(-10 : 0.1 : 10)^{2,3} inRangeNoUnit[4],
+    out Q(-10 : 0.1 : 10)^{2,3} outRangeNoUnit[4];
+}

@@ -1,0 +1,161 @@
+package turtlebot.preprocessor.util;
+
+component ScanDiscretization {
+    ports
+        in Q^{360} distances,
+        in  Q^{4} position,
+        out Q^{29} state;
+
+    implementation Math {
+        Q x1 = 2.0; //left zone (no obstacle detected)
+        Q x2 = 2.0; //right zone (no obstacle detected)
+        Q x3 = 3.0; //left sector (no obstacle detected)
+        Q x4 = 3.0; //right sector (no obstacle detected)
+
+        Q max_lidar_distance = 1.0;
+        Q collistion_distance = 0.14;
+        Q nearby_distance = 0.45;
+        Q indexLaser = 1;
+        Q indexState = 1; 
+
+        Q zone_0_length = 0.4;
+        Q zone_1_length = 0.7;
+
+        Z angle_max = 360;
+        Z angle_min = 1;
+        Z horizon_width = 75;
+
+        B object_front = false;
+        B object_left = false;
+        B object_right = false;
+        B object_far_left = false;
+        B object_far_right = false;
+
+        //sliceing the input distance array
+
+        Q min_left_area = distances(1); //minimum distance in (1-76) degree
+        Q min_right_area = distances(286); //minimum distance in (286-360) degree
+        Q min_close_front = distances(1); //minimum distance in (1-26) and (95-360) degree
+        Q min_left_side_front = distances(1); //minimum distance in (1-51) degree
+        Q min_right_side_front = distances(310); //minimum distance in (310-360) degree
+        Q min_left_far = distances(26); //minimum distance in (26-76) degree
+        Q min_right_far = distances(286); //minimum distance in (286-336) degree
+
+        Q minObstacle = distances(1);
+
+        for i=1:360
+
+            if (i == indexLaser)
+                state(indexState) = distances(indexLaser);
+                indexState += 1;
+                indexLaser += 15;
+            end
+
+            if (distances(i) < minObstacle)
+                minObstacle = distances(i);
+            end
+
+            if (1 <= i) && (i <= 76) && distances(i) < min_left_area
+                min_left_area = distances(i);
+            end
+
+            if (286 <= i) && (i <= 360) && distances(i) < min_right_area
+                min_right_area = distances(i);
+            end
+            
+            if ( ((1 <= i) && (i <= 26)) || ((95 <= i) && (i <= 360)) ) && distances(i) < min_close_front
+                min_close_front = distances(i);
+            end
+
+            if (1 <= i) && (i <= 51) && distances(i) < min_left_side_front
+                min_left_side_front = distances(i);
+            end
+
+            if (310 <= i) && (i <= 360) && distances(i) < min_right_side_front
+                min_right_side_front = distances(i);
+            end
+
+            if (26 <= i) && (i <= 76) && distances(i) < min_left_far
+                min_left_far = distances(i);
+            end
+
+            if (286 <= i) && (i <= 336) && distances(i) < min_right_far
+                min_right_far = distances(i);
+            end
+        end
+
+        
+        
+        //determinating the states x1 and x2
+
+        //position of an object on the left side
+        if (zone_0_length < min_left_area) && (min_left_area < zone_1_length)
+            x1 = 1.0; //zone 1
+        elseif min_left_area <= zone_0_length
+            x1 = 0.0; //zone 0
+        end
+        
+        //position of an object on the right side
+        if (zone_0_length < min_right_area) && (min_right_area < zone_1_length)
+            x2 = 1.0; //zone 1
+        elseif min_right_area <= zone_0_length
+            x2 = 0.0; //zone 0
+        end
+
+
+        //detection of object in the dirctrly front of the turtlbot
+        if min_close_front < 1.0
+            object_front = true;
+        end
+
+        //detection of object on the left side of the turtlbot
+        if min_left_side_front < 1.0
+            object_left = true;
+        end
+
+        //detection of object on the right side of the turtlbot
+        if min_right_side_front < 1.0
+            object_right = true;
+        end
+
+        //detection of object on the far left side of the turtlbot
+        if min_left_far < 1.0
+            object_far_left = true;
+        end
+
+        //detection of object on the far right side of the turtlbot
+        if min_right_far < 1.0
+            object_far_right = true;
+        end
+      
+        //determinating the states x3 and x4
+        
+        if (object_front && object_left) && not(object_far_left)
+            x3 = 0.0; //sector 0
+        elseif (object_left && object_far_left) && not(object_front)
+            x3 = 1.0; //sector 1
+        elseif object_front && object_left && object_far_left
+            x3 = 2.0; //sector 2
+        end
+
+
+        if (object_front && object_right) && not(object_far_right)
+            x4 = 0.0; //sector 0
+        elseif (object_right && object_far_right) && not(object_front)
+            x4 = 1.0; //sector 1
+        elseif object_front && object_right && object_far_right
+            x4 = 2.0; //sector 2
+        end
+        
+        //state(1) = x1;
+        //state(2) = x2;
+        //state(3) = x3;
+        //state(4) = x4;
+        state(25) = position(1);
+        state(26) = position(2);
+        state(27) = position(3);
+        state(28) = position(4);
+        state(29) = minObstacle;
+
+    }
+}

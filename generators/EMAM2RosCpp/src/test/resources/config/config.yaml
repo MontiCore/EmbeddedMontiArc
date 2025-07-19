@@ -1,0 +1,15 @@
+- !de.monticar.lang.monticar.generator.python.RosTag
+  component: tests.a.compA
+  subscriber:
+    - !de.monticar.lang.monticar.generator.python.RosInterface
+      ports:
+        rosIn: posX
+        noRosIn: posY
+      topic: test
+      type: automated_driving_msgs/CarMessage
+  publisher:
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          rosOut: data
+        topic: test2
+        type: automated_driving_msgs/StampedFloat64

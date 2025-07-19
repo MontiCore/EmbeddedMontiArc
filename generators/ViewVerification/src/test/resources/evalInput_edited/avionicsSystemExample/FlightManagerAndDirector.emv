@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample;
+
+// Shows only the components of the flight control and their interaction
+
+view FlightManagerAndDirector {
+
+  // Flight_Manager
+  component FM {
+    port
+      out Page_Request New_Page_Request_To_FD,
+      in Page_Content New_Page_Content_from_FD;
+  }
+  instance FM fM;
+  
+  // Flight_Director
+  component FD {
+    port
+      in Page_Request New_Page_Request_From_FM,
+      out Page_Content New_Page_Content_To_FM;
+  }
+  instance FD fD;
+  
+  connect fM.New_Page_Request_To_FD -> fD.New_Page_Request_From_FM;
+  connect fD.New_Page_Content_To_FM -> fM.New_Page_Content_from_FD;
+}

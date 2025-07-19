@@ -1,0 +1,84 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.monticar.mpc;
+
+import de.rwth.monticar.mpc.bicycle.*;
+import de.rwth.monticar.mpc.trajectory.*;
+
+component autopilot{
+  port
+    // length of simulation time frame
+    in  Q (0.0 s : 0.001 s : 1.0 s)              timeIncrement,
+
+    // current velocity
+    in  Q (0.0 m/s : 0.01 m/s : oo m/s)          currentVelocity,
+
+    // current vehicle's position
+    in  Q (-oo m : 0.01 m : oo m)                x,
+    in  Q (-oo m : 0.01 m : oo m)                y,
+
+    // current vehicle's yaw angle
+    in  Q (-oo rad : 0.001 rad : oo rad)         compass,
+
+    // current engine actuation
+    in  Q (0.0 : 0.2 : 1.0)         currentEngine,
+
+    // current steering actuation
+    // negative value: right turn
+    // positive value: left	turn
+    in  Q (-6 rad : 0.5 rad : 6 rad)   currentSteering,
+
+    // current brakes actuation
+    in  Q (0.0 : 0.3 : 1.0)        currentBrakes,
+
+    // planned trajectory (with look ahead 100-200m)
+    // represented by two arrays trajectory_x[] and trajectory_y[]
+    // which both have length trajectory_length
+    in  Z (0 : 100)                              trajectory_length,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trajectory_x,
+    in  Q (-oo m : 0.01 m : oo m) ^ {1,100}      trajectory_y,
+
+    // output actuation commands
+    out Q (0.0 : 3.5)        engine,
+    out Q (-6 rad : 0.5 rad : 6 rad)   steering,
+    out Q (0.0 : 5.0)        brakes;
+
+
+  // trajectory planer
+  instance PathPlaner                            pathPlanner;
+
+  // mpc trajectory controller
+  instance BicycleMPC               		      mpc;
+
+	// actuator controller
+  instance ActuatorController                    actuatorController;
+
+  // connect trajectory planer
+  connect x                                      ->      pathPlanner.x;
+  connect y                                      ->      pathPlanner.y;
+  connect compass                                ->      pathPlanner.yaw;
+  connect currentVelocity                        ->      pathPlanner.v;
+
+  connect trajectory_length                      ->      pathPlanner.trajectory_length;
+  connect trajectory_x                           ->      pathPlanner.trajectory_x;
+  connect trajectory_y                           ->      pathPlanner.trajectory_y;
+
+	// connect mpc trajectory controller
+	connect x									->      mpc.x;
+	connect y                                    ->     mpc.y;
+	connect compass                             ->      mpc.yaw;
+	connect currentVelocity	   				    -> 	    mpc.v;
+	connect pathPlanner.z_ref                   ->      mpc.z_ref;
+	connect mpc.x_out							->		mpc.x_previous;
+	connect mpc.y_out							->		mpc.y_previous;
+
+
+  // mpc to actuator controller
+  connect mpc.a                                 ->      actuatorController.acceleration;
+  connect mpc.steering                          ->      actuatorController.steering_angle;
+
+	// output
+  connect actuatorController.engine             ->      engine;
+  connect actuatorController.steering           ->      steering;
+  connect actuatorController.brakes             ->      brakes;
+  
+}

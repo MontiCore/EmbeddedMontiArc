@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+  
+component SimulationPanel {
+  ports
+    in Z level1,
+    in Z level2,
+    in Boolean pump,
+    in Z valve,
+    out Boolean button;
+}

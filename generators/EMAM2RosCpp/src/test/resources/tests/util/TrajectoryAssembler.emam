@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.util;
+
+component TrajectoryAssembler<N1 m = 2>{
+    port in PositionWithDeltaTime posTimeIn[m];
+    port in Q(0:oo) objectId;
+    port out Trajectory trajectoryOut;
+
+    //implementation Math{
+        //TODO: ???
+    //}
+}

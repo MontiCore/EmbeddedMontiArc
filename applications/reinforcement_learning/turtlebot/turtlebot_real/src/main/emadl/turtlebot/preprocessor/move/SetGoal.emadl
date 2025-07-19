@@ -1,0 +1,49 @@
+package turtlebot.preprocessor.move;
+
+component SetGoal {
+    ports
+        in B          goalReachedBool,
+        in Q^{2}      inital_position,
+        in Q^{1,6}    goalXArray,
+        in Q^{1,6}    goalYArray,
+        out Q^{2}     goalPos,
+        out Q         absDistance;
+
+    implementation Math {
+        static Z counter = 0;
+
+        static Z random = 0;            //set to 1 when training on randomized goal. set to 0 for fixed Goal
+
+        static B firstTime = true;
+        
+        static Q goalX = 0.0;
+        static Q goalY = 0.0;
+
+        if random
+            if goalReachedBool
+                Z randomIndex = counter % 6;
+                goalX = goalXArray(1, randomIndex+1);
+                goalY = goalYArray(1, randomIndex+1);
+                firstTime = false;
+            elseif firstTime
+                goalX = goalXArray(1, 1);
+                goalY = goalYArray(1, 1);
+                firstTime = false;
+            end
+        else
+            goalX = goalXArray(1, 1);
+            goalY = goalYArray(1, 1);
+        end
+
+        //Goal position
+        goalPos(1) = goalX;
+        goalPos(2) = goalY;
+
+        Q firTerm = inital_position(1) - goalPos(1);
+        Q secTerm = inital_position(2) - goalPos(2);
+
+        absDistance = sqrt(firTerm * firTerm + secTerm * secTerm);
+
+        counter += 1;
+    }
+}

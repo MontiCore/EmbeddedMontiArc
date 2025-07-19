@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+// In this view the component PhysicsSimulation is inside PumpingSystem which
+// might not be a good design. PhysicsSimulation and Controller should not be
+// connected.
+
+view PhysicsAndControllerPumpingSystem {
+
+    component PumpingSystem {
+        component PhysicsSimulation {}
+        instance PhysicsSimulation physicsSimulation;
+        component Controller {}
+        instance Controller controller;
+    }
+    instance PumpingSystem pumpingSystem;
+    
+    connect physicsSimulation -> controller;
+}

@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+component ErrorSummation{
+
+	ports
+		in Q(-oo : 0.0001 : oo) error1,
+		in Q(-oo : 0.0001 : oo) error2,
+		in Q(-oo : 0.0001 : oo) error3,
+		
+		out Q(0 : 0.0001 : oo) errorSum;
+		
+	implementation Math{
+		errorSum = abs(error1) + abs(error2) + abs(error3);
+	}
+}	

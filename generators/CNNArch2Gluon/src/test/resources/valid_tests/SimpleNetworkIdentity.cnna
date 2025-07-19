@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture SimpleNetworkIdentity(inputs=10, classes=2){
+    def input Q(-oo:+oo)^{inputs} in1
+    def output Q(-oo:oo)^{classes} out1
+    
+    in1 ->
+    FullyConnected(units=64, no_bias=true) ->
+    Tanh() ->
+    FullyConnected(units=classes, no_bias=true) ->
+    Identity() ->
+    out1;
+}

@@ -1,0 +1,7 @@
+package invalid
+
+typedef component configuration CircularDependencyTaskComponent {
+    label "Some Configuration"
+
+    backend task main
+}

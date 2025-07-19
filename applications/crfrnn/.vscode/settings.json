@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "/usr/local_rwth/sw/python/3.6.8/x86_64/bin/python3",
+    "python.linting.pylintArgs": [
+        "--generate-members"
+    ],
+    "files.associations": {
+        "ostream": "cpp"
+    },
+}

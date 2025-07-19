@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component MatrixPort {
+  ports
+    in Z^{2,3} in1,
+    out Z^{2,3} out1;
+
+  connect in1 -> out1;
+}

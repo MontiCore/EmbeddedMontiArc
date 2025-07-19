@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+.icon-res {
+    background:url("../images/resource.png") #c0c2c3 no-repeat center;
+    background-size:100% 100%;
+	cursor:pointer !important;
+	top:-1px;
+}

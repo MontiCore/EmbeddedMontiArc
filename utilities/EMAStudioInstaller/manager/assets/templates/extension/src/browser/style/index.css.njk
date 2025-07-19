@@ -1,0 +1,17 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+{% for button in context.getButtonsWithUniqueImage() %}.emastudio-{{context.name | lower}}-{{button.getImageAsIdentifier()}}-icon{% if not loop.last %},{% endif %}{% endfor %} {
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color:#FFF;
+}
+{% for button in context.getButtonsWithUniqueImage() %}
+.emastudio-{{context.name | lower}}-{{button.getImageAsIdentifier()}}-icon {
+    background-image:url("../images/{{button.getImageAsName()}}");
+}
+{% endfor %}

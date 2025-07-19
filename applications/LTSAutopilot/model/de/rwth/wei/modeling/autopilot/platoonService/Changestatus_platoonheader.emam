@@ -1,0 +1,90 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Changestatus_platoonheader{
+  ports
+  dynamic in Platoonmessage plat_msg[0:32],
+
+  in   Z^{1,100}        platoonlist,
+  in   Z                vehicleid,
+  in   Z                platoon_member_num,
+  in   Z                if_willsplit,
+  in   Z                if_splitnow,
+
+  out  Z               new_if_willsplit,
+  out  Z               if_currentplatoonsplit,
+  out  Z               current_status,
+  out  Z               new_platoonheadid,
+  out  Z               new_isplatoonheader,
+  out  Z^{1,100}       new_platoonlist,
+  out  Z               new_platoon_member_num,
+  out  Z               if_currentplatoonbemerged,
+  out  Z^{1,100}       platoonlist1,
+  out  Platoonmessage  pmsg;
+
+  @ plat_msg::connect{}
+
+  implementation Math{
+    if if_splitnow == 1
+      new_if_willsplit = 0;
+      current_status = 0;
+      new_isplatoonheader = 0;
+      new_platoonlist = platoonlist;
+      new_platoon_member_num = 0;
+      new_platoonheadid = vehicleid;
+      if_currentplatoonbemerged = 0;
+    else
+       new_if_willsplit = if_willsplit;
+       current_status = 1;
+       new_isplatoonheader = 1;
+       new_platoonlist = platoonlist;
+       new_platoon_member_num = platoon_member_num;
+       new_platoonheadid = vehicleid;
+       if_currentplatoonbemerged = 0;
+    end
+    Z num = 0;
+    Z headid = 0;
+    for i = 1:32
+        if is_connected(plat_msg,i)
+           pmsg = plat_msg(i);
+           platoonlist1 = pmsg.platoon_member;
+           num = pmsg.member_num;
+           headid = pmsg.vehicleid;
+           Z tag = 0;
+           for k = 1:platoon_member_num
+              tag = 0;
+              Z id1 = platoonlist(1,k);
+              for j = 1:num
+                Z id2 = platoonlist1(1,j);
+                if id1 == id2
+                   tag = 1;
+                end
+              end
+           end
+           Z tag1 = 0;
+           for j1 = 1:num
+              if vehicleid == platoonlist1(1,j1)
+                 tag1 = 1;
+              end
+           end
+           if tag == 1 && tag1 == 1 && platoonlist(1,platoon_member_num) == platoonlist1(1,num) && if_willsplit == 0 && if_splitnow == 0
+                current_status = 0;
+                new_if_willsplit = 0;
+                new_isplatoonheader = 0;
+                new_platoonheadid = headid;
+                new_platoonlist = platoonlist1;
+                new_platoon_member_num = num;
+                if_currentplatoonbemerged = 1;
+           end
+        end
+     end
+
+     if if_splitnow == 1 || if_willsplit == 1
+       if_currentplatoonsplit = 1;
+     else
+       if_currentplatoonsplit = 0;
+     end
+  }
+
+}

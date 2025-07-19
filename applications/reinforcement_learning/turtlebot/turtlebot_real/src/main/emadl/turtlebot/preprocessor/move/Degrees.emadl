@@ -1,0 +1,12 @@
+package turtlebot.preprocessor.move;
+
+component Degrees {
+    ports
+        in Q radian,
+        out Q degree;
+
+    implementation Math {
+        Q pi = 3.14159;
+        degree = radian * (180/pi)
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "modelsDir": "src/models",
+    "outputDir": "../../target/senetSmallFC",
+    "rootModel":"senetSmallFC",
+    "generators": ["emadlcpp"],
+    "emadlBackend": "GLUON"
+}

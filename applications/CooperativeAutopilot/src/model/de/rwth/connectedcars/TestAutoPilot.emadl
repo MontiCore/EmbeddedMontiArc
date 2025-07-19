@@ -1,0 +1,252 @@
+package de.rwth.connectedcars;
+
+import de.rwth.connectedcars.behaviour.*;
+import de.rwth.connectedcars.communication.*;
+import de.rwth.connectedcars.communication.packets.*;
+import de.rwth.connectedcars.environment.*;
+import de.rwth.connectedcars.movement.*;
+import de.rwth.connectedcars.navigation.*;
+
+component TestAutoPilot {
+
+  port
+      in  Q (-oo km/h : oo km/h)         true_velocity,
+      in  Q (-oo m : oo m) ^ 2           true_position,
+      in  Q (-oo : oo)                   true_compass,
+
+      in  N (0 : 10)                     trajectory_length,
+      in  Q (-oo m : oo m) ^ 10          trajectory_x,
+      in  Q (-oo m : oo m) ^ 10          trajectory_y,
+
+      in  Q(-oo m : oo m)                front_left_lidar,
+      in  Q(-oo m : oo m)                front_right_lidar,
+      in  Q(-oo m : oo m)                left_front_lidar,
+      in  Q(-oo m : oo m)                left_back_lidar,
+      in  Q(-oo m : oo m)                right_front_lidar,
+      in  Q(-oo m : oo m)                right_back_lidar,
+      in  Q(-oo m : oo m)                back_left_lidar,
+      in  Q(-oo m : oo m)                back_right_lidar,
+
+      in  Q(-oo m : oo m) ^ 9            upper_speed_limit,
+
+      
+      in  B                              state_updated_socket_bc_in[6],
+      in  StatePacket                    state_socket_bc_in[6],
+
+	  // major parts of the communication (sockets) are not yet finished and thereby commented out
+	  // there are several scenarios of which one is working until now
+	  
+      //in  B                                     subject_updated_socket_bc_in[6],
+      //in  SubjectPacket                         subject_socket_bc_in[6],
+      //in  B                                     subject_updated_socket_in[6],
+      //in  SubjectPacket                         subject_socket_in[6],
+
+      
+
+      //in  B                                     weather_updated_socket_bc_in[6],
+      //in  WeatherConditionPacket                weather_socket_bc_in[6],
+      //in  B                                     weather_updated_socket_in[6],
+      //in  WeatherConditionPacket                weather_socket_in[6],
+
+      //in  B                                     platoon_updated_socket_bc_in[6],
+      //in  PlatoonPacket                         platoon_socket_bc_in[6],
+      //in  B                                     platoon_updated_socket_in[6],
+      //in  PlatoonPacket                         platoon_socket_in[6],
+
+      //in  B                                     safety_distance_updated_socket_bc_in[6],
+      //in  SafetyDistancePacket                  safety_distance_socket_bc_in[6],
+      //in  B                                     safety_distance_updated_socket_in[6],
+      //in  SafetyDistancePacket                  safety_distance_socket_in[6],
+
+      //in  B                                     battery_level_updated_socket_bc_in[6],
+      //in  BatteryLevelPacket                    battery_level_socket_bc_in[6],
+      //in  B                                     battery_level_updated_socket_in[6],
+      //in  BatteryLevelPacket                    battery_level_socket_in[6],
+
+      //in  B                                     location_updated_socket_bc_in[6],
+      //in  LocationPacket                        location_socket_bc_in[6],
+      //in  B                                     location_updated_socket_in[6],
+      //in  LocationPacket                        location_socket_in[6],
+
+      //in  B                                     switching_lane_updated_socket_bc_in[6],
+      //in  SwitchingLanePacket                   switching_lane_socket_bc_in[6],
+      //in  B                                     switching_lane_updated_socket_in[6],
+      //in  SwitchingLanePacket                   switching_lane_socket_in[6],
+
+      //in  B                                     unsignalized_intersection_updated_socket_bc_in[6],
+      //in  UnsignalizedIntersectionPacket        unsignalized_intersection_socket_bc_in[6],
+      //in  B                                     unsignalized_intersection_updated_socket_in[6],
+      //in  UnsignalizedIntersectionPacket        unsignalized_intersection_socket_in[6],
+
+      out Q (-0.5 : 0.001 : 1.0)                set_gas,
+      out Q (-30.0 : 0.1 : 30.0)                set_steering,
+      out Q (0.0 : 0.001 : 1.0)                 set_braking,
+
+      out B                                     state_updated_socket_bc_out,
+      out StatePacket                           state_socket_bc_out;
+
+      //out B                                     subject_updated_socket_bc_out,
+      //out SubjectPacket                         subject_socket_bc_out,
+      //out B                                     subject_updated_socket_out[6],
+      //out SubjectPacket                         subject_socket_out[6],
+
+      //out B                                     weather_updated_socket_bc_out,
+      //out WeatherConditionPacket                weather_socket_bc_out,
+      //out B                                     weather_updated_socket_out[6],
+      //out WeatherConditionPacket                weather_socket_out[6],
+
+      //out B                                     platoon_updated_socket_bc_out,
+      //out PlatoonPacket                         platoon_socket_bc_out,
+      //out B                                     platoon_updated_socket_out[6],
+      //out PlatoonPacket                         platoon_socket_out[6],
+
+      //out B                                     safety_distance_updated_socket_bc_out,
+      //out SafetyDistancePacket                  safety_distance_socket_bc_out,
+      //out B                                     safety_distance_updated_socket_out[6],
+      //out SafetyDistancePacket                  safety_distance_socket_out[6],
+
+      //out B                                     location_updated_socket_bc_out,
+      //out LocationPacket                        location_socket_bc_out,
+      //out B                                     location_updated_socket_out[6],
+      //out LocationPacket                        location_socket_out[6],
+
+      //out B                                     switching_lane_updated_socket_bc_out,
+      //out SwitchingLanePacket                   switching_lane_socket_bc_out,
+      //out B                                     switching_lane_updated_socket_out[6],
+      //out SwitchingLanePacket                   switching_lane_socket_out[6],
+
+      //out B                                     unsignalized_intersection_updated_socket_bc_out,
+      //out UnsignalizedIntersectionPacket        unsignalized_intersection_socket_bc_out,
+      //out B                                     unsignalized_intersection_updated_socket_out[6],
+      //out UnsignalizedIntersectionPacket        unsignalized_intersection_socket_out[6];
+
+      
+
+  instance VehicleCommunication vehicleCom;
+  instance MovementController   moveCon;
+  instance NavigationController navCon;
+  instance BehaviourController  behaveCon;
+
+  //vehicleCom
+  connect state_updated_socket_bc_in[:]   -> vehicleCom.state_updated_bc_in[:];
+  connect state_socket_bc_in[:]           -> vehicleCom.state_bc_in[:];
+  connect vehicleCom.state_updated_bc_out -> state_updated_socket_bc_out;
+  connect vehicleCom.state_bc_out         -> state_socket_bc_out;
+
+  //connect subject_updated_socket_bc_in[:]   -> vehicleCom.subject_updated_bc_in[:];
+  //connect subject_socket_bc_in[:]           -> vehicleCom.subject_bc_in[:];
+  //connect subject_updated_socket_in[:]      -> vehicleCom.subject_updated_in[:];
+  //connect subject_socket_in[:]              -> vehicleCom.subject_in[:];
+  //connect vehicleCom.subject_updated_bc_out -> subject_updated_socket_bc_out;
+  //connect vehicleCom.subject_bc_out         -> subject_socket_bc_out;
+  //connect vehicleCom.subject_updated_out[:] -> subject_updated_socket_out[:]; 
+  //connect vehicleCom.subject_out[:]         -> subject_socket_out[:];
+
+  //connect weather_updated_socket_bc_in[:]   -> vehicleCom.weather_updated_bc_in[:];
+  //connect weather_socket_bc_in[:]           -> vehicleCom.weather_bc_in[:];
+  //connect weather_updated_socket_in[:]      -> vehicleCom.weather_updated_in[:];
+  //connect weather_socket_in[:]              -> vehicleCom.weather_in[:];
+  //connect vehicleCom.weather_updated_bc_out -> weather_updated_socket_bc_out;
+  //connect vehicleCom.weather_bc_out         -> weather_socket_bc_out;
+  //connect vehicleCom.weather_updated_out[:] -> weather_updated_socket_out[:]; 
+  //connect vehicleCom.weather_out[:]         -> weather_socket_out[:];
+
+  //connect platoon_updated_socket_bc_in[:]   -> vehicleCom.platoon_updated_bc_in[:];
+  //connect platoon_socket_bc_in[:]           -> vehicleCom.platoon_bc_in[:];
+  //connect platoon_updated_socket_in[:]      -> vehicleCom.platoon_updated_in[:];
+  //connect platoon_socket_in[:]              -> vehicleCom.platoon_in[:];
+  //connect vehicleCom.platoon_updated_bc_out -> platoon_updated_socket_bc_out;
+  //connect vehicleCom.platoon_bc_out         -> platoon_socket_bc_out;
+  //connect vehicleCom.platoon_updated_out[:] -> platoon_updated_socket_out[:]; 
+  //connect vehicleCom.platoon_out[:]         -> platoon_socket_out[:];
+
+  //connect safety_distance_updated_socket_bc_in[:]   -> vehicleCom.safety_distance_updated_bc_in[:];
+  //connect safety_distance_socket_bc_in[:]           -> vehicleCom.safety_distance_bc_in[:];
+  //connect safety_distance_updated_socket_in[:]      -> vehicleCom.safety_distance_updated_in[:];
+  //connect safety_distance_socket_in[:]              -> vehicleCom.safety_distance_in[:];
+  //connect vehicleCom.safety_distance_updated_bc_out -> safety_distance_updated_socket_bc_out;
+  //connect vehicleCom.safety_distance_bc_out         -> safety_distance_socket_bc_out;
+  //connect vehicleCom.safety_distance_updated_out[:] -> safety_distance_updated_socket_out[:]; 
+  //connect vehicleCom.safety_distance_out[:]         -> safety_distance_socket_out[:];
+
+  //connect battery_level_updated_socket_bc_in[:]   -> vehicleCom.battery_level_updated_bc_in[:];
+  //connect battery_level_socket_bc_in[:]           -> vehicleCom.battery_level_bc_in[:];
+  //connect battery_level_updated_socket_in[:]      -> vehicleCom.battery_level_updated_in[:];
+  //connect battery_level_socket_in[:]              -> vehicleCom.battery_level_in[:];
+  //connect vehicleCom.battery_level_updated_bc_out -> battery_level_updated_socket_bc_out;
+  //connect vehicleCom.battery_level_bc_out         -> battery_level_socket_bc_out;
+  //connect vehicleCom.battery_level_updated_out[:] -> battery_level_updated_socket_out[:]; 
+  //connect vehicleCom.battery_level_out[:]         -> battery_level_socket_out[:];
+
+  //connect location_updated_updated_socket_bc_in[:]   -> vehicleCom.location_updated_updated_bc_in[:];
+  //connect location_updated_socket_bc_in[:]           -> vehicleCom.location_updated_bc_in[:];
+  //connect location_updated_updated_socket_in[:]      -> vehicleCom.location_updated_updated_in[:];
+  //connect location_updated_socket_in[:]              -> vehicleCom.location_updated_in[:];
+  //connect vehicleCom.location_updated_updated_bc_out -> location_updated_updated_socket_bc_out;
+  //connect vehicleCom.location_updated_bc_out         -> location_updated_socket_bc_out;
+  //connect vehicleCom.location_updated_updated_out[:] -> location_updated_updated_socket_out[:]; 
+  //connect vehicleCom.location_updated_out[:]         -> location_updated_socket_out[:];
+
+  //connect switching_lane_updated_socket_bc_in[:]    -> vehicleCom.switching_lane_updated_bc_in[:];
+  //connect switching_lane_socket_bc_in[:]            -> vehicleCom.switching_lane_bc_in[:];
+  //connect switching_lane_updated_socket_in[:]       -> vehicleCom.switching_lane_updated_in[:];
+  //connect switching_lane_socket_in[:]               -> vehicleCom.switching_lane_in[:];
+  //connect vehicleCom.switching_lanes_updated_bc_out -> switching_lanes_updated_socket_bc_out;
+  //connect vehicleCom.switching_lanes_bc_out         -> switching_lanes_socket_bc_out;
+  //connect vehicleCom.switching_lanes_updated_out[:] -> switching_lanes_updated_socket_out[:]; 
+  //connect vehicleCom.switching_lanes_out[:]         -> switching_lanes_socket_out[:];
+
+  //connect unsignalized_intersection_updated_socket_bc_in[:]   -> vehicleCom.unsignalized_intersection_updated_bc_in[:];
+  //connect unsignalized_intersection_socket_bc_in[:]           -> vehicleCom.unsignalized_intersection_bc_in[:];
+  //connect unsignalized_intersection_updated_socket_in[:]      -> vehicleCom.unsignalized_intersection_updated_in[:];
+  //connect unsignalized_intersection_socket_in[:]              -> vehicleCom.unsignalized_intersection_in[:];
+  //connect vehicleCom.unsignalized_intersection_updated_bc_out ->  unsignalized_intersection_updated_socket_bc_out;
+  //connect vehicleCom.unsignalized_intersection_bc_out         -> unsignalized_intersection_socket_bc_out;
+  //connect vehicleCom.unsignalized_intersection_updated_out[:] -> unsignalized_intersection_updated_socket_out[:]; 
+  //connect vehicleCom.unsignalized_intersection_out[:]         -> unsignalized_intersection_socket_out[:];
+  
+  connect true_compass -> vehicleCom.heading;
+  connect true_velocity -> vehicleCom.velocity;
+  connect true_position -> vehicleCom.position;
+  
+  connect vehicleCom.emergencyBraking -> moveCon.emergencyBraking;
+  
+  
+  //substitute until street sensors are implemented
+  connect upper_speed_limit -> behaveCon.maxAllVelocity;
+  connect trajectory_x      -> behaveCon.minAllVelocity;
+  connect trajectory_length -> behaveCon.traj_length;
+  
+  connect behaveCon.maxVelocity    -> moveCon.maxVelocity;
+  connect behaveCon.minVelocity    -> moveCon.minVelocity;
+  connect behaveCon.critTurnAngle  -> moveCon.critTurnAngle;
+  connect behaveCon.turnSpeed      -> moveCon.turnSpeed;
+  connect behaveCon.sharpTurnSpeed -> moveCon.sharpTurnSpeed;
+  connect behaveCon.extraCritAngle -> moveCon.extraCritAngle;
+  connect behaveCon.velCoef        -> moveCon.velCoef;
+  connect behaveCon.distance2mid   -> navCon.distance2mid;
+  
+  connect behaveCon.maxVelocity   -> navCon.maxVelocity;
+  connect behaveCon.critTurnAngle -> navCon.critTurnAngle;
+  connect trajectory_length       -> navCon.traj_length;
+  connect trajectory_x            -> navCon.traj_x;
+  connect trajectory_y            -> navCon.traj_y;
+  connect true_position           -> navCon.current_pos;
+
+  connect navCon.nextDirection_x   -> moveCon.calcPath_x;
+  connect navCon.nextDirection_y   -> moveCon.calcPath_y;
+  connect navCon.nextTurnAngle     -> moveCon.nextTurnAngle;
+  connect navCon.dist2critAngle    -> moveCon.dist2critAngle;
+  connect navCon.lowSpeedLimitDist -> moveCon.lowSpeedLimitDist;
+  connect navCon.lowerSpeedLimit   -> moveCon.lowerSpeedLimit;
+
+  connect true_compass  -> moveCon.currentAngle;
+  connect true_velocity -> moveCon.currentVel;
+
+  connect moveCon.steering_angle -> set_steering;
+  connect moveCon.gasRes         -> set_gas;
+  connect moveCon.brakeRes       -> set_braking;
+  
+
+}
+

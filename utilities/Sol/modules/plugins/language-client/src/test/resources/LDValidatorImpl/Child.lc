@@ -1,0 +1,8 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package LDValidatorImpl
+
+language Child extends Parent {
+    exclude template parentTemplate
+}

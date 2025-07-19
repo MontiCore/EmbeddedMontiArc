@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// It also retrieves, increments, and stores back
+// the simulator time.
+
+view CalculationJobSimulation {
+
+  component DataStore {
+    port
+      in ? updateSimTime,
+      out ? simTime;
+  }
+  instance DataStore dataStore;
+
+  component Calculation {
+    port
+      in ? simTime,
+      out ? newSimTime;
+  }
+  instance Calculation calculation;
+  
+  connect dataStore.simTime -> calculation.simTime;
+  connect calculation.newSimTime -> dataStore.updateSimTime;
+
+}

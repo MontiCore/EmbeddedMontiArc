@@ -1,0 +1,16 @@
+package invalid
+
+typedef configuration Options {
+    label "Some Configuration"
+
+    option someOption: Common {
+        label "Some Label"
+        required true
+    }
+
+    configuration sub: OptionsComponent {
+
+    }
+
+    backend task main
+}

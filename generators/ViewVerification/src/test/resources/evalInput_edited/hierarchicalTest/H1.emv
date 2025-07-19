@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package hierarchicalTest;
+
+view H1 {
+  component Root {
+    component C1 {}
+    instance C1 c1;
+    component C2 {}
+    instance C2 c2;
+    component C3 {}
+    instance C3 c3;
+  }
+  instance Root root;
+  
+  connect c1 -> c2;
+  connect c2 -> c3;
+  connect c3 -> c1;
+  
+}

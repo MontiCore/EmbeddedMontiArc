@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorModel;
+
+component SteeringController {
+    port
+        
+        in Q(0m:200m) fl,
+        in Q(0m:200m) fr,
+        in Q(0m:200m) slf,
+        in Q(0m:200m) slb,
+        in Q(0m:200m) srf,
+        in Q(0m:200m) srb,
+        in Q(0m:200m) br,
+        in Q(0m:200m) bl,
+        out Q(-180 deg:180 deg) steering;
+
+    implementation Math{
+
+        Q(0m:1m) threshold = 0.1m;
+        Q(-1m:0m) thresholdN = -0.1m;
+
+        B comp1 = (((fl-fr) > threshold) && ((slf-slb) > threshold)) && ((srb-srf) > threshold);
+        B comp2 = (((fl-fr) < thresholdN) && ((slf-slb) < thresholdN)) && ((srb-srf) < thresholdN);
+        B comp3 = (slf<slb) && (srf<srb);
+
+        if (comp3)
+            steering = -1 deg;
+        else
+            steering = 0 deg;
+        end
+        
+        if (comp2)
+            steering = 5 deg;
+        end
+
+        if (comp1)
+            steering = -5 deg;
+        end
+    }
+}

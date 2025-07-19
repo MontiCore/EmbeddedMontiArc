@@ -1,0 +1,85 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+// this should be merged into the intersectiontype 4 (platoon with platoon)
+dynamic component Sameexits_priority{
+ports
+   // message relevant
+   dynamic in Platoonmessage         plat_msg[0:32],
+   dynamic in Statusmessage          status_msg[0:32],
+   dynamic in Trajectorymessage      traj_msg[0:32],
+   // current priority
+   in  Z          is_highestpriority,
+   in  Q          dis2intersection,
+   in  Q          nextintersection_x,
+   in  Q          nextintersection_y,
+   in  Z          platoon_num,
+   // use to find the same exit
+   in  Q          width,
+   in  Q          length,
+   in  Z          trajectory_length,
+   in  Q^{1,100}  trajectory_x,
+   in  Q^{1,100}  trajectory_y,
+   //collision information
+   in  Z^{1,32}   iscollision,
+   in  Z^{1,32}   collision_id,
+   in  Q^{1,32}   dis2intersection_car1,
+
+   out Z new_is_highestpriority;
+
+
+   instance  Platoonduplicate               p_dup;
+   instance  Nearest_platoonintersection    nearplat;
+   instance  Currenttakesameexit            current_same;
+   instance  Exitschangepriority            exchangepro;
+
+
+   // message duplicate
+   @ plat_msg::connect{
+     connect plat_msg[?] -> p_dup.plat_msg[?];
+   }
+   @ p_dup.plat_msg1::connect{
+     connect p_dup.plat_msg1[?] -> nearplat.plat_msg[?];
+   }
+
+   @ status_msg::connect{
+     connect status_msg[?] -> nearplat.status_msg[?];
+   }
+
+   @ traj_msg::connect{
+     connect traj_msg[?] -> nearplat.traj_msg[?];
+   }
+
+   connect nextintersection_x -> nearplat.nextintersection_x;
+   connect nextintersection_y -> nearplat.nextintersection_y;
+   connect length -> nearplat.length;
+
+   connect nearplat.near_platoonid -> current_same.near_platoonid;
+   connect width -> current_same.width;
+   connect length -> current_same.length;
+   connect trajectory_length -> current_same.trajectory_length;
+   connect trajectory_x -> current_same.trajectory_x;
+   connect trajectory_y -> current_same.trajectory_y;
+
+   @ p_dup.plat_msg2::connect{
+     connect p_dup.plat_msg2[?] -> current_same.plat_msg[?];
+   }
+
+   connect current_same.currentinsameexit -> exchangepro.currentinsameexit;
+   connect length -> exchangepro.length;
+   connect is_highestpriority -> exchangepro.is_highestpriority;
+   connect platoon_num -> exchangepro.platoon_num;
+   connect iscollision -> exchangepro.iscollision;
+   connect collision_id -> exchangepro.collision_id;
+   connect dis2intersection -> exchangepro.dis2intersection;
+   connect dis2intersection_car1 -> exchangepro.dis2intersection_car1;
+
+   connect exchangepro.new_is_highestpriority -> new_is_highestpriority;
+
+   @ p_dup.plat_msg3::connect{}
+   @ p_dup.plat_msg4::connect{}
+   @ p_dup.plat_msg5::connect{}
+   @ p_dup.plat_msg6::connect{}
+}

@@ -1,0 +1,96 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+
+dynamic component Potentialheader{
+ ports
+  dynamic in  Statusmessage            status_msg[0:32],
+  dynamic in  Trajectorymessage        traj_msg[0:32],
+  dynamic in  Platoonmessage           plat_msg[0:32],
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Z               isnextintersection,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+  in  Q               position_x,
+  in  Q               position_y,
+  in  Q               length,
+  in  Q               width,
+
+
+  out Z               potentialid,
+  out Z               if_potentialheaderexists,
+  out Z               if_sendjointmsg;
+
+  instance  Statusduplicate            s_dup;
+  instance  Platoonduplicate           p_dup;
+  instance  Collisionpoint_single      cosingle[0:32];
+  instance  Nearestpotentialvehicle    near_vehicle;
+  instance  Vehicleinplatoon           car_inplat;
+  instance  Potentialcondition         po_condi;
+
+  @ status_msg::connect{
+    connect status_msg[?] -> s_dup.status_msg[?];
+  }
+  @ plat_msg::connect{
+    connect plat_msg[?] -> p_dup.plat_msg[?];
+  }
+  @ s_dup.status_msg1::connect{
+    connect s_dup.status_msg1[?] -> cosingle[?].status_message;
+    connect trajectory_length -> cosingle[?].trajectory_length_car1;
+    connect trajectory_x -> cosingle[?].trajectory_x_car1;
+    connect trajectory_y -> cosingle[?].trajectory_y_car1;
+    connect length -> cosingle[?].car1_length;
+    connect width -> cosingle[?].car1_width;
+    connect cosingle[?].isfrontvehicle -> near_vehicle.isfrontvehicle[?];
+    connect cosingle[?].distance -> near_vehicle.distance[?];
+    connect cosingle[?].vehicleid -> near_vehicle.vehicleid[?];
+  }
+
+    connect near_vehicle.frontvehicleid -> car_inplat.vehicleid;
+
+  @ p_dup.plat_msg1::connect{
+    connect p_dup.plat_msg1[?] -> car_inplat.plat_msg[?];
+  }
+  @ s_dup.status_msg2::connect{
+    connect s_dup.status_msg2[?] -> car_inplat.status_msg[?];
+  }
+
+  @ s_dup.status_msg3::connect{
+      connect s_dup.status_msg3[?] -> po_condi.status_msg[?];
+    }
+  @ traj_msg::connect{
+      connect traj_msg[?] -> po_condi.traj_msg[?];
+    }
+  @ p_dup.plat_msg2::connect{
+      connect p_dup.plat_msg2[?] -> po_condi.plat_msg[?];
+    }
+    connect trajectory_length -> po_condi.trajectory_length;
+    connect trajectory_x -> po_condi.trajectory_x;
+    connect trajectory_y -> po_condi.trajectory_y;
+    connect isnextintersection -> po_condi.isnextintersection;
+    connect nextintersection_x -> po_condi.nextintersection_x;
+    connect nextintersection_y -> po_condi.nextintersection_y;
+    connect car_inplat.if_inplatoon -> po_condi.if_inplatoon;
+    connect car_inplat.if_tailid -> po_condi.if_tailid;
+    connect car_inplat.frontplatoonid -> po_condi.frontplatoonid;
+    connect car_inplat.frontvehicleid -> po_condi.frontvehicleid;
+    connect position_x -> po_condi.position_x;
+    connect position_y -> po_condi.position_y;
+
+    connect po_condi.potentialid -> potentialid;
+    connect po_condi.if_potentialheaderexists -> if_potentialheaderexists;
+    connect po_condi.if_sendjointmsg -> if_sendjointmsg;
+
+    @ s_dup.status_msg4::connect{}
+    @ s_dup.status_msg5::connect{}
+    @ p_dup.plat_msg3::connect{}
+    @ p_dup.plat_msg4::connect{}
+    @ p_dup.plat_msg5::connect{}
+    @ p_dup.plat_msg6::connect{}
+
+}

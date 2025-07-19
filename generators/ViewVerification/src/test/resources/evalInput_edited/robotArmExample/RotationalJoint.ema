@@ -1,0 +1,93 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+component RotationalJoint {
+
+  port
+    out (0:1) val2;
+
+  component Body {
+    port
+      out (0:1) val1,
+      in (0:1) f2;
+
+    component Actuator {
+      port
+        in (0:1) f1,
+        out (0:1) val1,
+        in (0:1) f2;
+
+      connect f1 -> val1;
+
+    }
+    instance Actuator actuator;
+    component Joint {
+      port
+        in (0:1) angle;
+
+    }
+    instance Joint joint;
+    component JointLimiter {
+      port
+        out (0:1) f2,
+        in (0:1) portName0;
+
+      connect portName0 -> f2;
+
+    }
+    instance JointLimiter jointLimiter;
+    connect actuator.val1 -> val1;
+
+    connect f2 -> actuator.f2;
+
+    connect f2 -> jointLimiter.portName0;
+
+    connect actuator.val1 -> joint.angle;
+
+    connect jointLimiter.f2 -> actuator.f1;
+
+  }
+  instance Body body;
+  component Cylinder {
+    port
+      in (0:1) angle,
+      in int portName0,
+      out (0:1) val1;
+
+    connect angle -> val1;
+
+  }
+  instance Cylinder cylinder;
+  component Sensor {
+    port
+      out int val2,
+      out (0:1) val1,
+      in (0:1) f1,
+      in int f2;
+
+    connect f1 -> val1;
+
+    connect f2 -> val2;
+
+  }
+  instance Sensor sensor;
+  component ServoValve {
+    port
+      in (0:1) f2,
+      out (0:1) portName0;
+
+    connect f2 -> portName0;
+
+  }
+  instance ServoValve servoValve;
+  connect sensor.val1 -> val2;
+
+  connect body.val1 -> sensor.f1;
+
+  connect cylinder.val1 -> servoValve.f2;
+
+  connect sensor.val2 -> cylinder.portName0;
+
+  connect servoValve.portName0 -> body.f2;
+
+}

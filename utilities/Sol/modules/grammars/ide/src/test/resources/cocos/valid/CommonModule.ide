@@ -1,0 +1,5 @@
+package valid
+
+typedef module CommonModule {
+     label "Some nice Configuration Type"
+}

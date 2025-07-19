@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas.basicLibrary;
+
+component MinusPlus<T> {
+	port
+		in T in1,
+		in T in2,
+		out T out1;
+}

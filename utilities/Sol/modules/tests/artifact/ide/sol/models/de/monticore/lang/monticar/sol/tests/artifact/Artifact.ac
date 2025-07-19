@@ -1,0 +1,5 @@
+package de.monticore.lang.monticar.sol.tests.artifact
+
+artifact Artifact {
+    path "tool/target/classes/Artifact.txt" resolved from PARENT
+}

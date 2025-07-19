@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-86 {
+  component FAS {
+    ports
+	  in ? Distance_Object_m,
+	  in ? V_Vehicle_kmh,
+	  out ? Acusti_warn_b,
+	  out ? Opti_warn_b;
+	  
+	  component Distancewarner {
+	    ports
+		  in ? Distance_Object_m,
+		  in ? V_Vehicle_ms,
+		  out ? Acusti_warn_b,
+		  out ? Opti_warn_b;
+	  }
+	  instance Distancewarner distwarn;
+	  
+	  connect Distance_Object_m -> distwarn.Distance_Object_m;
+	  connect distwarn.Opti_warn_b -> Opti_warn_b;
+  
+	  effect V_Vehicle_kmh -> distwarn.V_Vehicle_ms;
+	  
+	  effect distwarn.Distance_Object_m -> distwarn.Acusti_warn_b;
+	  effect distwarn.Distance_Object_m -> distwarn.Opti_warn_b;
+	  effect distwarn.V_Vehicle_ms -> distwarn.Acusti_warn_b;
+	  effect distwarn.V_Vehicle_ms -> distwarn.Opti_warn_b;
+	  
+	  effect distwarn.Acusti_warn_b -> Acusti_warn_b;
+  }
+}

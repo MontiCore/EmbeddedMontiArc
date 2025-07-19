@@ -1,0 +1,61 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+.sol-runtime-configurations.widget {
+
+}
+
+.sol-runtime-configurations.widget .loader-container,
+.sol-runtime-configurations.widget .message-container {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+}
+
+.sol-runtime-configurations.widget .loader {
+    color:var(--theia-statusbar-color);
+}
+
+.sol-runtime-configurations.widget .message {
+    color:var(--theia-ui-font-color1);
+}
+
+.sol-runtime-configurations.widget .configurations {
+
+}
+
+.sol-runtime-configurations.widget .configuration {
+    color:var(--theia-ui-font-color1);
+    display:flex;
+    align-items:center;
+    height:22px;
+    padding:0 15px 0 15px;
+    user-select:none;
+}
+
+.sol-runtime-configurations.widget .configuration:hover {
+    cursor:pointer;
+    background-color:var(--theia-accent-color4);
+}
+
+.sol-runtime-configurations.widget .configuration.selected {
+    background-color:var(--theia-accent-color3);
+}
+
+.sol-runtime-configurations.widget .configuration.running {
+    color:var(--theia-added-color0);
+}
+
+.sol-runtime-configurations.widget .configuration .label {
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.sol-runtime-configurations.widget .configuration .icon {
+    font-size:calc(var(--theia-content-font-size) * 0.8);
+    text-align:center;
+    margin-right:4px;
+}

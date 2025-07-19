@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// The job of the calculation component is to, upon
+// receipt of a burn rate quantity, retrieve current
+// values of height, velocity, and fuel from the
+// data store component, update them with respect to
+// the input burn rate, and store the new values back.
+
+view CalculationJob {
+
+  component DataStore {
+    port
+      out ? height,
+      out ? velocity,
+      out ? fuel,
+      in ? updateHeight,
+      in ? updateVelocity,
+      in ? updateFuel;
+  }
+  instance DataStore dataStore;
+
+  component Calculation {
+    port
+      in ? updateBurnRate,
+   
+      in ? height,
+      in ? velocity,
+      in ? fuel,
+   
+      out ? newHeight,
+      out ? newVelocity,
+      out ? newFuel;
+  }
+  instance Calculation calculation;
+  
+  connect dataStore.height -> calculation.height;
+  connect dataStore.velocity -> calculation.velocity;
+  connect dataStore.fuel -> calculation.fuel;
+  
+  connect calculation.newHeight -> dataStore.updateHeight;
+  connect calculation.newVelocity -> dataStore.updateVelocity;
+  connect calculation.newFuel -> dataStore.updateFuel;
+  
+}

@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+component SteerScale{
+	
+	ports
+		in Q(-oo : 0.0001 : oo) unscaledSteering,
+		
+		out Q(-45°:0.001°:45°) steering;
+		
+	implementation Math{
+		steering = range(-45°,45°, unscaledSteering);
+	}
+}

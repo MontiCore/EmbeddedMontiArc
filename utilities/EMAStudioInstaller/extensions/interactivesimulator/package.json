@@ -1,0 +1,37 @@
+{
+  "private": true,
+  "name": "@emastudio/interactivesimulator",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio InteractiveSimulator Extension.",
+  "keywords": [
+    "EmbeddedMontiArcStudio"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller.git"
+  },
+  "dependencies": {
+    "@emastudio/core": "^0.1.0",
+    "@emastudio/executing": "^0.1.0",
+    "@emastudio/paths": "^0.1.0",
+    "@emastudio/process": "^0.1.0",
+    "@emastudio/scripts": "^0.1.0",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/workspace": "latest"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/interactivesimulator-frontend-module",
+      "backend": "lib/node/interactivesimulator-backend-module"
+    }
+  ]
+}

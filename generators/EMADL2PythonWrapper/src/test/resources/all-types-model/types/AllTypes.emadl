@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package types;
+
+component AllTypes {
+    ports
+        in Q(-10:15) q1,
+        in Q(-oo:oo)^{4} q2,
+        in Q(-oo:oo)^{3,6} q3,
+        in Q(-oo:oo)^{2,3,5} q4,
+        in Z(-10:15) z1,
+        in Z(-oo:oo)^{6} z2,
+        in Z(-oo:oo)^{7,3} z3,
+        in Z(-oo:oo)^{2,2,7} z4,
+        in Z^{1} z5,
+        in B b1,
+        out Z result;
+}

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcheetah_master.a  CMakeFiles/cheetah_master.dir/cheetah_master.cpp.o
+/usr/bin/ranlib libcheetah_master.a

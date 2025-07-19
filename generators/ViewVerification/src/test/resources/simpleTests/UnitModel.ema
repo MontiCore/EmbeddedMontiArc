@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests;
+
+component UnitModel {
+	ports in (-100 m/s^2:100 m/s^2) acceleration,
+            out (-oo km/h : oo km/h) velocity;
+}

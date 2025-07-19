@@ -1,0 +1,5 @@
+# Build
+/target/
+
+# Exclude node_modules/ folder of tests.
+!node_modules/

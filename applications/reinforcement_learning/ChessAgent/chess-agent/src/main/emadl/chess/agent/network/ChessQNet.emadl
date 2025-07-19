@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package chess.agent.network;
+
+component ChessQNet {
+    ports
+        in Q(0:1)^{845} state,
+        out Q(-oo:oo)^{4096} qvalues; 
+
+    implementation CNN {
+        state ->
+        Relu() ->
+        FullyConnected(units=845) ->
+        Relu() ->
+        FullyConnected(units=1690) ->
+        Relu() ->
+        FullyConnected(units=2893) ->
+        Relu() ->
+        FullyConnected(units=4096) ->
+        qvalues;
+    }
+}

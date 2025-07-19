@@ -1,0 +1,1 @@
+cNNSegment.SmallSeg ../resources/training_data_mnist_seg_swapped
