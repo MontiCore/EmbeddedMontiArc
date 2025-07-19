@@ -34,6 +34,8 @@ For detailed instructions on how to run the MXNet/Gluon, Tensorflow and Caffe2 e
             </configuration>
         </server>
       ```
+
+   
    You can find a private access key in the first commit of the file history.
 3. In <i>mnistcalculator/\<your project\></i>, run the following commands:
    ```
