@@ -563,8 +563,6 @@ jobs:
     needs: docker_phase
     if: ${{ !cancelled() && needs.docker_phase.result == 'success' }}
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:22.04
     timeout-minutes: 120
     steps:
       - name: Checkout latest commit
