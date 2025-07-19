@@ -77,8 +77,8 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
-            sudo apt-get update
-            sudo apt-get install -y maven
+            apt-get update
+            apt-get install -y maven
             cd /workspace
             cd generators/EMAM2MQTT
             mvn clean install -s settings.xml
