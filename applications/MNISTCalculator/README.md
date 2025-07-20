@@ -11,7 +11,9 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 3. Deep Learning Framework **MXNet/Gluon**.
 4. Deep Learning Framework **Tensorflow**.
 4. Armadillo (at least armadillo version 6.600 must
-5. be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
+5. 
+6. 
+7. be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV
 
 
