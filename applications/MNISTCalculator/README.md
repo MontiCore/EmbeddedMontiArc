@@ -27,6 +27,8 @@ s
 nn
 
 ## Build on Windowsdd
+
+
 1. Download and build this docker container: https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator/-/tree/ba_weber/docker/base
    2. This can take more than one hour
 3. In mnistcalculator/\<your project\>/settings.xml:
