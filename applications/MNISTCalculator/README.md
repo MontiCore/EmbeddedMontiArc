@@ -24,7 +24,7 @@ For detailed instructions on how to run the MXNet/Gluon
 ddeerrsdduu
 
 , Tensorflow and Caffe2 examples, see the README in the corresponding folders.
-s
+see
 
 nn
 rrr

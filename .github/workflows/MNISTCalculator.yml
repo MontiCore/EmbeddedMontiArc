@@ -221,7 +221,7 @@ jobs:
           name: TestDecomposition
           retention-days: 7
           path: |
-            applications/MNISTCalculator/mnist-modular/Streamtest/output/*
+            applications/MNISTCalculator/mnist-modular/Streamtest/output/
 
   TestDecompositionResNet:
     needs: [TestEMADLMavenPlugin, test_phase]
@@ -607,6 +607,7 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
+            cd /workspace
             cd /workspace
             cd applications/MNISTCalculator
             cd "emadl-maven_operator_calculator_transfer_learning"
