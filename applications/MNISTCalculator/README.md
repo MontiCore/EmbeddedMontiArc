@@ -13,7 +13,7 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 4. Armadillo (at least armadillo version 6.600 must
 5. 
 6. 
-7. be used) [Official instructions at Armadillo Website](http://arma.sourceforge.net/download.html).
+7. be used) [Official instructions at Armereradillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV
 
 
