@@ -31,7 +31,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-dataset:
@@ -52,7 +52,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-base-dataset:
@@ -74,7 +74,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_base
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-base-dataset:
@@ -95,7 +95,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_base
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-extension-dataset:
@@ -117,7 +117,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_extension
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-extension-dataset:
@@ -138,7 +138,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_extension
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-separated-dataset:
@@ -160,7 +160,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_separated
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-separated-dataset:
@@ -181,7 +181,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_separated
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-vae-mnist-dataset:
@@ -203,7 +203,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/vae/vae-mnist
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-vae-mnist-dataset:
@@ -225,7 +225,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/vae/vae-mnist
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-letter-dataset:
@@ -246,7 +246,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_letters
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-letter-dataset:
@@ -268,7 +268,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_letters
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-cifar-10-dataset:
@@ -290,7 +290,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/cifar_10
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-cifar-10-dataset:
@@ -313,7 +313,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/cifar_10
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-operator-dataset:
@@ -334,7 +334,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-operator-dataset:
@@ -356,7 +356,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-operator-reduced-dataset:
@@ -377,7 +377,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators_reduced
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-operator-reduced-dataset:
@@ -399,7 +399,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators_reduced
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-hexadecimal-dataset:
@@ -420,7 +420,7 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_hexadecimal
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-hexadecimal-dataset:
@@ -442,6 +442,6 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_hexadecimal
-            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=60000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000 -Dmaven.wagon.http.readTimeout=6000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
