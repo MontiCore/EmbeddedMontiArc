@@ -115,16 +115,6 @@
                     </snapshots>
                 </repository>
 
-                <repository>
-                    <id>spring</id>
-                    <url>https://repo.spring.io/libs-release/</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>
 
                 <repository>
                     <id>rosjava_mvn</id>
