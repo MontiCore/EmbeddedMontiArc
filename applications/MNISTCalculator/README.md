@@ -36,7 +36,7 @@ rrr
 3. In mnistcalculator/\<your project\>/settings.xml:
    3. In the gitlab-maven part, replace the value with your private access key:
    ```
-      <server>
+      <server>dd
             <id>gitlab-maven</id>
             <configuration>
                 <httpHeaders>
