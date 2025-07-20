@@ -19,6 +19,8 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 For detailed instructions on how to run the MXNet/Gluon, Tensorflow and Caffe2 examples, see the README in the corresponding folders.
 s
 
+
+
 ## Build on Windows
 1. Download and build this docker container: https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator/-/tree/ba_weber/docker/base
    2. This can take more than one hour
