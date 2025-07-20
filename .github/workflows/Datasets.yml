@@ -15,7 +15,7 @@ jobs:
   deploy-mnist-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -31,12 +31,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -52,13 +52,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-base-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -74,12 +74,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_base
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-base-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -95,13 +95,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_base
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-extension-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -117,12 +117,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_extension
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-extension-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -138,13 +138,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_extension
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-separated-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -160,12 +160,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_separated
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-separated-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -181,13 +181,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_separated
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-vae-mnist-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -203,13 +203,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/vae/vae-mnist
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-vae-mnist-dataset:
     if: ${{ github.ref_name != 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -225,12 +225,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/vae/vae-mnist
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-letter-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -246,13 +246,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_letters
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-letter-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -268,12 +268,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_letters
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-cifar-10-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -290,13 +290,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/cifar_10
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-cifar-10-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -313,12 +313,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/cifar_10
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-operator-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -334,13 +334,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-operator-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -356,12 +356,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-operator-reduced-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -377,13 +377,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators_reduced
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-operator-reduced-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -399,12 +399,12 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_operators_reduced
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   install-mnist-hexadecimal-dataset:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -420,13 +420,13 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_hexadecimal
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:install-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:install-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-hexadecimal-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 180
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
@@ -442,6 +442,6 @@ jobs:
             cd /workspace
             cd applications/Datasets
             cd datasets/mnist_hexadecimal
-            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=600000000000000 -Dmaven.wagon.http.readTimeout=600000000000000 emadl:deploy-dataset -s ../ci_settings.xml
+            mvn -Dmaven.wagon.httpconnectionManager.ttlSeconds=180 -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000000000000 -Dmaven.wagon.http.readTimeout=6000000000000000 emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
