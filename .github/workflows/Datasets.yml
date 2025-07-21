@@ -471,11 +471,9 @@ jobs:
     ]
     if: failure() && fromJSON(github.run_attempt) < 3
     steps:
-      - env:
+      - name: Rerun failed jobs in the current workflow
+        env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
           GH_DEBUG: api
-      - name: Rerun failed jobs in the current workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: gh workflow run Datasets.yml -r ${{ github.head_ref || github.ref_name }} -F run_id=${{ github.run_id }}
