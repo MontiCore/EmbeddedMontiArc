@@ -468,7 +468,7 @@ jobs:
       deploy-mnist-operator-reduced-dataset,
       install-mnist-hexadecimal-dataset,
       deploy-mnist-hexadecimal-dataset
-    ]]
+    ]
     if: failure()
     steps:
       - name: Rerun failed jobs in the current workflow
