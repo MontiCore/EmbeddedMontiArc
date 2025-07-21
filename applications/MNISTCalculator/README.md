@@ -18,7 +18,7 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 
 
 
-## MXNet/Gluon, Tensorflow and Caffe2
+## MXNet/Gluon, Tensorflowdd and Caffe2
 For detailed instructions on how to run the MXNet/Gluon
 
 ddeerrsdduu

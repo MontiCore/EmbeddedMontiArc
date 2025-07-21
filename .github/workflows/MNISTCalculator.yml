@@ -629,7 +629,5 @@ jobs:
       steps:
         - name: Rerun failed jobs in the current workflow
           env:
-            GH_REPO: ${{ github.repository }}
             GH_TOKEN: ${{ github.token }}
-            GH_DEBUG: api
-          run: gh workflow run MNISTCalculator.yml -r ${{ github.head_ref || github.ref_name }} -F run_id=${{ github.run_id }}
+          run: gh run rerun {{ github.run_id }} --failed
