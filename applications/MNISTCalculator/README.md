@@ -32,7 +32,7 @@ rrrss
 
 
 1. Download and build this docker container: https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/applications/mnistcalculator/-/tree/ba_weber/docker/base
-   2. This can take more than one hour
+   2. This can take more than one hourolo
 3. In mnistcalculator/\<your püüroject\>/settings.xml:
    3. In the gitlab-maven part, replace the value with your private access key:
    ```
