@@ -15,7 +15,7 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 6. 
 7. be used) [Official instructions at Armereradillo Website](http://arma.sourceforge.net/download.html).
 4. OpenCV
-
+öö
 
 
 ## MXNet/Gluon, TensorflowddÜÜdd and Caffe2ü+üüü
