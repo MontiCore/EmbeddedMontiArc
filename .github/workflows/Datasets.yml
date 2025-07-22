@@ -472,7 +472,7 @@ jobs:
     if: failure() && fromJSON(github.run_attempt) < 3
     steps:
       - name: Trigger Retry
-        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH --f job_id=${{ github.run_id }}
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH --field  job_id=${{ github.run_id }}
         env:
           WORKFLOW_FILE: Retry.yml
           BRANCH: ${{ github.ref_name }}
