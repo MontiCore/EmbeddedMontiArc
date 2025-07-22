@@ -9,7 +9,7 @@ The current version for gluon is located in gluon-cpp wich uses the newest EMADL
 1. Ubuntu Linux 16.04 LTS or 18.04 LTS (experimental) with JDK 8.
 2. Deep Learning Framework **Caffe2**. [Follow the instructions from this link](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/CNNArch2Caffe2#ubuntu).
 3. Deep Learning Framework **MXNet/Gluon**.
-4. Deep Learning Framework **Tensorflow**.
+4. Deep Learning Framework **Tensorflow**.##
 4. Armadillo (at least armadillo version 6.600 mustöö
 5. 
 6. 
