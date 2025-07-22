@@ -1,0 +1,30 @@
+name: Retry
+on:
+  workflow_dispatch:
+inputs:
+  job_id:
+    description: 'ID of the job to retry'
+    required: true
+
+jobs:
+    retry_job:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Wait for Workflow to be retried to finish
+            run: |
+              while true; do
+                STATUS=$(gh run view "${{ inputs.job_id }}" --repo=$REPO --json status--jq '.status')
+                echo "Current status: $STATUS"
+                if [[ "$STATUS" == "completed" ]]; then
+                  break
+                fi
+                sleep 5
+              done
+            env:
+              GH_TOKEN: ${{github.token}}
+              REPO: ${{github.repository}}
+          - name: Rerun failed jobs in workflow
+            run: gh run rerun ${{ github.run_id }} --failed --repo=$REPO
+            env:
+              GH_TOKEN: ${{ github.token }}
+              REPO: ${{github.repository}}

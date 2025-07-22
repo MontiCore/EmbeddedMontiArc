@@ -471,11 +471,10 @@ jobs:
     ]
     if: failure() && fromJSON(github.run_attempt) < 3
     steps:
-      - name: Checkout latest commit
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - name: Rerun failed jobs in the current workflow
-        run: gh run rerun ${{ github.run_id }} --failed
+      - name: Trigger Retry
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH --f job_id=${{ github.run_id }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          WORKFLOW_FILE: Retry.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
