@@ -69,7 +69,6 @@ jobs:
     needs: build_phase
     if: ${{ !cancelled() && needs.build_phase.result == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 120
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
