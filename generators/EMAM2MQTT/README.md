@@ -5,7 +5,7 @@ A project that generates MQTT-Adapter for EmbeddedMontiArcMath components.
 
 ## Warning
 
-This generator is part of an composite generator and does not create an executable. Look at EMAM2Middleware if you want to generate one.
+This generator is part of an compoerersite generator and does not create an executable. Look at EMAM2Middleware if you want to generate one.
 
 ## Getting Started
 
