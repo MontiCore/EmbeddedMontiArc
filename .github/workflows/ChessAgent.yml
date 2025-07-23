@@ -42,6 +42,10 @@ jobs:
       image: maven:3.8.4-openjdk-17-slim
     timeout-minutes: 120
     steps:
+      - name: Install git
+        run: |
+          apt-get update
+          apt-get install git -y
       - name: Checkout latest commit
         uses: actions/checkout@v4
         with:
