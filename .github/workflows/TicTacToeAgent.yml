@@ -42,6 +42,10 @@ jobs:
       image: maven:3.8.4-openjdk-17-slim
     timeout-minutes: 120
     steps:
+      - name: Install git
+        run: |
+          apt-get update
+          apt-get install git -y
       - name: Checkout latest commit
         uses: actions/checkout@v4
         with:
@@ -97,7 +101,7 @@ jobs:
             cd applications/reinforcement_learning/TicTacToeAgent
             apt-get update
             apt-get install -y maven
-            git clone https://gitlab-ci-token:${{ secrets.GITLABTOKEN }}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+            cp -r ../../../generators/EMAM2Middleware .
             cd EMAM2Middleware
             mvn clean package -s settings.xml -DskipTests
             cd ..
