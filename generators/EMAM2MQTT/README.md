@@ -11,7 +11,7 @@ This generator is part of an compoerersite generator and does not create an exec
 
 These instructions will get this project installed on your **Ubuntu** system
 
-### Installing project
+### Installing projecterer
 0o
 [Download](https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/emam2mqtt/-/archive/master/emam2mqtt-master.zip) this project to your computer
 ii
