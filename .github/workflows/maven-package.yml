@@ -32,7 +32,7 @@ jobs:
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
-  BranchJobLinux:
+   BranchJobLinux:
     if: ${{ !cancelled() && needs.windows_phase.result == 'success'      && github.ref_name != 'master' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
