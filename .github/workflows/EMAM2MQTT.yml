@@ -54,7 +54,6 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
-            dnf install maven
             cd /workspace
             cd generators/EMAM2MQTT
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy --settings settings.xml
@@ -78,8 +77,6 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
-            export DEBIAN_FRONTEND=noninteractive
-            apt install -y maven
             cd /workspace
             cd generators/EMAM2MQTT
             mvn clean install -s settings.xml
