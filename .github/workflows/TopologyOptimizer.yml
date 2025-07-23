@@ -31,8 +31,7 @@ jobs:
             cd applications/reinforcement_learning/TopologyOptimizer
             apt-get update
             apt-get install -y maven
-            git clone https://gitlab-ci-token:${{ secrets.GITLABTOKEN }}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
-            cd EMAM2Middleware
+            cp -r ../../../generators/EMAM2Middleware .
             mvn clean install -s settings.xml
             cd target
             xargs -n 1 cp -v *-jar-with-dependencies.jar<<<"../../topologyoptimizer/cluster/rl/bin/"
