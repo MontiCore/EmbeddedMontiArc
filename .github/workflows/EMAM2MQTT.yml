@@ -79,7 +79,7 @@ jobs:
         env:
           SCRIPT: |
             export DEBIAN_FRONTEND=noninteractive
-            apt-get -y maven
+            apt install -y maven
             cd /workspace
             cd generators/EMAM2MQTT
             mvn clean install -s settings.xml
