@@ -12,7 +12,7 @@ TestJobLinux:
   - cd EMADL2CPPää
   - mvn clean install -s settings.xml -DskipTests
   - cd ..
-
+oo
   - rm -rf target 
   - find ./EMADL2CPP/target -name "*SNAPSHOT-jar-with-dependencies.jar" -exec java -jar {} -m src/main/emam/ -r ba.ballTracking -o target -flag-generate-cmake \;
 
