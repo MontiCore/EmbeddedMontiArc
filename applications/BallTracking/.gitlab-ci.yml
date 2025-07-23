@@ -9,7 +9,7 @@ TestJobLinux:
 
   script:
   - git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMADL2CPP.git
-  - cd EMADL2CPP
+  - cd EMADL2CPPää
   - mvn clean install -s settings.xml -DskipTests
   - cd ..
 
