@@ -54,7 +54,7 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
-            apt install maven -y
+            dnf install maven
             cd /workspace
             cd generators/EMAM2MQTT
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy --settings settings.xml
@@ -78,7 +78,7 @@ jobs:
       - name: Script
         env:
           SCRIPT: |
-            apt install maven -y
+            dnf install maven
             cd /workspace
             cd generators/EMAM2MQTT
             mvn clean install -s settings.xml
