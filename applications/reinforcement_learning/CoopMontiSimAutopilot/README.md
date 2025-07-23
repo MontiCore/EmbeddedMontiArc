@@ -13,7 +13,7 @@ Alternatively, the scripts [installation_script_CPU.sh](https://git.rwth-aachen.
 
 > :warning: Using GPUs during training requires a CUDA compatible GPU, and the installation of CUDA and CuDNN. The CUDA version to be installed depends on GPU, OS Version, and MXNET version. As of now, MXNET version 1.9.1 was used. The CuDNN version depends on the CUDA version.
 https://mxnet.apache.org/versions/1.9.1/get_started?platform=linux&language=python&processor=gpu&environ=pip&
-
+uu
 ### MontiSim
 
 Additional installations:
