@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.monticar;
+
+/**
+ * This grammar only contains interface PrintType
+ * Every NT implementing PrintType must implement the method public String printType():
+ *
+ * Example:
+ *   ast MyNT = method public String printType(){return "MyNT";};
+ *
+*/
+component grammar PrintType extends de.monticore.types.Types {
+
+  interface PrintType extends Type;
+
+}

@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg5;
+
+component DDPG {
+
+    component Actor {
+        ports in Q^{2} input_actor,
+              out Q^{2} output_actor;
+    }
+
+    component Critic {
+        ports in Q^{2} input_critic,
+              out Q^{2} output_critic;
+    }
+
+    instance Actor actor;
+    instance Critic critic;
+}

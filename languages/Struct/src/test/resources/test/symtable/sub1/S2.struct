@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.symtable.sub1;
+
+struct S2 {
+  (0 : oo) f1;
+  B f2;
+  C f3;
+  Z f4;
+  S3 f5;
+}
