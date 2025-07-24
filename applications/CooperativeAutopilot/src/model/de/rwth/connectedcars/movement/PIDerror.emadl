@@ -1,0 +1,17 @@
+package de.rwth.connectedcars.movement;
+
+component PIDerror {
+
+  port 
+      in  Q (-oo m/s : oo m/s)  currentVel,
+      in  Q (-oo m/s : oo m/s)  desired,
+      
+      out Q (-oo m/s : oo m/s)  error;
+      
+  implementation Math{
+    
+    error = desired - currentVel;
+
+  }
+    
+}
