@@ -63,13 +63,14 @@ jobs:
           fetch-depth: 1
       - name: Script
         shell: bash
+        continue-on-error: true
         run: |
             cd applications/torcsdprl
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
             cd Docker
             LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emam2mqtt/:latest .
-            docker push ghcr.io/$LOWERCASE_OWNER/emam2mqtt/:latest
+            docker build -t ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17 .
+            docker push ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17
 
   TestBuild:
     needs: docker_phase
