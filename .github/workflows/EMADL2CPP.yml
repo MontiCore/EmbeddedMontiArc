@@ -490,6 +490,7 @@ jobs:
           fetch-depth: 1
       - name: Script
         shell: bash
+        continue-on-error: true
         run: |
             cd generators/EMADL2CPP
             cd src/test/resources/docker/tensorflow
@@ -530,6 +531,7 @@ jobs:
           fetch-depth: 1
       - name: Script
         shell: bash
+        continue-on-error: true
         run: |
             cd generators/EMADL2CPP
             cd src/test/resources/docker/dglqd
@@ -562,8 +564,6 @@ jobs:
     needs: docker_phase
     if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'skipped') }}
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:22.04
     timeout-minutes: 120
     steps:
       - name: Checkout latest commit

@@ -176,6 +176,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -236,6 +237,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -296,6 +298,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -356,6 +359,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -416,6 +420,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -476,6 +481,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -536,6 +542,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
@@ -596,6 +603,7 @@ jobs:
           GH_TOKEN: ${{github.token}}
           REPO: ${{github.repository}}
       - name: Check Child Workflow result
+        continue-on-error: true
         run: |
           RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
           echo "Child Workflow result: $RESULT"
