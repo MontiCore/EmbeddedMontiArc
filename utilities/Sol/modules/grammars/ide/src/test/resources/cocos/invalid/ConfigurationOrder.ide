@@ -1,0 +1,11 @@
+package invalid
+
+typedef configuration ConfigurationOrder {
+    label "Some Configuration"
+
+    configuration sub: ConfigurationOrderComponent {
+
+    }
+
+    frontend task main
+}

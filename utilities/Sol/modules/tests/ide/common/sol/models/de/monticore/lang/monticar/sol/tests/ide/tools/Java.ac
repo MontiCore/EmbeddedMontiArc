@@ -1,0 +1,8 @@
+package de.monticore.lang.monticar.sol.tests.ide.tools
+
+import de.monticore.lang.monticar.sol.tests.ide.environments.PacMan
+
+virtual tool Java {
+    command "java"
+    environment PacMan
+}

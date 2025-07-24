@@ -1,0 +1,64 @@
+/* (c) https://github.com/MontiCore/monticore */
+#branches-panel {
+    max-width:calc(100% - 470px);
+    left:420px;
+    top:30px;
+    max-height:calc(100% - 167px);
+    overflow-y:auto;
+    display:none;
+}
+
+#branches-list {
+    margin:0;
+    list-style:none;
+    padding:0;
+}
+
+#branches-list li {
+    display:inline;
+    float:left;
+    height:150px;
+    width:150px;
+    margin:10px;
+    background:url("../media/images/Folder.svg") no-repeat center;
+    background-size:cover;
+    position:relative;
+    overflow:hidden;
+}
+
+#branches-list li:hover {
+    background-color:grey;
+    cursor:pointer;
+    overflow:auto !important;
+}
+
+#branches-list li.selected {
+    width:calc(100% - 20px);
+    padding:10px 10px 10px 10px;
+    margin:0px 0px 5px 0px;
+    background-color:#00549f;
+}
+
+#branches-list span.text {
+    text-align:center;
+    /*width:100%;*/
+    display:inline-block;
+    color:#FFFFFF;
+    text-shadow:2px 2px #000000;
+    position:relative;
+}
+
+#branches-list span.text:hover {
+    background-color:grey;
+    z-index:5;
+}
+
+#branches-back {
+    background:url("../media/images/Back.svg") no-repeat center !important;
+    background-size:100% 100% !important;
+}
+
+#branches-back:hover {
+    cursor:pointer;
+    background-color:grey !important;
+}

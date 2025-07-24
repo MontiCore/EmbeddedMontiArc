@@ -1,0 +1,11 @@
+option uniqueOptionCoCo: List {
+    label "A Label"
+
+    option subOption: String {
+        label "A Sub-Label"
+    }
+
+    option subOption: String {
+        label "A Sub-Label"
+    }
+}

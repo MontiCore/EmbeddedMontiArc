@@ -1,0 +1,26 @@
+package example;
+import java.util.*;
+
+import java.lang.*;
+
+import de.monticore.lang.embeddedmontiview.embeddedmontiview._symboltable.*;
+
+import de.monticore.lang.embeddedmontiarc.embeddedmontiarc._symboltable.*;
+
+import de.monticore.lang.ocl.nfp.NFPHelper.*;
+
+import de.monticore.lang.ocl.nfp.*;
+
+
+
+
+
+ocl rule2 {
+    context  ExpandedComponentInstanceSymbol  cmp inv:
+            let
+                selectedVals = cmp.getSubComponents();
+                aggregatedTags = List{max(s.getTags(nfp.PowerTagSchema.PowerCmpInstSymbol.KIND), 0W) | s in selectedVals};
+                aggregatedValue = sum(aggregatedTags, "W");
+            in
+                aggregatedValue < min(cmp.getTags(nfp.PowerTagSchema.PowerCmpInstSymbol.KIND), +oo W);
+}
