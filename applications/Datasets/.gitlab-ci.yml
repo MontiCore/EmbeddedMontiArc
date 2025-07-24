@@ -1,0 +1,149 @@
+deploy-mnist-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+install-mnist-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-base-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_base
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+install-mnist-base-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_base
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-extension-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_extension
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+install-mnist-extension-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_extension
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-separated-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_separated
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+install-mnist-separated-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_separated
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+# VAE
+deploy-vae-mnist-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/vae/vae-mnist
+    - mvn emadl:deploy-dataset -s ci_settings.xml
+  only:
+    - master
+
+
+install-vae-mnist-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/vae/vae-mnist
+    - mvn emadl:install-dataset -s ci_settings.xml
+  except:
+    - master
+
+#Letters
+install-mnist-letter-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_letters
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-letter-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_letters
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+#Cifar-10
+install-cifar-10-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/cifar_10
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-cifar-10-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/cifar_10
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+#Operator mnist dataset
+install-mnist-operator-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-operator-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+#Reduced operator mnist dataset
+install-mnist-operator-reduced-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators_reduced
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-operator-reduced-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_operators_reduced
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
+#Hexadecimal mnist dataset
+install-mnist-hexadecimal-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_hexadecimal
+    - mvn emadl:install-dataset -s ../ci_settings.xml
+
+deploy-mnist-hexadecimal-dataset:
+  image: maven:3.6-jdk-8
+  script:
+    - cd datasets/mnist_hexadecimal
+    - mvn emadl:deploy-dataset -s ../ci_settings.xml
+  only:
+    - master
+
