@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture RNNtest(max_length=50, vocabulary_size=30000, hidden_size=1000){
+    def input Q(0:1)^{vocabulary_size} source
+    def output Q(0:1)^{vocabulary_size} target[5]
+
+    source -> Softmax() -> target[0];
+
+    timed<t> GreedySearch(max_length=5) {
+        target[t-1] ->
+        FullyConnected(units=30000) ->
+        Softmax() ->
+        target[t]
+    };
+ }

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example.negative.units;
+
+component Humidity {
+    port
+     in Boolean sensorIn,
+     out Boolean sensorOut;
+}

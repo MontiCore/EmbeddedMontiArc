@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample;
+
+import avionicsSystemExample.inner.*;
+
+component Flight_System {
+ 
+  // Display
+  instance Pilot_Display pilot_Display;
+  
+  // Display_Manager
+  instance Pilot_DM pilot_DM;
+  
+  // Page_Content_Manager
+  instance PCM pCM;
+  
+  // Flight_Manager
+  instance FM fM;
+  
+  // Flight_Director
+  instance FD fD;
+  
+  connect pilot_Display.Menu_Cmd_Pushed -> pilot_DM.Menu_selection_from_Display;
+  connect pilot_DM.New_Page_Request_To_PCM -> pCM.New_Page_Request_From_DM;
+  connect pCM.New_Page_Request_To_FM -> fM.New_Page_Request_From_PCM;
+  connect fM.New_Page_Request_To_FD -> fD.New_Page_Request_From_FM;
+  connect fD.New_Page_Content_To_FM -> fM.New_Page_Content_from_FD;
+  connect fM.New_Page_Content_To_PCM -> pCM.New_Page_Content_from_FM;
+  connect pCM.New_Page_Content_To_DM -> pilot_DM.New_Page_Content_from_PCM;
+  connect pilot_DM.New_Page_Image_To_Display -> pilot_Display.Page_To_Show;
+}

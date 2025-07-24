@@ -1,0 +1,138 @@
+<!--
+  ~ (c) https://github.com/MontiCore/monticore
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- == PROJECT COORDINATES =============================================== -->
+
+    <parent>
+        <groupId>de.monticore.lang.monticar.sol</groupId>
+        <artifactId>tests-ide</artifactId>
+        <version>2020.5.5-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tests-ide-internal</artifactId>
+
+    <!-- == PROJECT PROPERTIES ================================================ -->
+
+    <properties>
+
+        <!-- .. Libraries ..................................................... -->
+
+        <!-- .. Plugins ....................................................... -->
+
+        <!-- .. Classifiers ................................................... -->
+
+        <!-- .. Misc .......................................................... -->
+
+        <!-- .. Resources ..................................................... -->
+
+    </properties>
+
+    <!-- == PROJECT METAINFORMATION =========================================== -->
+
+    <name>Sol - Tests - IDE - Internal</name>
+
+    <!-- == PROJECT DEPENDENCIES ============================================== -->
+
+    <dependencies>
+
+        <!-- .. Modules ................................................... -->
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar.sol</groupId>
+            <artifactId>tests-ide-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- .. Libraries ................................................. -->
+
+        <!-- .. Language .................................................. -->
+
+        <!-- .. Test Libraries ............................................ -->
+
+    </dependencies>
+
+    <!-- == PROJECT BUILD SETTINGS ============================================ -->
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.sol</groupId>
+                <artifactId>plugin-environment</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>Generation</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <rootModel>de.monticore.lang.monticar.sol.tests.ide.EMAStudio</rootModel>
+                            <outputPath>${project.basedir}</outputPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec-maven-plugin.version}</version>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>yarn install</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>install</argument>
+                                <argument>--frozen-lockfile</argument>
+                            </arguments>
+                            <environmentVariables>
+                                <cibuildb64>${env.cibuildb64}</cibuildb64>
+                            </environmentVariables>
+                            <workingDirectory>${rootDir}</workingDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run publish</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <arguments>
+                                <argument>run</argument>
+                                <argument>publish</argument>
+                            </arguments>
+                            <workingDirectory>${rootDir}</workingDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
+
+    <!-- == PROJECT DISTRIBUTION ============================================== -->
+
+</project>

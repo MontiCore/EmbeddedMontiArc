@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller04;
+
+import VelocityController;
+import ConeRunner;
+
+component MainController{
+    ports 
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
+
+        in Q time,
+        in Q(0km/h:250km/h) velocity,
+
+        in Q(-200m:200m) xPosition,
+        in Q(-200m:200m) yPosition,
+
+        out Q(-2m/s^2:2m/s^2) acceleration,
+        out Q(-180:180) steering,
+        out B status;
+
+
+    instance VelocityController velocityController;
+
+    connect velocity->velocityController.velocity;
+    connect velocityController.acceleration->acceleration;
+
+    instance ConeRunner coneRunner;
+
+    connect frontLeftSensor->coneRunner.frontLeftSensor;
+    connect frontRightSensor->coneRunner.frontRightSensor;
+    connect frontLeftSideSensor->coneRunner.frontLeftSideSensor;
+    connect frontRightSideSensor->coneRunner.frontRightSideSensor;
+    connect backLeftSideSensor->coneRunner.backLeftSideSensor;
+    connect backRightSideSensor->coneRunner.backRightSideSensor;
+    connect xPosition->coneRunner.xPosition;
+    connect coneRunner.status->status; 
+    connect coneRunner.steering->steering;
+}

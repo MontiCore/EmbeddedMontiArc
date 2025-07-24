@@ -1,0 +1,25 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+.sol-runtime-options .list-option .list-item {
+    display:flex;
+}
+
+.sol-runtime-options .list-option button.plus {
+    min-width:30px;
+    margin-left:0;
+}
+
+.sol-runtime-options .list-option div.content {
+    flex:1;
+}
+
+.sol-runtime-options .list-option div.minus {
+    display:flex;
+    align-items:center;
+}
+
+.sol-runtime-options .list-option button.minus {
+    height:calc(100% - 8px);
+    min-width:30px;
+}

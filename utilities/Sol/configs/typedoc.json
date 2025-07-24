@@ -1,0 +1,16 @@
+{
+  "name": "Sol",
+  "mode": "modules",
+  "out": "public/pages/typedoc",
+  "exclude": ["**/node_modules/**", "**/*.spec.ts", "modules/**", "packages/tests/**"],
+  "external-modulemap": ".*\/packages\/.*?\/([\\w\\-_]+)\/",
+  "tsconfig": "./configs/base.tsconfig.json",
+  "excludeExternals": true,
+  "readme": "none",
+  "excludePrivate": true,
+  "module": "commonjs",
+  "target": "ES6",
+  "ignoreCompilerErrors": true,
+  "skipInternal": true,
+  "hideGenerator": true
+}

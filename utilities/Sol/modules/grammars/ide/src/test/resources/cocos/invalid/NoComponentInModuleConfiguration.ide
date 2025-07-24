@@ -1,0 +1,5 @@
+package invalid
+
+typedef component configuration NoComponentInModuleConfiguration {
+    backend task main
+}

@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops;
+
+component UnderSpecification {
+    port
+        in Q in1,
+        out Q out1,
+        out Q out2;
+
+    implementation Math {
+        in1 == out1 + out2;
+    }
+}

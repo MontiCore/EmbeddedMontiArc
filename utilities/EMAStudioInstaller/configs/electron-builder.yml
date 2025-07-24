@@ -1,0 +1,59 @@
+productName: EmbeddedMontiArcStudio
+appId: se.rwth.emastudio
+
+asar: false
+directories:
+  buildResources: target/build
+  output: target/dist
+files:
+  - "node_modules/**/*"
+  - from: "target/src/electron"
+    to: "src/electron"
+extraResources:
+  - from: "target/src/common/models"
+    to: "models"
+  - from: "target/src/cluster-fiddle"
+    to: "cluster-fiddle"
+  - from: "target/src/oclverification"
+    to: "oclverification"
+afterPack: "scripts/afterPack.js"
+
+win:
+  icon: target/build/icon.ico
+  extraResources:
+    - from: "target/src/windows/models"
+      to: "models"
+    - from: "target/src/windows/scripts"
+      to: "scripts"
+  target:
+    - "nsis"
+
+linux:
+  icon: target/build/icons
+  category: Development
+  extraResources:
+    - from: "target/src/linux/models"
+      to: "models"
+    - from: "target/src/linux/scripts"
+      to: "scripts"
+  target:
+    - "deb"
+
+nsis:
+  menuCategory: true
+  oneClick: false
+  perMachine: true
+  installerHeaderIcon: target/build/icon.ico
+  installerIcon: target/build/icon.ico
+  uninstallerIcon: target/build/icon.ico
+  installerSidebar: target/build/installerSidebar.bmp
+  uninstallerSidebar: target/build/installerSidebar.bmp
+  allowToChangeInstallationDirectory: true
+  runAfterFinish: false
+  artifactName: ${productName}-Installer-${version}.${ext}
+
+deb:
+  artifactName: ${productName}-Installer-${version}.${ext}
+# depends: Can be used to add Linux package dependencies such as "build-essentials" or similar.
+#   - "Package-1"
+#   - "Package-2"

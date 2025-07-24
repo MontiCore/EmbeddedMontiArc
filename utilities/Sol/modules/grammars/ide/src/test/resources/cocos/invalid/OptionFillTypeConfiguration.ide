@@ -1,0 +1,10 @@
+package invalid
+
+typedef configuration OptionFillTypeConfiguration {
+    option common: Common {
+        label "Some option"
+        required true
+    }
+
+    backend task main
+}

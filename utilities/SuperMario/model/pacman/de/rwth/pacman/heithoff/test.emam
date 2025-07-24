@@ -1,0 +1,55 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.heithoff;
+
+// UP    = 0
+// DOWN  = 1
+// LEFT  = 2
+// RIGHT = 3
+
+component TryNewDirection {
+    ports
+     
+        in Z(0cm: 342cm) pacManX,
+        in Z(0cm: 342cm) pacManY,
+        in Z^{22,19} map,
+        in Z(0 : 1 : 3) tryDirection,
+        
+        out Z(0 : 1 : 3) newPacManDirection;
+      
+    implementation Math {
+        Z x = pacManX / 10;
+        Z y = pacManY / 10;
+        
+        if (tryDirection == 0) || (tryDirection == 1)
+            Z step = 1;
+            if tryDirection == 1
+                step = -1;
+            end
+            Z nextTile = map(pacManX, pacManY + step);
+            if (nextTile == 0) || (nextTile == 3)
+                nextTile = map(pacManX - 1, pacManY);
+                if (nextTile != 0) && (nextTile != 3)
+                    newPacManDirection = 2;
+                else
+                    newPacManDirection = 3;
+                end
+            end
+        else
+            Z step = 1;
+            if tryDirection == 2
+                step = -1;
+            end
+            Z nextTile = map(pacManX + step, pacManY);
+            if (nextTile == 0) || (nextTile == 3)
+                nextTile = map(pacManX, pacManY - 1);
+                if (nextTile != 0) && (nextTile != 3)
+                    newPacManDirection = 1;
+                else
+                    newPacManDirection = 0;
+                end
+            end
+        end
+        
+    }
+      
+}

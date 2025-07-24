@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+view OldDesignExternalCylinder {
+
+    component Body {
+        component Actuator { }
+        instance Actuator actuator;
+    }
+    instance Body body;
+    
+    component Cylinder {
+        port
+            in int angle;
+    }
+    instance Cylinder cylinder;
+    
+    
+    connect actuator -> cylinder.angle;
+}

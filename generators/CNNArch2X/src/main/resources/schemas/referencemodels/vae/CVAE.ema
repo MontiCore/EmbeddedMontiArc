@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package referencemodels.vae;
+
+component CVAE {
+
+    component Encoder {
+        ports
+            in X data,
+            in W^{1} label,
+            out D encoding;
+    }
+
+    component Decoder {
+        ports
+            in D encoding,
+            in W^{1} label,
+            out X data;
+    }
+
+    instance Encoder encoder;
+    instance Decoder decoder;
+
+    connect encoder.encoding -> decoder.encoding;
+}

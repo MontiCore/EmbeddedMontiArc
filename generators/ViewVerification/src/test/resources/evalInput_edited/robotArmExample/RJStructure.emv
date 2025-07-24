@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+view RJStructure {
+
+    component RotationalJoint {
+        component ServoValve { }
+        instance ServoValve servoValve;
+        
+        component Body { }
+        instance Body body;
+        
+        component Cylinder {
+            port
+                in float angle;
+        }
+        instance Cylinder cylinder;
+    }
+    instance RotationalJoint rotationalJoint;
+    
+    connect rotationalJoint -> servoValve;
+    connect servoValve -> body;
+    connect body -> cylinder.angle;
+    connect cylinder -> body;
+}

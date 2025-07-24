@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// While the simulator is running, it (the user
+// interface) retrieves the new burn rate value
+// from the user, and invokes the calculation component.
+
+view UserInterfaceJobSimulation {
+
+  component UserInterface {
+    port
+      out ? burnRate;
+  }
+  instance UserInterface userInterface;
+
+  component Calculation {
+    port
+        in ? updateBurnRate;
+  }
+  instance Calculation calculation;
+
+  connect userInterface.burnRate -> calculation.updateBurnRate;
+
+}

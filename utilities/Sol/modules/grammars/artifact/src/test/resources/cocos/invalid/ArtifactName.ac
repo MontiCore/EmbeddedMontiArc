@@ -1,0 +1,9 @@
+package invalid
+
+tool ArtifactName {
+    path "some/awesome/path" resolved from CWD
+
+    artifact someResource {
+        path "some/other/awesome/path" resolved from CWD
+    }
+}

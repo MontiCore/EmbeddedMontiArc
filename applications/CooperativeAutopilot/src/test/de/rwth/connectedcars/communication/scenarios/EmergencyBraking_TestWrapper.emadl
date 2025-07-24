@@ -1,0 +1,117 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+import de.rwth.connectedcars.communication.packets.StatePacket;
+
+component EmergencyBraking_TestWrapper {
+	port
+		in B upd1,
+		in B upd2,
+		in B upd3,
+		in B upd4,
+		in B upd5,
+		in B upd6,
+		
+		in Q(-oo m : 0.01 m : oo m) stoX,
+		in Q(-oo m : 0.01 m : oo m) stoY,
+		in Q(-oo : 0.001 : oo) stoH,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) stoV,
+	
+		in Q(-oo m : 0.01 m : oo m) sti1X,
+		in Q(-oo m : 0.01 m : oo m) sti1Y,
+		in Q(-oo : 0.001 : oo) sti1H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti1V,
+		in Q(-oo m : 0.01 m : oo m) sti2X,
+		in Q(-oo m : 0.01 m : oo m) sti2Y,
+		in Q(-oo : 0.001 : oo) sti2H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti2V,
+		in Q(-oo m : 0.01 m : oo m) sti3X,
+		in Q(-oo m : 0.01 m : oo m) sti3Y,
+		in Q(-oo : 0.001 : oo) sti3H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti3V,
+		in Q(-oo m : 0.01 m : oo m) sti4X,
+		in Q(-oo m : 0.01 m : oo m) sti4Y,
+		in Q(-oo : 0.001 : oo) sti4H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti4V,
+		in Q(-oo m : 0.01 m : oo m) sti5X,
+		in Q(-oo m : 0.01 m : oo m) sti5Y,
+		in Q(-oo : 0.001 : oo) sti5H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti5V,
+		in Q(-oo m : 0.01 m : oo m) sti6X,
+		in Q(-oo m : 0.01 m : oo m) sti6Y,
+		in Q(-oo : 0.001 : oo) sti6H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti6V,
+		
+		out B emergency;
+		
+	component TestStatePacketWrapper {
+		port
+			in Q(-oo m : 0.01 m : oo m) 		posX,
+			in Q(-oo m : 0.01 m : oo m) 		posY,
+			in Q(0.0 m/s : 0.01 m/s : oo m/s)	vel,
+			in Q(-oo : 0.001 : oo)				head,
+			out StatePacket 					state;
+			
+		implementation Math {
+			state.positionX = posX;
+			state.positionY = posY;
+			state.velocity = vel;
+			state.heading = head;
+		}
+	}
+		
+	instance TestStatePacketWrapper tspw1;
+	instance TestStatePacketWrapper tspw2;
+	instance TestStatePacketWrapper tspw3;
+	instance TestStatePacketWrapper tspw4;
+	instance TestStatePacketWrapper tspw5;
+	instance TestStatePacketWrapper tspw6;
+	instance TestStatePacketWrapper tspwOut;
+	instance EmergencyBraking eb;
+	
+	connect upd1 -> eb.state_updated_in[1];
+	connect upd2 -> eb.state_updated_in[2];
+	connect upd3 -> eb.state_updated_in[3];
+	connect upd4 -> eb.state_updated_in[4];
+	connect upd5 -> eb.state_updated_in[5];
+	connect upd6 -> eb.state_updated_in[6];
+	
+	connect stoX -> tspwOut.posX;
+	connect stoY -> tspwOut.posY;
+	connect stoH -> tspwOut.head;
+	connect stoV -> tspwOut.vel;
+	connect tspwOut.state -> eb.state_out;
+	
+	connect sti1X -> tspw1.posX;
+	connect sti1Y -> tspw1.posY;
+	connect sti1H -> tspw1.head;
+	connect sti1V -> tspw1.vel;
+	connect sti2X -> tspw2.posX;
+	connect sti2Y -> tspw2.posY;
+	connect sti2H -> tspw2.head;
+	connect sti2V -> tspw2.vel;
+	connect sti3X -> tspw3.posX;
+	connect sti3Y -> tspw3.posY;
+	connect sti3H -> tspw3.head;
+	connect sti3V -> tspw3.vel;
+	connect sti4X -> tspw4.posX;
+	connect sti4Y -> tspw4.posY;
+	connect sti4H -> tspw4.head;
+	connect sti4V -> tspw4.vel;
+	connect sti5X -> tspw5.posX;
+	connect sti5Y -> tspw5.posY;
+	connect sti5H -> tspw5.head;
+	connect sti5V -> tspw5.vel;
+	connect sti6X -> tspw6.posX;
+	connect sti6Y -> tspw6.posY;
+	connect sti6H -> tspw6.head;
+	connect sti6V -> tspw6.vel;
+	
+	connect tspw1.state -> eb.state_in[1];
+	connect tspw2.state -> eb.state_in[2];
+	connect tspw3.state -> eb.state_in[3];
+	connect tspw4.state -> eb.state_in[4];
+	connect tspw5.state -> eb.state_in[5];
+	connect tspw6.state -> eb.state_in[6];
+	
+	connect eb.emergency_braking -> emergency;
+}

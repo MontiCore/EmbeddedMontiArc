@@ -1,0 +1,51 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Pipeline Report</title>
+  <link href="images/favicon.ico" type="image/x-icon" rel="icon"/>
+  <script src="js/dataTable/jquery-3.3.1.min.js"></script>
+  <script src="js/dataTable/jquery.dataTables.min.js"></script>
+  <script src="js/dataTable/dataTables.fixedHeader.min.js"></script>
+  <script src="js/dataTable/dataTables.rowGroup.min.js"></script>
+  <script src="js/dataTable/dataTables.select.min.js"></script>
+  <script src="js/customDataTable.js"></script>
+  <link rel="stylesheet" media="all" href="css/bootstrap-2.3.2.min.css">
+  <link rel="stylesheet" media="all" href="css/fixedHeader.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/select.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/jquery.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/customTable.css">
+  <link rel="stylesheet" media="all" href="css/childControlImages.css">
+  <link rel="stylesheet" media="all" href="css/pipelineReport.css">
+</head>
+<body>
+  <!-- <div class="myTableContainer"> -->
+    <table id="my-table" class="display cell-border dataTable" role="grid" style="width: 100%;" width="100%" cellspacing="0">
+    
+      <thead>
+        <tr>
+          <th style="visibility: hidden;">Project</th>
+          <th style="visibility: hidden;">Order</th>
+          <th class="grow" style="width: 50%"><div><span>Project / Branch</span></div></th>
+          <th class="grow"><div><span>Last Status</span></div></th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  <!-- <div> -->
+  <script src="js/pipelineReport.js"></script>
+  <script>
+    var tableName = "my-table";
+    var tableReference = "#" + tableName;
+    var dataFile = "data/dataProjectPipelines.json";
+    var table;
+    $(document).ready(function () {
+        createTable_custom(dataFile);
+    });
+  </script>
+
+</body>
+</html>

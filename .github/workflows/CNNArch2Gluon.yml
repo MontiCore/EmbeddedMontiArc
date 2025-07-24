@@ -1,0 +1,232 @@
+name: CNNArch2Gluon
+on:
+  push:
+    paths:
+      - 'generators/CNNArch2Gluon/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 24962
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+  FileChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      runmasterJobLinux: ${{steps.masterJobLinux.outputs.run}}
+      runBranchJobLinux: ${{steps.BranchJobLinux.outputs.run}}
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check for file changes
+        run: |
+          CHANGES=$(git diff --name-only HEAD^ HEAD)
+          echo "$CHANGES"
+          echo "$CHANGES" > diff.txt
+      - name: Check masterJobLinux
+        id: masterJobLinux
+        run: |
+          rule1_files=false
+          for path in $(cat diff.txt); do
+            if [[ $path == *src* ]]; then
+              echo "Matching path found: $path"
+              rule1_files=true
+            fi
+            if [[ $path == *pom.xml* ]]; then
+              echo "Matching path found: $path"
+              rule1_files=true
+            fi
+            if [[ $path == *settings.xml* ]]; then
+              echo "Matching path found: $path"
+              rule1_files=true
+            fi
+          done
+          echo "rule1_files: $rule1_files"
+          if [[ ${{ github.ref_name }} == "master" && ${{ github.event_name }} == "workflow_dispatch" ]]; then
+            echo "rule0 is true"
+            rule0=1
+          else
+            echo "rule0 is false"
+            rule0=0
+          fi
+          if [[ ${{ github.ref_name }} == "master" && $rule1_files == true ]]; then
+            echo "rule1 is true"
+            rule1=1
+          else
+            echo "rule1 is false"
+            rule1=0
+          fi
+          run=0
+          run=$((run || rule0))
+          run=$((run || rule1))
+          if [[ $run == 1 ]]; then
+            run=true
+          else
+            run=false
+          fi
+          echo "Final run status: $run"
+          echo "run=$run" >> $GITHUB_OUTPUT
+      - name: Check BranchJobLinux
+        id: BranchJobLinux
+        run: |
+          rule1_files=false
+          for path in $(cat diff.txt); do
+            if [[ $path == *src* ]]; then
+              echo "Matching path found: $path"
+              rule1_files=true
+            fi
+            if [[ $path == *pom.xml* ]]; then
+              echo "Matching path found: $path"
+              rule1_files=true
+            fi
+            if [[ $path == *settings.xml* ]]; then
+              echo "Matching path found: $path"
+              rule1_files=true
+            fi
+          done
+          echo "rule1_files: $rule1_files"
+          if [[ ${{ github.ref_name }} != "master" && ${{ github.event_name }} == "workflow_dispatch" ]]; then
+            echo "rule0 is true"
+            rule0=1
+          else
+            echo "rule0 is false"
+            rule0=0
+          fi
+          if [[ ${{ github.ref_name }} != "master" && $rule1_files == true ]]; then
+            echo "rule1 is true"
+            rule1=1
+          else
+            echo "rule1 is false"
+            rule1=0
+          fi
+          run=0
+          run=$((run || rule0))
+          run=$((run || rule1))
+          if [[ $run == 1 ]]; then
+            run=true
+          else
+            run=false
+          fi
+          echo "Final run status: $run"
+          echo "run=$run" >> $GITHUB_OUTPUT
+  linux_phase:
+    needs: [BranchJobLinux, masterJobLinux]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage linux"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage linux"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  masterJobLinux:
+    needs: FileChanges
+    if: ${{needs.FileChanges.outputs.runmasterJobLinux == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull maven:3-jdk-8
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/CNNArch2Gluon
+            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean deploy --settings settings.xml
+            cat target/site/jacoco/index.html
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  BranchJobLinux:
+    needs: FileChanges
+    if: ${{needs.FileChanges.outputs.runBranchJobLinux == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull maven:3-jdk-8
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/CNNArch2Gluon
+            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U  clean install --settings settings.xml
+            cat target/site/jacoco/index.html
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  trigger-emadl:
+    needs: linux_phase
+    if: ${{ !cancelled() && github.ref_name == 'master' && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger EMADL2CPP pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: EMADL2CPP.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: EMADL2CPP.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
