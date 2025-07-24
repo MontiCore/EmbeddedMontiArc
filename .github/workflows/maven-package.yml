@@ -11,21 +11,9 @@ env:
   GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
   cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
 jobs:
-  windows_phase:
-    needs: [masterJobWindows]
-    if: ${{ !cancelled()}}
-    runs-on: ubuntu-latest
-    steps:
-        - run: |
-            echo "Finished stage windows"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage windows"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+
 
   masterJobLinux:
-    needs: windows_phase
     if: ${{ !cancelled() && github.ref_name == 'master' && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -46,22 +34,7 @@ jobs:
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
-  masterJobWindows:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - name: Checkout latest commit
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - name: Script
-        shell: bash
-        run: |
-            cd utilities/maven-package
-            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
-
   BranchJobLinux:
-    needs: windows_phase
     if: ${{ github.ref_name != 'master' && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
