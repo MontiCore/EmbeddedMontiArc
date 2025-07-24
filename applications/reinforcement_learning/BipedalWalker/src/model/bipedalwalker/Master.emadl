@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package bipedalwalker;
+
+import bipedalwalker.agent.WalkerActor;
+
+component Master {
+    ports
+        in Q^{24} state,
+        out Q(-1:1)^{4} action;
+
+    instance WalkerActor walker;
+    
+    connect state -> walker.state;
+    connect walker.action -> action;
+}

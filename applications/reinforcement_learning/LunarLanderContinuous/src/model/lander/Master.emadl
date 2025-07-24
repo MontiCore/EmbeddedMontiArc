@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lander;
+
+import lander.agent.LanderActor;
+
+component Master {
+    ports
+        in Q^{8} state,
+        out Q(-1:1)^{2} action;
+
+    instance LanderActor lander;
+    
+    connect state -> lander.state;
+    connect lander.action -> action;
+}
