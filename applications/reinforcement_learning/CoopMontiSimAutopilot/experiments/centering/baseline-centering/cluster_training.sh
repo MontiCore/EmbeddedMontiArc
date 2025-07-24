@@ -1,1 +1,0 @@
-../../../Autopilot/cluster_training.sh

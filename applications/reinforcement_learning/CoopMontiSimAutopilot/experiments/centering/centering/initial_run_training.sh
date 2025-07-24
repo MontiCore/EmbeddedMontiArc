@@ -1,1 +1,0 @@
-../../../Autopilot/initial_run_training.sh

@@ -1,2 +1,0 @@
-This is just a file, serving as a signal to the cluster, that the output-file from nTopology has been successfully copied to the cluster.
-Without this file, a slow internet connection would lead to a partially transmitted file. Then, the cluster would process the incomplete file, and obtain wrong results.

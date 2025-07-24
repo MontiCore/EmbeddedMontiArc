@@ -1,2 +1,0 @@
-translator.RNNencdec resources/training_data
-translator.RNNsearch resources/training_data

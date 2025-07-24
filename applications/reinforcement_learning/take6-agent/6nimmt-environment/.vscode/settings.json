@@ -1,5 +1,0 @@
-{
-    "java.configuration.maven.userSettings": "D:\\Bachelor Stuff\\6nimmt-agent\\6nimmt-environment\\settings.xml",
-    "maven.executable.options": "-s ./settings.xml",
-    "java.configuration.updateBuildConfiguration": "interactive"
-}

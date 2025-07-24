@@ -1,7 +1,0 @@
-*.pyc
-.vscode
-**/target
-cmake-build-debug
-*.jar
-cudnn*
-output.txt

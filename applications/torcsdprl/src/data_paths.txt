@@ -1,2 +1,0 @@
-cv.nn.SenetSmall training-data-debugging-small
-cv.nn.AlexnetSmall training-data-debugging-small

@@ -1,1 +1,0 @@
-AlexnetSmall training-data-debugging-small

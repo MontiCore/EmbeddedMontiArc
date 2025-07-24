@@ -1,1 +1,0 @@
-gedit /usr/local/share/games/torcs/config/screen.xml

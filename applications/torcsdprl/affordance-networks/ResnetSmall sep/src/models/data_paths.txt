@@ -1,1 +1,0 @@
-ResnetSmall training-data-debugging-small

@@ -1,8 +1,0 @@
-    vector<float> state_ = CNNTranslator::translate(state);
-
-    vector<float> action_(3);
-
-
-    _predictor_0_.predict(state_, action_);
-
-    action = CNNTranslator::translateToCol(action_, std::vector<size_t> {3});

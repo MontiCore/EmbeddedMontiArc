@@ -1,7 +1,0 @@
-{
-    "modelsDir": "src/models",
-    "outputDir": "../../target/resnet",
-    "rootModel": "resnet",
-    "generators": ["emadlcpp"],
-    "emadlBackend": "GLUON"
-}

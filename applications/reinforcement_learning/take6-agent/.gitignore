@@ -1,9 +1,0 @@
-/6nimmt-agent/target/
-/6nimmt-environment/target/
-target/
-/.gradle/
-/bin/
-.vsls.json
-/output.txt
-/out.pl
-.DS_Store

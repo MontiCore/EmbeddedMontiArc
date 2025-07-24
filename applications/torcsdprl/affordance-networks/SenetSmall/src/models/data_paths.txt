@@ -1,1 +1,0 @@
-SenetSmall training-data-small-img

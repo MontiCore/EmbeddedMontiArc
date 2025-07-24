@@ -1,1 +1,0 @@
-#include "IAdapter_cheetah_master.h"

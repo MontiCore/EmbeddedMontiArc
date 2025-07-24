@@ -1,1 +1,0 @@
-#include "RosAdapter_cheetah_master.h"

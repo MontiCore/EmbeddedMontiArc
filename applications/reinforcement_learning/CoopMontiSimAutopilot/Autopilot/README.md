@@ -1,1 +1,0 @@
-Structure of the Autopilot. This directory also contains scripts necessary for installation, training, and execution of agents, that the experiments are linked to.

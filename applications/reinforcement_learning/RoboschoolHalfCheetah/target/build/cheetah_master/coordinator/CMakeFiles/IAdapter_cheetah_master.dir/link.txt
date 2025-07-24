@@ -1,2 +1,0 @@
-/usr/bin/ar qc libIAdapter_cheetah_master.a  CMakeFiles/IAdapter_cheetah_master.dir/IAdapter_cheetah_master.cpp.o
-/usr/bin/ranlib libIAdapter_cheetah_master.a
