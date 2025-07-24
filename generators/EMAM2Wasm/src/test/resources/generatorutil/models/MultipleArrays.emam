@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component MultipleArrays {
+  ports
+    in Z scalar,
+    in Z in1[3],
+    in Q in2[3],
+    in Z^{2,3} in3[2],
+    out Z out1[3],
+    out Q^{1,1} out2[1];
+}

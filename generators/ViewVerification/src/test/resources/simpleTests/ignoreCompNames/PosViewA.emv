@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests.ignoreCompNames;
+
+view PosViewA {
+    component Car {
+        component Wheel {}
+        component Engine {}
+
+        instance Wheel WheelA;
+        instance Wheel WheelB;
+    
+        instance Engine EngineA;
+        instance Engine EngineB;
+    
+        connect EngineA -> WheelB;
+        connect EngineB -> WheelA;
+    }
+}

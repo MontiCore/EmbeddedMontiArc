@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+ 
+
+component EigenSolver<N1 n = 2500,N1 targetEigenvectors = 4> {
+
+    ports in Q(-oo:oo)^{n,n} matrix,
+
+          out Q(-oo:oo)^{n,targetEigenvectors} eigenvectors;
+
+ 
+
+    implementation Math{
+
+        //calculate requested amount of eigenvectors if present
+
+        Q^{n,n} eigenVectors = eigvec(matrix);
+
+ 
+
+        Q counter = 1;
+
+        Q start = size(eigenVectors,2) - ( targetEigenvectors - 1 );
+
+        for i = start : size(eigenVectors,1)
+
+                eigenvectors(:,counter) = eigenVectors(:,i);
+
+            counter = counter + 1;
+
+        end
+
+    }
+
+}

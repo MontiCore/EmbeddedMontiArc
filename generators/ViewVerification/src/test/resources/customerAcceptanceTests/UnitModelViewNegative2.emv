@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view UnitModelViewNegative2 {
+    component UnitModel {
+        ports 
+            in (-100 m/s:100 m/s) acceleration, 
+            out (-1 km/h : 5 km/h) velocity;            //different range
+    }
+}

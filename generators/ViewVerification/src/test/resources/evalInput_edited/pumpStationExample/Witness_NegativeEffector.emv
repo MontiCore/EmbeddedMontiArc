@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+//expected:
+view Witness_NegativeEffector {
+    component SensorReading {
+    ports
+      in boolean pump,
+      out boolean pumpState,
+      out ValvePosition valvePosition;
+
+    component PumpSensorReader {
+      ports
+        in boolean pump,
+        out boolean pumpState;
+        effect pump -> pumpState;
+    }
+    instance PumpSensorReader pumpSensorReader;
+
+    connect pump -> pumpSensorReader.pump;
+    connect pumpSensorReader.pumpState -> pumpState;
+  }
+}

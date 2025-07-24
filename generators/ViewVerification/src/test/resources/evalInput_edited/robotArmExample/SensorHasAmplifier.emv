@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+view SensorHasAmplifier {
+
+  component Sensor {
+    component SensorAmplifier { }
+    instance SensorAmplifier sensorAmplifier;
+  }
+  instance Sensor sensor;
+
+}

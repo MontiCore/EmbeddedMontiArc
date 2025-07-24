@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+package model.weatherBalloon;
+
+component WeatherBalloonSensors {
+    port
+        in Boolean controlSignalsIn,
+        out Boolean dataSaveInternalOut,
+        out Boolean dataAntennaOut;
+
+    component Controller {
+        port
+          in Boolean controlSignalsIn,
+          out Boolean dataSaveInternalOut,
+          out Boolean dataAntennaOut,
+          out Boolean sensorRequest1,
+          out Boolean sensorRequest2,
+          out Boolean sensorRequest3,
+          out Boolean sensorRequest4,         
+          in Boolean sensorResponse1,
+          in Boolean sensorResponse2,
+          in Boolean sensorResponse3,
+          in Boolean sensorResponse4;
+    }
+
+    component GPS {
+      port 
+        in Boolean sensorIn,
+        out Boolean sensorOut;
+    }
+    
+    component Temperature {
+      port 
+        in Boolean sensorIn,
+        out Boolean sensorOut;
+    }
+    
+    component Humidity {
+      port 
+        in Boolean sensorIn,
+        out Boolean sensorOut;
+    }
+    
+    instance Controller control;
+    instance GPS gps1, gps2;
+    instance Temperature temp1;
+    instance Humidity humid1;
+
+
+    connect controlSignalsIn -> control.controlSignalsIn;
+    connect control.dataSaveInternalOut -> dataSaveInternalOut;
+    connect control.dataAntennaOut -> dataAntennaOut;
+    connect control.sensorRequest1 -> gps1.sensorIn;
+    connect control.sensorRequest2 -> gps2.sensorIn;
+    connect control.sensorRequest3 -> temp1.sensorIn;
+    connect control.sensorRequest4 -> humid1.sensorIn;    
+    connect gps1.sensorOut -> control.sensorResponse1;
+    connect gps2.sensorOut -> control.sensorResponse2;
+    connect temp1.sensorOut -> control.sensorResponse3;
+    connect humid1.sensorOut -> control.sensorResponse4;
+
+
+}

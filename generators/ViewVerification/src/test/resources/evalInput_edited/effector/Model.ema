@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package effector;
+
+component Model {
+  component Constant3 {
+    port out T1 out1;
+  }
+  instance Constant3 constant3;
+
+  component SliderGain2 {
+    port in T1 uIn1;
+  }
+  instance SliderGain2 sliderGain2;
+  
+  connect constant3.out1 -> sliderGain2.uIn1;
+}

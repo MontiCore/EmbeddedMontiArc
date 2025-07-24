@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests.ifcompleteness;
+
+view NegTest2 {
+    component BComp {
+        ports 
+            in Boolean in1,
+            in Boolean in2,
+            out Boolean out1,
+            out Boolean out2; // this port does not exist.
+    }
+}
