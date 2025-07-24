@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.monticar;
+
+/**
+ * This grammar defines Java compliant types. The scope of this grammar is to
+ * ease the reuse of type structures in Java-like sublanguages, e.g., by grammar
+ * inheritance or grammar embedment.
+ * The grammar contains types from Java, e.g., primitives, void, types with
+ * dimensions, reference types, generics, and type parameters.
+ *
+*/
+grammar Types2 extends de.monticore.types.Types, de.monticore.NumberUnit, de.monticore.lang.monticar.Resolution, de.monticore.lang.monticar.PrintType, de.monticore.lang.monticar.Ranges {
+
+  // TODO: extend or overwrite TypeVariableDeclaration and TypeParameters
+  TypeVariableDeclaration2 =
+  (ResolutionDeclaration)|(NamingResolution
+  (
+          "extends" upperBounds:ComplexReferenceType
+          ("&" upperBounds:ComplexReferenceType)*
+  )?);
+
+  TypeParameters2 = ("<" (TypeVariableDeclaration2 || ",")+ ">");
+
+  Dimension =
+      "^" ("{" matrixDim:(Expression || ",")+ "}" | vecDim:Expression);
+
+  ElementType implements Type, TypeArgument =
+      Name Range? | Range;
+
+  // added missing expressions
+  BooleanExpression implements Expression<50> = BooleanLiteral;
+  StringExpression implements Expression<200> = StringLiteral;
+}

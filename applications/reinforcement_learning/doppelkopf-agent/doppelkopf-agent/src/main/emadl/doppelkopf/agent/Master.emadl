@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package doppelkopf.agent;
+
+import doppelkopf.agent.network.DoppelkopfQNet;
+import doppelkopf.agent.strategy.GreedyDiscreteStrategy;
+
+component Master {
+    ports
+        in Q(0:1)^{29} observation,
+        in Q(0:1)^{9} legal_actions,
+        out Z(0:8) action;
+
+    instance DoppelkopfQNet dqn;
+    instance GreedyDiscreteStrategy strategy;
+
+    connect observation -> dqn.state;
+    connect dqn.qvalues -> strategy.values;
+    connect legal_actions -> strategy.legal_actions;
+    connect strategy.action -> action;
+}

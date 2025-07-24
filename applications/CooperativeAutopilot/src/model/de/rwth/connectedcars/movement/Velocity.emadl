@@ -1,0 +1,69 @@
+package de.rwth.connectedcars.movement;
+
+component Velocity {
+
+  port 
+      in  Q (-oo km/h : oo km/h) currentVel,
+      in  Q (-oo m : oo m)       calcPath_x,
+      in  Q (-oo m : oo m)       calcPath_y,
+      in  Q (-180 : 180)         nextTurnAngle,
+      in  Q (-30 : 30)           currentSteer,
+      in  Q (0 m/s : oo m/s) ^ 9 maxVelocity,
+      in  Q (0 m/s : oo m/s) ^ 9 minVelocity,
+      in  Q (0 : 180)            critTurnAngle,
+      in  Q (0 m : oo m)         dist2critAngle,
+      in  Q (0 m/s : oo m/s)     normalTurnSpeed,
+      in  Q (0 m/s : oo m/s)     sharpTurnSpeed,
+      in  Q (0 : 180)            extraCritAngle,
+      in  Q (0 : oo)             velCoef,
+      in  Q (0 m : oo m)         lowSpeedLimitDist,
+      in  Q (0 m/s : oo m/s)     lowerSpeedLimit,
+      in  B                      emergencyBraking,
+
+      out Q (-0.5 : 1.0)         gasRes,
+      out Q (0.0 : 1.0)          brakeRes;
+
+  instance PID pid;
+  instance VelocityCalc velCalc;
+  instance PIDres2GasBrakes res2pedal;
+  instance PIDcoef coef;
+  instance PIDerror error;
+  instance EmergencyBraking emergency;
+  
+  //connect PID
+  connect coef.kI     -> pid.kI;
+  connect coef.kP     -> pid.kP;
+  connect coef.kD     -> pid.kD;
+  connect currentVel  -> error.currentVel;
+  connect error.error -> pid.error;
+  
+  //connect Velocity calculator
+  connect maxVelocity   -> velCalc.maxVelocity;
+  connect minVelocity   -> velCalc.minVelocity;
+  connect critTurnAngle -> velCalc.critTurnAngle;
+
+  connect currentVel        -> velCalc.currentVel;
+  connect nextTurnAngle     -> velCalc.nextTurnAngle;
+  connect dist2critAngle    -> velCalc.dist2critAngle;
+  connect currentSteer      -> velCalc.currentSteer;
+  connect normalTurnSpeed   -> velCalc.normalTurnSpeed;
+  connect sharpTurnSpeed    -> velCalc.sharpTurnSpeed;
+  connect extraCritAngle    -> velCalc.extraCritAngle;
+  connect velCoef           -> velCalc.velCoef;
+  connect lowSpeedLimitDist -> velCalc.lowSpeedLimitDist;
+  connect lowerSpeedLimit   -> velCalc.lowerSpeedLimit;
+
+  connect velCalc.desiredVelocity -> error.desired;
+  connect pid.controlValue        -> res2pedal.controlValue;
+  
+  //output pedal results
+  connect res2pedal.gasRes        -> gasRes;
+  connect res2pedal.brakeRes      -> brakeRes;
+
+  connect res2pedal.gasRes -> emergency.gasResIn;
+  connect res2pedal.brakeRes -> emergency.brakeResIn;
+  connect emergencyBraking -> emergency.emergencyBraking;
+  
+  connect emergency.gasResOut -> gasRes;
+  connect emergency.brakeResOut -> brakeRes;
+}

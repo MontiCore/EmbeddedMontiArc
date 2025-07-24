@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+#logos-container {
+    position:absolute;
+    right:30px;
+    bottom:30px;
+    z-index:2;
+}
+
+#logos-container img {
+    height:54px;
+}

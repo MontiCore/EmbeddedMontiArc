@@ -1,0 +1,97 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+
+dynamic component Collisionmessage_helper{
+  ports
+  // convert the collision information to array
+  dynamic in  Z     iscollision[0:32],
+  dynamic in  Z     collsion_id[0:32],
+  dynamic in  Z     collisionpriority[0:32],
+  dynamic in  Q     angletocurrent[0:32],
+  dynamic in  Q     velocity_car1[0:32],
+  dynamic in  Q     dis2intersection[0:32],
+
+  // use for the collision message
+  out  Z          vehicle_n,
+  out  Z^{1,32}   real_collsion_id,
+  out  Z^{1,32}   real_collisionpriority,
+
+  // use for the collision information at intersection
+  out  Z^{1,32}   all_iscollision,
+  out  Z^{1,32}   all_collsion_id,
+  out  Z^{1,32}   all_collisionpriority,
+  out  Q^{1,32}   all_angletocurrent,
+  out  Q^{1,32}   all_velocity_car1,
+  out  Q^{1,32}   all_dis2intersection;
+
+
+  // dynamic ports interface
+  @ iscollision::connect{/*interface*/}
+  @ collsion_id::connect{/*interface*/}
+  @ collisionpriority::connect{/*interface*/}
+  @ angletocurrent::connect{/*interface*/}
+  @ velocity_car1::connect{/*interface*/}
+  @ dis2intersection::connect{/*interface*/}
+
+  implementation Math{
+    //initial of the variables
+    Z counter = 1;
+    Z counter1 = 1;
+
+    // initial of real collision array
+    for i1 = 1:32
+      real_collsion_id(1,i1) = 0;
+      real_collisionpriority(1,i1) = 0;
+    end
+    //initial of collision information array
+    for j1 = 1:32
+      all_iscollision(1,j1) = 0;
+      all_collsion_id(1,j1) = 0;
+      all_collisionpriority(1,j1) = 0;
+      all_angletocurrent(1,j1) = 0.0;
+      all_velocity_car1(1,j1) = 0.0;
+      all_dis2intersection(1,j1) = 0.0;
+    end
+    //convert the real collision information of intersection vehicle to array
+    for i = 1:32
+       if is_connected(iscollision, i)
+          Z iscollision1 = iscollision(i);
+          if iscollision1 == 1
+             if is_connected(collsion_id,i)
+                real_collsion_id(1,counter) = collsion_id(i);
+             end
+             if is_connected(collisionpriority,i)
+                real_collisionpriority(1,counter) = collisionpriority(i);
+             end
+             counter = counter + 1;
+          end
+       end
+    end
+
+    //convert the all information of intersection vehicle to array
+    for j = 1:32
+        if is_connected(iscollision, j)
+           all_iscollision(1,counter1) = iscollision(j);
+        end
+        if is_connected(collsion_id, j)
+           all_collsion_id(1,counter1) = collsion_id(j);
+        end
+        if is_connected(collisionpriority, j)
+           all_collisionpriority(1,counter1) = collisionpriority(j);
+        end
+        if is_connected(angletocurrent, j)
+           all_angletocurrent(1,counter1) = angletocurrent(j);
+        end
+        if is_connected(angletocurrent, j)
+           all_velocity_car1(1,counter1) = velocity_car1(j);
+        end
+        if is_connected(angletocurrent, j)
+           all_dis2intersection(1,counter1) = dis2intersection(j);
+        end
+        counter1 = counter1 + 1;
+    end
+
+    // use as the sign there is no collision vehicle
+    vehicle_n = counter - 1;
+  }
+}

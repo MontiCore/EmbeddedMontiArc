@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package exampleBA;
+
+component CComp {
+	ports
+		in Boolean in1,
+		out Boolean out1,
+		out Boolean out2;
+}

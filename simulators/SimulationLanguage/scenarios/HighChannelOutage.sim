@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: High Channel Outage
+ * Focus: Observe vehicle handling near to permanent channel outage
+ * Details: 1 vehicle traveling, using high outage global channel
+*/
+sim HighChannelOutage {
+  sim_duration 4h;
+  
+  time 12:00;
+  
+  map_name HighChannelOutage.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-100,0,0)->(100,0,0);
+  
+  fixed channel WestChannel {
+    transferrate 1Mbit/s;
+    latency 1ms;
+    outage 99%;
+    area global;
+  };
+}

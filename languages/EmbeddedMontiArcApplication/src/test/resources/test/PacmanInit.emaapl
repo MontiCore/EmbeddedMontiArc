@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test;
+
+actuator PacmanInit{
+    variable out Boolean initDone;
+
+    connect true -> initDone;
+
+    implementation Application{
+       set window size to 800 600;
+       load texture pacman1 from "textures/pacman1";
+       load texture pacman2 from "textures/pacman2";
+       load texture pacman3 from "textures/pacman3";
+       create sprite pacman;
+       add texture pacman1 to pacman;
+       add texture pacman2 to pacman;
+       add texture pacman2 to pacman;
+       set pacman texture delay to 4;
+    }
+}

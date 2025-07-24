@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "@emastudio/monaco",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio Monaco Package.",
+  "keywords": [
+    "EmbeddedMontiArcStudio"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller.git"
+  },
+  "dependencies": {
+    "@theia/monaco": "latest"
+  },
+  "devDependencies": {}
+}

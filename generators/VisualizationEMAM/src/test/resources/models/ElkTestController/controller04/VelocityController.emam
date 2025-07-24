@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller04;
+
+component VelocityController {
+	port                                    
+		in Q(0km/h : 250km/h) velocity,
+		out Q(-2m/s^2:2m/s^2) acceleration; 
+
+	implementation Math{                    
+
+    	if (velocity > 1 m/s)
+    	    acceleration = 0m/s^2;
+    	else
+    		acceleration = 1m/s^2;
+        end
+
+	}
+}

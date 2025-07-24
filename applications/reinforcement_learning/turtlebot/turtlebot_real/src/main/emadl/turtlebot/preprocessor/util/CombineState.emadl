@@ -1,0 +1,17 @@
+package turtlebot.preprocessor.util;
+
+component CombineState {
+    ports
+        in Q^{29} laserState,
+        in Q      headingState,
+        in Q      curDistance,
+        out Q^{31} state;
+    
+    implementation Math {
+        for i=1:29
+            state(i) = laserState(i);//state[1:29] = laserState[::]
+        end
+        state(30) =  headingState;
+        state(31) = curDistance;
+    }
+}

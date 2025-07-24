@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagematch;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Beaconmessage2platoon{
+ ports
+   // fliter the message for the vehicle at intersection
+   dynamic in Platoonmessage        plat_msg[0:32],
+   dynamic in Trajectorymessage     traj_msg[0:32],
+   in  Z ^ 32   platoonlist,
+   in  Z   list_num,
+
+   dynamic out Platoonmessage      newplat_msg[0:32],
+   dynamic out Trajectorymessage   newtraj_msg[0:32],
+   out Platoonmessage       pmsg,
+   out Trajectorymessage    tmsg;
+
+   @ plat_msg::connect{/* interface for dynamic ports*/}
+   @ traj_msg::connect{/* interface for dynamic ports*/}
+
+   implementation Math{
+     Z counter = 1;
+     for i = 1:32
+        if is_connected(plat_msg,i)
+           pmsg = plat_msg(i);
+           for j = 1:list_num
+              if pmsg.vehicleid == platoonlist(j)
+                 for k = 1:32
+                    if is_connected(traj_msg,k)
+                       tmsg = traj_msg(k);
+                       if pmsg.vehicleid == tmsg.vehicleid
+                          if ports_connect(newplat_msg,counter,pmsg)
+                             newplat_msg(counter) = pmsg;
+                          end
+                          Z r = ports_free(newplat_msg,counter);
+
+                          if ports_connect(newtraj_msg,counter,tmsg)
+                             newtraj_msg(counter) = tmsg;
+                          end
+                          Z r1 = ports_free(newtraj_msg,counter);
+                          counter = counter + 1;
+                       end
+                    end
+                 end
+              end
+           end
+        end
+     end
+   }
+ }

@@ -1,0 +1,97 @@
+name: torcsdprl
+on:
+  push:
+    paths:
+      - 'applications/torcsdprl/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 62182
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+  FileChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      runbuildDocker: ${{steps.buildDocker.outputs.run}}
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check for file changes
+        run: |
+          CHANGES=$(git diff --name-only HEAD^ HEAD)
+          echo "$CHANGES"
+          echo "$CHANGES" > diff.txt
+      - name: Check buildDocker
+        id: buildDocker
+        run: |
+          only=false
+          for path in $(cat diff.txt); do
+            if [[ $path == *Docker* ]]; then
+              echo "Matching path found: $path"
+              echo "RUN"
+              only=true
+              break
+            fi
+          done
+          echo "Final file status only check: $only"
+          echo "run=$only" >> $GITHUB_OUTPUT
+  docker_phase:
+    needs: [buildDocker]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage docker"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage docker"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  buildDocker:
+    needs: FileChanges
+    if: ${{ !cancelled() && needs.FileChanges.outputs.runbuildDocker == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        continue-on-error: true
+        shell: bash
+        run: |
+            cd applications/torcsdprl
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            cd Docker
+            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+            docker build -t ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17 .
+            docker push ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17
+
+  TestBuild:
+    needs: docker_phase
+    if: ${{ !cancelled() && needs.docker_phase.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/torcsdprl/dockerimages/mxnet17:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/monticore/torcsdprl/dockerimages/mxnet17:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/torcsdprl
+            chmod +x scripts/ci-script.sh && ./scripts/ci-script.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+

@@ -1,0 +1,100 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ * This component grammar represents the declaration of options to be used in a DynamicDialog of the IDE.
+ */
+grammar Option extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.lang.monticar.sol.grammars.Common {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /**
+     * Common interface for all elements which might appear in the body of an option.
+     */
+    interface OptionElement;
+
+    /**
+     * Common interface for all elements which might appear in the body of an option type.
+     */
+    interface OptionTypeElement;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     * The start production of the option language holding the definition of an option type.
+     */
+    OptionCompilationUnit =
+        package:PackageStatement
+        OptionType
+    ;
+
+    start OptionCompilationUnit;
+
+    /**
+     * This productions represents the definition of an option type to be used in the option instances.
+     */
+    symbol scope OptionType =
+        "typedef" "option" Name "{" element:OptionTypeElement* "}"
+    ;
+
+    /**
+     * This production represents the definition of a prop within an option type.
+     */
+    symbol PropDeclaration implements OptionTypeElement =
+        ["required"]? "prop" Name& ":" Type
+    ;
+
+    /*
+     * This production represents an expression which indicates whether an option type is a composite and of which
+     * type (array or object).
+     */
+    Composite implements OptionTypeElement =
+        "composite" type:["array" | "object"]
+    ;
+
+    /**
+     * This production represents the type of value that this option will return when filled out.
+     */
+    Return implements OptionTypeElement =
+        "returns" type:PrimitiveType
+    ;
+
+    /**
+     * Represents the assignment of a value to a prop of an option.
+     */
+    symbol PropAssignment implements OptionElement =
+        Name& (literal:SignedLiteral | list:SignedLiteralList)
+    ;
+
+    /**
+     * Represents the actual option to be declared.
+     */
+    symbol scope Option implements OptionElement =
+        "option" Name& ":" type:Name "{" (Option | PropAssignment)* "}" // Some weird issue does not let me use OptionElement ):
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+
+    ast OptionCompilationUnit =
+        method public java.util.List<String> getPackageList() {
+            return this.getPackage().getPackageList();
+        }
+    ;
+
+    ast Return =
+        method public String getTypeIdentifier() {
+            return this.getType().getIdentifier();
+        }
+    ;
+}

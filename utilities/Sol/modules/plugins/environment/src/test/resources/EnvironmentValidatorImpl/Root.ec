@@ -1,0 +1,8 @@
+PACKAGE EnvironmentValidatorImpl
+
+IMPORT EnvironmentValidatorImpl.NoAPTGetInstall
+IMPORT EnvironmentValidatorImpl.NoCommandChaining
+
+DOCKERFILE Root
+
+FROM "baseImage:version"

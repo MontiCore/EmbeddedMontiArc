@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops;
+
+component SerialLoopAsSymbol {
+    port
+        in Q in1,
+        out Q out1;
+
+    implementation Math {
+        diff3 == in1-diff2;
+        diff2 == diff1-gain2;
+        gain2 == 2*diff2;
+        diff1 == diff3-gain1;
+        gain1 == 3*diff1;
+        
+        out1 == S.diff2;
+    }
+}

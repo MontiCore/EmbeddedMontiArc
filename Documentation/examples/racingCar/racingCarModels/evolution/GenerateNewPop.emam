@@ -1,0 +1,32 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+
+import PIDTupleAggregation;
+import tournamentSelection;
+import arithCrossOver;
+import Mutation;
+
+component GenerateNewPop{
+	in PIDTupleAggregation oldPop[20],
+
+	out PIDTupleAggregation newPop[20];
+ 
+	implementation Math{
+
+		for i in Z(0:1:19){
+			Q(0 : 0.0001 : 1) p = rand();
+			if(p <= 0.75){
+				PIDTupleAggregation father = tournementSelection(oldPop, 3);
+				PIDTupleAggregation mother = tournementSelection(oldPop, 3);
+				newPop[i] = arithCrossOver(father, mother);
+			}else{
+				newPop[i] = tournamentSelection(oldPop, 3);
+			}
+			Q(0 : 0.0001 : 1) q = rand();
+			if(q <=0.1){
+				newPop[i] = mutation(newPop[i]);
+			}
+		}
+	}
+
+}

@@ -1,0 +1,4 @@
+package emamtest;
+stream TestMatrixStreamWithFile for AComponent {
+  direction: [ 1, 0 , 0] tick [0, 1, 0] tick file::"/src/test/resources/text/matrix.txt";
+}

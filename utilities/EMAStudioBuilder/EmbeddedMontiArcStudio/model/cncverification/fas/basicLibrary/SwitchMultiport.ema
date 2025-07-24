@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas.basicLibrary;
+
+component SwitchMultiport<T,N1 n=3> {
+	port 
+		in T in1, //condition
+	    in T in2[n], //inputs
+		out T out1;
+}

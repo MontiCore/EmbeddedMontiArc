@@ -1,0 +1,6 @@
+package LDValidatorImpl
+
+typedef option String {
+    required prop label: string
+    returns string
+}

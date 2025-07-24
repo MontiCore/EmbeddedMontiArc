@@ -1,0 +1,16 @@
+(role player1)
+(role player2)
+(role random)
+
+(init (role_name player1))
+
+(<= (legal test (copy_role ?x))
+    (role ?x)
+)
+
+(<= (next (role_name ?x))
+    (does test (copy_role ?x))
+)
+(<= (next (role_name ?x))
+    (true (role_name ?x))
+)

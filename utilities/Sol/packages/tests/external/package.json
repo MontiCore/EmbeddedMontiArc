@@ -1,0 +1,40 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-tests-external",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "main": "lib/main/index",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "webpack --config configs/webpack.config.js --mode development",
+    "watch": "echo Watcher not bound.",
+    "start": "electron . --enable-logging"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-external-core": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-docker": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-gui-process": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-preparation": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "^2020.5.5-SNAPSHOT",
+    "electron-debug": "^3.0.1",
+    "inversify": "^5.0.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "css-loader": "0.28.11",
+    "electron": "^6.0.7",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "svg-inline-loader": "^0.8.0",
+    "ts-loader": "^6.0.4",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.1.1"
+  },
+  "theiaExtensions": []
+}

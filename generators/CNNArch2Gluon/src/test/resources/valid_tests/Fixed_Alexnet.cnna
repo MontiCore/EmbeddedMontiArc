@@ -1,0 +1,44 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture Fixed_Alexnet(){
+    def input Z(0:255)^{3, 224, 224} image
+    def output Q(0:1)^{10} predictions
+
+    def group1(i){
+        [i] ->
+        Convolution(kernel=(5,5), channels=128) ->
+        Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
+        Pooling(pool_type="max", kernel=(3,3), stride=(2,2), padding="no_loss") ->
+        Relu()
+    }
+    def group2(i){
+        [i] ->
+        Convolution(kernel=(3,3), channels=192) ->
+        Relu() ->
+        Convolution(kernel=(3,3), channels=128) ->
+        Pooling(pool_type="max", kernel=(3,3), stride=(2,2), padding="no_loss") ->
+        Relu()
+    }
+    def fc(){
+        FullyConnected(units=4096) ->
+        Relu() ->
+        Dropout()
+    }
+
+    image ->
+    Convolution(kernel=(11,11), channels=96, stride=(4,4), padding="no_loss") ->
+    Lrn(nsize=5, alpha=0.0001, beta=0.75) ->
+    Pooling(pool_type="max", kernel=(3,3), stride=(2,2), padding="no_loss") ->
+    Relu() ->
+    Split(n=2) ->
+    group1(i=[0|1]) ->
+    Concatenate() ->
+    Convolution(kernel=(3,3), channels=384) ->
+    Relu() ->
+    Split(n=2) ->
+    group2(i=[0|1]) ->
+    Concatenate() ->
+    fc(->=2) ->
+    FullyConnected(units=10) ->
+    Softmax() ->
+    predictions;
+}

@@ -1,0 +1,16 @@
+image: alpine:latest
+
+stages:
+- test
+- testLinux
+
+include:
+  template: License-Management.gitlab-ci.yml
+
+masterJobLinux:
+  tags:
+  - ema
+  stage: testLinux
+  image: maven:3-jdk-8
+  script:
+    - echo "hello world123"

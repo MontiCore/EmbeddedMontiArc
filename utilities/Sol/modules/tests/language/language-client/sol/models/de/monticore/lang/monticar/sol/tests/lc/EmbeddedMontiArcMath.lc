@@ -1,0 +1,61 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.tests.lc
+
+import de.monticore.lang.monticar.sol.option.types.*
+
+language EmbeddedMontiArcMath {
+    keywords [
+        "null", "true", "false", "void", "boolean", "byte", "short", "int", "long", "char", "float", "double",
+        "extends", "super", "import", "package", "script", "end", "for", "if", "elseif", "else", "subject", "to",
+        "minimize", "maximize", "adaptable", "component", "implements", "dynamic", "interface", "port", "ports",
+        "in", "out", "instance", "connect", "implementation", "Math", "event", "Port", "value", "free"
+    ]
+
+    extension ".emam"
+    server "language-server/target/tests-language-ls.jar" resolved from PARENT
+
+    template emamComponent {
+        path "EmbeddedMontiArcMath.njk"
+        label "EmbeddedMontiArcMath Component"
+
+        /*
+         * Package
+         */
+        option packageName: String {
+            label "Package"
+            required true
+        }
+
+        /*
+         * Component
+         */
+        option componentName: String {
+            label "Component"
+            required true
+        }
+
+        /*
+         * Ports
+         */
+        option ports: List {
+            label "Add Port"
+
+            option direction: String {
+                label "Direction"
+                required true
+            }
+
+            option type: String {
+                label "Type"
+                required true
+            }
+
+            option name: String {
+                label "Name"
+                required true
+            }
+        }
+    }
+}

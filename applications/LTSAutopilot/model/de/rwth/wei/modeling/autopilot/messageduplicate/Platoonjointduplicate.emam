@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageduplicate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Platoonjointduplicate{
+  ports
+
+  dynamic in  Platoonjointmessage  platj_msg[0:32],
+
+  dynamic out Platoonjointmessage  platj_msg1[0:32],
+  dynamic out Platoonjointmessage  platj_msg2[0:32],
+  dynamic out Platoonjointmessage  platj_msg3[0:32],
+  dynamic out Platoonjointmessage  platj_msg4[0:32],
+  dynamic out Platoonjointmessage  platj_msg5[0:32],
+  out Platoonjointmessage pjmsg;
+
+  @ platj_msg::connect{/*interface for dynamic input port */}
+
+  implementation Math{
+    for i = 1:32
+      if is_connected(platj_msg,i)
+        pjmsg = platj_msg(i);
+        if ports_connect(platj_msg1, i, pjmsg)
+           platj_msg1(i) = pjmsg;
+        end
+        Z r = ports_free(platj_msg1,i);
+
+        if ports_connect(platj_msg2, i, pjmsg)
+           platj_msg2(i) = pjmsg;
+        end
+        Z r1 = ports_free(platj_msg2,i);
+
+        if ports_connect(platj_msg3, i, pjmsg)
+           platj_msg3(i) = pjmsg;
+        end
+        Z r2 = ports_free(platj_msg3,i);
+
+        if ports_connect(platj_msg4, i, pjmsg)
+           platj_msg4(i) = pjmsg;
+        end
+        Z r3 = ports_free(platj_msg4,i);
+
+        if ports_connect(platj_msg5, i, pjmsg)
+           platj_msg5(i) = pjmsg;
+        end
+        Z r4 = ports_free(platj_msg5,i);
+      end
+    end
+  }
+}

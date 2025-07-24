@@ -1,0 +1,9 @@
+# (c) https://github.com/MontiCore/monticore  
+# this build configuration is a hack, use build matrix later
+# https://lord.io/blog/2014/travis-multiple-subdirs/
+script:
+- git checkout ${TRAVIS_BRANCH}
+# we do not measure test coverage (since this repo has no main code)
+- cd EmbeddedMontiArc && mvn clean install --settings "settings.xml"
+
+# we do not publish the tagging example examples (this repo does not contain any productive code, only test examples how to use tagging)

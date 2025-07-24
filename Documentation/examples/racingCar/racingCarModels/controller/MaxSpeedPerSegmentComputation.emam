@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+import roadInfo;
+
+component MaxSpeedPerSegmentComputation{
+	ports
+		in roadInfo segments[20],
+
+		out Q(0 m/s : 0.001 m/s : 75 m/s) maxSpeed[20];
+	
+	implementation Math{
+		for i in Z(0 : 1 : 19){
+			if (segments[i].segType == STRAIGHT){
+				maxSpeed[i] = 75;
+			}else{
+				maxSpeed[i] = sqrt(segments[i].frictionCoefficient*9.81*segments[i].radius);
+			}
+		}
+	}
+}
