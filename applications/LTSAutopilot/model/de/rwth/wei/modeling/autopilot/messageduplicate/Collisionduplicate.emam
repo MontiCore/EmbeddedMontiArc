@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageduplicate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Collisionduplicate{
+ ports
+  // duplicate collisionmessage
+  dynamic in Collisionmessage   coll_msg[0:32],
+
+  dynamic out Collisionmessage  coll_msg1[0:32],
+  dynamic out Collisionmessage  coll_msg2[0:32],
+  dynamic out Collisionmessage  coll_msg3[0:32],
+  dynamic out Collisionmessage  coll_msg4[0:32],
+  dynamic out Collisionmessage  coll_msg5[0:32],
+  out Collisionmessage cmsg;
+
+  @ coll_msg::connect{/*interface for dynamic ports*/}
+
+  implementation Math{
+    for i = 1:32
+      if is_connected(coll_msg,i)
+        cmsg = coll_msg(i);
+        if ports_connect(coll_msg1, i, cmsg)
+           coll_msg1(i) = cmsg;
+        end
+        Z r = ports_free(coll_msg1,i);
+
+        if ports_connect(coll_msg2, i, cmsg)
+           coll_msg2(i) = cmsg;
+        end
+        Z r1 = ports_free(coll_msg2,i);
+
+        if ports_connect(coll_msg3, i, cmsg)
+           coll_msg3(i) = cmsg;
+        end
+        Z r2 = ports_free(coll_msg3,i);
+
+        if ports_connect(coll_msg4, i, cmsg)
+           coll_msg4(i) = cmsg;
+        end
+        Z r3 = ports_free(coll_msg4,i);
+
+        if ports_connect(coll_msg5, i, cmsg)
+           coll_msg5(i) = cmsg;
+        end
+        Z r4 = ports_free(coll_msg5,i);
+      end
+    end
+  }
+}

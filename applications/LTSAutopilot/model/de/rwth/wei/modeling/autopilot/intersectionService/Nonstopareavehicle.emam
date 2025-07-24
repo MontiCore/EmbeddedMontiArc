@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Nonstopareavehicle{
+  ports
+  dynamic in Statusmessage status_msg[0:32],
+  in Q nextintersection_x,
+  in Q nextintersection_y,
+
+  dynamic out Statusmessage non_status_msg[0:32],
+  out Statusmessage smsg;
+
+  @ status_msg::connect{/*interface for dynamic ports*/}
+
+  implementation Math{
+    Z counter = 1;
+    for i = 1:32
+       if is_connected(status_msg,i)
+          smsg = status_msg(i);
+          Q vx = smsg.position_x;
+          Q vy = smsg.position_y;
+          Q sqrt_dis = (vx - nextintersection_x) * (vx - nextintersection_x) + (vy - nextintersection_y) * (vy - nextintersection_y);
+          Q dis = sqrt(sqrt_dis);
+          if dis < 1.3*4.0
+             if ports_connect(non_status_msg,counter,smsg)
+                non_status_msg(counter) = smsg;
+             end
+             Z r = ports_free(non_status_msg,counter);
+          end
+       end
+    end
+  }
+}

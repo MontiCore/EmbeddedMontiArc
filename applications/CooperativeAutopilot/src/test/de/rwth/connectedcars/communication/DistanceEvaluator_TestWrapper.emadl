@@ -1,0 +1,145 @@
+package de.rwth.connectedcars.communication;
+
+import de.rwth.connectedcars.communication.packets.StatePacket;
+
+component DistanceEvaluator_TestWrapper {
+	port
+		in B upd1,
+		in B upd2,
+		in B upd3,
+		in B upd4,
+		in B upd5,
+		in B upd6,
+		
+		in Q(-oo m : 0.01 m : oo m) stoX,
+		in Q(-oo m : 0.01 m : oo m) stoY,
+		in Q(-oo : 0.001 : oo) stoH,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) stoV,
+	
+		in Q(-oo m : 0.01 m : oo m) sti1X,
+		in Q(-oo m : 0.01 m : oo m) sti1Y,
+		in Q(-oo : 0.001 : oo) sti1H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti1V,
+		in Q(-oo m : 0.01 m : oo m) sti2X,
+		in Q(-oo m : 0.01 m : oo m) sti2Y,
+		in Q(-oo : 0.001 : oo) sti2H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti2V,
+		in Q(-oo m : 0.01 m : oo m) sti3X,
+		in Q(-oo m : 0.01 m : oo m) sti3Y,
+		in Q(-oo : 0.001 : oo) sti3H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti3V,
+		in Q(-oo m : 0.01 m : oo m) sti4X,
+		in Q(-oo m : 0.01 m : oo m) sti4Y,
+		in Q(-oo : 0.001 : oo) sti4H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti4V,
+		in Q(-oo m : 0.01 m : oo m) sti5X,
+		in Q(-oo m : 0.01 m : oo m) sti5Y,
+		in Q(-oo : 0.001 : oo) sti5H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti5V,
+		in Q(-oo m : 0.01 m : oo m) sti6X,
+		in Q(-oo m : 0.01 m : oo m) sti6Y,
+		in Q(-oo : 0.001 : oo) sti6H,
+		in Q(0.0 m/s : 0.01 m/s : oo m/s) sti6V,
+		
+		in Q(0 m : oo m) distance1,
+		in Q(0 m : oo m) distance2,
+		in Q(0 m : oo m) distance3,
+		in Q(0 m : oo m) distance4,
+		in Q(0 m : oo m) distance5,
+		in Q(0 m : oo m) distance6,
+		
+		in Q(-oo : 0.001 : oo) direction1,
+		in Q(-oo : 0.001 : oo) direction2,
+		in Q(-oo : 0.001 : oo) direction3,
+		in Q(-oo : 0.001 : oo) direction4,
+		in Q(-oo : 0.001 : oo) direction5,
+		in Q(-oo : 0.001 : oo) direction6,
+		
+		out B emergency;
+		
+	component StatePacketWrapper {
+		port
+			in Q(-oo m : 0.01 m : oo m) 		posX,
+			in Q(-oo m : 0.01 m : oo m) 		posY,
+			in Q(0.0 m/s : 0.01 m/s : oo m/s)	vel,
+			in Q(-oo : 0.001 : oo)				head,
+			out StatePacket 					state;
+			
+		implementation Math {
+			state.positionX = posX;
+			state.positionY = posY;
+			state.velocity = vel;
+			state.heading = head;
+		}
+	}
+		
+	instance StatePacketWrapper spw1;
+	instance StatePacketWrapper spw2;
+	instance StatePacketWrapper spw3;
+	instance StatePacketWrapper spw4;
+	instance StatePacketWrapper spw5;
+	instance StatePacketWrapper spw6;
+	instance StatePacketWrapper spwOut;
+	instance DistanceEvaluator de;
+	
+	connect upd1 -> de.state_updated_in[1];
+	connect upd2 -> de.state_updated_in[2];
+	connect upd3 -> de.state_updated_in[3];
+	connect upd4 -> de.state_updated_in[4];
+	connect upd5 -> de.state_updated_in[5];
+	connect upd6 -> de.state_updated_in[6];
+	
+	connect stoX -> spwOut.posX;
+	connect stoY -> spwOut.posY;
+	connect stoH -> spwOut.head;
+	connect stoV -> spwOut.vel;
+	connect spwOut.state -> de.own_state;
+	
+	connect sti1X -> spw1.posX;
+	connect sti1Y -> spw1.posY;
+	connect sti1H -> spw1.head;
+	connect sti1V -> spw1.vel;
+	connect sti2X -> spw2.posX;
+	connect sti2Y -> spw2.posY;
+	connect sti2H -> spw2.head;
+	connect sti2V -> spw2.vel;
+	connect sti3X -> spw3.posX;
+	connect sti3Y -> spw3.posY;
+	connect sti3H -> spw3.head;
+	connect sti3V -> spw3.vel;
+	connect sti4X -> spw4.posX;
+	connect sti4Y -> spw4.posY;
+	connect sti4H -> spw4.head;
+	connect sti4V -> spw4.vel;
+	connect sti5X -> spw5.posX;
+	connect sti5Y -> spw5.posY;
+	connect sti5H -> spw5.head;
+	connect sti5V -> spw5.vel;
+	connect sti6X -> spw6.posX;
+	connect sti6Y -> spw6.posY;
+	connect sti6H -> spw6.head;
+	connect sti6V -> spw6.vel;
+	
+	connect spw1.state -> de.state_in[1];
+	connect spw2.state -> de.state_in[2];
+	connect spw3.state -> de.state_in[3];
+	connect spw4.state -> de.state_in[4];
+	connect spw5.state -> de.state_in[5];
+	connect spw6.state -> de.state_in[6];
+	
+	connect distance1 -> de.distance[1];
+	connect distance2 -> de.distance[2];
+	connect distance3 -> de.distance[3];
+	connect distance4 -> de.distance[4];
+	connect distance5 -> de.distance[5];
+	connect distance6 -> de.distance[6];
+	
+	connect direction1 -> de.direction[1];
+	connect direction2 -> de.direction[2];
+	connect direction3 -> de.direction[3];
+	connect direction4 -> de.direction[4];
+	connect direction5 -> de.direction[5];
+	connect direction6 -> de.direction[6];
+	
+	connect de.brake_recommendation -> emergency;
+}

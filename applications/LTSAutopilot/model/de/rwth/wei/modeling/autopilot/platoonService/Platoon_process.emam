@@ -1,0 +1,126 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+// just care about the front vehicle
+dynamic component Platoon_process{
+  ports
+  dynamic in  Statusmessage            status_msg[0:32],
+  dynamic in  Trajectorymessage        traj_msg[0:32],
+  dynamic in  Platoonmessage           plat_msg[0:32],
+  dynamic in  Platoonjointmessage      plat_joint_msg[0:32],
+
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Z               isnextintersection,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+  in  Z               currenttimestamp,
+  in  Z^{1,100}       platoonlist,
+  in  Z               platoon_member_num,
+  in  Z               vehicleid,
+  in  Q               compass,
+  in  Q               length,
+  in  Q               width,
+  in  Q               engine,
+  in  Q               brake,
+  in  Q               steering,
+  in  Q               velocity,
+  in  Q               position_x,
+  in  Q               position_y,
+
+  out Z                after_platnum,
+  out Z^{1,100}        after_platlist,
+  dynamic out   Platoonmessage           out_plat_msg[0:32],
+  dynamic out   Platoonjointmessage      out_plat_joint_msg[0:32];
+
+
+  instance  Statusduplicate        s_dup;
+  instance  Platoonduplicate       p_dup;
+
+  // find the potential header (single vehicle or platoon, send joint message)
+  instance  Potentialheader              po_header;
+  // no potential header, and have joint message from other vehicle, send platoon message
+  instance  Currentisheader_platoon      current_header_platoon;
+
+  @ status_msg::connect{
+    connect status_msg[?] -> s_dup.status_msg[?];
+  }
+
+  @ plat_msg::connect{
+    connect plat_msg[?] -> p_dup.plat_msg[?];
+  }
+
+  @ s_dup.status_msg1::connect{
+    connect s_dup.status_msg1[?] -> po_header.status_msg[?];
+  }
+  @ traj_msg::connect{
+    connect traj_msg[?] -> po_header.traj_msg[?];
+  }
+  @ p_dup.plat_msg1::connect{
+    connect p_dup.plat_msg1[?] -> po_header.plat_msg[?];
+  }
+  //connect platoonrequestid -> s_process.platoonrequestid;
+  connect trajectory_length -> po_header.trajectory_length;
+  connect trajectory_x -> po_header.trajectory_x;
+  connect trajectory_y -> po_header.trajectory_y;
+  connect isnextintersection -> po_header.isnextintersection;
+  connect nextintersection_x -> po_header.nextintersection_x;
+  connect nextintersection_y -> po_header.nextintersection_y;
+  connect position_x -> po_header.position_x;
+  connect position_y -> po_header.position_y;
+  connect length -> po_header.length;
+  connect width -> po_header.width;
+
+  connect po_header.potentialid -> current_header_platoon.potentialid;
+  connect po_header.if_potentialheaderexists -> current_header_platoon.if_potentialheaderexists;
+  connect po_header.if_sendjointmsg -> current_header_platoon.if_sendjointmsg;
+  connect currenttimestamp -> current_header_platoon.currenttimestamp;
+  connect vehicleid -> current_header_platoon.vehicleid;
+  connect compass -> current_header_platoon.compass;
+  connect length -> current_header_platoon.length;
+  connect width -> current_header_platoon.width;
+  connect engine -> current_header_platoon.engine;
+  connect brake -> current_header_platoon.brake;
+  connect steering -> current_header_platoon.steering;
+  connect velocity -> current_header_platoon.velocity;
+  connect position_x -> current_header_platoon.position_x;
+  connect position_y -> current_header_platoon.position_y;
+
+  connect platoonlist -> current_header_platoon.platoonlist;
+  connect platoon_member_num -> current_header_platoon.platoon_member_num;
+
+
+
+  @ plat_joint_msg::connect{
+    connect plat_joint_msg[?] -> current_header_platoon.plat_joint_msg[?];
+  }
+
+  @ s_dup.status_msg2::connect{
+    connect s_dup.status_msg2[?] -> current_header_platoon.status_msg[?];
+  }
+
+  @ p_dup.plat_msg2::connect{
+    connect p_dup.plat_msg2[?] -> current_header_platoon.plat_msg[?];
+  }
+
+  @ current_header_platoon.new_plat_joint_msg::connect{
+    connect current_header_platoon.new_plat_joint_msg[?] -> out_plat_joint_msg[?];
+  }
+  @ current_header_platoon.new_plat_msg::connect{
+    connect current_header_platoon.new_plat_msg[?] -> out_plat_msg[?];
+  }
+  connect current_header_platoon.after_platnum -> after_platnum;
+  connect current_header_platoon.after_platlist -> after_platlist;
+
+  @ s_dup.status_msg3::connect{}
+  @ s_dup.status_msg4::connect{}
+  @ s_dup.status_msg5::connect{}
+  @ p_dup.plat_msg3::connect{}
+  @ p_dup.plat_msg4::connect{}
+  @ p_dup.plat_msg5::connect{}
+  @ p_dup.plat_msg6::connect{}
+
+
+}
