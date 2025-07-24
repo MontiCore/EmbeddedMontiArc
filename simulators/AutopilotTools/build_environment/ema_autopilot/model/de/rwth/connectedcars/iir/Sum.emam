@@ -1,0 +1,14 @@
+package de.rwth.connectedcars.iir;
+
+component Sum<N(2:oo) n = 2> {
+    ports
+        in Q summands[n],
+        out Q sumResult;
+        
+    implementation Math {
+        sumResult = 0;
+        for i = 1:n
+            sumResult += summands(i);
+        end
+    }
+}

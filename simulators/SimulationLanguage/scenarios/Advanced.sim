@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Advanced
+ * Focus: Observe vehicles handling advanced traffic mechanics
+ * Details: sufficient vehicles, handling a busy roundabout, stalemate, ..?
+*/
+sim Advanced {
+  sim_duration 4h;
+
+  time 12:00;
+  
+  map_name Advanced.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  //etc.
+}
