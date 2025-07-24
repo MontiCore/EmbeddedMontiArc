@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lib;
+
+component Or_TestWrapper {
+    port
+        in B in1,
+        in B in2,
+        out B out1;
+
+    instance Or<2> orInstance;
+
+    connect in1 -> orInstance.in1[1];
+    connect in2 -> orInstance.in1[2];
+    connect orInstance.out1 -> out1;
+
+}

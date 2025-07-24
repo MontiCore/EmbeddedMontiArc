@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basicLibrary;
+
+component Event1 {
+
+    ports
+        in Q a,
+        in B useSubComp,
+        out Q b;
+
+    component Sub {
+        ports
+            in Q x,
+            out Q y;
+
+        connect x -> y;
+    }
+
+    @ useSubComponent::value( true ){
+        instance Sub s;
+        connect a -> s.x;
+        connect s.y -> b;
+    }
+
+    @ useSubComponent::value( false ){
+        connect a -> b;
+    }
+
+}
