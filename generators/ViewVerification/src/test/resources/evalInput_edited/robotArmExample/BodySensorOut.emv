@@ -1,0 +1,33 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+view BodySensorOut {
+component RotationalJoint {
+    component Body {
+        component Actuator {
+            port
+                in ? f1,
+                in ? f2;
+        }
+        instance Actuator actuator;
+        
+        component Joint { }
+        instance Joint joint;
+        
+        component JointLimiter { }
+        instance JointLimiter jointLimiter;
+                      
+    }
+    instance Body body;
+    
+    component Sensor { }
+    instance Sensor sensor;
+    
+    
+    connect body -> actuator.f1;
+    connect body -> actuator.f2;
+    connect actuator -> joint;
+    connect sensor -> jointLimiter;
+    connect jointLimiter -> actuator;
+}
+}

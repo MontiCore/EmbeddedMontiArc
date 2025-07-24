@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample.inner;
+
+component Pilot_Display {
+    port
+      out Menu_Cmd Menu_Cmd_Pushed,
+      in Page_Image Page_To_Show;
+}

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component MatrixArray_RangeUnit {
+  ports
+    in Q(-10/3 m/s : 10 km/h)^{2,3} inRangeUnit[4],
+    out Q(-10/3 m/s : 10 km/h)^{2,3} outRangeUnit[4];
+}

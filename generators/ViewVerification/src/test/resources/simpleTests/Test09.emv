@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests;
+
+view Test09 {
+component AC {
+	component ACA {
+		ports out ? ?;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		// (0:1) has the type "SIUnitRangesType"
+		ports in (0:1) in1; 
+	}
+	instance ACB acb;
+	
+	connect aca-> acb;
+    }
+}
