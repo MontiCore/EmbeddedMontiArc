@@ -1,0 +1,52 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.fa-disabled {
+    opacity:0.1;
+    cursor:default !important;
+}
+
+.emastudio-process-icon {
+    font-size:20px;
+    color:#FFF;
+    top:2px;
+    position:relative;
+    margin-left:10px;
+    cursor:pointer;
+}
+
+#emastudio-process-controls {
+    position:absolute;
+    left:10px;
+    top:10px;
+}
+
+#emastudio-process-select {
+    line-height:var(--theia-content-line-height);
+    font-size:var(--theia-ui-font-size1);
+    border-width:1px;
+    border-style:solid;
+    border-color:var(--theia-border-color1);
+    background:var(--theia-layout-color2);
+    color:var(--theia-ui-font-color1);
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    background-image:linear-gradient(45deg, transparent 50%, var(--theia-ui-font-color1) 50%), linear-gradient(135deg, var(--theia-ui-font-color1) 50%, transparent 50%);
+    background-position:calc(100% - 6px) 8px, calc(100% - 2px) 8px, 100% 0;
+    background-size:4px 5px;
+    background-repeat:no-repeat;
+    padding-left:3px;
+    padding-right:15px;
+}
+
+#emastudio-process-container {
+    width:calc(100% - 20px);
+    height:calc(100% - 52px);
+    overflow:hidden;
+    top:42px;
+    left:10px;
+    position:absolute;
+}

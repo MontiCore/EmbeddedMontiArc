@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Platoonlength2array{
+ ports
+   dynamic in Platoonmessage plat_msg[0:32],
+
+   out Z^ 32    platoonid,
+   out Z ^ 32    platoonlength,
+   out Platoonmessage pmsg;
+
+@ plat_msg::connect{}
+
+   implementation Math{
+     Z counter = 1;
+     for j = 1:32
+       platoonid(j) = 0.0;
+       platoonlength(j) = 0;
+     end
+     for i = 1:32
+        if is_connected(plat_msg,i)
+           pmsg = plat_msg(i);
+           platoonid(counter) = pmsg.id;
+           platoonlength(counter) = pmsg.member_num;
+           counter = counter + 1;
+        end
+     end
+   }
+}

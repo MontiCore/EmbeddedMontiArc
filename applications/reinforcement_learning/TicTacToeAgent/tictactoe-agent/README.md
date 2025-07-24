@@ -1,0 +1,1 @@
+Qnet inspired by https://mahowald.github.io/deep-tictactoe/

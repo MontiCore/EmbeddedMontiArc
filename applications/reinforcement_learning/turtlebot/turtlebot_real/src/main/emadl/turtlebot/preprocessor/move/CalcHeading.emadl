@@ -1,0 +1,22 @@
+package turtlebot.preprocessor.move;
+
+component CalcHeading {
+    ports
+        in Q^{2} robotPosition,
+        in Q^{2} goalPosition,
+        in Q^{3} angles,
+        out Q heading;
+
+    implementation Math {
+        Q pi = 3.14159;
+
+        Q targetAngle = atan2(goalPosition(2) - robotPosition(2), goalPosition(1) - robotPosition(1));
+        heading = targetAngle - angles(3);
+
+        if heading > pi
+            heading -= 2 * pi; 
+        elseif heading < -pi
+            heading += 2 * pi;
+        end
+    }
+}

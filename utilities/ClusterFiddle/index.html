@@ -1,0 +1,34 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Spectral Clusterer Fiddle</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width">
+
+      <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+      <script type="text/javascript" src="resources/js/dropzone.js"></script>
+      <script type="text/javascript" src="resources/js/index.js"></script>
+
+      <link href="resources/css/dropzone.css" rel="stylesheet" type="text/css"/>
+      <link href="resources/css/index.css" rel="stylesheet" type="text/css"/>
+   </head>
+   <body>
+      <div class="row row-1">
+         <img src="resources/images/example-image-1.jpg"/>
+         <img src="resources/images/example-image-2.jpg"/>
+         <img src="resources/images/example-image-3.jpg"/>
+      </div>
+      <div class="row row-2">
+         Either: * Drag an image from your desktop into the dropzone. * Click on the dropzone. * Drag an image from above into the dropzone.
+         <br>Clustering the image may take up to 3 minutes depending on your PC's computing power; and on some browser you need to press the "wait" button.
+         <div id="dropzone"></div>
+      </div>
+      <div class="row row-3">
+         <img id="spinner" src="resources/images/loader.svg"/>
+      </div>
+      <div class="row row-4">
+         <canvas id="result"></canvas>
+      </div>
+   </body>
+</html>

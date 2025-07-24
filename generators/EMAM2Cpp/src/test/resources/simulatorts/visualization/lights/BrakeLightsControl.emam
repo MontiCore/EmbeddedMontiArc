@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorts.visualization.lights;
+
+component BrakeLightsControl {
+    port
+        in (0s:oos) time,
+        out B status;
+
+    implementation Math {
+
+        // Turn brake lights on after 1 second
+        status = time > 1s;
+    }
+}

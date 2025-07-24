@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas.basicLibrary;
+
+component Constant<T>(T cvalue) {
+	port 
+		out T out1;
+    implementation Math{
+        out1=cvalue;
+    }
+}

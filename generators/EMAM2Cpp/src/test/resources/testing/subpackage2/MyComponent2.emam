@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing.subpackage2;
+
+component MyComponent2 {
+    port
+        in MyStruct1 in1,
+        out Q (0.0 : 0.1 : 100.0) out1;
+
+    implementation Math {
+      out1 = in1.f1;
+    }
+}

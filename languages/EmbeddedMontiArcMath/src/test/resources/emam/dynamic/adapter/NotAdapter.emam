@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package adapter;
+
+dynamic component NotAdapter {
+    port
+        in B aIn,
+        out B aOut,
+        dynamic in B dIn [1:32],
+        dynamic out B dOut [1:32];
+
+    instance Not notD [2:32];
+
+    connect dIn[1] -> notD[2].in1;
+    connect notD[2].out1 -> dOut[1];
+
+    connect aIn -> notD[1].in1;
+    connect notD[1].out1 -> aOut;
+
+    @ dIn::connect && dOut::connect {
+        connect dIn[?] -> notD[?].in1;
+        connect notD[?].out1 -> dOut[?];
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "languageName":"EmbeddedMontiArc",
+    "fileExtension":".ema",
+    "pomRoot":"settings/ema",
+    "relativeMvnSettingsPath":"../settings.xml",
+    "useRunningServer":false,
+    "manualPort": 0,
+    "bufferSize": 1000,
+    "keywordsFile": "settings/ema/keywords.txt"
+}

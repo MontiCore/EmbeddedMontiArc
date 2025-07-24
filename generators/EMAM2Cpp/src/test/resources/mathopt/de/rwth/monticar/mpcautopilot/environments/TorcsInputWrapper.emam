@@ -1,0 +1,32 @@
+
+package de.rwth.monticar.mpcautopilot.environments;
+
+component TorcsInputWrapper{
+
+    ports
+        //TORCS (ROS)
+        in Q^{29} state,
+        out Q angleOnTrackAxis,
+        //out Q^{19} trackSensors,
+        out Q(-1:1) trackPosition,
+        out Q^{3} speedVector,
+        out Q^{4} wheelSpeeds;
+        //out Q engineSpeed;
+
+    implementation Math{
+    	//int(rad*180/PI)
+        angleOnTrackAxis = state(1);// * 180 / 3.14159268359;
+        trackPosition = state(21);
+
+        speedVector(1) = state(22);
+        speedVector(2) = state(23);
+        speedVector(3) = state(24);
+        
+        wheelSpeeds(1) = state(25);
+        wheelSpeeds(2) = state(26);
+        wheelSpeeds(3) = state(27);
+        wheelSpeeds(4) = state(28);
+
+        //engineSpeed = state(29);
+    }
+}

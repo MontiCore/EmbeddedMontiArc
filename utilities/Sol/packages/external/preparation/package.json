@@ -1,0 +1,45 @@
+{
+  "name": "@embeddedmontiarc/sol-external-preparation",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-external-core": "^2020.5.5-SNAPSHOT",
+    "@material-ui/core": "^4.4.0",
+    "@material-ui/icons": "^4.2.1",
+    "@theia/core": "latest",
+    "eventemitter3": "^3.1.2",
+    "helpful-decorators": "^2.0.5",
+    "inversify": "^5.0.1",
+    "inversify-inject-decorators": "^3.1.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.4.1",
+    "styled-components": "^4.3.2"
+  },
+  "devDependencies": {
+    "@types/styled-components": "^4.1.19",
+    "electron": "^6.0.7"
+  },
+  "theiaExtensions": [],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/preparation-main-module",
+        "renderer": "lib/renderer/preparation-renderer-module"
+      }
+    ]
+  }
+}

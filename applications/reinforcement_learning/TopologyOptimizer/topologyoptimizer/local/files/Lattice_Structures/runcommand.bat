@@ -1,0 +1,1 @@
+"C:\Program Files\ANSYS 2020R2 LS-DYNA Student 12.0.0\LS-DYNA\lsdyna.exe" i=C:\Users\Anis\Desktop\toolchain\files\Lattice_Structures\main.key ncpu=4 memory=29m

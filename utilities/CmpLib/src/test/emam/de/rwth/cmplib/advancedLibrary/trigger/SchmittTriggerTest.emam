@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.cmplib.advancedLibrary.trigger;
+
+import de.rwth.cmplib.basicLibrary.*;
+
+// u1 = Einschaltschwelle
+// u2 = Ausschaltschwelle
+component SchmittTriggerTest {
+    port
+        in Q in1,
+        out B out1;
+
+
+    instance SchmittTriggerQ(0.8, 0.65) st;
+
+    connect in1 -> st.inValue;
+    connect st.outValue -> out1;
+}

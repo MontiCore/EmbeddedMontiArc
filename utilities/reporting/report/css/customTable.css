@@ -1,0 +1,125 @@
+/* (c) https://github.com/MontiCore/monticore */
+th div {
+  text-align:center;
+  vertical-align:middle;
+}
+
+table.dataTable td {
+  position: relative;
+  padding: 3px 10px;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.nowrap {
+  white-space: nowrap ;
+}
+
+td img {
+  position: absolute;
+  top: 27%;
+  left: 20%;
+  width: 25px;
+  height: auto;
+  margin: auto;
+  display: block;
+}
+
+.logImage {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 50px;
+  height: auto;
+  margin: auto;
+  display: block;
+}
+
+.onlineIDEImage {
+  background : url('../images/favicon.ico') no-repeat center center;
+}
+
+.myTableContainer {
+  width: 0.9vw;
+}
+
+td.expandChildren-control {
+  cursor: pointer;
+}
+
+th.expandChildren-control {
+  cursor: pointer;
+}
+
+td.details-control {
+  background: url('../images/log.jpg') no-repeat center center;
+  background-size: 40px 35px;
+  cursor: pointer;
+}
+tr.logShown td.details-control {
+  background: url('../images/log.jpg') no-repeat center center;
+  background-size: 30px 25px;
+  cursor: pointer;
+}
+
+th {
+  background: #0060B3;
+  color: #eaf1fa;
+}
+
+table.dataTable tr.group td{
+  font-weight:bold;
+  background-color:#779ec9;
+  color: #eaf1fa;
+}
+
+table.dataTable tr.group th{
+  font-weight:bold;
+  background-color:#779ec9;
+  color: #eaf1fa;
+  text-align: left;
+}
+
+.noSVGvisible {
+  /*color: #700000;*/
+  color: #000;
+}
+
+.sVGvisible {
+  color: #1c7000;
+}
+
+.svgEye img {
+  position: absolute;
+  top: 3%;
+  left: 20%;
+  height: auto;
+  width: 35px;
+}
+
+.svgNoEye img {
+  position: absolute;
+  top: 3%;
+  left: 15%;
+  height: auto;
+  width: 40px;
+}
+
+table thead th {
+  text-align: left;
+}
+
+table thead tr.group {
+  display:none;
+}
+
+table.fixedHeader-floating thead tr.group {
+  display:block;
+}
+
+.timeStamp {
+
+  float: left;
+  text-align: right;
+
+}

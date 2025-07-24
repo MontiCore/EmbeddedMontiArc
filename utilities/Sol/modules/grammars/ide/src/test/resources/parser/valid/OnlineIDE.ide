@@ -1,0 +1,11 @@
+package parser.valid
+
+import parser.valid.OCLStudio
+
+online ide EmbeddedMontiArcStudio extends OCLStudio {
+    build "build/some-awesome-logo.png" resolved from CWD
+    registry "some/awesome/docker/registry:tag"
+
+
+    include module types [ModuleType, SomeOtherModuleType]
+}

@@ -1,0 +1,66 @@
+/* (c) https://github.com/MontiCore/monticore */
+package bumper;
+import bumper.structures.*;
+
+component BumpBot{
+
+	ports	in Quaternion orientation,
+		in Vector3 collision_normale,
+
+                out Ego_Vehicle vehicle_control,
+                out Vector3 collision_normale_out;
+
+	implementation Math{
+		static B inited = false;
+		static B skip = false;
+		if skip
+			skip = false;
+		else
+			if inited // Keep values!
+				collision_normale_out.x = collision_normale.x;
+				collision_normale_out.y = collision_normale.y;
+				collision_normale_out.z = collision_normale.z;
+			else
+			    inited = true;
+		            collision_normale_out.z = -1;
+
+		        end
+
+			vehicle_control.throttle = 1.0;
+			vehicle_control.brake = 0.0;
+			vehicle_control.hand_brake = false;
+			
+			vehicle_control.gear = 1;
+			vehicle_control.manual_gear_shift = false;
+
+			Q tmp = asin(orientation.z);
+			B noCollisionHappened = abs(collision_normale.z+1) < 0.000001;
+
+			if noCollisionHappened
+				vehicle_control.reverse = false;
+				vehicle_control.steer= 0;
+		        else
+		                Q drivingDirX = (1-(abs(tmp)/(M_PI/4)));
+				Q drivingDirY = 2*tmp/(M_PI/4);
+				Q collisionOrtogonalDirection = -drivingDirX * collision_normale.y +  drivingDirY * -collision_normale.x;
+				Q collisionDirection = drivingDirX * -collision_normale.x +  drivingDirY * collision_normale.y;
+				Q projectionFactor = collisionDirection / sqrt(drivingDirX * drivingDirX + drivingDirY * drivingDirY);
+				B turnCompleted = (projectionFactor * drivingDirX * -collision_normale.x) + (projectionFactor * drivingDirY * collision_normale.y) < 0;
+				
+                                if collisionDirection < 0.0 || turnCompleted
+					vehicle_control.reverse = false;
+					vehicle_control.steer= 0;
+					skip = true;
+				else
+					vehicle_control.reverse = true;
+		   		        
+                                        if collisionOrtogonalDirection > 0.0
+						vehicle_control.steer = 0.5;
+					else
+						vehicle_control.steer = -0.5;
+					end			
+				end
+		        end
+	        end
+	}
+}

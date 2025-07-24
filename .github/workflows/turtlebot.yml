@@ -1,0 +1,133 @@
+name: turtlebot
+on:
+  push:
+    paths:
+      - 'applications/reinforcement_learning/turtlebot/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 72226
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+  build_phase:
+    needs: [TestBuild]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage build"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage build"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+  train_phase:
+    needs: [build_phase, TestTrain]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage train"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage train"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  TestBuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull zoroac/turtle_ci:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} zoroac/turtle_ci:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/reinforcement_learning/turtlebot
+            cd turtlebot_real/
+            chmod 777 *.sh
+            ./install.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: TestBuild
+          retention-days: 7
+          path: |
+            applications/reinforcement_learning/turtlebot/turtlebot_real/target/
+
+  TestTrain:
+    needs: build_phase
+    if: ${{ !cancelled() && needs.build_phase.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull zoroac/turtle_ci:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} zoroac/turtle_ci:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/reinforcement_learning/turtlebot
+            source ~/catkin_ws/devel/setup.bash
+            export TURTLEBOT3_MODEL=burger
+            sleep 15
+            cd turtlebot_real/
+            chmod 777 *.sh
+            ./run_env.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: TestTrain
+          retention-days: 7
+          path: |
+            applications/reinforcement_learning/turtlebot/turtlebot_real/excel_traj_files/
+
+  ValidateTrain:
+    needs: train_phase
+    if: ${{ !cancelled() && needs.train_phase.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull zoroac/turtle_ci:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} zoroac/turtle_ci:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/reinforcement_learning/turtlebot
+            cd turtlebot_real/
+            chmod 777 *.sh
+            ./run_check.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: ValidateTrain
+          retention-days: 7
+          path: |
+            applications/reinforcement_learning/turtlebot/turtlebot_real/pdf_traj_plot/
+

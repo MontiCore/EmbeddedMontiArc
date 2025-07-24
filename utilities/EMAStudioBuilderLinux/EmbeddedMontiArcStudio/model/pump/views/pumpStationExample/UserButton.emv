@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view UserButton {
+component PumpStation {
+  component SimulationPanel {
+    port
+      out Boolean button;
+  }
+  instance SimulationPanel simulationPanel;
+  
+  component UserButtonReader {
+    ports
+      in Boolean button,
+      out Enum userButton;
+  }
+  instance UserButtonReader userButtonReader;
+  
+  component UserOperation {
+    ports
+      in Enum userButton,
+      out Boolean desiredPumpState,
+      out scalar.Q desiredValvePosition;
+  }
+  instance UserOperation userOperation;
+  
+  component ModeArbiter {
+    ports
+      in Boolean userPumpState,
+      in scalar.Q userValvePosition;
+  }
+  instance ModeArbiter modeArbiter;
+  
+  connect simulationPanel.button -> userButtonReader.button;
+  connect userButtonReader.userButton -> userOperation.userButton;
+  connect userOperation.desiredPumpState -> modeArbiter.userPumpState;
+  connect userOperation.desiredValvePosition -> modeArbiter.userValvePosition;
+}
+}
