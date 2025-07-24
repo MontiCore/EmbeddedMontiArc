@@ -1,0 +1,10 @@
+EmbeddedMontiArc/target
+CD4A/target
+nppBackup
+.project
+.settings
+.classpath
+.idea
+.git
+
+*.iml

@@ -1,0 +1,6 @@
+package vae;
+
+component Encoder{
+    ports in Q(-oo:oo)^{1,28,28} data,
+          out Q(-oo:oo)^{8} encoding;
+}
