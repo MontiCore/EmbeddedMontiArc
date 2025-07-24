@@ -1,0 +1,19 @@
+(init (test))
+
+(<= terminal
+    (true (test))
+)
+
+(role player1)
+(role player2)
+(role player3)
+
+(<= (goal ?player 50)
+    (role ?player)
+    (distinct ?player player3)
+)
+
+(<= (goal player3 100)
+    (role ?player)
+    (distinct ?player player3)
+)

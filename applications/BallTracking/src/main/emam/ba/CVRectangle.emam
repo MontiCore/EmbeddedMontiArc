@@ -1,0 +1,15 @@
+package ba;
+
+component CVRectangle<N n=960,N m=720>{
+    port
+		in Q^{n,m,3} src,
+        in Q rect,
+		in Q^{3} color,
+		in Z thickness,
+		in Z lineType,
+        out Q^{n,m,3} outputImg;
+
+    implementation Math {
+        outputImg = rectangle(src, rect, color, thickness, lineType);
+    }
+}

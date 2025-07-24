@@ -1,0 +1,31 @@
+The magnitude and quantity of software projects rises constantly, as software development needs spread among scientific and technical disciplines. Since not all languages are suitable for all occasions and others may provide too much features to be efficient for a specific purpose, Domain Specific Languages (DSLs) are developed. DSLs are languages tailored specifically to a certain objective.
+EmbeddedMontiArc, a specific DSL for cyber-physical systems is evaluated in this paper. It will be introduced in more detail in section \ref{sec:context} together with the used tools. This section forms a general introduction and will present the research questions.
+Thereafter the approach will be presented in section \ref{sec:approach}. Section \ref{sec:implementation} depicts the simulator integration and the developed models. In section \ref{sec:evaluation} the evaluation is presented, concluded by a conclusion in section \ref{sec:conclusion}.
+
+In general most problems can be sorted into two categories. The first being data based problems, where huge amounts of data are processed and no hard real time capabilities are necessary. An example for such a problem is Google's or Amazon's search system. The other problem category consists of reactive systems which operate on very little data and must return output with hard time constraints. In this paper EmbeddedMontiArc is evaluated towards its capabilities for the second category. The language is well tested on the autopilot project of a self driving car (see \cite{emademo}), but has few other running examples.
+The following research questions were formulated to specify evaluation topics:
+
+\begin{itemize}
+	\item RQ1: Is EmbeddedMontiArc suitable reactive systems in domains other than the automotive industry?
+	\item RQ2: Is it possible to integrate other simulators in a recent amount of work?
+	\item RQ3: What kind of background knowledge is needed to model C\&C in EmbeddedMontiArc?
+	\item RQ4: What features are good and what are not suited?
+\end{itemize}
+
+To answer these research questions two groups are formed who develop different models in EmbeddedMontiArc and share their experience while doing so. To ensure a similar experience to real reactive cyber physical systems, two games were selected.
+Games were selected, because most games are real-time problems with a changing environment and limited inputs, while requiring immediate responses.
+The games chosen for this paper are Pacman and Supermario.  Both games are 2D arcade games where a figure is controlled by a player in a setting where some types of enemy entities exist. 
+In the case of Pacman the level is completely visible and enemies consist of four ghosts roaming the level. The level is failed once the ghosts touch the player. Goal of the game is to collect or "eat" all dots in the level.
+Supermario is a side-scrolling platform game were the level is revealed as the player progresses. Main goal of Supermario is to bring the player figure all the way through to the end of the level, while either evading or defeating the different enemy types. The players progress is rated via a scoring system, where enemy defeats and collectibles are assessed.
+Goal for both models developed in this paper is to solve a level in their respective game.
+
+The finished models can be observed playing Pacman and Supermario autonomouosly on the websites \\
+\url{https://embeddedmotiarc.github.io/SuperMario/Pacman/} \cite{pacmanmodel} \\
+and \\
+\url{https://embeddedmontiarc.github.io/SuperMario/supermario/simulation.html}
+\\
+
+A video explanation for Pacman and Supermario can be found here:
+\url{https://www.youtube.com/watch?v=f7YKCsSB_Tg} \cite{pacmanvideo} \\
+and \\
+\url{https://www.youtube.com/watch?v=LZ3rp8KgdHI&t=43s} \cite{mariovideo}.

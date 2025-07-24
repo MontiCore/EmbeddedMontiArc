@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagematch;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Collmessage2platoon{
+  ports
+   // filter collisionmessage from platoonlist
+   dynamic in Collisionmessage coll_message[0:32],
+   in   Z ^ 32               platoonlist,
+   in   Z                    list_num,
+
+   dynamic out Collisionmessage newcoll_message[0:32],
+   out  Z ^ 32               newplatoonlist,
+   out  Z                    newlist_num,
+   out  Collisionmessage     cmsg;
+
+  @ coll_message::connect{}
+
+   implementation Math{
+     Z counter = 1;
+     for i = 1:32
+        if is_connected(coll_message,i)
+           cmsg = coll_message(i);
+           for j = 1:list_num
+              if cmsg.vehicleid == platoonlist(j)
+                  newplatoonlist(counter) = cmsg.vehicleid;
+                  if ports_connect(newcoll_message,counter,cmsg)
+                     newcoll_message(counter) = cmsg;
+                  end
+                  Z r = ports_free(newcoll_message,counter);
+                  counter = counter + 1;
+              end
+           end
+        end
+     end
+    newlist_num = counter - 1;
+   }
+}

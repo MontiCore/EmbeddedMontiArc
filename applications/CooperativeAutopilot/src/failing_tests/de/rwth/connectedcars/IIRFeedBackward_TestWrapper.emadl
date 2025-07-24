@@ -1,0 +1,16 @@
+package de.rwth.connectedcars.iir;
+
+component IIRFeedBackward_TestWrapper {
+    ports
+        in Q in1,
+        out Q y;
+        
+    instance IIRFeedBackward backward;
+    
+    connect in1 -> backward.in1;
+    connect 1 -> backward.a[1];
+    connect 2 -> backward.a[2];
+    connect 3 -> backward.a[3];
+    
+    connect backward.y -> y;
+}

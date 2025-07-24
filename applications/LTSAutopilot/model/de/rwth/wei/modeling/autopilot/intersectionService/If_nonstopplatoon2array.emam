@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+
+dynamic component If_nonstopplatoon2array{
+ports
+  dynamic in   Z   iscollision[0:32],
+  dynamic in   Z   proritytocurrent[0:32],
+
+  out Z  if_collinnonstop;
+
+  @ iscollision::connect{/* interface for dynamic ports*/}
+  @ proritytocurrent::connect{/* interface for dynamic ports*/}
+
+  implementation Math{
+    Q proritytocurrent1 = 0.0;
+    B iscollision1 = 0;
+    for i = 1:32
+      proritytocurrent1 = 0.0;
+      iscollision1 = 0;
+      if is_connected(proritytocurrent,i)
+         proritytocurrent1 = proritytocurrent(i);
+      end
+      if is_connected(iscollision,i)
+         iscollision1 = iscollision(i);
+      end
+      if proritytocurrent1 != 3.0 && iscollision1 == 1
+         if_collinnonstop = 1;
+      end
+    end
+  }
+}

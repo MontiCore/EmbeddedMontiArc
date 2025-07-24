@@ -1,0 +1,7 @@
+package de.monticore.lang.monticar.sol.tests.artifact
+
+tool Ping {
+    path "tool/target/Ping.jar" resolved from PARENT
+    prefix "java -jar"
+    alias PING_PATH in ENV
+}

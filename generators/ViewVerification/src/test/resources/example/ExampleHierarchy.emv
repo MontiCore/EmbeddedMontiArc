@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example;
+
+view ExampleHierarchy {
+    component AComp {
+        ports
+	        in Boolean in1;
+			
+		component CComp {
+		    ports
+		        in Boolean in1,
+				out Boolean out1;
+			
+			connect in1 -> out1;
+		}
+		instance CComp ccomp;
+	
+	    component DComp {
+	        ports
+		        in Boolean in1;
+	    }
+	    instance DComp dcomp;
+	
+	    connect in1 -> ccomp.in1;
+	    connect ccomp.out1 -> dcomp.in1;
+	}
+}

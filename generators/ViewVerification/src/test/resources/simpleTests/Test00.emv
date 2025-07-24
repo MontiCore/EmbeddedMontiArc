@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests;
+
+view Test00 {
+    component AC {
+        component ACA {	}
+        instance ACA aca;
+
+        component ACB {	}
+        instance ACB acb;
+
+        connect aca -> acb;
+    }
+}

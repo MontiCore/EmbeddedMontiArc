@@ -1,0 +1,74 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Synthesized C&C model for C&C views specification
+
+component LunarLander {
+
+  component Altimeter {
+    port
+      out Type2 PortName5,
+      in Type2 PortName4;
+
+  }
+  instance Altimeter altimeter;
+  component AttitudeControlThruster {
+    port
+      in Type2 PortName2;
+
+  }
+  instance AttitudeControlThruster attitudeControlThruster;
+  component DescentEngineController {
+    port
+      in Type2 PortName4;
+
+  }
+  instance DescentEngineController descentEngineController;
+  component Display {
+    port
+      in Type2 PortName4;
+
+  }
+  instance Display display;
+  component EngineControlSwitch {
+    port
+      out Type2 PortName3;
+
+  }
+  instance EngineControlSwitch engineControlSwitch;
+  component FlightControl {
+    port
+      in Type2 PortName3,
+      out Type2 PortName4,
+      in Type2 PortName2,
+      in Type2 PortName0,
+      in Type2 PortName5;
+
+  }
+  instance FlightControl flightControl;
+  component FuelLevel {
+    port
+      out Type2 PortName3;
+
+  }
+  instance FuelLevel fuelLevel;
+  component Gyroscope {
+    port
+      out Type2 PortName2,
+      out Type2 PortName1;
+
+  }
+  instance Gyroscope gyroscope;
+  connect altimeter.PortName5 -> flightControl.PortName2;
+
+  connect engineControlSwitch.PortName3 -> flightControl.PortName0;
+
+  connect flightControl.PortName4 -> display.PortName4;
+
+  connect flightControl.PortName4 -> attitudeControlThruster.PortName2;
+
+  connect flightControl.PortName4 -> descentEngineController.PortName4;
+
+  connect fuelLevel.PortName3 -> flightControl.PortName5;
+
+  connect gyroscope.PortName1 -> flightControl.PortName3;
+
+}

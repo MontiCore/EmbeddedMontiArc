@@ -1,0 +1,6 @@
+package valid
+
+typedef module NoComponentInModule {
+    configuration config: NoComponentInModuleConfiguration {
+    }
+}

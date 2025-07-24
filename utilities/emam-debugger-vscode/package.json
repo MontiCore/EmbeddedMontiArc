@@ -1,0 +1,153 @@
+{
+	"name": "emam-debug",
+	"displayName": "EmbeddedMontiArcMath Debugger",
+	"version": "0.0.1",
+	"publisher": "se-rwth",
+	"description": "An extension for EmbeddedMontiArcMath.",
+	"author": {
+		"name": "Alexander Hellwig",
+		"email": "alexander.hellwig@rwth-aachen.de"
+	},
+	"repository": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/emam-debugger-vscode.git",
+	"license": "MIT",
+	"keywords": [
+		"multi-root ready"
+	],
+	"engines": {
+		"vscode": "^1.30.0-insider",
+		"node": "^8.9.3"
+	},
+	"categories": [
+		"Debuggers"
+	],
+	"private": true,
+	"scripts": {
+		"prepare": "tsc -p ./src",
+		"compile": "tsc -p ./src",
+		"tslint": "tslint ./src/**/*.ts",
+		"watch": "tsc -w -p ./src",
+		"test": "mocha -u tdd ./out/tests/",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"package": "vsce package",
+		"publish": "vsce publish"
+	},
+	"dependencies": {
+		"circularbuffer": "^0.1.1",
+		"await-notify": "1.0.1",
+		"cross-fetch": "^3.0.2",
+		"log4js": "^4.3.0",
+		"vscode-debugadapter": "1.33.0"
+	},
+	"devDependencies": {
+		"@types/mocha": "5.2.5",
+		"@types/node": "^8.10.48",
+		"mocha": "5.2.0",
+		"tslint": "5.11.0",
+		"typescript": "3.1.6",
+		"vsce": "1.53.2",
+		"vscode": "^1.1.33",
+		"vscode-debugadapter-testsupport": "1.33.0"
+	},
+	"main": "./out/extension",
+	"activationEvents": [
+		"onLanguage:EmbeddedMontiArcMath",
+		"onDebug"
+	],
+	"contributes": {
+		"configuration": {
+			"title": "EmbeddedMontiArcMath Debugger",
+			"properties": {
+				"emamdebug.autoupdate": {
+					"type": "string",
+					"default": "Ask",
+					"enum": [
+						"Ask",
+						"Always",
+						"Never"
+					]
+				}
+			}
+		},
+		"languages": [
+			{
+				"id": "EmbeddedMontiArcMath",
+				"extensions": [
+					".emam"
+				],
+				"aliases": [
+					"EMAM",
+					"emam"
+				]
+			},
+			{
+				"id": "Stream",
+				"extensions": [
+					".stream"
+				]
+			}
+		],
+		"commands": [
+			{
+				"command": "streamTest.runCurrentStreamTest",
+				"title": "Run current stream test"
+			}
+		],
+		"breakpoints": [
+			{
+				"language": "EmbeddedMontiArcMath"
+			}
+		],
+		"debuggers": [
+			{
+				"type": "emam",
+				"label": "Emam Debugger",
+				"program": "./out/emamDebugAdapter.js",
+				"runtime": "node",
+				"configurationAttributes": {
+					"launch": {
+						"required": [
+							"program",
+							"modelBase"
+						],
+						"properties": {
+							"program": {
+								"type": "string",
+								"description": "Fully qualified name of the component instance to be tested",
+								"default": ""
+							},
+							"modelBase": {
+								"type": "string",
+								"description": "Absolute path to the model base directory.",
+								"default": "${workspaceFolder}"
+							},
+							"stopOnEntry": {
+								"type": "boolean",
+								"description": "Automatically stop after launch.",
+								"default": true
+							},
+							"trace": {
+								"type": "boolean",
+								"description": "Enable logging of the Debug Adapter Protocol.",
+								"default": true
+							}
+						}
+					}
+				},
+				"configurationSnippets": [
+					{
+						"label": "Emam Debugger: Launch",
+						"description": "A new configuration for Stream tests of a emam component.",
+						"body": {
+							"type": "emam",
+							"request": "launch",
+							"name": "Run Stream tests",
+							"modelBase": "^\"\\${workspaceFolder}/\"",
+							"program": "a.package.componentInstance",
+							"stopOnEntry": true
+						}
+					}
+				]
+			}
+		]
+	}
+}

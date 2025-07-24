@@ -1,0 +1,39 @@
+{
+  "extends": "./configs/base.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@elysium/core": ["packages/core/src/*"],
+      "@elysium/filesystem": ["packages/filesystem/src/*"],
+      "@elysium/languages": ["packages/languages/src/*"],
+      "@elysium/messages": ["packages/messages/src/*"],
+      "@elysium/mini-browser": ["packages/mini-browser/src/*"],
+      "@elysium/monaco": ["packages/monaco/src/*"],
+      "@elysium/navigator": ["packages/navigator/src/*"],
+      "@elysium/workspace": ["packages/workspace/src/*"],
+      "@elysium/access-controller": ["extensions/access-controller/src/*"],
+      "@elysium/cd": ["extensions/cd/src/*"],
+      "@elysium/cnntrainlang": ["extensions/cnntrainlang/src/*"],
+      "@elysium/dashboard": ["extensions/dashboard/src/*"],
+      "@elysium/downloader": ["extensions/downloader/src/*"],
+      "@elysium/embeddedmontiarc": ["extensions/embeddedmontiarc/src/*"],
+      "@elysium/embeddedmontiarcdl": ["extensions/embeddedmontiarcdl/src/*"],
+      "@elysium/embeddedmontiarcmath": ["extensions/embeddedmontiarcmath/src/*"],
+      "@elysium/embeddedmontiview": ["extensions/embeddedmontiview/src/*"],
+      "@elysium/macocoviz": ["extensions/macocoviz/src/*"],
+      "@elysium/monticore": ["extensions/monticore/src/*"],
+      "@elysium/montimath": ["extensions/montimath/src/*"],
+      "@elysium/ocl": ["extensions/ocl/src/*"],
+      "@elysium/query-controller": ["extensions/query-controller/src/*"],
+      "@elysium/se-logo": ["extensions//se-logo/src/*"],
+      "@elysium/streamunits": ["extensions/streamunits/src/*"],
+      "@elysium/tagging": ["extensions/tagging/src/*"],
+      "@elysium/tagschema": ["extensions/tagschema/src/*"],
+      "@elysium/workspace-initiator": ["extensions/workspace-initiator/src/*"]
+    }
+  },
+  "include": [
+    "packages/*/src",
+    "extensions/*/src"
+  ]
+}

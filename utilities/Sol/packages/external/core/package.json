@@ -1,0 +1,59 @@
+{
+  "name": "@embeddedmontiarc/sol-external-core",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": [
+    "src",
+    "lib"
+  ],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.4.0",
+    "@material-ui/icons": "^4.2.1",
+    "@theia/core": "latest",
+    "eventemitter3": "^3.1.2",
+    "express": "^4.17.1",
+    "fs-extra": "^8.1.0",
+    "helpful-decorators": "^2.0.5",
+    "inversify": "^5.0.1",
+    "inversify-inject-decorators": "^3.1.0",
+    "modular-json-rpc": "^1.0.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^5.0.1",
+    "styled-components": "^4.3.2",
+    "ts-deferred": "^1.0.4",
+    "typeface-roboto": "^0.0.75",
+    "ws": "^5.2.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "4.0.9",
+    "@types/node": "^12.0.10",
+    "@types/react-router-dom": "^4.3.5",
+    "@types/styled-components": "^4.1.19",
+    "@types/ws": "^5.1.2",
+    "electron": "^6.0.7"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/core-frontend-module"
+    }
+  ],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/core-main-module",
+        "renderer": "lib/renderer/core-renderer-module"
+      }
+    ]
+  }
+}

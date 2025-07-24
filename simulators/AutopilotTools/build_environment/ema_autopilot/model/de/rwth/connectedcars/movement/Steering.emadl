@@ -1,0 +1,54 @@
+package de.rwth.connectedcars.movement;
+
+component Steering {
+
+  port
+      in  Q (-oo : oo)      currentAngle, //current orientation of car in degree
+      in  Q (-oo m : oo m)  calcPath_x,   //X value that the car is supposed to go 
+      in  Q (-oo m : oo m)  calcPath_y,   //Y value ""
+
+      out Q (-30.0 : 30.0)  steering_angle;
+
+  implementation Math {
+    
+    Q beta = 0.0;
+
+
+    beta = atan2(calcPath_y,calcPath_x); 
+    //calculate steering angle
+    Q steering_res = 0.0;
+    Q alpha = (currentAngle /180) * M_PI;
+
+    if beta > M_PI
+        beta = beta - (2 * M_PI);
+    end
+
+    if alpha > M_PI
+        alpha = alpha - (2 * M_PI);
+    end
+    steering_res = beta - alpha;
+    
+    //if steering res >180 degree turn the other way around
+    if steering_res > M_PI
+        steering_res = steering_res - (2 * M_PI);
+    end
+    
+    if steering_res < -M_PI
+        steering_res = steering_res + (2 * M_PI);
+    end
+    
+    steering_res = (steering_res /M_PI) * 180;
+    
+    
+    //check if steering result is in bounds
+    if steering_res > 30
+        steering_angle = 30.0;
+    elseif steering_res < -30
+        steering_angle = -30.0;
+    else 
+        steering_angle = steering_res;
+    end
+
+  }
+
+}

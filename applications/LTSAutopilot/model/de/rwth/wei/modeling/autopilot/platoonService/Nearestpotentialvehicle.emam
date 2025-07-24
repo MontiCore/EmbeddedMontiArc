@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+
+dynamic component Nearestpotentialvehicle{
+  ports
+  dynamic in  Z       isfrontvehicle[0:32],
+  dynamic in  Q       distance[0:32],
+  dynamic in  Z       vehicleid[0:32],
+
+
+  out  Z   frontvehicleid;
+
+  @ isfrontvehicle::connect{}
+  @ distance::connect{}
+  @ vehicleid::connect{}
+
+  implementation Math{
+     frontvehicleid = 0;
+     Q min_distance = 99999.0;
+     Z tag = 99;
+     for i = 1:32
+        if is_connected(isfrontvehicle,i)
+           Z isfront = isfrontvehicle(i);
+           if isfront == 1
+              if is_connected(distance,i)
+                 if distance(i) < min_distance
+                    min_distance = distance(i);
+                    tag = i;
+                 end
+              end
+           end
+        end
+     end
+     if tag <= 32
+       if is_connected(vehicleid,tag)
+        frontvehicleid = vehicleid(tag);
+       end
+     end
+  }
+}

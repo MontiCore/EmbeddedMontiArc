@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+//expected:
+view Witness_PositiveEffector {
+component PumpingSystem {
+    ports
+        in boolean pump,
+        out boolean pumpActuatorPort;
+    
+    component SensorReading {
+        ports
+            in boolean pump,
+            out boolean pumpState;
+        
+        component PumpSensorReader {
+            ports 
+                in boolean pump,
+                out boolean pumpState;
+        }
+        instance PumpSensorReader pumpSensorReader;
+        
+        connect pump -> pumpSensorReader.pump;
+        connect pumpSensorReader.pumpState -> pumpState;
+        effect pumpSensorReader.pump -> pumpSensorReader.pumpState;
+    }
+    instance SensorReading sensorReading;
+    
+    component PumpActuator {
+        ports
+            in boolean pumpState,
+            out boolean pumpActuatorPort;
+    }
+    instance PumpActuator pumpActuator;
+    
+    effect pumpActuator.pumpState -> pumpActuator.pumpActuatorPort;
+    
+    connect pump -> sensorReading.pump;
+    connect sensorReading.pumpState -> pumpActuator.pumpState;
+    connect pumpActuator.pumpActuatorPort -> pumpActuatorPort;
+}
+}

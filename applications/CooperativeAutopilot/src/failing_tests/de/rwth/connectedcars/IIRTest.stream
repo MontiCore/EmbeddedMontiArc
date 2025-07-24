@@ -1,0 +1,7 @@
+package de.rwth.connectedcars.iir;
+
+stream IIRTest for IIR_TestWrapper {
+    x: 5;
+    
+    y: 5;
+}

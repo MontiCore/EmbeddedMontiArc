@@ -1,0 +1,44 @@
+/* (c) https://github.com/MontiCore/monticore */
+* {
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    margin:0;
+    padding:0;
+    background-color:#303130;
+    height:100%;
+    overflow:hidden;
+    color:#cecece;
+}
+
+.row {
+    background-color:#252525;
+    text-align:center;
+    width:100%;
+    margin:20px 0 20px 0;
+}
+
+.row-1 {
+    height:256px;
+}
+
+.row-1 > img {
+    height:64px;
+}
+
+.row-2 {
+
+}
+
+.row-3 {
+    height:60px;
+}
+
+.row-4 {
+    height:30px;
+}
+
+#spinner {
+    display:none;
+}

@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view LoopPositiveEffector {
+    component LoopComponent {
+        ports
+            in Boolean in1,
+            out Boolean out1;
+    }
+    
+    effect LoopComponent.in1 -> LoopComponent.out1;
+}

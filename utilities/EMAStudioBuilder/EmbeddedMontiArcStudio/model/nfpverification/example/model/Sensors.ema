@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example.model;
+
+import example.model.units.*;
+
+component Sensors {
+    port
+        in Boolean s_controlSignalsIn,
+        out Boolean dataSaveInternalOut,
+        out Boolean dataAntennaOut;
+
+    instance Controller s_control1;
+    instance GPS s_gps1, s_gps2;
+    instance Temperature s_temp1;
+    instance Humidity s_humid1;
+
+    connect controlSignalsIn -> s_control1.controlSignalsIn;
+    connect s_control1.dataSaveInternalOut -> dataSaveInternalOut;
+    connect s_control1.dataAntennaOut -> dataAntennaOut;
+    connect s_control1.sensorRequest1 -> s_gps1.sensorIn;
+    connect s_control1.sensorRequest2 -> s_gps2.sensorIn;
+    connect s_control1.sensorRequest3 -> s_temp1.sensorIn;
+    connect s_control1.sensorRequest4 -> s_humid1.sensorIn;
+    connect s_gps1.sensorOut -> s_control1.sensorResponse1;
+    connect s_gps2.sensorOut -> s_control1.sensorResponse2;
+    connect s_temp1.sensorOut -> s_control1.sensorResponse3;
+    connect s_humid1.sensorOut -> s_control1.sensorResponse4;
+}

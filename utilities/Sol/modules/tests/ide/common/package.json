@@ -1,0 +1,81 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-tests-ide-common",
+  "license": "SEE LICENSE IN LICENSE",
+  "version": "2020.5.5-SNAPSHOT",
+  "scripts": {
+    "prepare": "yarn run build",
+    "clean": "rimraf src-gen",
+    "build": "tscx --flatten"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-templates": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-modules": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-configurations": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-artifact": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-templates": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-language-lc": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-tests-artifact-ide": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-core": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-monaco": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-gui-process": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-internal-se-logo": "^2020.5.5-SNAPSHOT",
+    "@theia/callhierarchy": "latest",
+    "@theia/console": "latest",
+    "@theia/core": "latest",
+    "@theia/debug": "latest",
+    "@theia/editor": "latest",
+    "@theia/editor-preview": "latest",
+    "@theia/editorconfig": "latest",
+    "@theia/file-search": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/git": "latest",
+    "@theia/json": "latest",
+    "@theia/keymaps": "latest",
+    "@theia/languages": "latest",
+    "@theia/markers": "latest",
+    "@theia/merge-conflicts": "latest",
+    "@theia/messages": "latest",
+    "@theia/metrics": "latest",
+    "@theia/mini-browser": "latest",
+    "@theia/navigator": "latest",
+    "@theia/outline-view": "latest",
+    "@theia/output": "latest",
+    "@theia/plugin-ext": "latest",
+    "@theia/plugin-ext-vscode": "latest",
+    "@theia/preferences": "latest",
+    "@theia/preview": "latest",
+    "@theia/process": "latest",
+    "@theia/search-in-workspace": "latest",
+    "@theia/task": "latest",
+    "@theia/terminal": "latest",
+    "@theia/textmate-grammars": "latest",
+    "@theia/typehierarchy": "latest",
+    "@theia/userstorage": "latest",
+    "@theia/variable-resolver": "latest",
+    "@theia/workspace": "latest",
+    "inversify": "^5.0.1"
+  },
+  "devDependencies": {
+    "@embeddedmontiarc/sol-development-cli": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-development-tsc": "^2020.5.5-SNAPSHOT"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/emastudio-frontend-module",
+      "backend": "lib/node/emastudio-backend-module"
+    }
+  ],
+  "sol": {
+    "directories": {
+      "models": "sol/models"
+    },
+    "extensions": [
+      {
+        "main": "lib/main/emastudio-main-module"
+      }
+    ]
+  }
+}

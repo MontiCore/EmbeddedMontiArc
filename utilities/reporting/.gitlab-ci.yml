@@ -1,0 +1,27 @@
+# (c) https://github.com/MontiCore/monticore  
+
+image: alpine:latest
+
+stages:
+- linux
+- deploy
+
+before_script:
+  - git config user.name "gitlab-ci"
+  - git config user.email "malte.heithoff@rwth-aachen.de"
+  - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+  - python get-pip.py
+  - pip install python-gitlab
+  - python scripts/syncProjects.py "EmbeddedMontiArc" $DEPLOY_KEY
+
+masterJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  script:
+    - chmod +x ./scripts/deploy.sh
+    - mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
+    - java -jar target/reporting-0.9.8-jar-with-dependencies.jar "EmbeddedMontiArc" "-testCoCos" "-timeout" "3" "-cTimeout" "2" "-testTests" "-grammar"
+    - python scripts/emaProjectPipelines.py report/data/dataProjectPipelines.json $DEPLOY_KEY
+    - ./scripts/deploy.sh
+  only:
+  - master

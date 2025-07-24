@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+import Point;
+
+component SteerComputation{
+	ports 
+		in Point targetPoint,
+		in Point currPos,
+		in Q(0:0.001: 100) steerLock,
+		in Q(-45° : 0.001°: 45°) carYaw,
+
+		out Q(-45° : 0.001°: 45°) targetSteerAngle;
+		
+	implementation Math{
+		Q(-oo:0.0001:oo) targetAngle = atan(targetPoint.y - currPos.y , targetPoint.x - currPos.x) - carYaw;
+		targetSteerAngle = targetAngle;
+	}
+}

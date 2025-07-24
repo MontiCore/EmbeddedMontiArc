@@ -1,0 +1,6 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct PlatoonPacket {
+    Subject subject;
+    (1 : oo) index;  // usage of type N leads to error, issue created
+}

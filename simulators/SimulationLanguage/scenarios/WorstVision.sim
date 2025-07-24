@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Worst Vision
+ * Focus: Observe vehicles handling the worst possible FOV
+ * Details: night-time, fog, limited sight, precipitation, cars drive in opposite directions, a pedestrian walks over the road
+*/
+sim WorstVision {
+  sim_duration 4h;
+
+  weather fixed {
+    sight 2m;
+    precipitation_type rain;
+    precipitation_amount 300mm;
+    weather_phenomena fog;
+  };
+  
+  time 02:00;
+  
+  map_name advanced.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  car1(-1.0,0.0,10.0)->(-22.0,-34.0,90.0);
+  <p>(latitude,longitude,z)->(a,b,c);
+}
