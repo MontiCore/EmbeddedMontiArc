@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "workspaces": [
+    "packages/**/*",
+    "modules/tests/*/*",
+    "modules/tests/*/*/*"
+  ],
+  "scripts": {
+    "prepare": "lerna run prepare",
+    "clean": "lerna run clean",
+    "publish": "lerna exec --ignore @embeddedmontiarc/sol-tests-* --concurrency 1 -- yarn publish --network-timeout=30000",
+    "docs": "typedoc --options configs/typedoc.json .",
+    "coverage": "node scripts/coverage"
+  },
+  "devDependencies": {
+    "fs-extra": "^8.1.0",
+    "lerna": "^3.15.0",
+    "rimraf": "^2.6.3",
+    "tslint": "^5.18.0",
+    "typedoc": "^0.14.2",
+    "typedoc-plugin-external-module-map": "^1.0.0",
+    "typescript": "^3.5.3"
+  }
+}

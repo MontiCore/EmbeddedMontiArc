@@ -1,0 +1,16 @@
+package emastudio.modules.types
+
+import emastudio.configurations.PacMan
+
+typedef module PacMan {
+    label "PacMan"
+    icon "some-icon-class"
+    category "EMAStudio"
+
+    configuration pacman: PacMan {
+        name "Run PacMan"
+
+        fill model with "de.rwth.se.PacMan"
+        fill modelPath with "."
+    }
+}

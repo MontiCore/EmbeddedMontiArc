@@ -1,0 +1,193 @@
+[
+    {
+        "//": "Armadillo",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=armadillo-8.200.2.zip",
+        "to": "resources"
+    },
+    {
+        "//": "Apache Tomcat",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=apache-tomcat-9.0.5.zip",
+        "to": "resources"
+    },
+    {
+        "//": "External Libraries",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=externallibs.zip",
+        "to": "resources"
+    },
+    {
+        "//": "Java Development Kit",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=jdk.zip",
+        "to": "resources"
+    },
+    {
+        "//": "Libraries",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=lib.zip",
+        "to": "resources"
+    },
+    {
+        "//": "EMAM2CPP",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=emam2cpp.zip",
+        "to": "resources"
+    },
+    {
+        "//": "MinGW",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=mingw64.zip",
+        "to": "resources"
+    },
+    {
+        "//": "Precompiled Headers",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=precompiled.zip",
+        "to": "resources"
+    },
+    {
+        "//": "Reporting",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.02.reporting&files=reporting.zip",
+        "to": "resources"
+    },
+    {
+        "//": "EMAM2WASM",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.12.14.emam2wasm&files=emam2wasm.zip",
+        "to": "resources"
+    },
+    {
+        "//": "View Verification",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=viewverification.zip",
+        "to": "resources"
+    },
+    {
+        "//": "OCL Verification",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.12.03.ocl-verification&files=oclverification.zip",
+        "to": "resources"
+    },
+    {
+        "//": "SVG Visualization",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.08.22.visualisation&files=visualisation.zip",
+        "to": "resources"
+    },
+    {
+        "//": "Stream Testing",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.streamTesting&files=streamTesting.zip",
+        "to": "resources"
+    },
+    {
+        "//": "PacMan",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.pacman&files=pacman.zip",
+        "to": "resources"
+    },
+    {
+        "//": "SuperMario",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.supermario&files=supermario.zip",
+        "to": "resources"
+    },
+    {
+        "//": "VisualizationEMAM",
+        "platforms": [
+            "win32",
+            "linux"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.10.02.visualization-emam&files=visualization-emam.zip",
+        "to": "resources"
+    },
+    {
+        "//": "PostgreSQLPortable",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=PostgreSQLPortable.zip",
+        "to": "resources/distributed-simulator"
+    },
+    {
+        "//": "RMI Model Server",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=RMIModelServer.zip",
+        "to": "resources/distributed-simulator"
+    },
+    {
+        "//": "SmartFox Server",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=SmartFoxServer_2X.zip",
+        "to": "resources/distributed-simulator"
+    },
+    {
+        "//": "SmartFox Extensions",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fwin64&files=SmartFoxExtensions.zip",
+        "to": "resources/distributed-simulator"
+    },
+    {
+        "comment": "emsdk",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.12.14.emsdk&files=emsdk.zip",
+        "to": "resources"
+    },
+    {
+        "comment": "Interactive Simulator",
+        "platforms": [
+            "win32"
+        ],
+        "from": "https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.12.14.interactiveSimulator&files=interactiveSimulator.zip",
+        "to": "resources"
+    }
+]

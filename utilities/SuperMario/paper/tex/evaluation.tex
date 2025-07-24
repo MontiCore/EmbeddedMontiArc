@@ -1,0 +1,31 @@
+The two developers of Pacman and Supermario were interviewed in the manner mentioned in the introduction. In this section the results of this interviews are collected and summarized.
+
+\subsection{RQ1 - Is EmbeddedMontiArc suitable for other systems?}
+The tasks were both based on real-time problems which the EmbeddedMontiArc language is designed for. Both developers were able to model a controller which can beat a level in their specific domain. The code for the models is clearly and good readable. The generated Javascript code is fast enough to be executed every tick of the simulation (30 fps/ 60 fps). Based on the examples of Pacman and Supermario it is clear that real-time problems can be solved with EmbeddedMontiArc.
+
+\subsection{RQ2 - Is it possible to integrate other simulators in a recent amount of work?}
+To integrate the Pacman- and Supermario simulators two tasks had to be completed: integrate into the integrated development environment(IDE) and then link the simulator to the web assembly. The integration into the IDE was quite simple for both systems as soon as the instructions were handed out. But as there was no infrastructure for generating the web assembly before this led to some extra effort by installing emscripten and writing the needed scripts. The Simulator for Pacman was easily adjustable so that the extraction of the needed information (e.g., Pacman position) was done in short time. In contrast, the underlying structure of the Supermario project in use was way more complex and needed a lot more effort to understand it. Linking the web assembly with the simulator was done within little work as soon as the interface for extracting the data from the simulators and inputting the computed results was implemented. Just the data had to be transformed into the correct format and then the web assembly needed to be executed.
+
+Therefore, the answer to this question is dependent on the complexity of the system and on whether the is a working interface for extracting data. Pacman was fairly easy to integrate but Supermario needed more time than calculated.
+
+\subsection{RQ3 - What kind of background knowledge is needed to model C\&C in EmbeddedMontiArc?}
+One of the developers had some experience with EmbeddedMontiArc while the other had not. Both are computer science students and are therefore familiar with programming concepts and the modular programming that EmbeddedMontiArc requires. For the more experienced developer the concept of C\&C was easy to understand and he could easily make use some of the tooling the language offers. The less experienced developer had a few problems in the beginning but after overcoming those he had no further problems with implementing what he was trying to. Both developers benefited from being familiar with programming languages so the math library was easy to understand. 
+
+Having experience with programming concepts is necessary to model C\&C in EmbeddedMontiArc but specific knowledge about the EmbeddedMontiArc language is optional and can be obtained in a short time.
+
+\subsection{RQ4 - What features are good and what are not suited?}
+This section will be split up into the question about the tools around the language and the question about the features the language itself is offering.
+
+\subsubsection{Tools}
+The onlineIDE coming with the EmbeddedMontiArcStudio is powerful enough to help with the modeling process. But it is also missing a lot of tools a modern IDE is offering. The safe option was also one of the weak points of the IDE, only after running a plugin all the files are saved to the hard drive. Syntax checking was sufficient for the non-atomic components but missing for the atomic components. The other tools integrated into the IDE, such as generating a report with semantical checks of the models or generating a visualization could be utilized for error checking and planning the model. But most of the tools had a long runtime and need optimization.
+
+\subsubsection{Language Features}
+The option to import other components and to have a package hierarchy were used all the time and are well suited for the purpose of the language. Also connecting arrays of ports with a [:] is very convenient, but this option is not nested which made the code at some point larger than necessary. What was missing in this version of the code generator is the ability to use structs as a port type which led to unclear port interface for some components.
+
+All in all, the features the IDE and the language were offering helped with the modeling process and are well suited for the language purpose.
+
+\subsection{Other Problems}
+Although in theory there are no major problems with modeling the two groups had to fight some bugs in the code generation process. Most of those bugs are fixed by now, but at the time of modeling led to some considerable time losses. Due to the fact that the transformation from the C++ code to Javascript had a really long runtime, testing the code needed a lot of time as well.
+
+
+

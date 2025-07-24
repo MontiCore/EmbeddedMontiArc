@@ -1,0 +1,33 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Component Quality</title>
+    <link href="images/favicon.ico" type="image/x-icon" rel="icon"/>
+    <script src="js/dataTable/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" media="all" href="css/componentQuality.css">
+</head>
+<body scrolling="no">
+<div id="tabs">
+    <div id="loadingFrame">
+        <div class="text">Currently Loading....</div>
+        <img src="images/loading.gif" class="currently-loading">
+    </div>
+    <iframe id="groupedFrame" class="reportFrame"
+            frameborder="0"
+            onload="resizeIframe(this)"
+            style="visibility:hidden;">
+    </iframe>
+    <iframe id="expandedFrame" class="reportFrame"
+            frameborder="0"
+            onload="resizeIframe(this)"
+            style="visibility:hidden;">
+    </iframe>
+</div>
+<script async src="js/componentQuality.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-15 {
+  component FAS {
+    ports
+	  in ? V_Sign_kmh,
+	  out ? ?,
+	  out ? ?;
+	  
+	  component FollowToStop {
+	    port
+		  out ? ?;
+	  }
+	  instance FollowToStop fts;
+	  
+	  component Distronic {
+	    ports
+		  in ? ?,
+		  out ? ?;
+	  }
+	  instance Distronic distronic;
+	  
+	  component Tempomat {
+	    port
+		  out ? ?;
+	  }
+	  instance Tempomat tempo;
+	  
+	  component EmergencyBrake {
+	    port
+		  out ? ?;
+	  }
+	  instance EmergencyBrake emBrake;
+	  
+	  component Limiter {
+	    ports
+		  in ? ?,
+		  out ? ?;
+	  }
+	  instance Limiter limit;
+	  
+	  component BrakeAssistant {
+	    port
+		  out ? ?;
+	  }
+	  instance BrakeAssistant bAssist;
+	  
+	  component Distancewarner {
+	    port
+		  out ? ?;
+	  }
+	  instance Distancewarner distwarn;
+	  
+	  component VelocityControl {
+	    ports
+		  in ? ?,
+		  in ? ?,
+		  in ? ?,
+		  in ? ?,
+		  in ? ?,
+		  out ? ?;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect V_Sign_kmh -> limit;
+	  
+	  connect fts -> distronic;
+	  
+	  connect distronic -> veloCont;
+	  connect tempo -> veloCont;
+	  connect emBrake -> veloCont;
+	  connect limit -> veloCont;
+	  connect bAssist -> veloCont;
+  }
+  instance FAS fas;
+  
+  connect distwarn -> fas;
+  connect veloCont -> fas;
+}

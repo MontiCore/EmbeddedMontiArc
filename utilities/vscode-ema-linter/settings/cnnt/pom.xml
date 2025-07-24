@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.monticore.lang.monticar</groupId>
+  <artifactId>cnnt-lsp-exec</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>cnnt-lsp-exec</name>
+
+  <properties>
+    <!-- Dependency versions -->
+    <cnn-train.version>0.3.8-SNAPSHOT</cnn-train.version>
+    <ema-lsp.version>1.4-SNAPSHOT</ema-lsp.version>
+
+    <!-- misc -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>de.monticore.lang.monticar</groupId>
+      <artifactId>ema-lsp</artifactId>
+      <version>${ema-lsp.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>de.monticore.lang.monticar</groupId>
+        <artifactId>cnn-train</artifactId>
+        <version>${cnn-train.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <mainClass>de.monticore.lang.embeddedmontiarc.cnntrainlang.lsp.CnntLspServer</mainClass>
+          <arguments>
+            <argument>-p</argument>
+            <argument>0</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

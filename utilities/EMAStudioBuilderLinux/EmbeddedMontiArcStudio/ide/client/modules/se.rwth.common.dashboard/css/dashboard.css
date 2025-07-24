@@ -1,0 +1,78 @@
+/* (c) https://github.com/MontiCore/monticore */
+#dashboard-panel {
+    top:30px;
+    left:420px;
+    max-height:calc(100% - 167px);
+    max-width:calc(100% - 470px);
+    overflow-y:auto;
+}
+
+#dashboard-list {
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+#dashboard-list li {
+    display:inline;
+    float:left;
+    height:150px;
+    width:150px;
+    margin:10px;
+    background:url("../se.rwth.index.ui/images/folder.svg") no-repeat center;
+    background-size:cover;
+    position:relative;
+    overflow:hidden;
+}
+
+#dashboard-list li:hover {
+    overflow:auto !important;
+}
+
+#dashboard-plus {
+    background:url("images/plus.svg") no-repeat center !important;
+    background-size:100% 100% !important;
+}
+
+#dashboard-plus:hover {
+    cursor:pointer;
+    background-color:grey !important;
+}
+
+#dashboard-list span.text {
+    text-align:center;
+    width:100%;
+    display:block;
+    color:#FFFFFF;
+    text-shadow:2px 2px #000000;
+    position:relative;
+}
+
+#dashboard-list span.trash {
+    height:30%;
+    width:30%;
+    background:url("images/trash.svg") no-repeat center #89b1d3;
+    background-size:100% 100%;
+    display:inline-block;
+    position:absolute;
+    top:100%;
+    transform:translate(-100%, -100%);
+    left:100%;
+}
+
+#dashboard-list span.tick {
+    height:30%;
+    width:30%;
+    background:url("images/tick.svg") no-repeat center #89b1d3;
+    background-size:100% 100%;;
+    display:inline-block;
+    position:absolute;
+    top:100%;
+    transform:translate(-200%, -100%);
+    left:100%;
+}
+
+#dashboard-list span.tick:hover, #dashboard-list span.trash:hover {
+    background-color:grey !important;
+    cursor:pointer;
+}
