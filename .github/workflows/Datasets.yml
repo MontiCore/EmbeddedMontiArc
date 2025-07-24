@@ -13,7 +13,7 @@ env:
 jobs:
 
   deploy-mnist-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false}}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -185,7 +185,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-vae-mnist-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false}}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -250,7 +250,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-letter-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false}}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -294,7 +294,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-cifar-10-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -338,7 +338,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-operator-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false}}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -381,7 +381,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-operator-reduced-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false}}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -424,7 +424,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   deploy-mnist-hexadecimal-dataset:
-    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    if: ${{ !cancelled() && github.ref_name == 'master' && false}}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -444,7 +444,6 @@ jobs:
             cd datasets/mnist_hexadecimal
             mvn emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
-
 
   rerun-failed-jobs:
     runs-on: ubuntu-latest
