@@ -1,3 +1,7 @@
 [submodule "externals/armadillo"]
 	path = simulators/AutopilotTools/externals/armadillo
 	url = https://gitlab.com/conradsnicta/armadillo-code
+
+[submodule "external/armadillo"]
+	path = applications/CooperativeAutopilot/external/armadillo
+	url = https://gitlab.com/conradsnicta/armadillo-code

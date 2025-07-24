@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@elysium/workspace",
+  "version": "0.1.1",
+  "description": "Elysium Virtual Workspace emulating a Workspace for Theia based on the Virtual File System.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/workspace": "latest",
+    "@elysium/core": "^0.1.0",
+    "@elysium/dashboard": "^0.1.0"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/workspace-frontend-module"
+    }
+  ]
+}

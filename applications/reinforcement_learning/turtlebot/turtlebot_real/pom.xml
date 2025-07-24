@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- (c) https://github.com/MontiCore/monticore -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>turtlebot</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <properties>
+
+        <!-- .. SE-Libraries .................................................. -->
+        <streamtest.version>0.0.11-SNAPSHOT</streamtest.version>
+
+
+        <!-- .. Misc .......................................................... -->
+        <java.version>1.8</java.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.utilities</groupId>
+            <artifactId>maven-streamtest</artifactId>
+            <version>0.0.14-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.utilities</groupId>
+                <artifactId>maven-streamtest</artifactId>
+                <version>0.0.14-SNAPSHOT</version>
+                <configuration>
+                    <pathMain>./src/main/ema/model</pathMain>
+                    <pathTest>./src/main/ema/model</pathTest>
+                    <runStreamTestBefore>false</runStreamTestBefore>
+                    <generator>MinGW</generator>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>preprocessor</id>
+                        <configuration>
+                            <middlewareRootModels>
+                                <param>atari.preprocessor.master</param>
+                            </middlewareRootModels>
+                            <pathMiddlewareOut>target/preprocessor</pathMiddlewareOut>
+                            <middlewareGenerator>
+                                <param>emadlcpp</param>
+                                <param>roscpp</param>
+                            </middlewareGenerator>
+                            <emadlBackend>GLUON</emadlBackend>
+                            <enableExecutionLogging>false</enableExecutionLogging>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>streamtest-middleare-build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>agent</id>
+                        <configuration>
+                            <rootModel>atari.agent.Master</rootModel>
+                            <middlewareRootModels>
+                                <param>atari.agent.master</param>
+                            </middlewareRootModels>
+                            <pathMiddlewareOut>target/agent</pathMiddlewareOut>
+                            <middlewareGenerator>
+                                <param>emadlcpp</param>
+                                <param>roscpp</param>
+                            </middlewareGenerator>
+                            <emadlBackend>GLUON</emadlBackend>
+                            <enableExecutionLogging>true</enableExecutionLogging>
+                            <needExternalScript>true</needExternalScript>
+                            <consoleScript>
+                                <param>run_environment.sh</param>
+                                <param>run_training.sh</param>
+                            </consoleScript>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>streamtest-middleare-build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+
+
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <distributionManagement>
+        <repository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

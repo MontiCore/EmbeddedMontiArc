@@ -1,0 +1,75 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Collisionmessagegenerator{
+  //generate the collision message
+  ports
+    in     Z            timestamp,
+    in     Z            vehicleid,
+    in     Q            intersection_x,
+    in     Q            intersection_y,
+    in     Z            vehicle_n,
+    in     Z^{1,32}     collision_id,
+    in     Z^{1,32}     collisionpriority,
+
+    dynamic out Collisionmessage coll_message[0:32],
+    // use as public variable
+    out Collisionmessage cmsg;
+
+    implementation Math{
+     // use to store the vehicle in last collisionmessage
+     static Z^32 collision_id1 = [0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0];
+     static Z vehicle_num  = 0;
+     Z counter = 0;
+     Z tag = 0;
+     // construct the collision message(first public variable)
+     cmsg.vehicleid = vehicleid;
+     cmsg.timestamp = timestamp;
+     cmsg.vehicle_number = vehicle_n;
+     cmsg.vehicleid_list = collision_id;
+     cmsg.priority_tother = collisionpriority;
+     cmsg.intersection_x = intersection_x;
+     cmsg.intersection_y = intersection_y;
+     // when collisionmessage changed, use sign vehicle id lists
+     // length different, obviously changed
+     if vehicle_n != vehicle_num
+         for k = 1:32
+           collision_id1(k) = 0.0;
+         end
+         for m = 1:vehicle_n
+           collision_id1(m) = collision_id(1,m);
+         end
+         vehicle_num = vehicle_n;
+         Z a = 1;
+         if ports_connect(coll_message,a,cmsg)
+           coll_message(a) = cmsg;
+         end
+         Z r = ports_free(coll_message,a);
+     // length same, but list changed
+     elseif vehicle_n != 0 && vehicle_n == vehicle_num
+        for i = 1:vehicle_n
+           tag = 0;
+           for j = 1:vehicle_num
+              if collision_id(1,i) == collision_id(j)
+                tag = 1;
+              end
+           end
+        end
+        if tag == 0
+          for x = 1:32
+            collision_id1(x) = 0.0;
+          end
+          for y = 1:vehicle_n
+            collision_id1(y) = collision_id(1,y);
+          end
+          vehicle_num = vehicle_n;
+          Z a1 = 1;
+          if ports_connect(coll_message,a1,cmsg)
+            coll_message(a1) = cmsg;
+          end
+          Z r1 = ports_free(coll_message,a1);
+        end
+     end
+   }
+}

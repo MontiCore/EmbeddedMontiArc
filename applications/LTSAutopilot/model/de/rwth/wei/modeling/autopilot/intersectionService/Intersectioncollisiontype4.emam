@@ -1,0 +1,122 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+import  de.rwth.wei.modeling.autopilot.messagegenerate.*;
+
+dynamic component Intersectioncollisiontype4{
+  ports
+  // platoon vehicle(platoonmessage and trajectorymessage)
+  dynamic in    Platoonmessage          plat_msg[0:32],
+  dynamic in    Trajectorymessage       plat_traj_msg[0:32],
+  // platoons at intersection
+  in  Z ^ 32          platoon_atintersection,
+  in  Z               platoon_num,
+  // platoon length(identity with platoonid)
+  in  Z ^ 32          platoonid,
+  in  Z ^ 32          platoonlength,
+  // bacis information of current platoon
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Q               length,
+  in  Q               width,
+  in  Q               velocity,
+  in  Q               dis2intersection,
+  in  Z               if_frontvehicleexists,
+  in  Z               ifcurrentsplit,
+  in  Z               platoon_length,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+
+  out   Z   is_highestpriority,
+  out   Z^{1,32}          iscollision,
+  out   Z^{1,32}          collision_id,
+  out   Q^{1,32}          dis2intersection_car1;
+
+
+  instance   Platoonduplicate                       p4_dup;
+  instance   If_splitafternextintersection          if_splitai1;
+  instance   Platoonmessageparsing                  pmpin4[0:32];
+  instance   Trajectorymessageparsing               tmpin4[0:32];
+  instance   Collisioninformation                   collinfo4[0:32];
+  instance   Collisionmessage_helper                collhelper4;
+  instance   Platoonwithplatoon_priority            pwp_priority;
+
+ @ length::value(>100) && plat_traj_msg::connect{
+
+ }
+ @ plat_msg::connect{
+   connect plat_msg[?] -> p4_dup.plat_msg[?];
+ }
+ @ p4_dup.plat_msg1::connect{
+   connect p4_dup.plat_msg1[?] -> if_splitai1.plat_msg[?];
+ }
+
+ @ p4_dup.plat_msg2::connect && plat_traj_msg::connect{
+   // platoon information from the platoonmessage
+   connect p4_dup.plat_msg2[?] -> pmpin4[?].plat_message;
+   connect pmpin4[?].vehicleid -> collinfo4[?].car1_id;
+   connect pmpin4[?].length -> collinfo4[?].car1_length;
+   connect pmpin4[?].width -> collinfo4[?].car1_width;
+   connect pmpin4[?].velocity -> collinfo4[?].car1_velocity;
+   connect pmpin4[?].position_x -> collinfo4[?].car1_position_x;
+   connect pmpin4[?].position_y -> collinfo4[?].car1_position_y;
+
+   // trajectory information from the trajectorymessage
+   connect plat_traj_msg[?] -> tmpin4[?].traj_message;
+   connect tmpin4[?].trajectroy_x -> collinfo4[?].trajectory_x_car1;
+   connect tmpin4[?].trajectroy_y -> collinfo4[?].trajectory_y_car1;
+   connect tmpin4[?].trajectory_length -> collinfo4[?].trajectory_length_car1;
+   connect tmpin4[?].nextintersection_x -> collinfo4[?].car1_nextintersection_x;
+   connect tmpin4[?].nextintersection_y -> collinfo4[?].car1_nextintersection_y;
+
+   // collision information
+   connect trajectory_length -> collinfo4[?].trajectory_length;
+   connect trajectory_x -> collinfo4[?].trajectory_x;
+   connect trajectory_y -> collinfo4[?].trajectory_y;
+   connect nextintersection_x -> collinfo4[?].nextintersection_x;
+   connect nextintersection_y -> collinfo4[?].nextintersection_y;
+   connect length -> collinfo4[?].length;
+   connect width -> collinfo4[?].width;
+
+   connect collinfo4[?].iscollision -> collhelper4.iscollision[?];
+   connect collinfo4[?].collsion_id -> collhelper4.collsion_id[?];
+   connect collinfo4[?].proritytocurrent -> collhelper4.collisionpriority[?];
+   connect collinfo4[?].angletocurrent -> collhelper4.angletocurrent[?];
+   connect collinfo4[?].velocity_car1 -> collhelper4.velocity_car1[?];
+   connect collinfo4[?].dis2intersection_car1 -> collhelper4.dis2intersection[?];
+ }
+   connect platoon_atintersection -> pwp_priority.platoon_atintersection;
+   connect platoon_num -> pwp_priority.platoon_num;
+   connect velocity -> pwp_priority.velocity;
+   connect length -> pwp_priority.length;
+   connect dis2intersection -> pwp_priority.dis2intersection;
+   connect if_frontvehicleexists -> pwp_priority.if_frontvehicleexists;
+   connect ifcurrentsplit -> pwp_priority.ifcurrentsplit;
+   connect platoon_length -> pwp_priority.platoon_length;
+   connect platoonid -> pwp_priority.platoonid;
+   connect platoonlength -> pwp_priority.platoonlength;
+   connect if_splitai1.platoonid -> pwp_priority.platoonid1;
+   connect if_splitai1.ifsplit -> pwp_priority.ifsplit;
+   connect collhelper4.all_iscollision -> pwp_priority.iscollision;
+   connect collhelper4.all_collsion_id -> pwp_priority.collision_id;
+   connect collhelper4.all_collisionpriority -> pwp_priority.collisionpriority;
+   connect collhelper4.all_angletocurrent -> pwp_priority.angletocurrent;
+   connect collhelper4.all_velocity_car1 -> pwp_priority.velocity_car1;
+   connect collhelper4.all_dis2intersection -> pwp_priority.dis2intersection_car1;
+
+   connect pwp_priority.is_highestpriority -> is_highestpriority;
+
+   connect collhelper4.all_iscollision -> iscollision;
+   connect collhelper4.all_collsion_id -> collision_id;
+   connect collhelper4.all_dis2intersection -> dis2intersection_car1;
+
+   @ p4_dup.plat_msg2::connect{}
+   @ p4_dup.plat_msg3::connect{}
+   @ p4_dup.plat_msg4::connect{}
+   @ p4_dup.plat_msg5::connect{}
+   @ p4_dup.plat_msg6::connect{}
+}

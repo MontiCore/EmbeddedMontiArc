@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-28 {
+  component FAS {
+    ports
+	  in ? BrakeForce_pedal_pc,
+	  in ? ParkingBrake_b,
+	  out ? CC_active_b;
+	  
+	  component Tempomat {
+	    ports
+		  in ? BrakeForce_pedal_pc,
+	      in ? ParkingBrake_b,
+	      out ? CC_active_b;
+	  }
+	  instance Tempomat tempo;
+	  
+	  effect tempo.BrakeForce_pedal_pc -> tempo.CC_active_b;
+	  effect tempo.ParkingBrake_b -> tempo.CC_active_b;
+	  
+	  connect BrakeForce_pedal_pc -> tempo.BrakeForce_pedal_pc;
+	  connect ParkingBrake_b -> tempo.ParkingBrake_b;
+	  connect tempo.CC_active_b -> CC_active_b;
+  }
+}

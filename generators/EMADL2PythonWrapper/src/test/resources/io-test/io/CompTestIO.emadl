@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package io;
+
+component CompTestIO {
+    ports
+        in Q inp1,
+        in Z inp2,
+        in B inp3,
+        out Z^{3} out1,
+        out Q^{3,4} out2;
+}

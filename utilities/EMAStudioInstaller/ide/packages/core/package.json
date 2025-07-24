@@ -1,0 +1,44 @@
+{
+  "private": true,
+  "name": "@elysium/core",
+  "version": "0.1.2",
+  "description": "Elysium Core extending the Core of Theia.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/history/browser-history-module"
+    },
+    {
+      "frontend": "lib/browser/messaging/messaging-frontend-module",
+      "frontendElectron": "lib/electron-browser/messaging/messaging-frontend-module"
+    },
+    {
+      "frontend": "lib/browser/window/browser-window-module"
+    },
+    {
+      "frontend": "lib/browser/frontend-application-module",
+      "frontendElectron": "lib/electron-browser/frontend-application-module"
+    },
+    {
+      "frontend": "lib/browser/logger-frontend-module",
+      "frontendElectron": "lib/electron-browser/logger-frontend-module"
+    }
+  ]
+}

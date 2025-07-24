@@ -1,0 +1,21 @@
+package fas_views;
+
+view FA-19 {
+  component FAS {
+    ports
+	  in ? CruiseControl_b,
+	  out ? CC_active_b;
+	  
+	  component Tempomat {
+	    ports
+		  in ? CruiseControl_b,
+		  out ? CC_active_b;
+	  }
+	  instance Tempomat tempo;
+	  
+	  effect tempo.CruiseControl_b -> tempo.CC_active_b;
+	  
+	  connect CruiseControl_b -> tempo.CruiseControl_b;
+	  connect tempo.CC_active_b -> CC_active_b;
+  }
+}

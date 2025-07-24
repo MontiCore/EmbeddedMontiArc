@@ -1,0 +1,5 @@
+PACKAGE valid
+
+DOCKERFILE ValidatePort
+
+EXPOSE 5000

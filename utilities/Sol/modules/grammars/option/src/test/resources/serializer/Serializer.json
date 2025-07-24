@@ -1,0 +1,24 @@
+{
+  "name": "visitor",
+  "type": "list",
+  "props": {
+    "label": "A Label",
+    "options": [
+      {
+        "name": "subOption1",
+        "type": "string",
+        "props": {
+          "label": "An other Label"
+        }
+      },
+      {
+        "name": "subOption2",
+        "type": "string",
+        "props": {
+          "label": "Also a Label",
+          "required": true
+        }
+      }
+    ]
+  }
+}

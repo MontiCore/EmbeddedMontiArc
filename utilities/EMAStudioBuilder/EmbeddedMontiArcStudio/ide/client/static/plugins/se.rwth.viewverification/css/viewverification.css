@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+.icon-tick {
+    background:url("../images/tick.png") no-repeat center;
+    background-size:100% 100%;
+	cursor:pointer !important;
+	top:-1px;
+}
+
+.icon-doubletick {
+    background:url("../images/doubletick.png") no-repeat center;
+    background-size:100% 100%;
+	cursor:pointer !important;
+	top:-1px;
+}

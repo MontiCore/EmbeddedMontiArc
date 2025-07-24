@@ -1,0 +1,36 @@
+package de.rwth.connectedcars.behaviour;
+
+component BehaviourController {
+
+  port
+      in  Q (0 km/h : oo km/h) ^ 9 maxAllVelocity,
+      in  Q (0 km/h : oo km/h) ^ 9 minAllVelocity,
+      in  N (0:10)                 traj_length,
+      
+      out Q (0 m/s : oo m/s) ^ 9   maxVelocity,
+      out Q (0 m/s : oo m/s) ^ 9   minVelocity,
+      out Q (0 : 180)              critTurnAngle,
+      out Q (0 m/s : oo m/s)       turnSpeed,
+      out Q (0 m/s : oo m/s)       sharpTurnSpeed,
+      out Q (0 : 180)              extraCritAngle,
+      out Q                        velCoef,
+      out Q (-oo m : oo m)         distance2mid;
+      
+  instance Constraints constr;
+  instance DrivingProfile driveProf;
+  
+  connect traj_length        -> driveProf.traj_length;
+  connect maxAllVelocity     -> constr.maxAllVelocity;
+  connect minAllVelocity     -> constr.minAllVelocity;
+  connect constr.maxVelocity -> driveProf.maxAllVel;
+  connect constr.minVelocity -> driveProf.minAllVel;
+  
+  connect driveProf.maxVel         -> maxVelocity;
+  connect driveProf.minVel         -> minVelocity;
+  connect driveProf.critTurnAngle  -> critTurnAngle;
+  connect driveProf.turnSpeed      -> turnSpeed;
+  connect driveProf.sharpTurnSpeed -> sharpTurnSpeed;
+  connect driveProf.extraCritAngle -> extraCritAngle;
+  connect driveProf.velCoef        -> velCoef;
+  connect driveProf.distance2mid   -> distance2mid;
+}

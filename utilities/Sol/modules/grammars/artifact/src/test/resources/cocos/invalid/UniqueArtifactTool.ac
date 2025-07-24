@@ -1,0 +1,13 @@
+package invalid
+
+tool UniqueResourceTool {
+    path "some/awesome/path" resolved from CWD
+
+    artifact SOME_RESOURCE {
+        path "some/other/awesome/path" resolved from CWD
+    }
+
+    artifact SOME_RESOURCE {
+        path "some/other/awesome/path" resolved from CWD
+    }
+}
