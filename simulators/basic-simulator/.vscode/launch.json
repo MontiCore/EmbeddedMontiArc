@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "JAR basic-simulator",
+            "request": "launch",
+            "mainClass": "de.rwth.montisim.basic_simulator.App",
+            "projectName": "basic-simulator",
+            "cwd": "${workspaceFolder}/install",
+            "classPaths": [
+                "${workspaceFolder}/install/basic-simulator.jar"
+            ]
+        }
+    ]
+}
