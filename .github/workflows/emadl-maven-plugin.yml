@@ -1,0 +1,649 @@
+name: emadl-maven-plugin
+on:
+  push:
+    paths:
+      - 'utilities/emadl-maven-plugin/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 49355
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+  FileChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      runpages: ${{steps.pages.outputs.run}}
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check for file changes
+        run: |
+          CHANGES=$(git diff --name-only HEAD^ HEAD)
+          echo "$CHANGES"
+          echo "$CHANGES" > diff.txt
+      - name: Check pages
+        id: pages
+        run: |
+          exc=true
+          for path in $(cat diff.txt); do
+            if [[ $path == *.gitignore* ]]; then
+              echo "Matching path found: $path"
+              echo "DONT RUN"
+              exc=false
+              break
+            fi
+            if [[ $path == *README.md* ]]; then
+              echo "Matching path found: $path"
+              echo "DONT RUN"
+              exc=false
+              break
+            fi
+          done
+          echo "Final file status except check: $exc"
+          echo "run=$exc" >> $GITHUB_OUTPUT
+  linux_phase:
+    needs: [MasterDeployJobLinux, BranchJobLinux]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage linux"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage linux"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+  page_phase:
+    needs: [linux_phase, pages]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage page"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage page"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+  trigger_apps_phase:
+    needs: [page_phase, trigger-mnistcalc, trigger-tictactoe, trigger-doppelkopf, trigger-coopautopilot, trigger-mnist-vae, trigger-3d-gan, trigger-sentiment, trigger-kipf-gnn]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage trigger_apps"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage trigger_apps"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  BranchJobLinux:
+    needs: FileChanges
+    if: ${{ github.ref_name != 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/carlacomponents/ros-maven:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/carlacomponents/ros-maven:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd utilities/emadl-maven-plugin
+            mvn -B  clean install -s settings.xml
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  MasterDeployJobLinux:
+    needs: FileChanges
+    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull maven:3-jdk-8
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd utilities/emadl-maven-plugin
+            mvn -s settings.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  trigger-mnistcalc:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger MNISTCalculator pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: MNISTCalculator.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: MNISTCalculator.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-3d-gan:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger 3d-gan pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: 3d-gan.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: 3d-gan.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-mnist-vae:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger mnist-vae pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: mnist-vae.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: mnist-vae.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-kipf-gnn:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger kipf-gnn pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: kipf-gnn.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: kipf-gnn.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-sentiment:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger bertsentimentanalyzer pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: bertsentimentanalyzer.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: bertsentimentanalyzer.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-coopautopilot:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger CoopMontiSimAutopilot pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: CoopMontiSimAutopilot.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: CoopMontiSimAutopilot.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-doppelkopf:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger doppelkopf-agent pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: doppelkopf-agent.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: doppelkopf-agent.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  trigger-tictactoe:
+    needs: page_phase
+    if: ${{ !cancelled() && needs.page_phase.result == 'success' &&  github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    continue-on-error: true
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Record trigger time
+        id: trigger_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
+      - name: Trigger tictactoeagent pipeline
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH
+        env:
+          WORKFLOW_FILE: tictactoeagent.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
+      - name: Wait for workflow to appear
+        run: sleep 20
+      - name: Get latest run ID of Child Workflow after trigger time
+        id: get_run
+        run: |
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \
+          --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
+          echo "Run ID: $RUN_ID"
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{github.token}}
+          WORKFLOW_FILE: tictactoeagent.yml
+          BRANCH: ${{ github.ref_name }}
+          REPO: ${{github.repository}}
+      - name: Wait for Child Workflow to finish
+        run: |
+          while true; do
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            echo "Current status: $STATUS"
+            if [[ "$STATUS" == "completed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+      - name: Check Child Workflow result
+        continue-on-error: true
+        run: |
+          RESULT=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json conclusion --jq '.conclusion')
+          echo "Child Workflow result: $RESULT"
+          if [[ "$RESULT" != "success" ]]; then
+            echo "Child Workflow failed"
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{github.token}}
+          REPO: ${{github.repository}}
+
+  pages:
+    needs: [linux_phase, FileChanges]
+    if: ${{ !cancelled() && needs.linux_phase.result == 'success' &&  github.ref_name == 'master' && needs.FileChanges.outputs.runpages == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/carlacomponents/ros-maven:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/carlacomponents/ros-maven:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd utilities/emadl-maven-plugin
+            mvn clean site -s settings.xml
+            mv target/site/ public/
+        run: docker exec build-container bash -c "$SCRIPT"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: pages
+          retention-days: 7
+          path: |
+            utilities/emadl-maven-plugin/public
+

@@ -1,0 +1,74 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+
+dynamic component Nonstopareawithplatoon{
+  ports
+   dynamic in Statusmessage        status_msg[0:32],
+   dynamic in Platoonmessage       plat_msg[0:32],
+   dynamic in Trajectorymessage    traj_msg[0:32],
+
+   in  Q           nextintersection_x,
+   in  Q           nextintersection_y,
+   in  Z           trajectory_length,
+   in  Q^{1,100}   trajectory_x,
+   in  Q^{1,100}   trajectory_y,
+   in  Q           length,
+   in  Q           width,
+
+   out Z           if_collinnonstop;
+
+   instance  If_platooninnonstop        ifpinnon;
+   instance  Statusmessageparsing       sparse[0:32];
+   instance  Trajectorymessageparsing   tparse[0:32];
+   instance  Collisioninformation       collinfo[0:32];
+   instance  If_nonstopplatoon2array    ifnp2array;
+
+   @ traj_msg::connect {
+     connect traj_msg[?] -> ifpinnon.traj_msg[?];
+   }
+   @ status_msg::connect{
+     connect status_msg[?] -> ifpinnon.status_msg[?];
+   }
+   @ plat_msg::connect{
+     connect plat_msg[?] -> ifpinnon.plat_msg[?];
+   }
+
+   connect nextintersection_x -> ifpinnon.nextintersection_x;
+   connect nextintersection_y -> ifpinnon.nextintersection_y;
+   connect length -> ifpinnon.length;
+
+   @ ifpinnon.tail_status_msg::connect && ifpinnon.tail_traj_msg::connect{
+     // status information from the statusmessage
+     connect ifpinnon.tail_status_msg[?] -> sparse[?].status_message;
+     connect sparse[?].vehicleid -> collinfo[?].car1_id;
+     connect sparse[?].length -> collinfo[?].car1_length;
+     connect sparse[?].width -> collinfo[?].car1_width;
+     connect sparse[?].velocity -> collinfo[?].car1_velocity;
+     connect sparse[?].position_x -> collinfo[?].car1_position_x;
+     connect sparse[?].position_y -> collinfo[?].car1_position_y;
+
+     // trajectory information from the trajectorymessage
+     connect ifpinnon.tail_traj_msg[?] -> tparse[?].traj_message;
+     connect tparse[?].trajectroy_x -> collinfo[?].trajectory_x_car1;
+     connect tparse[?].trajectroy_y -> collinfo[?].trajectory_y_car1;
+     connect tparse[?].trajectory_length -> collinfo[?].trajectory_length_car1;
+     connect tparse[?].nextintersection_x -> collinfo[?].car1_nextintersection_x;
+     connect tparse[?].nextintersection_y -> collinfo[?].car1_nextintersection_y;
+
+     connect trajectory_length -> collinfo[?].trajectory_length;
+     connect trajectory_x -> collinfo[?].trajectory_x;
+     connect trajectory_y -> collinfo[?].trajectory_y;
+     connect nextintersection_x -> collinfo[?].nextintersection_x;
+     connect nextintersection_y -> collinfo[?].nextintersection_y;
+     connect length -> collinfo[?].length;
+     connect width -> collinfo[?].width;
+
+     connect collinfo[?].iscollision -> ifnp2array.iscollision[?];
+     connect collinfo[?].proritytocurrent -> ifnp2array.proritytocurrent[?];
+   }
+
+     connect ifnp2array.if_collinnonstop -> if_collinnonstop;
+}

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// The job of the data store component is to store
+// and allow other components access to ... , as
+// well as the current simulator time.
+
+view DataStoreInfoSimulation {
+
+  component DataStore {
+    port
+      out long simTime;
+  }
+  instance DataStore dataStore;
+}

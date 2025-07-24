@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.cmplib.basicLibrary;
+
+component GreaterEqualsTest {
+    port
+        in Z in11,
+        in Z in12,
+        out B out1,
+
+        in Q in21,
+        in Q in22,
+        out B out2;
+
+    instance GreaterEquals<Z> geInstanceZ;
+    instance GreaterEquals<Q> geInstanceQ;
+
+    connect in11 -> geInstanceZ.in1;
+    connect in12 -> geInstanceZ.in2;
+    connect geInstanceZ.out1 -> out1;
+
+    connect in21 -> geInstanceQ.in1;
+    connect in22 -> geInstanceQ.in2;
+    connect geInstanceQ.out1 -> out2;
+
+}

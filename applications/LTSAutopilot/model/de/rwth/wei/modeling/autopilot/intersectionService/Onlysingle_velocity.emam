@@ -1,0 +1,90 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messagematch.*;
+
+dynamic component Onlysingle_velocity{
+ ports
+   dynamic in  Statusmessage           status_msg[0:32],
+   dynamic in  Trajectorymessage       traj_msg[0:32],
+   dynamic in  Collisionmessage        collision_msg[0:32],
+
+
+   in  Z^32            vehicle_atintersection,
+   in  Z               vehicle_num,
+   in  Z               trajectory_length,
+   in  Q^{1,100}       trajectory_x,
+   in  Q^{1,100}       trajectory_y,
+   in  Q               length,
+   in  Q               width,
+   in  Q               velocity,
+   // use for collisionmessage
+   in  Z               timestamp,
+   in  Z               vehicleid,
+   in  Q               nextintersection_x,
+   in  Q               nextintersection_y,
+   in  Q               dis2intersection,
+   in  Z               if_frontvehicleexists,
+
+   dynamic out Collisionmessage coll_message[0:32],
+   out Q               maximalallowedvelocity;
+
+   instance  Beaconmessage2vehicle         b2v;
+   instance  Collmessage2vehicle           c2v;
+   instance  Intersectioncollisiontype1    inter_tpye1;
+   instance  Distance2max_allowedvelocity  dis2v1;
+
+   // find the corresponding stausmessage and trajectory message for the vehicle list
+
+   @ status_msg::connect{
+     connect status_msg[?] -> b2v.status_msg[?];
+   }
+   @ traj_msg::connect{
+     connect traj_msg[?] -> b2v.traj_msg[?];
+   }
+   connect vehicle_atintersection -> b2v.vehiclelist;
+   connect vehicle_num -> b2v.list_num;
+
+   @ b2v.newstatus_msg::connect{
+     connect b2v.newstatus_msg[?] -> inter_tpye1.status_msg[?];
+   }
+   @ b2v.newtraj_msg::connect{
+     connect b2v.newtraj_msg[?] -> inter_tpye1.traj_msg[?];
+   }
+
+   // find the collisionmessage for the vehicle which in the list
+   connect vehicle_atintersection -> c2v.vehiclelist;
+   connect vehicle_num -> c2v.list_num;
+   @ collision_msg::connect{
+     connect collision_msg[?] -> c2v.coll_message[?];
+   }
+
+   @ c2v.newcoll_message::connect{
+     connect c2v.newcoll_message[?] -> inter_tpye1.coll_msg[?];
+   }
+
+   connect vehicle_atintersection -> inter_tpye1.vehicle_atintersection;
+   connect vehicle_num -> inter_tpye1.vehicle_num;
+   connect trajectory_length -> inter_tpye1.trajectory_length;
+   connect trajectory_x -> inter_tpye1.trajectory_x;
+   connect trajectory_y -> inter_tpye1.trajectory_y;
+   connect length -> inter_tpye1.length;
+   connect velocity -> inter_tpye1.velocity;
+   connect timestamp -> inter_tpye1.timestamp;
+   connect vehicleid -> inter_tpye1.vehicleid;
+   connect nextintersection_x -> inter_tpye1.nextintersection_x;
+   connect nextintersection_y -> inter_tpye1.nextintersection_y;
+   connect dis2intersection -> inter_tpye1.dis2intersection;
+   connect if_frontvehicleexists -> inter_tpye1.if_frontvehicleexists;
+
+   // get the current collision message
+   @ inter_tpye1.coll_message::connect{
+     connect inter_tpye1.coll_message[?] -> coll_message[?];
+   }
+
+   connect inter_tpye1.is_highestpriority -> dis2v1.is_highestpriority;
+   connect length -> dis2v1.length;
+   connect dis2intersection -> dis2v1.dis2intersection;
+
+   connect dis2v1.maximalallowedvelocity -> maximalallowedvelocity;
+}

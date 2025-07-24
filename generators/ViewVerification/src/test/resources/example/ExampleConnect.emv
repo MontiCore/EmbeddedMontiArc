@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example;
+
+view ExampleConnect {
+    component AComp {
+        ports
+		    in Boolean in1;
+	
+	    component DComp {
+		    ports
+			    in Boolean in1;
+		}
+		instance DComp dcomp;
+		
+		connect in1 -> dcomp.in1;
+	}
+}

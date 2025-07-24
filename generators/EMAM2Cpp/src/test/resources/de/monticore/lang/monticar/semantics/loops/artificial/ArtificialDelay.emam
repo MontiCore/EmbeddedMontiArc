@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops.artificial;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.Subtract;
+import de.monticore.lang.monticar.semantics.loops.artificial.NVCompDelay;
+
+component ArtificialDelay {
+    port
+        in Q input,
+        out Q output;
+    
+    instance Subtract subtract;
+    instance NVCompDelay nvCompDelay;
+
+    connect input -> subtract.minuend;
+    connect subtract.difference -> nvCompDelay.input, output;
+    connect nvCompDelay.output -> subtract.subtrahend;
+}

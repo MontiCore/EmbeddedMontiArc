@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cifar10;
+
+component Main{
+    ports in Z(0:255)^{3, 32, 32} image,
+         out Z(0:9) classIndex;
+
+    instance Network<10> net;
+
+    instance ArgMax<10> calculateClass;
+
+    connect image -> net.data;
+    connect net.softmax -> calculateClass.inputVector;
+    connect calculateClass.maxIndex -> classIndex;
+
+    }
+}

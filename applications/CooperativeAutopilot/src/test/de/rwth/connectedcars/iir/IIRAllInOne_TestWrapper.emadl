@@ -1,0 +1,19 @@
+package de.rwth.connectedcars.iir;
+
+component IIRAllInOne_TestWrapper {
+    ports
+        in Q x,
+        out Q y;
+        
+    instance IIRAllInOne filter;
+    
+    connect x -> filter.x;
+    connect 1 -> filter.a[1];
+    connect 2 -> filter.a[2];
+    connect 3 -> filter.a[3];
+    connect 1 -> filter.b[1];
+    connect 2 -> filter.b[2];
+    connect 3 -> filter.b[3];
+    connect 4 -> filter.b[4];
+    connect filter.y -> y;
+}

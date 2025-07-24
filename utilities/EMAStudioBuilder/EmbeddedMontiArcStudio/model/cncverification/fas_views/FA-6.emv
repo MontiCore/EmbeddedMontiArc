@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-6 {
+  component FAS {
+    ports
+	  in ? Distance_Object_m,
+	  in ? V_Obj_rel_kmh,
+	  in ? V_Vehicle_kmh,
+	  out ? Acceleration_pc;
+	  
+	  component Distronic {
+	    ports
+		  in ? Distance_Object_m,
+		  in ? V_Obj_rel_kmh,
+		  in ? V_Vehicle_ms,
+		  out ? Deceleration_pc;
+	  }
+	  instance Distronic distronic;
+	  
+	  component Tempomat {
+	    port
+		  out ? V_CC_delta_kmh;
+	  }
+	  instance Tempomat tempo;
+	  
+	  connect Distance_Object_m -> distronic.Distance_Object_m;
+	  connect V_Obj_rel_kmh -> distronic.V_Obj_rel_kmh;
+	  
+	  effect V_Vehicle_kmh -> distronic.V_Vehicle_ms;
+	  
+	  effect distronic.Distance_Object_m -> distronic.Deceleration_pc;
+	  effect distronic.V_Obj_rel_kmh -> distronic.Deceleration_pc;
+	  effect distronic.V_Vehicle_ms -> distronic.Deceleration_pc;
+	  
+	  effect distronic.Deceleration_pc -> Acceleration_pc;
+	  effect tempo.V_CC_delta_kmh -> Acceleration_pc;
+  }
+}

@@ -1,0 +1,126 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+import  de.rwth.wei.modeling.autopilot.messagematch.*;
+
+// single vehicle mit platoon, front of platoon or there is platoon
+dynamic component Platoonwithplatoon_velocity{
+  ports
+    dynamic in  Statusmessage           status_msg[0:32],
+    dynamic in  Trajectorymessage       traj_msg[0:32],
+    dynamic in  Platoonmessage          plat_msg[0:32],
+    // platoon at intersection
+    in  Z ^ 32          platoon_atintersection,
+    in  Z               platoon_num,
+    //information of current platoon
+    in  Z               trajectory_length,
+    in  Q^{1,100}       trajectory_x,
+    in  Q^{1,100}       trajectory_y,
+    in  Q               length,
+    in  Q               width,
+    in  Q               velocity,
+    in  Z               if_frontvehicleexists,
+    in  Q               nextintersection_x,
+    in  Q               nextintersection_y,
+    in  Q               dis2intersection,
+    in  Z               platoon_length,
+    in  Z               ifcurrentsplit,
+
+    out Q               maximalallowedvelocity;
+
+    instance  Platoonduplicate              plat_dup;
+    instance  Trajduplicate                 traj_dup;
+    instance  Platoonlength2array           p2a4;
+    instance  Beaconmessage2platoon         b2p4;
+    instance  Intersectioncollisiontype4    inter_type4;
+    instance  Sameexits_priority            samepro;
+    instance  Distance2max_allowedvelocity  dis2v4;
+
+    // duplicate platoon message
+    @ plat_msg::connect{
+      connect plat_msg[?] -> plat_dup.plat_msg[?];
+    }
+    // platoon length(identity with platoonid)
+    @ plat_dup.plat_msg1::connect{
+      connect plat_dup.plat_msg1[?] -> p2a4.plat_msg[?];
+    }
+
+    // beacon message to the platoon
+    @ plat_dup.plat_msg2::connect{
+      connect plat_dup.plat_msg2[?] -> b2p4.plat_msg[?];
+    }
+    @ traj_msg::connect {
+      connect traj_msg[?] -> traj_dup.traj_msg[?];
+    }
+    @ traj_dup.traj_msg1::connect {
+      connect traj_dup.traj_msg1[?] -> b2p4.traj_msg[?];
+    }
+    connect platoon_atintersection -> b2p4.platoonlist;
+    connect platoon_num -> b2p4.list_num;
+
+    @ b2p4.newplat_msg::connect{
+      connect b2p4.newplat_msg[?] -> inter_type4.plat_msg[?];
+    }
+    @ b2p4.newtraj_msg::connect{
+      connect b2p4.newtraj_msg[?] -> inter_type4.plat_traj_msg[?];
+    }
+
+
+    connect platoon_atintersection -> inter_type4.platoon_atintersection;
+    connect platoon_num -> inter_type4.platoon_num;
+    connect p2a4.platoonid -> inter_type4.platoonid;
+    connect p2a4.platoonlength -> inter_type4.platoonlength;
+    connect trajectory_length -> inter_type4.trajectory_length;
+    connect trajectory_x -> inter_type4.trajectory_x;
+    connect trajectory_y -> inter_type4.trajectory_y;
+    connect length -> inter_type4.length;
+    connect width -> inter_type4.width;
+    connect velocity -> inter_type4.velocity;
+    connect dis2intersection -> inter_type4.dis2intersection;
+    connect if_frontvehicleexists -> inter_type4.if_frontvehicleexists;
+    connect ifcurrentsplit -> inter_type4.ifcurrentsplit;
+    connect platoon_length -> inter_type4.platoon_length;
+    connect nextintersection_x -> inter_type4.nextintersection_x;
+    connect nextintersection_y -> inter_type4.nextintersection_y;
+
+    // same exits priority
+    @ plat_dup.plat_msg3::connect{
+      connect plat_dup.plat_msg3[?] -> samepro.plat_msg[?];
+    }
+    @ status_msg::connect{
+      connect status_msg[?] -> samepro.status_msg[?];
+    }
+    @ traj_dup.traj_msg2::connect{
+      connect traj_dup.traj_msg2[?] -> samepro.traj_msg[?];
+    }
+    connect inter_type4.is_highestpriority -> samepro.is_highestpriority;
+    connect dis2intersection -> samepro.dis2intersection;
+    connect nextintersection_x -> samepro.nextintersection_x;
+    connect nextintersection_y -> samepro.nextintersection_y;
+    connect width -> samepro.width;
+    connect length -> samepro.length;
+    connect trajectory_length -> samepro.trajectory_length;
+    connect trajectory_x -> samepro.trajectory_x;
+    connect trajectory_y -> samepro.trajectory_y;
+    connect platoon_num -> samepro.platoon_num;
+    connect inter_type4.iscollision -> samepro.iscollision;
+    connect inter_type4.collision_id -> samepro.collision_id;
+    connect inter_type4.dis2intersection_car1 -> samepro.dis2intersection_car1;
+
+    // priority to velocity
+    connect samepro.new_is_highestpriority -> dis2v4.is_highestpriority;
+    connect length -> dis2v4.length;
+    connect dis2intersection -> dis2v4.dis2intersection;
+    // maximalallowedvelocity
+    connect dis2v4.maximalallowedvelocity -> maximalallowedvelocity;
+
+    @ plat_dup.plat_msg4::connect{}
+    @ plat_dup.plat_msg5::connect{}
+    @ plat_dup.plat_msg6::connect{}
+    @ traj_dup.traj_msg3::connect{}
+    @ traj_dup.traj_msg4::connect{}
+    @ traj_dup.traj_msg5::connect{}
+
+
+}

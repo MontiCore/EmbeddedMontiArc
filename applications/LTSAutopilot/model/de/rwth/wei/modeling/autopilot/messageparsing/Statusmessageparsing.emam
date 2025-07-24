@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageparsing;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Statusmessageparsing{
+  ports
+    in  Statusmessage status_message,
+
+    out  Z  vehicleid,
+    out  Z  timestamp,
+    out  Q  position_x,
+    out  Q  position_y,
+    out  Q  compass,
+    out  Q  platoon_headid,
+    out  Q  length,
+    out  Q  width,
+    out  Q  engine,
+    out  Q  brakes,
+    out  Q  steering,
+    out  Q  velocity;
+
+    implementation Math{
+      vehicleid = status_message.vehicleid;
+      timestamp = status_message.timestamp;
+      position_x = status_message.position_x;
+      position_y = status_message.position_y;
+      compass = status_message.compass;
+      platoon_headid = status_message.platoon_headid;
+      length = status_message.length;
+      width = status_message.width;
+      engine = status_message.engine;
+      brakes = status_message.brakes;
+      steering = status_message.steering;
+      velocity = status_message.velocity;
+    }
+}

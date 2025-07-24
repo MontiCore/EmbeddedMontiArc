@@ -1,0 +1,41 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <base href="../../.."/>
+        <title>Dashboard Test</title>
+
+        <link href="modules/se.rwth.index.ui/css/ui.css" type="text/css" rel="stylesheet"/>
+
+        <script src="modules/se.rwth.common.module/jquery-3.2.1.min.js"></script>
+        <script src="modules/se.rwth.common.checker/async.min.js"></script>
+        <script src="modules/se.rwth.common.checker/browser-detect.min.js"></script>
+        <script src="modules/se.rwth.common.settings/settings.js"></script>
+        <script src="modules/se.rwth.common.loader/loader.js"></script>
+        <script src="modules/se.rwth.common.dialog/dialog.js"></script>
+        <script src="modules/se.rwth.common.checker/checker.js"></script>
+        <script src="modules/se.rwth.common.dashboard/dashboard.js"></script>
+
+        <script src="modules/se.rwth.index.trashbin/trashbin.js"></script>
+        <script src="modules/se.rwth.index.menu/menu.js"></script>
+    </head>
+    <body>
+        <div id="loader-container">
+            <img src="modules/se.rwth.common.loader/images/loader.svg"/>
+            <span id="loader-message">Checking Prerequisites...</span>
+        </div>
+        <div id="dialog-container">
+            <div id="dialog-panel" class="container panel">
+                <span id="dialog-icon"></span>
+                <span id="dialog-message">Message</span>
+            </div>
+        </div>
+        <div id="main-container">
+            <div id="dashboard-panel" class="container panel">
+                <ul id="dashboard-list">
+                    <li id="dashboard-plus"></li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>

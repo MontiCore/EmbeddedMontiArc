@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/model",
+    "outputDir": "target/preprocessor",
+    "rootModel": "atari.preprocessor.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}

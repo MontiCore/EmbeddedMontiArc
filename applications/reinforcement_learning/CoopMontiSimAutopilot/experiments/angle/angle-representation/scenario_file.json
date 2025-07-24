@@ -1,0 +1,390 @@
+{
+	"name": "rlAngleExperiment",
+	"map_name": "maps/dallas",
+	"max_duration": [
+		10,
+		0
+	],
+	"tick_duration": [
+		0,
+		10000000
+	],
+	"collision_mode": "LOG_COLLISIONS",
+	"preprocessor": {
+		"type": "angle",
+		"angleStateIndex": 23,
+		"angleStatePacketIndex": 23
+	},
+	"rewardFunction": {
+		"type": "intersection_reward",
+		"static_collision_factor": -400,
+		"vehicle_collision_factor": -300,
+		"trajectory_reward_factor": 1,
+		"angular_jerk_reward_factor": 0.005,
+		"angular_acc_reward_factor": 0.1,
+		"linear_jerk_reward_factor": 0.05,
+		"linear_acc_reward_factor": 1,
+		"trajectory_following_reward": 50,
+		"total_path_progress_reward_scaling": 2000,
+		"path_progress_derivative_reward_scaling": 1000,
+		"distance_max": 3,
+		"velocity_difference_scaling": 100,
+		"velocity_sub_maximum_reward": 100,
+		"standing_punishment": -250,
+		"velocity_max": 20,
+		"velocity_desired": 15,
+		"standing_threshold": 1,
+		"standing_punishment_from_step": 5,
+		"standing_punishment_to_min_path_distance": 2
+	},
+	"cars": [
+		{
+			"name": "Car1",
+			"start_pos": [
+				-531.61,
+				342.01
+			],
+			"start_orientation": 270,
+			"task": {
+				"goals": [
+					{
+						"type": "path",
+						"ltl_operator": "eventually",
+						"path": [
+							[
+								-531.61,
+								328.12
+							]
+						],
+						"range": 5
+					}
+				]
+			},
+			"components": [
+				{
+					"type": "constant_bus",
+					"connected_to": [
+						"SteeringActuator",
+						"BrakingActuator",
+						"GasActuator",
+						"TrueVelocitySensor",
+						"TruePositionSensor",
+						"TrueCompassSensor",
+						"Navigation",
+						"RLAutopilot"
+					]
+				},
+				{
+					"type": "actuator",
+					"name": "SteeringActuator",
+					"physical_value_name": "steering",
+					"change_rate": 60.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "BrakingActuator",
+					"physical_value_name": "braking",
+					"change_rate": 10.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "GasActuator",
+					"physical_value_name": "gas",
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "sensor",
+					"name": "TrueVelocitySensor",
+					"physical_value_name": "true_velocity"
+				},
+				{
+					"type": "sensor",
+					"name": "TruePositionSensor",
+					"physical_value_name": "true_position"
+				},
+				{
+					"type": "sensor",
+					"name": "TrueCompassSensor",
+					"physical_value_name": "true_compass"
+				},
+				{
+					"type": "navigation"
+				},
+				{
+					"type": "rl_autopilot",
+					"name": "RLAutopilot",
+					"maxVehicleAccel": 7.460690450979396
+				}
+			]
+		},
+		{
+			"name": "Car2",
+			"start_pos": [
+				-531.61,
+				328.12
+			],
+			"start_orientation": 90,
+			"task": {
+				"goals": [
+					{
+						"type": "path",
+						"ltl_operator": "eventually",
+						"path": [
+							[
+								-531.61,
+								342.01
+							]
+						],
+						"range": 5
+					}
+				]
+			},
+			"components": [
+				{
+					"type": "constant_bus",
+					"connected_to": [
+						"SteeringActuator",
+						"BrakingActuator",
+						"GasActuator",
+						"TrueVelocitySensor",
+						"TruePositionSensor",
+						"TrueCompassSensor",
+						"Navigation",
+						"RLAutopilot"
+					]
+				},
+				{
+					"type": "actuator",
+					"name": "SteeringActuator",
+					"physical_value_name": "steering",
+					"change_rate": 60.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "BrakingActuator",
+					"physical_value_name": "braking",
+					"change_rate": 10.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "GasActuator",
+					"physical_value_name": "gas",
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "sensor",
+					"name": "TrueVelocitySensor",
+					"physical_value_name": "true_velocity"
+				},
+				{
+					"type": "sensor",
+					"name": "TruePositionSensor",
+					"physical_value_name": "true_position"
+				},
+				{
+					"type": "sensor",
+					"name": "TrueCompassSensor",
+					"physical_value_name": "true_compass"
+				},
+				{
+					"type": "navigation"
+				},
+				{
+					"type": "rl_autopilot",
+					"name": "RLAutopilot",
+					"maxVehicleAccel": 7.460690450979396
+				}
+			]
+		},
+		{
+			"name": "Car3",
+			"start_pos": [
+				-540.11,
+				336.43
+			],
+			"start_orientation": 0,
+			"task": {
+				"goals": [
+					{
+						"type": "path",
+						"ltl_operator": "eventually",
+						"path": [
+							[
+								-522.13,
+								336.11
+							]
+						],
+						"range": 5
+					}
+				]
+			},
+			"components": [
+				{
+					"type": "constant_bus",
+					"connected_to": [
+						"SteeringActuator",
+						"BrakingActuator",
+						"GasActuator",
+						"TrueVelocitySensor",
+						"TruePositionSensor",
+						"TrueCompassSensor",
+						"Navigation",
+						"RLAutopilot"
+					]
+				},
+				{
+					"type": "actuator",
+					"name": "SteeringActuator",
+					"physical_value_name": "steering",
+					"change_rate": 60.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "BrakingActuator",
+					"physical_value_name": "braking",
+					"change_rate": 10.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "GasActuator",
+					"physical_value_name": "gas",
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "sensor",
+					"name": "TrueVelocitySensor",
+					"physical_value_name": "true_velocity"
+				},
+				{
+					"type": "sensor",
+					"name": "TruePositionSensor",
+					"physical_value_name": "true_position"
+				},
+				{
+					"type": "sensor",
+					"name": "TrueCompassSensor",
+					"physical_value_name": "true_compass"
+				},
+				{
+					"type": "navigation"
+				},
+				{
+					"type": "rl_autopilot",
+					"name": "RLAutopilot",
+					"maxVehicleAccel": 7.460690450979396
+				}
+			]
+		},
+		{
+			"name": "Car4",
+			"start_pos": [
+				-522.13,
+				336.11
+			],
+			"start_orientation": 180,
+			"task": {
+				"goals": [
+					{
+						"type": "path",
+						"ltl_operator": "eventually",
+						"path": [
+							[
+								-540.11,
+								336.43
+							]
+						],
+						"range": 5
+					}
+				]
+			},
+			"components": [
+				{
+					"type": "constant_bus",
+					"connected_to": [
+						"SteeringActuator",
+						"BrakingActuator",
+						"GasActuator",
+						"TrueVelocitySensor",
+						"TruePositionSensor",
+						"TrueCompassSensor",
+						"Navigation",
+						"RLAutopilot"
+					]
+				},
+				{
+					"type": "actuator",
+					"name": "SteeringActuator",
+					"physical_value_name": "steering",
+					"change_rate": 60.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "BrakingActuator",
+					"physical_value_name": "braking",
+					"change_rate": 10.0,
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "actuator",
+					"name": "GasActuator",
+					"physical_value_name": "gas",
+					"sensor": {
+						"type": "sensor"
+					}
+				},
+				{
+					"type": "sensor",
+					"name": "TrueVelocitySensor",
+					"physical_value_name": "true_velocity"
+				},
+				{
+					"type": "sensor",
+					"name": "TruePositionSensor",
+					"physical_value_name": "true_position"
+				},
+				{
+					"type": "sensor",
+					"name": "TrueCompassSensor",
+					"physical_value_name": "true_compass"
+				},
+				{
+					"type": "navigation"
+				},
+				{
+					"type": "rl_autopilot",
+					"name": "RLAutopilot",
+					"maxVehicleAccel": 7.460690450979396
+				}
+			]
+		}
+	]
+}

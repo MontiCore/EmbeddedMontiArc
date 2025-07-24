@@ -1,0 +1,6288 @@
+{
+  "nodes": [
+    {
+      "op": "null", 
+      "name": "data0", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "robertamodelwpooler0_word_embed_embedding0_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(50265, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Embedding", 
+      "name": "robertamodelwpooler0_word_embed_embedding0_fwd", 
+      "attrs": {
+        "dtype": "float32", 
+        "input_dim": "50265", 
+        "output_dim": "768", 
+        "sparse_grad": "False"
+      }, 
+      "inputs": [[0, 0, 0], [1, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "data1", 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "robertamodelwpooler0_token_type_embed_embedding0_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(1, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Embedding", 
+      "name": "robertamodelwpooler0_token_type_embed_embedding0_fwd", 
+      "attrs": {
+        "dtype": "float32", 
+        "input_dim": "1", 
+        "output_dim": "768", 
+        "sparse_grad": "False"
+      }, 
+      "inputs": [[3, 0, 0], [4, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "robertamodelwpooler0__plus0", 
+      "inputs": [[2, 0, 0], [5, 0, 0]]
+    }, 
+    {
+      "op": "transpose", 
+      "name": "robertamodelwpooler0_transpose0", 
+      "attrs": {"axes": "(1, 0, 2)"}, 
+      "inputs": [[6, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_arange_like", 
+      "name": "bertencoder0_arange_like0", 
+      "attrs": {"axis": "0"}, 
+      "inputs": [[7, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_position_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(512, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Embedding", 
+      "name": "bertencoder0_embedding0", 
+      "attrs": {
+        "input_dim": "512", 
+        "output_dim": "768"
+      }, 
+      "inputs": [[8, 0, 0], [9, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[10, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_add", 
+      "name": "bertencoder0_broadcast_add1", 
+      "inputs": [[7, 0, 0], [11, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[12, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[13, 0, 0], [14, 0, 0], [15, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[17, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[19, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[21, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[18, 0, 0], [20, 0, 0], [22, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[23, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[25, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[27, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[29, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[26, 0, 0], [28, 0, 0], [30, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[31, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[16, 0, 0], [24, 0, 0], [32, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[33, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "data2", 
+      "inputs": []
+    }, 
+    {
+      "op": "squeeze", 
+      "name": "robertamodelwpooler0_squeeze0", 
+      "inputs": [[35, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_reshape0", 
+      "attrs": {"shape": "(-1, 1)"}, 
+      "inputs": [[36, 0, 0]]
+    }, 
+    {
+      "op": "zeros_like", 
+      "name": "bertencoder0_zeros_like0", 
+      "inputs": [[8, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_reshape1", 
+      "attrs": {"shape": "(1, -1)"}, 
+      "inputs": [[38, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_add", 
+      "name": "bertencoder0_broadcast_add0", 
+      "inputs": [[37, 0, 0], [39, 0, 0]]
+    }, 
+    {
+      "op": "Cast", 
+      "name": "bertencoder0_cast0", 
+      "attrs": {"dtype": "int32"}, 
+      "inputs": [[40, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[42, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[43, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[34, 0, 0], [44, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[45, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer0_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[33, 0, 0], [46, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer0_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[47, 0, 0], [48, 0, 0], [49, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[50, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer0__plus0", 
+      "inputs": [[51, 0, 0], [16, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[52, 0, 0], [53, 0, 0], [54, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[55, 0, 0], [56, 0, 0], [57, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[58, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[59, 0, 0], [60, 0, 0], [61, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[62, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer0_positionwiseffn0__plus0", 
+      "inputs": [[63, 0, 0], [55, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer0_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[64, 0, 0], [65, 0, 0], [66, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[68, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[70, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[72, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[69, 0, 0], [71, 0, 0], [73, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[74, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[76, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[78, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[80, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[77, 0, 0], [79, 0, 0], [81, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[82, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[67, 0, 0], [75, 0, 0], [83, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[84, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[86, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[87, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[85, 0, 0], [88, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[89, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer1_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[84, 0, 0], [90, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer1_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[91, 0, 0], [92, 0, 0], [93, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer1_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[94, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer1__plus0", 
+      "inputs": [[95, 0, 0], [67, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer1_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[96, 0, 0], [97, 0, 0], [98, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[99, 0, 0], [100, 0, 0], [101, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[102, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[103, 0, 0], [104, 0, 0], [105, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[106, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer1_positionwiseffn0__plus0", 
+      "inputs": [[107, 0, 0], [99, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer1_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[108, 0, 0], [109, 0, 0], [110, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[112, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[114, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[116, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[113, 0, 0], [115, 0, 0], [117, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[118, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[120, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[122, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[124, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[121, 0, 0], [123, 0, 0], [125, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[126, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[111, 0, 0], [119, 0, 0], [127, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[128, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[130, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[131, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[129, 0, 0], [132, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[133, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer2_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[128, 0, 0], [134, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer2_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[135, 0, 0], [136, 0, 0], [137, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer2_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[138, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer2__plus0", 
+      "inputs": [[139, 0, 0], [111, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer2_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[140, 0, 0], [141, 0, 0], [142, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[143, 0, 0], [144, 0, 0], [145, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[146, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[147, 0, 0], [148, 0, 0], [149, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[150, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer2_positionwiseffn0__plus0", 
+      "inputs": [[151, 0, 0], [143, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer2_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[152, 0, 0], [153, 0, 0], [154, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[156, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[158, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[160, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[157, 0, 0], [159, 0, 0], [161, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[162, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[164, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[166, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[168, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[165, 0, 0], [167, 0, 0], [169, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[170, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[155, 0, 0], [163, 0, 0], [171, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[172, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[174, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[175, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[173, 0, 0], [176, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[177, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer3_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[172, 0, 0], [178, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer3_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[179, 0, 0], [180, 0, 0], [181, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer3_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[182, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer3__plus0", 
+      "inputs": [[183, 0, 0], [155, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer3_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[184, 0, 0], [185, 0, 0], [186, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[187, 0, 0], [188, 0, 0], [189, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[190, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[191, 0, 0], [192, 0, 0], [193, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[194, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer3_positionwiseffn0__plus0", 
+      "inputs": [[195, 0, 0], [187, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer3_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[196, 0, 0], [197, 0, 0], [198, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[200, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[202, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[204, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[201, 0, 0], [203, 0, 0], [205, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[206, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[208, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[210, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[212, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[209, 0, 0], [211, 0, 0], [213, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[214, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[199, 0, 0], [207, 0, 0], [215, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[216, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[218, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[219, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[217, 0, 0], [220, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[221, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer4_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[216, 0, 0], [222, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer4_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[223, 0, 0], [224, 0, 0], [225, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer4_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[226, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer4__plus0", 
+      "inputs": [[227, 0, 0], [199, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer4_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[228, 0, 0], [229, 0, 0], [230, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[231, 0, 0], [232, 0, 0], [233, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[234, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[235, 0, 0], [236, 0, 0], [237, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[238, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer4_positionwiseffn0__plus0", 
+      "inputs": [[239, 0, 0], [231, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer4_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[240, 0, 0], [241, 0, 0], [242, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[244, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[246, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[248, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[245, 0, 0], [247, 0, 0], [249, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[250, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[252, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[254, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[256, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[253, 0, 0], [255, 0, 0], [257, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[258, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[243, 0, 0], [251, 0, 0], [259, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[260, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[262, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[263, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[261, 0, 0], [264, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[265, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer5_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[260, 0, 0], [266, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer5_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[267, 0, 0], [268, 0, 0], [269, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer5_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[270, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer5__plus0", 
+      "inputs": [[271, 0, 0], [243, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer5_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[272, 0, 0], [273, 0, 0], [274, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[275, 0, 0], [276, 0, 0], [277, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[278, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[279, 0, 0], [280, 0, 0], [281, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[282, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer5_positionwiseffn0__plus0", 
+      "inputs": [[283, 0, 0], [275, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer5_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[284, 0, 0], [285, 0, 0], [286, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[288, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[290, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[292, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[289, 0, 0], [291, 0, 0], [293, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[294, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[296, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[298, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[300, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[297, 0, 0], [299, 0, 0], [301, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[302, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[287, 0, 0], [295, 0, 0], [303, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[304, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[306, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[307, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[305, 0, 0], [308, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[309, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer6_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[304, 0, 0], [310, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer6_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[311, 0, 0], [312, 0, 0], [313, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer6_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[314, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer6__plus0", 
+      "inputs": [[315, 0, 0], [287, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer6_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[316, 0, 0], [317, 0, 0], [318, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[319, 0, 0], [320, 0, 0], [321, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[322, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[323, 0, 0], [324, 0, 0], [325, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[326, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer6_positionwiseffn0__plus0", 
+      "inputs": [[327, 0, 0], [319, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer6_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[328, 0, 0], [329, 0, 0], [330, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[332, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[334, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[336, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[333, 0, 0], [335, 0, 0], [337, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[338, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[340, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[342, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[344, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[341, 0, 0], [343, 0, 0], [345, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[346, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[331, 0, 0], [339, 0, 0], [347, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[348, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[350, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[351, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[349, 0, 0], [352, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[353, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer7_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[348, 0, 0], [354, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer7_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[355, 0, 0], [356, 0, 0], [357, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer7_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[358, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer7__plus0", 
+      "inputs": [[359, 0, 0], [331, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer7_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[360, 0, 0], [361, 0, 0], [362, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[363, 0, 0], [364, 0, 0], [365, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[366, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[367, 0, 0], [368, 0, 0], [369, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[370, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer7_positionwiseffn0__plus0", 
+      "inputs": [[371, 0, 0], [363, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer7_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[372, 0, 0], [373, 0, 0], [374, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[376, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[378, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[380, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[377, 0, 0], [379, 0, 0], [381, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[382, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[384, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[386, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[388, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[385, 0, 0], [387, 0, 0], [389, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[390, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[375, 0, 0], [383, 0, 0], [391, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[392, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[394, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[395, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[393, 0, 0], [396, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[397, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer8_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[392, 0, 0], [398, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer8_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[399, 0, 0], [400, 0, 0], [401, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer8_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[402, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer8__plus0", 
+      "inputs": [[403, 0, 0], [375, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer8_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[404, 0, 0], [405, 0, 0], [406, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[407, 0, 0], [408, 0, 0], [409, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[410, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[411, 0, 0], [412, 0, 0], [413, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[414, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer8_positionwiseffn0__plus0", 
+      "inputs": [[415, 0, 0], [407, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer8_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[416, 0, 0], [417, 0, 0], [418, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[420, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[422, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[424, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[421, 0, 0], [423, 0, 0], [425, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[426, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[428, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[430, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[432, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[429, 0, 0], [431, 0, 0], [433, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[434, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[419, 0, 0], [427, 0, 0], [435, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[436, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[438, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[439, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[437, 0, 0], [440, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[441, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer9_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[436, 0, 0], [442, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer9_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[443, 0, 0], [444, 0, 0], [445, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer9_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[446, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer9__plus0", 
+      "inputs": [[447, 0, 0], [419, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer9_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[448, 0, 0], [449, 0, 0], [450, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[451, 0, 0], [452, 0, 0], [453, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[454, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[455, 0, 0], [456, 0, 0], [457, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[458, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer9_positionwiseffn0__plus0", 
+      "inputs": [[459, 0, 0], [451, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer9_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[460, 0, 0], [461, 0, 0], [462, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[464, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[466, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[468, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[465, 0, 0], [467, 0, 0], [469, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[470, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[472, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[474, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[476, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[473, 0, 0], [475, 0, 0], [477, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[478, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[463, 0, 0], [471, 0, 0], [479, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[480, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[482, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[483, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[481, 0, 0], [484, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[485, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer10_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[480, 0, 0], [486, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer10_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[487, 0, 0], [488, 0, 0], [489, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer10_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[490, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer10__plus0", 
+      "inputs": [[491, 0, 0], [463, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer10_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[492, 0, 0], [493, 0, 0], [494, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[495, 0, 0], [496, 0, 0], [497, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[498, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[499, 0, 0], [500, 0, 0], [501, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[502, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer10_positionwiseffn0__plus0", 
+      "inputs": [[503, 0, 0], [495, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer10_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[504, 0, 0], [505, 0, 0], [506, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_query_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape0", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[508, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_key_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape1", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[510, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_value_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape2", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1, 0)"
+      }, 
+      "inputs": [[512, 0, 0]]
+    }, 
+    {
+      "op": "Concat", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_concat0", 
+      "attrs": {
+        "dim": "-2", 
+        "num_args": "3"
+      }, 
+      "inputs": [[509, 0, 0], [511, 0, 0], [513, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape3", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[514, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_query_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape4", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[516, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_key_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape5", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[518, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_value_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape6", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(12, -1)"
+      }, 
+      "inputs": [[520, 0, 0]]
+    }, 
+    {
+      "op": "stack", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_stack0", 
+      "attrs": {
+        "axis": "1", 
+        "num_args": "3"
+      }, 
+      "inputs": [[517, 0, 0], [519, 0, 0], [521, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape7", 
+      "attrs": {"shape": "-1"}, 
+      "inputs": [[522, 0, 0]]
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_fullyconnected0", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "2304"
+      }, 
+      "inputs": [[507, 0, 0], [515, 0, 0], [523, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_qk", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_interleaved_matmul_selfatt_qk0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[524, 0, 0]]
+    }, 
+    {
+      "op": "expand_dims", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_expand_dims0", 
+      "attrs": {"axis": "1"}, 
+      "inputs": [[41, 0, 0]]
+    }, 
+    {
+      "op": "broadcast_axis", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_broadcast_axis0", 
+      "attrs": {
+        "axis": "1", 
+        "size": "12"
+      }, 
+      "inputs": [[526, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_reshape8", 
+      "attrs": {
+        "reverse": "True", 
+        "shape": "(-1, 0)"
+      }, 
+      "inputs": [[527, 0, 0]]
+    }, 
+    {
+      "op": "softmax", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_softmax0", 
+      "attrs": {
+        "axis": "-1", 
+        "use_length": "True"
+      }, 
+      "inputs": [[525, 0, 0], [528, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[529, 0, 0]]
+    }, 
+    {
+      "op": "_contrib_interleaved_matmul_selfatt_valatt", 
+      "name": "bertencoder0_transformer11_dotproductselfattentioncell0_interleaved_matmul_selfatt_valatt0", 
+      "attrs": {"heads": "12"}, 
+      "inputs": [[524, 0, 0], [530, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_proj_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_proj_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer11_proj_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[531, 0, 0], [532, 0, 0], [533, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer11_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[534, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer11__plus0", 
+      "inputs": [[535, 0, 0], [507, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer11_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[536, 0, 0], [537, 0, 0], [538, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_ffn_1_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_ffn_1_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(3072,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_ffn_1_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "3072"
+      }, 
+      "inputs": [[539, 0, 0], [540, 0, 0], [541, 0, 0]]
+    }, 
+    {
+      "op": "LeakyReLU", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_gelu0_leakyrelu0", 
+      "attrs": {"act_type": "gelu"}, 
+      "inputs": [[542, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_ffn_2_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 3072)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_ffn_2_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_ffn_2_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[543, 0, 0], [544, 0, 0], [545, 0, 0]]
+    }, 
+    {
+      "op": "Dropout", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_dropout0_fwd", 
+      "attrs": {
+        "axes": "()", 
+        "cudnn_off": "False", 
+        "p": "0.1"
+      }, 
+      "inputs": [[546, 0, 0]]
+    }, 
+    {
+      "op": "elemwise_add", 
+      "name": "bertencoder0_transformer11_positionwiseffn0__plus0", 
+      "inputs": [[547, 0, 0], [539, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_layernorm0_gamma", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "ones", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_layernorm0_beta", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "LayerNorm", 
+      "name": "bertencoder0_transformer11_positionwiseffn0_layernorm0_layernorm0", 
+      "attrs": {
+        "axis": "-1", 
+        "eps": "1e-05"
+      }, 
+      "inputs": [[548, 0, 0], [549, 0, 0], [550, 0, 0]]
+    }, 
+    {
+      "op": "SequenceMask", 
+      "name": "bertencoder0_sequencemask0", 
+      "attrs": {
+        "axis": "0", 
+        "use_sequence_length": "True"
+      }, 
+      "inputs": [[551, 0, 0], [36, 0, 0]]
+    }, 
+    {
+      "op": "transpose", 
+      "name": "robertamodelwpooler0_transpose1", 
+      "attrs": {"axes": "(1, 0, 2)"}, 
+      "inputs": [[552, 0, 0]]
+    }, 
+    {
+      "op": "slice", 
+      "name": "robertamodelwpooler0_slice0", 
+      "attrs": {
+        "begin": "(0, 0, 0)", 
+        "end": "(None, 1, None)"
+      }, 
+      "inputs": [[553, 0, 0]]
+    }, 
+    {
+      "op": "Reshape", 
+      "name": "robertamodelwpooler0_reshape0", 
+      "attrs": {"shape": "(-1, 768)"}, 
+      "inputs": [[554, 0, 0]]
+    }, 
+    {
+      "op": "null", 
+      "name": "robertamodelwpooler0_pooler_weight", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768, 768)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "null", 
+      "name": "robertamodelwpooler0_pooler_bias", 
+      "attrs": {
+        "__dtype__": "0", 
+        "__init__": "zeros", 
+        "__lr_mult__": "1.0", 
+        "__shape__": "(768,)", 
+        "__storage_type__": "0", 
+        "__wd_mult__": "1.0"
+      }, 
+      "inputs": []
+    }, 
+    {
+      "op": "FullyConnected", 
+      "name": "robertamodelwpooler0_pooler_fwd", 
+      "attrs": {
+        "flatten": "False", 
+        "no_bias": "False", 
+        "num_hidden": "768"
+      }, 
+      "inputs": [[555, 0, 0], [556, 0, 0], [557, 0, 0]]
+    }, 
+    {
+      "op": "Activation", 
+      "name": "robertamodelwpooler0_pooler_tanh_fwd", 
+      "attrs": {"act_type": "tanh"}, 
+      "inputs": [[558, 0, 0]]
+    }
+  ], 
+  "arg_nodes": [
+    0, 
+    1, 
+    3, 
+    4, 
+    9, 
+    14, 
+    15, 
+    17, 
+    19, 
+    21, 
+    25, 
+    27, 
+    29, 
+    35, 
+    48, 
+    49, 
+    53, 
+    54, 
+    56, 
+    57, 
+    60, 
+    61, 
+    65, 
+    66, 
+    68, 
+    70, 
+    72, 
+    76, 
+    78, 
+    80, 
+    92, 
+    93, 
+    97, 
+    98, 
+    100, 
+    101, 
+    104, 
+    105, 
+    109, 
+    110, 
+    112, 
+    114, 
+    116, 
+    120, 
+    122, 
+    124, 
+    136, 
+    137, 
+    141, 
+    142, 
+    144, 
+    145, 
+    148, 
+    149, 
+    153, 
+    154, 
+    156, 
+    158, 
+    160, 
+    164, 
+    166, 
+    168, 
+    180, 
+    181, 
+    185, 
+    186, 
+    188, 
+    189, 
+    192, 
+    193, 
+    197, 
+    198, 
+    200, 
+    202, 
+    204, 
+    208, 
+    210, 
+    212, 
+    224, 
+    225, 
+    229, 
+    230, 
+    232, 
+    233, 
+    236, 
+    237, 
+    241, 
+    242, 
+    244, 
+    246, 
+    248, 
+    252, 
+    254, 
+    256, 
+    268, 
+    269, 
+    273, 
+    274, 
+    276, 
+    277, 
+    280, 
+    281, 
+    285, 
+    286, 
+    288, 
+    290, 
+    292, 
+    296, 
+    298, 
+    300, 
+    312, 
+    313, 
+    317, 
+    318, 
+    320, 
+    321, 
+    324, 
+    325, 
+    329, 
+    330, 
+    332, 
+    334, 
+    336, 
+    340, 
+    342, 
+    344, 
+    356, 
+    357, 
+    361, 
+    362, 
+    364, 
+    365, 
+    368, 
+    369, 
+    373, 
+    374, 
+    376, 
+    378, 
+    380, 
+    384, 
+    386, 
+    388, 
+    400, 
+    401, 
+    405, 
+    406, 
+    408, 
+    409, 
+    412, 
+    413, 
+    417, 
+    418, 
+    420, 
+    422, 
+    424, 
+    428, 
+    430, 
+    432, 
+    444, 
+    445, 
+    449, 
+    450, 
+    452, 
+    453, 
+    456, 
+    457, 
+    461, 
+    462, 
+    464, 
+    466, 
+    468, 
+    472, 
+    474, 
+    476, 
+    488, 
+    489, 
+    493, 
+    494, 
+    496, 
+    497, 
+    500, 
+    501, 
+    505, 
+    506, 
+    508, 
+    510, 
+    512, 
+    516, 
+    518, 
+    520, 
+    532, 
+    533, 
+    537, 
+    538, 
+    540, 
+    541, 
+    544, 
+    545, 
+    549, 
+    550, 
+    556, 
+    557
+  ], 
+  "node_row_ptr": [
+    0, 
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6, 
+    7, 
+    8, 
+    9, 
+    10, 
+    11, 
+    12, 
+    13, 
+    15, 
+    16, 
+    17, 
+    20, 
+    21, 
+    22, 
+    23, 
+    24, 
+    25, 
+    26, 
+    27, 
+    28, 
+    29, 
+    30, 
+    31, 
+    32, 
+    33, 
+    34, 
+    35, 
+    36, 
+    37, 
+    38, 
+    39, 
+    40, 
+    41, 
+    42, 
+    43, 
+    44, 
+    45, 
+    46, 
+    47, 
+    48, 
+    49, 
+    51, 
+    52, 
+    53, 
+    54, 
+    55, 
+    57, 
+    58, 
+    59, 
+    60, 
+    63, 
+    64, 
+    65, 
+    66, 
+    67, 
+    68, 
+    69, 
+    70, 
+    72, 
+    73, 
+    74, 
+    75, 
+    78, 
+    79, 
+    80, 
+    81, 
+    82, 
+    83, 
+    84, 
+    85, 
+    86, 
+    87, 
+    88, 
+    89, 
+    90, 
+    91, 
+    92, 
+    93, 
+    94, 
+    95, 
+    96, 
+    97, 
+    98, 
+    99, 
+    100, 
+    102, 
+    103, 
+    104, 
+    105, 
+    106, 
+    108, 
+    109, 
+    110, 
+    111, 
+    114, 
+    115, 
+    116, 
+    117, 
+    118, 
+    119, 
+    120, 
+    121, 
+    123, 
+    124, 
+    125, 
+    126, 
+    129, 
+    130, 
+    131, 
+    132, 
+    133, 
+    134, 
+    135, 
+    136, 
+    137, 
+    138, 
+    139, 
+    140, 
+    141, 
+    142, 
+    143, 
+    144, 
+    145, 
+    146, 
+    147, 
+    148, 
+    149, 
+    150, 
+    151, 
+    153, 
+    154, 
+    155, 
+    156, 
+    157, 
+    159, 
+    160, 
+    161, 
+    162, 
+    165, 
+    166, 
+    167, 
+    168, 
+    169, 
+    170, 
+    171, 
+    172, 
+    174, 
+    175, 
+    176, 
+    177, 
+    180, 
+    181, 
+    182, 
+    183, 
+    184, 
+    185, 
+    186, 
+    187, 
+    188, 
+    189, 
+    190, 
+    191, 
+    192, 
+    193, 
+    194, 
+    195, 
+    196, 
+    197, 
+    198, 
+    199, 
+    200, 
+    201, 
+    202, 
+    204, 
+    205, 
+    206, 
+    207, 
+    208, 
+    210, 
+    211, 
+    212, 
+    213, 
+    216, 
+    217, 
+    218, 
+    219, 
+    220, 
+    221, 
+    222, 
+    223, 
+    225, 
+    226, 
+    227, 
+    228, 
+    231, 
+    232, 
+    233, 
+    234, 
+    235, 
+    236, 
+    237, 
+    238, 
+    239, 
+    240, 
+    241, 
+    242, 
+    243, 
+    244, 
+    245, 
+    246, 
+    247, 
+    248, 
+    249, 
+    250, 
+    251, 
+    252, 
+    253, 
+    255, 
+    256, 
+    257, 
+    258, 
+    259, 
+    261, 
+    262, 
+    263, 
+    264, 
+    267, 
+    268, 
+    269, 
+    270, 
+    271, 
+    272, 
+    273, 
+    274, 
+    276, 
+    277, 
+    278, 
+    279, 
+    282, 
+    283, 
+    284, 
+    285, 
+    286, 
+    287, 
+    288, 
+    289, 
+    290, 
+    291, 
+    292, 
+    293, 
+    294, 
+    295, 
+    296, 
+    297, 
+    298, 
+    299, 
+    300, 
+    301, 
+    302, 
+    303, 
+    304, 
+    306, 
+    307, 
+    308, 
+    309, 
+    310, 
+    312, 
+    313, 
+    314, 
+    315, 
+    318, 
+    319, 
+    320, 
+    321, 
+    322, 
+    323, 
+    324, 
+    325, 
+    327, 
+    328, 
+    329, 
+    330, 
+    333, 
+    334, 
+    335, 
+    336, 
+    337, 
+    338, 
+    339, 
+    340, 
+    341, 
+    342, 
+    343, 
+    344, 
+    345, 
+    346, 
+    347, 
+    348, 
+    349, 
+    350, 
+    351, 
+    352, 
+    353, 
+    354, 
+    355, 
+    357, 
+    358, 
+    359, 
+    360, 
+    361, 
+    363, 
+    364, 
+    365, 
+    366, 
+    369, 
+    370, 
+    371, 
+    372, 
+    373, 
+    374, 
+    375, 
+    376, 
+    378, 
+    379, 
+    380, 
+    381, 
+    384, 
+    385, 
+    386, 
+    387, 
+    388, 
+    389, 
+    390, 
+    391, 
+    392, 
+    393, 
+    394, 
+    395, 
+    396, 
+    397, 
+    398, 
+    399, 
+    400, 
+    401, 
+    402, 
+    403, 
+    404, 
+    405, 
+    406, 
+    408, 
+    409, 
+    410, 
+    411, 
+    412, 
+    414, 
+    415, 
+    416, 
+    417, 
+    420, 
+    421, 
+    422, 
+    423, 
+    424, 
+    425, 
+    426, 
+    427, 
+    429, 
+    430, 
+    431, 
+    432, 
+    435, 
+    436, 
+    437, 
+    438, 
+    439, 
+    440, 
+    441, 
+    442, 
+    443, 
+    444, 
+    445, 
+    446, 
+    447, 
+    448, 
+    449, 
+    450, 
+    451, 
+    452, 
+    453, 
+    454, 
+    455, 
+    456, 
+    457, 
+    459, 
+    460, 
+    461, 
+    462, 
+    463, 
+    465, 
+    466, 
+    467, 
+    468, 
+    471, 
+    472, 
+    473, 
+    474, 
+    475, 
+    476, 
+    477, 
+    478, 
+    480, 
+    481, 
+    482, 
+    483, 
+    486, 
+    487, 
+    488, 
+    489, 
+    490, 
+    491, 
+    492, 
+    493, 
+    494, 
+    495, 
+    496, 
+    497, 
+    498, 
+    499, 
+    500, 
+    501, 
+    502, 
+    503, 
+    504, 
+    505, 
+    506, 
+    507, 
+    508, 
+    510, 
+    511, 
+    512, 
+    513, 
+    514, 
+    516, 
+    517, 
+    518, 
+    519, 
+    522, 
+    523, 
+    524, 
+    525, 
+    526, 
+    527, 
+    528, 
+    529, 
+    531, 
+    532, 
+    533, 
+    534, 
+    537, 
+    538, 
+    539, 
+    540, 
+    541, 
+    542, 
+    543, 
+    544, 
+    545, 
+    546, 
+    547, 
+    548, 
+    549, 
+    550, 
+    551, 
+    552, 
+    553, 
+    554, 
+    555, 
+    556, 
+    557, 
+    558, 
+    559, 
+    561, 
+    562, 
+    563, 
+    564, 
+    565, 
+    567, 
+    568, 
+    569, 
+    570, 
+    573, 
+    574, 
+    575, 
+    576, 
+    577, 
+    578, 
+    579, 
+    580, 
+    582, 
+    583, 
+    584, 
+    585, 
+    588, 
+    589, 
+    590, 
+    591, 
+    592, 
+    593, 
+    594, 
+    595, 
+    596, 
+    597, 
+    598, 
+    599, 
+    600, 
+    601, 
+    602, 
+    603, 
+    604, 
+    605, 
+    606, 
+    607, 
+    608, 
+    609, 
+    610, 
+    612, 
+    613, 
+    614, 
+    615, 
+    616, 
+    618, 
+    619, 
+    620, 
+    621, 
+    624, 
+    625, 
+    626, 
+    627, 
+    628, 
+    629, 
+    630, 
+    631, 
+    633, 
+    634, 
+    635, 
+    636, 
+    639, 
+    640, 
+    641, 
+    642, 
+    643, 
+    644, 
+    645, 
+    646, 
+    647
+  ], 
+  "heads": [[559, 0, 0]], 
+  "attrs": {"mxnet_version": ["int", 10700]}
+}

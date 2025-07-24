@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component Dimensions {
+  ports
+    in Q inScalar,
+    in Q inArray[3],
+    in Q^{1,3} inRowVector,
+    in Q^{4,1} inColumnVector,
+    in Q^{2,3} inMatrix,
+    in Q^{3,4} inMatrixArray[2],
+
+    out Q outScalar,
+    out Q outArray[3],
+    out Q^{1,3} outRowVector,
+    out Q^{4,1} outColumnVector,
+    out Q^{2,3} outMatrix,
+    out Q^{3,4} outMatrixArray[2];
+}

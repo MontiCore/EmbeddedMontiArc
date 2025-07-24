@@ -1,0 +1,27 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<div class="uk-height-1-1 content-container">
+    <form class="uk-flex uk-flex-column uk-height-1-1">
+        <div class="controls">
+            <button mat-fab (click)="addState()" matTooltip="Add Artifact" matTooltipPosition="before">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="uk-flex-1 form-container">
+            <fieldset *ngFor="let state of states" class="artifact-form" [disabled]="state.saved" [style.opacity]="state.saved ? 0.7 : 1.0">
+                <legend class="legend" [style.height]="state.saved ? '40px' : 'auto'">
+                    <button mat-mini-fab (click)="removeState(state)" matTooltip="Remove Artifact" matTooltipPosition="before" *ngIf="!state.saved">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                    <img src="assets/images/saved.png" *ngIf="state.saved" style="height:50px;"/>
+                </legend>
+                <app-artifact-form [state]="state"></app-artifact-form>
+            </fieldset>
+        </div>
+        <div class="controls">
+            <button *ngIf="hasStates() && !isSaving()" type="submit" mat-raised-button
+                    color="accent" matTooltip="Save Artifacts" matTooltipPosition="before"
+                    [disabled]="hasErrors()" (click)="apply()">Save</button>
+            <mat-progress-bar color="accent" mode="indeterminate" *ngIf="isSaving()"></mat-progress-bar>
+        </div>
+    </form>
+</div>

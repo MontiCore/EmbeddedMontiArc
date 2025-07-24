@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+sim MaxModel {
+  sim_render_frequency 60ms;
+  sim_loop_frequency 60ms;
+  sim_duration 4h;
+  sim_type maxfps;
+  weather fixed {temperature 290K;
+                 humidity 0.2;
+                 pressure 100Pa;
+                 wind_strength 2km/h;
+                 //wind_direction 38.0°;
+                 precipitation_type snow;
+                 precipitation_amount 5mm;
+                 clouding stratus;
+                 sight unlimited;
+                 weather_phenomena gustnado (123,456);
+                 optical_phenomena rainbow;
+                 artificial_phenomena smog;
+                 };
+  time 1:22:33:444;
+  map_path Maps;
+  map_name HorsterDreieck.osm;
+  map_height flat;
+  map_overlap 10;
+  map_sector_width 100;
+  map_sector_height 100;
+  max_sector_users 1234;
+  timeout 12h;
+  gravity 12m/s^2;
+  
+  pedestrian(10.0,10.0)->(20.0,20.0,0.0);
+  pedestrian_density 2.0;
+  
+  vehicle car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+  vehicle(123.0,-94.0,200.0)->(1024.0,960.0,200.0);
+  vehicle 1000;
+  vehicle 1234 (-150.0,-150.0)->(500.0,600.0);
+}

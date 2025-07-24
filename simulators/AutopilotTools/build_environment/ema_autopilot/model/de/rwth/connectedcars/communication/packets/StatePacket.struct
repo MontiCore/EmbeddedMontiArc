@@ -1,0 +1,12 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct StatePacket {
+    // independent of the type used here, there will be a warning like 
+    //   `[WARN]  unknown type symbol: Q` which can be ignored
+    
+	// no arrays inside structs allowed, so x and y need to be splitted
+    Q/*(-oo m : 0.01 m : oo m) */   positionX;
+    Q/*(-oo m : 0.01 m : oo m) */   positionY;
+    Q/*(-oo : 0.001 : oo)    */         heading;
+    Q/*(0.0 m/s : 0.01 m/s : oo m/s) */ velocity;
+}

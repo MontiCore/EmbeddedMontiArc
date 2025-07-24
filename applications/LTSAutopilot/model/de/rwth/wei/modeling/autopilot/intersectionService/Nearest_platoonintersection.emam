@@ -1,0 +1,94 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Nearest_platoonintersection{
+  ports
+  // message relevant
+  dynamic in Platoonmessage         plat_msg[0:32],
+  dynamic in Statusmessage          status_msg[0:32],
+  dynamic in Trajectorymessage      traj_msg[0:32],
+
+  in  Q  nextintersection_x,
+  in  Q  nextintersection_y,
+  in  Q  length,
+
+  out Z  near_platoonid,
+  // use as public variable
+  out Platoonmessage      pmsg,
+  out Platoonmessage      pmsg1,
+  out Statusmessage       smsg,
+  out Statusmessage       smsg1,
+  out Trajectorymessage   tmsg,
+  out Z^{1,32}            vehiclelist;
+
+  @ plat_msg::connect{/* interface for dynamic ports*/}
+  @ status_msg::connect{/* interface for dynamic ports*/}
+  @ traj_msg::connect{/* interface for dynamic ports*/}
+
+  implementation Math{
+    near_platoonid = 0;
+    Q taildistance = 99999.0;
+    for i = 1:32
+      if is_connected(plat_msg,i)
+         pmsg = plat_msg(i);
+         if pmsg.ifsplit == 0
+             vehiclelist = pmsg.platoon_member;
+             Z vehicle_n = pmsg.member_num;
+             Q tailid = vehiclelist(1,vehicle_n);
+             for j = 1:32
+                if is_connected(traj_msg,j)
+                   tmsg = traj_msg(j);
+                   if tmsg.vehicleid == tailid
+                      Q inter_x = tmsg.nextintersection_x;
+                      Q inter_y = tmsg.nextintersection_y;
+                      if inter_x == 0.0 && inter_y == 0.0
+                         for k = 1:32
+                            if is_connected(status_msg,k)
+                               smsg = status_msg(k);
+                               if smsg.vehicleid == tailid
+                                  Q dx = smsg.position_x;
+                                  Q dy = smsg.position_y;
+                                  Q sqrt_dis = (nextintersection_x - dx)*(nextintersection_x - dx) + (nextintersection_y - dy)*(nextintersection_y - dy);
+                                  Q dis = sqrt(sqrt_dis);
+                                  if dis >= 0.5*length && dis <= 2*length
+                                     if dis < taildistance
+                                        near_platoonid = pmsg.vehicleid;
+                                        taildistance = dis;
+                                     end
+                                  end
+                               end
+                            end
+                         end
+                     end
+                     if inter_x != 0.0 && inter_y != 0.0
+                        Q sqrt_dis1 = (inter_x - nextintersection_x)*(inter_x - nextintersection_x) + (inter_y - nextintersection_y)*(inter_y - nextintersection_y);
+                        Q dis1 = sqrt(sqrt_dis1);
+                        if dis1 > 2 * length
+                          for k1 = 1:32
+                             if is_connected(status_msg,k1)
+                                smsg1 = status_msg(k1);
+                                if smsg1.vehicleid == tailid
+                                   Q dx1 = smsg1.position_x;
+                                   Q dy1 = smsg1.position_y;
+                                   Q sqrt_dis2 = (nextintersection_x - dx1)*(nextintersection_x - dx1) + (nextintersection_y - dy1)*(nextintersection_y - dy1);
+                                   Q dis2 = sqrt(sqrt_dis2);
+                                   if dis2 >= 0.5*length && dis2 <= 2*length
+                                      if dis2 < taildistance
+                                         near_platoonid = pmsg.vehicleid;
+                                         taildistance = dis2;
+                                      end
+                                   end
+                                end
+                             end//if is_connected(status_msg,k1)
+                          end//for k1 = 1:32
+                        end//if dis1 > 2 * length
+                      end //if inter_x != 0.0 && inter_y != 0.0
+                   end//if tmsg.vehicldid == tailid
+                end//is_connected(traj_msg,j)
+             end//for j = 1:32
+        end
+      end//if is_connected(plat_msg,i)
+    end//for i = 1:32
+  }
+}

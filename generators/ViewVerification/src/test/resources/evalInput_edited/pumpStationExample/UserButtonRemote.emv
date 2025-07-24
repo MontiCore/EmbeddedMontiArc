@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view UserButtonRemote {
+
+  component RemoteControlPanel {
+    port
+      out boolean button;
+  }
+  instance RemoteControlPanel remoteControlPanel;
+  
+  component UserButtonReader {
+    port
+      in boolean button,
+      out UserInput userButton;
+  }
+  instance UserButtonReader userButtonReader;
+  
+  component UserOperation {
+    port
+      in UserInput userButton,
+      out boolean desiredPumpState,
+      out ValvePosition desiredValvePosition;
+  }
+  instance UserOperation userOperation;
+  
+  component ModeArbiter {
+    port
+      in boolean userPumpState,
+      in ValvePosition userValvePosition;
+  }
+  instance ModeArbiter modeArbiter;
+  
+  connect remoteControlPanel.button -> userButtonReader.button;
+  connect userButtonReader.userButton -> userOperation.userButton;
+  connect userOperation.desiredPumpState -> modeArbiter.userPumpState;
+  connect userOperation.desiredValvePosition -> modeArbiter.userValvePosition;
+
+}

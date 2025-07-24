@@ -1,0 +1,60 @@
+ # (c) https://github.com/MontiCore/monticore
+stages:
+  - docker
+  - jar
+  - linux
+  
+buildDockerMxNet180:
+  stage: docker
+  tags:
+  - shell
+  script:
+  - docker login registry.git.rwth-aachen.de -u someUserName -p $DOCKER_TOKEN
+  - cd Gluon/.test/docker
+  - docker build -t registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180 .
+  - docker push registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180
+  only:
+    changes:
+    - Gluon/.test/docker/*
+ 
+Train3D-GAN:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  allow_failure: true
+  script:
+  - mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
+  - cd Training
+  - export PYTHONPATH="/builds/monticore/EmbeddedMontiArc/applications/gans/3d-gan/Training/target/tmp/cpp/threedgan.Connector/gan/"
+  - mvn dependency:resolve emadl:train -s settings.xml
+
+ 
+ 
+deploy-pretrained:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  script:
+  - cd Pre-Trained
+  - mvn dependency:resolve emadl:deploy-pretrained -s ./settings.xml
+  only:
+  - master
+
+
+install-pretrained:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/dockerimages/mxnet170:v0.0.1
+  script:
+  - cd Pre-Trained
+  - mvn dependency:resolve emadl:install-pretrained -s ./settings.xml
+  except:
+  - master
+  
+TestWithJar:
+  stage: jar
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/gans/3d-gan/mxnet180:latest
+  allow_failure: true
+  script:
+  - cd Gluon/.test 
+  - chmod +x build.sh
+  - ./build.sh
+
+
