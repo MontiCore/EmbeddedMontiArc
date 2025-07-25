@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component CaretSymbol {
+  ports
+    in Q(0 kg*m^2/s^3 : oo kg*m^2/s^3) power,
+    out Q(5 m/s^2 : 100 m/s^2) acceleration;
+}
