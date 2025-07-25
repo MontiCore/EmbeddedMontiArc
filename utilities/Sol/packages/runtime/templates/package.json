@@ -1,0 +1,37 @@
+{
+  "name": "@embeddedmontiarc/sol-runtime-templates",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": ["src", "lib"],
+  "types": "lib/typings",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-core": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-options": "^2020.5.5-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/navigator": "latest",
+    "@theia/workspace": "latest",
+    "inversify": "^5.0.1",
+    "nunjucks": "^3.2.0",
+    "fs-extra": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/nunjucks": "^3.1.1"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/templates-frontend-module",
+      "backend": "lib/node/templates-backend-module"
+    }
+  ]
+}

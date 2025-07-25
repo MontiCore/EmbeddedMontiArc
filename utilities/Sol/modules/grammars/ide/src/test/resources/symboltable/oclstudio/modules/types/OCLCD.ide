@@ -1,0 +1,20 @@
+package oclstudio.modules.types
+
+import oclstudio.configurations.OCLVerifier
+
+typedef module OCLCD {
+    label "OCL+CD"
+    icon "some-icon-class"
+    category "OCL"
+
+    module ocl: OCL
+
+    configuration verifier: OCLVerifier {
+        name "Verify OCL"
+
+        fill model with "de.rwth.se.ocl.Example"
+        fill modelPath with "."
+    }
+
+    write ocl to "pong"
+}

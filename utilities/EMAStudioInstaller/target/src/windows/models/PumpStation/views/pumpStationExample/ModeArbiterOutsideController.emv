@@ -1,0 +1,10 @@
+package pumpStationExample;
+
+view ModeArbiterOutsideController {
+component PumpStation {
+  component Controller {}
+  instance Controller controller;
+  component ModeArbiter {}
+  instance ModeArbiter modeArbiter;
+}
+}

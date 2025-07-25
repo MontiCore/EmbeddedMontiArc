@@ -1,0 +1,143 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!DOCTYPE HTML>
+<html>
+	<head>
+        <title>EmbeddedMontiArc - Online IDE</title>
+
+        <!-- == STYLESHEETS ==================================== -->
+        <link href="favicon.ico" type="image/x-icon" rel="icon"/>
+        <link href="modules/se.rwth.index.ui/css/ui.css" type="text/css" rel="stylesheet"/>
+
+        <!-- == SCRIPTS ======================================== -->
+        <script src="modules/se.rwth.common.module/jquery-3.2.1.min.js"></script>
+        <script src="modules/se.rwth.common.github/github.bundle.min.js"></script>
+        <script src="modules/se.rwth.common.checker/async.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/jszip.min.js"></script>
+        <script src="modules/se.rwth.common.checker/browser-detect.min.js"></script>
+        <script src="modules/se.rwth.common.loader/loader.js"></script>
+        <script src="modules/se.rwth.common.dialog/dialog.js"></script>
+        <script src="modules/se.rwth.common.settings/settings.js"></script>
+        <script src="modules/se.rwth.common.checker/checker.js"></script>
+        <script src="modules/se.rwth.common.dashboard/dashboard.js"></script>
+        <script src="modules/se.rwth.common.utilities/utilities.js"></script>
+        <script src="modules/se.rwth.common.vfs/vfs.js"></script>
+
+        <script src="modules/se.rwth.index.github/github.js"></script>
+        <script src="modules/se.rwth.index.menu/menu.js"></script>
+        <script src="modules/se.rwth.index.trashbin/trashbin.js"></script>
+        <script src="modules/se.rwth.index.credentials/credentials.js"></script>
+        <script src="modules/se.rwth.index.demos/demos.js"></script>
+        <script src="modules/se.rwth.index.repositories/repositories.js"></script>
+        <script src="modules/se.rwth.index.branches/branches.js"></script>
+        <script src="modules/se.rwth.index.users/users.js"></script>
+        <script src="modules/se.rwth.index.search/search.js"></script>
+        <script src="modules/se.rwth.index.github/github.vfs.js"></script>
+        <script src="modules/se.rwth.index.demos/demos.vfs.js"></script>
+	</head>
+	<body>
+        <!-- == LOADER ========================================= -->
+        <div id="loader-container">
+            <img src="modules/se.rwth.common.loader/images/loader.svg"/>
+            <span id="loader-message">Checking Prerequisites...</span>
+		</div>
+
+        <!-- == LOGOS ========================================== -->
+        <div id="logos-container">
+			<a href="http://www.se-rwth.de/" target="_blank"><img src="modules/se.rwth.index.ui/images/se.rwth.png"/></a>
+            <a href="http://www.embeddedmontiarc.com/" target="_blank" style="margin-right:8px"><img src="https://raw.githubusercontent.com/EmbeddedMontiArc/website/master/EMALogoTransparentWithoutSE.png"/></a>
+			<a href="https://c9.io/" target="_blank"><img src="static/plugins/c9.ide.theme.flat/images/cloud9_logo@2x.png"/></a>
+		</div>
+
+        <!-- == DIALOG ========================================= -->
+        <div id="dialog-container">
+            <div id="dialog-panel" class="container panel">
+                <span id="dialog-icon"></span>
+                <span id="dialog-message">Are you sure you want to delete this project?</span>
+            </div>
+        </div>
+
+        <!-- == MAIN =========================================== -->
+		<div id="main-container">
+
+            <!-- -- NEWS ------------------------------------------- -->
+            <div id="news-panel" class="container panel">
+				<h2>News</h2>
+                <hr/>
+				<ul>
+                    <li>Welcome to EmbeddedMontiArcStudio</li>
+                    <li>New here? Check out the <a href="/videos.html">Video Tutorials.</a></li>
+                </ul>
+			</div>
+
+            <!-- -- DASHBOARD -------------------------------------- -->
+            <div id="dashboard-panel" class="container panel">
+                <ul id="dashboard-list">
+                    <!--<li id="dashboard-plus"></li>-->
+                </ul>
+			</div>
+
+            <!-- -- MENU ------------------------------------------- -->
+            <div id="menu-panel" class="container panel">
+                <ul>
+                    <!--<li id="menu-item-new-project">New Project</li>-->
+                    <li id="menu-item-from-github">From GitHub</li>
+                    <li id="menu-item-demo">Demo</li>
+                    <li id="menu-item-cancel">Cancel</li>
+                </ul>
+            </div>
+
+            <!-- -- DEMOS ------------------------------------------ -->
+            <div id="demos-panel" class="container panel">
+                <ul id="demos-list">
+                    <li id="demos-back"></li>
+                </ul>
+            </div>
+		</div>
+
+        <!-- == GITHUB ========================================= -->
+        <div id="github-container">
+
+            <!-- -- SEARCH ----------------------------------------- -->
+			<div id="search-panel" class="container panel">
+				<label class="shared-form label-form" for="search-query">Query:</label>
+				<input id="search-query" class="shared-form input-form" type="text"/>
+				<br/>
+				<span id="search-search" class="shared-span">Search</span>
+				<span id="search-cancel" class="shared-span">Cancel</span>
+			</div>
+
+            <!-- -- USERS ------------------------------------------ -->
+            <div id="users-panel" class="container panel">
+                <ul id="users-list"></ul>
+            </div>
+
+            <!-- -- REPOSITORIES ----------------------------------- -->
+            <div id="repositories-panel" class="container panel">
+				<ul id="repositories-list"></ul>
+			</div>
+
+            <!-- -- BRANCHES --------------------------------------- -->
+            <div id="branches-panel" class="container panel">
+                <ul id="branches-list">
+                    <li id="branches-back"></li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- == CREDENTIALS ==================================== -->
+        <div id="credentials-container">
+            <div id="credentials-panel" class="container panel">
+                <label class="shared-form label-form" for="credentials-username">Username:</label>
+                <input id="credentials-username" class="shared-form input-form" type="text"/>
+                <br/>
+                <label class="shared-form label-form" for="credentials-password">Password:</label>
+                <input id="credentials-password" class="shared-form input-form" type="password"/>
+                <br/>
+                <span id="credentials-submit" class="shared-span">Submit</span>
+                <span id="credentials-cancel" class="shared-span">Cancel</span>
+            </div>
+        </div>
+	</body>
+</html>

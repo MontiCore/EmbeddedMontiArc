@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+.hidden {
+  display:none;
+}
+
+.button {
+  margin-top:20px;
+}
+
+.button label {
+  cursor:pointer;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+mat-form-field {
+  width:100%;
+}
+
+mat-form-field:not(:first-child) {
+  margin-top:20px;
+}
+
+.tick {
+  font-size:50px;
+  vertical-align:middle;
+  user-select:none;
+}
+
+.tick-empty {
+  color:rgba(255, 255, 255, 0.7);
+}
+
+.tick-ticked, .mat-input-element {
+  color:#FFF;
+}
+
+mat-checkbox:not(:first-child) {
+  margin-left:20px;
+}
+
+mat-checkbox {
+  color:rgba(255, 255, 255, 0.7);
+}
+
+.mat-form-field--no-underline .mat-input-underline {
+  background-color: transparent;
+}

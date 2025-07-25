@@ -1,0 +1,15 @@
+const path = require("path");
+const fs = require("fs");
+
+const config = require(path.resolve(__dirname, "webpack.config.js"));
+
+const indexFile = path.resolve(__dirname, "src-gen", "frontend", "index.js");
+
+const content = fs.readFileSync(indexFile, { encoding: "UTF-8" });
+const modifiedContent = content.replace(/@theia\/monaco/g, "@embeddedmontiarc/sol-external-monaco");
+
+fs.writeFileSync(indexFile, modifiedContent);
+
+config.target = "electron-renderer";
+
+module.exports = config;

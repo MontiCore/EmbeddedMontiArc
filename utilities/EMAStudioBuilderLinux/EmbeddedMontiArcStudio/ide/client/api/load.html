@@ -1,0 +1,41 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Load</title>
+        <base href=".."/>
+
+        <link href="modules/se.rwth.index.ui/css/ui.css" type="text/css" rel="stylesheet"/>
+
+        <script src="modules/se.rwth.common.module/jquery-3.2.1.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+        <script src="modules/se.rwth.common.checker/async.min.js"></script>
+        <script src="modules/se.rwth.common.vfs/jszip.min.js"></script>
+        <script src="modules/se.rwth.common.checker/browser-detect.min.js"></script>
+
+        <script src="modules/se.rwth.common.loader/loader.js"></script>
+        <script src="modules/se.rwth.common.dialog/dialog.js"></script>
+        <script src="modules/se.rwth.common.settings/settings.js"></script>
+        <script src="modules/se.rwth.common.checker/checker.js"></script>
+        <script src="modules/se.rwth.index.trashbin/trashbin.js"></script>
+        <script src="modules/se.rwth.index.menu/menu.js"></script>
+        <script src="modules/se.rwth.common.dashboard/dashboard.js"></script>
+        <script src="modules/se.rwth.common.vfs/vfs.js"></script>
+        <script src="modules/se.rwth.common.utilities/utilities.js"></script>
+
+        <script src="modules/se.rwth.api.load/url.vfs.js"></script>
+        <script src="modules/se.rwth.api.load/load.js"></script>
+    </head>
+    <body>
+        <div id="loader-container">
+            <img src="modules/se.rwth.common.loader/images/loader.svg"/>
+            <span id="loader-message">Checking Prerequisites...</span>
+        </div>
+        <div id="dialog-container">
+            <div id="dialog-panel" class="container panel">
+                <span id="dialog-icon"></span>
+                <span id="dialog-message">Are you sure you want to delete this project?</span>
+            </div>
+        </div>
+    </body>
+</html>

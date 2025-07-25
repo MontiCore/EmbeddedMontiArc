@@ -1,0 +1,27 @@
+package fas_views;
+
+view FA-24 {
+  component FAS {
+    ports
+	  in ? V_Vehicle_kmh,
+	  in ? Acceleration_pedal_pc,
+	  in ? BrakeForce_pedal_pc,
+	  out ? CCSetValue_kmh;
+	  
+	  component Tempomat {
+	    port
+	      out ? V_CC_delta_kmh;
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    port
+		  in ? V_CC_delta_kmh;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect V_Vehicle_kmh -> CCSetValue_kmh;
+	  
+	  connect tempo.V_CC_delta_kmh -> veloCont.V_CC_delta_kmh;
+  }
+}

@@ -1,0 +1,15 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package valid
+
+language ExcludeExistingParent {
+    template undeclareExistingParent {
+        path "SomePath"
+        label "Some Label"
+
+        option someOption: String {
+            label "Some Option"
+        }
+    }
+}
