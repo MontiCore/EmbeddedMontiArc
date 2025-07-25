@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.coco.valid;
+
+enum MyEnum3 {
+  CONSTANT_1 |  CONSTANT_2 |  CONSTANT_3
+}

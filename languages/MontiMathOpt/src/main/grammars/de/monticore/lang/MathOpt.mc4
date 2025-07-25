@@ -1,0 +1,38 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang;
+
+grammar MathOpt extends de.monticore.lang.Math
+{
+    MathOptCompilationUnit /*extends MathCompilationUnit*/ = MathCompilationUnit;
+
+    enum OptimizationType = MINIMIZATION: "minimize" | MAXIMIZATION: "maximize";
+
+    OptimizationCompareOperator = operator:"==" | operator:"<=" | operator:">=";
+
+    OptimizationVariableDeclaration =
+        type:AssignmentType?  Name (MathAssignmentOperator initialization:Expression)?;
+
+    OptimizationSimpleCondition =
+        left:Expression operator:OptimizationCompareOperator right:Expression ";";
+
+    OptimizationBoundsCondition =
+        lower:Expression "<=" expr:Expression "<=" upper:Expression ";";
+
+    OptimizationCondition =
+        (simpleCondition:OptimizationSimpleCondition | boundedCondition:OptimizationBoundsCondition | forLoopCondition:OptimizationForLoop);
+
+    OptimizationForLoop =
+        "for" head:MathForLoopHead body:OptimizationCondition+ "end";
+
+    OptimizationObjectiveValue = type:ElementType Name "=";
+
+    OptimizationStatement implements Statement =
+        optimizationType:OptimizationType ("<" stepSize:Expression ">")?
+            optimizationVariable:OptimizationVariableDeclaration ("," optimizationVariable:OptimizationVariableDeclaration)* ";"
+        "in"
+            objectiveValue:OptimizationObjectiveValue? objectiveFunction:Expression ";"
+        "subject to"
+            independentDeclaration:MathAssignmentDeclarationStatement*
+            constraint:OptimizationCondition*
+        "end";
+}

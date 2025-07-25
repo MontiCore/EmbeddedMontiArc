@@ -1,0 +1,10 @@
+(<= (legal test (do))
+    (equal 7 7)
+    (not (equal 7 6))
+    (not (equal 6 7))
+    (equal 0 0)
+)
+
+(<= (next (success))
+    (does test (do))
+)

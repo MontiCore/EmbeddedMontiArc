@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg14;
+
+component Critic {
+    ports
+        in B primitive_input_port,
+        out Q primitive_output_port;
+}
