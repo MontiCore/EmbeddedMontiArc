@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Different Channels
+ * Focus: Observe vehicle evaluating different mobile channels
+ * Details: 1 vehicle traveling, possibility to use several channels bound to passing vehicles
+*/
+sim DifferentChannels {
+  sim_duration 4h;
+  
+  time 12:00;
+  
+  map_name DifferentChannels.osm;
+  
+  pedestrian_density 0;
+  
+  car1(-100,0,0)->(100,0,0);
+  WLANcar1(0,0)->(-100,0);
+  WLANcar2(2,0)->(-100,0);
+  WLANcar1(150,0)->(-50,0);
+  
+  bound channel OnBoardWLAN1 {
+    transferrate 10Mbit/s;
+    latency 5ms;
+    outage 0.0001%;
+  };
+  bound channel OnBoardWLAN2 {
+    transferrate 1Mbit/s;
+    latency 5ms;
+    outage 0.0001%;
+  };
+}
