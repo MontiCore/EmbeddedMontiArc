@@ -1,0 +1,40 @@
+{
+  "name": "@embeddedmontiarc/sol-external-gui-process",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": ["src", "lib"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-external-docker": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-external-workspace": "^2020.5.5-SNAPSHOT",
+    "@theia/core": "latest",
+    "@theia/process": "latest",
+    "helpful-decorators": "^2.0.5",
+    "inversify": "^5.0.1"
+  },
+  "devDependencies": {
+    "electron": "^6.0.7"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/gui-process-frontend-module",
+      "backend": "lib/node/gui-process-backend-module"
+    }
+  ],
+  "sol": {
+    "extensions": [
+      {
+        "main": "lib/main/gui-process-main-module"
+      }
+    ]
+  }
+}

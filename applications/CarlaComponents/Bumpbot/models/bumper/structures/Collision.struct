@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package bumper.structures;
+import bumper.structures.*;
+
+struct Collision{
+        Z other_actor_id;
+        Vector3 normal_impulse;
+}
+

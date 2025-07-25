@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+// In this view the component PhysicsSimulation is inside PumpingSystem which
+// might not be a good design.
+//
+//(used as inconsistent view, and negated )
+
+view PhysicsInsidePumpingSystem {
+
+    component PumpingSystem {
+        component PhysicsSimulation {}
+        instance PhysicsSimulation physicsSimulation;
+    }
+    instance PumpingSystem pumpingSystem;
+}

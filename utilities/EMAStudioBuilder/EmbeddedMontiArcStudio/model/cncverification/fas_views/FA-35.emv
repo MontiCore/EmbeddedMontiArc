@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-35 {
+  component FAS {
+    ports
+	  in ? Acceleration_pedal_pc,
+	  out ? Limiter_active_b;
+	  
+	  component Limiter {
+	    ports
+		  in ? Acceleration_pedal_pc,
+		  out ? Limiter_active_b;
+	  }
+	  instance Limiter limit;
+	  
+	  effect limit.Acceleration_pedal_pc -> limit.Limiter_active_b;
+	  
+	  connect Acceleration_pedal_pc -> limit.Acceleration_pedal_pc;
+	  connect limit.Limiter_active_b -> Limiter_active_b;
+  }
+}

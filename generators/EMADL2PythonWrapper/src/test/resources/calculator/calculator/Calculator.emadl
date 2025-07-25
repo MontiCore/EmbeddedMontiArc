@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package calculator;
+
+component Calculator {
+    ports
+        in Q(-oo:oo)^{3} a,
+        in Q(-oo:oo)^{3} b,
+        in Z(-oo:oo) c,
+        out Q(-oo:oo) result;
+
+    instance Add add;
+    instance Multiply multiply;
+    instance Sum sum;
+
+    connect a -> add.a;
+    connect b -> add.b;
+    connect c -> multiply.b;
+    connect add.c -> multiply.a;
+    connect multiply.c -> sum.a;
+    connect sum.b -> result;
+}

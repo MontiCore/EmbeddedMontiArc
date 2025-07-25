@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+ 
+
+ component KMeansClustering<N1 n = 2500, N1 amountVectors = 4, N1 maximumClusters = 1> {
+
+     ports in Q(-oo:oo)^{n, amountVectors} vectors,
+
+           out Q(-oo:oo)^{n, 1} cluster;
+
+ 
+
+     implementation Math{
+
+     // construct the normalized matrix U from the obtained eigen vectors
+
+             Q^{n,amountVectors} UMatrix;
+
+             for i=1:size(vectors,1)
+
+                 Q^{1,amountVectors} target= vectors(i,:) .^ 2;
+
+                 Q amount = sqrt(sum(target));
+
+                 UMatrix(i,:) = vectors(i,:) ./ amount;
+
+             end
+
+ 
+
+         cluster = kmeans(UMatrix, maximumClusters);
+
+     }
+
+ }

@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+th div {
+  text-align:center;
+  vertical-align:middle;
+}
+
+td {
+  position: relative;
+  height: 1.0vh;
+}
+
+td img {
+  position: absolute;
+  top: 27%;
+  left: 20%;
+  height: 3vh;
+  width: auto;
+	margin: auto;
+	display: block;
+}

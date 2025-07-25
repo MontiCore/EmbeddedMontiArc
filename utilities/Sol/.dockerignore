@@ -1,0 +1,39 @@
+# Editors
+/.idea/
+**/*.iml
+
+# Configurations
+/configs/*/*
+
+# Modules
+**/pom.xml
+/modules/tests/ide/external/
+
+# Packages
+/packages/**/lib/
+/packages/tests/external/
+
+# Common
+## Files
+**/.dockerignore
+**/.gitignore
+**/.npmignore
+**/Dockerfile
+**/README.md
+
+## Folders
+**/node_modules/
+**/docs/
+
+# Public
+/public/
+
+# Scripts
+/scripts/
+
+# Git
+/.git/
+
+# Root
+/.gitlab-ci.yml
+/LICENSE

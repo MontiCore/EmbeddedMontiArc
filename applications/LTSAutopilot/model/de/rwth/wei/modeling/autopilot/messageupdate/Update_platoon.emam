@@ -1,0 +1,48 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.behavior.*;
+
+component Update_platoon{
+ ports
+   in  platoonmessage       plat_msg,
+   in  trajectorymessage    traj_msg,
+   in  Z   update_type,
+
+   out platoonmessage       update_plat_msg,
+   out trajectorymessage   update_traj_msg;
+
+   instance  set_platoonmsg             set_pmsg;
+   instance  set_trajectorymsg          set_tmsg;
+   instance  platoonmessageparsing      plat_parse;
+   instance  trajectorymessageparsing   traj_parse;
+   instance  TrimPath                   tp;
+   @ update_type::value(0){
+     connect plat_msg -> update_plat_msg;
+     connect traj_msg -> update_traj_msg;
+   }
+   @ update_type::value(1){
+     connect plat_msg -> set_pmsg.plat_msg;
+     connect traj_msg -> set_tmsg.traj_msg;
+     connect set_pmsg.set_plat_msg -> update_plat_msg;
+     connect traj_msg ->  update_traj_msg;
+   }
+   @ update_type::value(2){
+     connect plat_msg -> plat_parse.plat_message;
+     connect traj_msg ->  traj_parse.traj_message;
+     connect plat_parse.position_x -> tp.currentPositionX;
+     connect plat_parse.position_y -> tp.currentPositionY;
+     connect traj_parse.trajectory_length -> tp.plannedTrajectoryLength;
+     connect traj_parse.trajectroy_x -> tp.plannedTrajectoryX;
+     connect traj_parse.trajectroy_y -> tp.plannedTrajectoryY;
+     connect traj_parse.isintersection -> tp.plannedIsintersection;
+     connect tp.trimmedTrajectoryLength -> set_tmsg.trajectory_length;
+     connect tp.trimmedTrajectoryX -> set_tmsg.trajectory_x;
+     connect tp.trimmedTrajectoryY -> set_tmsg.trajectory_y;
+     connect tp.trimmedIsintersection -> set_tmsg.isintersection;
+     connect traj_parse.timestamp -> set_tmsg.timestamp;
+     connect traj_parse.vehicleid -> set_tmsg.vehicleid;
+     connect set_tmsg.set_traj_msg -> update_traj_msg;
+     connect plat_msg -> update_plat_msg;
+   }
+}

@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample.inner;
+
+component FD {
+    port
+      in Page_Request New_Page_Request_From_FM,
+      out Page_Content New_Page_Content_To_FM;
+}

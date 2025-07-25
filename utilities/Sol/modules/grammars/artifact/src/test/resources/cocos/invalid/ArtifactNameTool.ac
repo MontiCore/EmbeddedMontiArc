@@ -1,0 +1,5 @@
+package invalid
+
+tool artifactNameTool {
+    path "some/awesome/path" resolved from CWD
+}

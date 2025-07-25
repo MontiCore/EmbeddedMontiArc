@@ -1,0 +1,35 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<project name="VisualizationEMAM" basedir=".">
+
+    <target name="visualization.exists()">
+        <condition property="!visualization.exists">
+            <not><available file="src/main/resources/visualisation/embeddedmontiarc-svggenerator.jar"/></not>
+        </condition>
+    </target>
+
+    <target name="visualization.download()" depends="visualization.exists()" if="!visualization.exists">
+        <get src="https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F${visualization.version}.visualisation&amp;files=visualisation.zip"
+             dest="src/main/resources/visualization.zip"
+             verbose="false"/>
+        <unzip src="src/main/resources/visualization.zip"
+               dest="src/main/resources"/>
+        <delete file="src/main/resources/visualisation/emam2ema.jar"/>
+        <delete file="src/main/resources/visualization.zip"/>
+    </target>
+
+    <target name="math-pretty-printer.exists()">
+        <condition property="!math-pretty-printer.exists">
+            <not><available file="src/main/resources/math-pretty-printer/math-pretty-printer.jar"/></not>
+        </condition>
+    </target>
+
+    <target name="math-pretty-printer.download()" depends="math-pretty-printer.exists()" if="!math-pretty-printer.exists">
+        <get src="https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F${math-pretty-printer.version}.math-pretty-printer&amp;files=math-pretty-printer.zip"
+             dest="src/main/resources/math-pretty-printer.zip"
+             verbose="false"/>
+        <unzip src="src/main/resources/math-pretty-printer.zip"
+               dest="src/main/resources"/>
+        <delete file="src/main/resources/math-pretty-printer.zip"/>
+    </target>
+
+</project>

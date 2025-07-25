@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@elysium/filesystem",
+  "version": "0.1.1",
+  "description": "Elysium VFS emulating a FileSystem for Theia based on BrowserFS.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/messages": "latest",
+    "@elysium/core": "^0.1.0",
+    "browserfs": "^1.4.3"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/filesystem-frontend-module"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package daimler;
+
+// The C&C model oeffentlicher_Demonstrator_FAS_v04 satisfies the view FA15.
+view expectedWitnessFA15a {
+
+  component DEMO_FAS_Funktion {
+    component EmergencyBrake {
+      port
+        out Double brakeForce_Emergency_pcOut1;
+    }
+    instance EmergencyBrake emergencyBrake;
+    component BusCreator4_1 {
+      port
+        out Double out1,
+        in Double in1;
+
+    }
+    instance BusCreator4_1 busCreator4_1;
+    component VelocityControl {
+      port
+        in Double brakeForce_Emergency_pcIn9;
+
+    }
+    instance VelocityControl velocityControl;
+    component BusSelector14 {
+      port
+        in Double in1,
+        out Double brakeForce_Emergency_pcOut1;
+
+    }
+    instance BusSelector14 busSelector14;
+  }
+  instance DEMO_FAS_Funktion dEMO_FAS_Funktion;
+  connect busCreator4_1.out1 -> busSelector14.in1;
+  
+  connect emergencyBrake.brakeForce_Emergency_pcOut1 -> busCreator4_1.in1;
+
+  connect busSelector14.brakeForce_Emergency_pcOut1 -> velocityControl.brakeForce_Emergency_pcIn9;
+
+  effect busSelector14.in1 -> busSelector14.brakeForce_Emergency_pcOut1;
+
+  effect busCreator4_1.in1 -> busCreator4_1.out1;
+
+}

@@ -1,0 +1,90 @@
+/* (c) https://github.com/MontiCore/monticore */
+// Synthesized C&C model for C&C views specification
+
+component RotationalJoint {
+
+  port
+    out (0:1) f2;
+
+  component Body {
+    port
+      out (0:1) f1,
+      in (0:1) val2,
+      in int angle;
+
+    component Actuator {
+      port
+        out int PortName0,
+        in int f2,
+        in (0:1) f1;
+
+    }
+    instance Actuator actuator;
+    component Joint {
+      port
+        in int val2;
+
+    }
+    instance Joint joint;
+    component JointLimiter {
+      port
+        in (0:1) PortName0,
+        out (0:1) f2;
+
+      connect portName0 -> f2;
+
+    }
+    instance JointLimiter jointLimiter;
+    connect val2 -> jointLimiter.PortName0;
+
+    connect angle -> actuator.f2;
+
+    connect actuator.PortName0 -> joint.val2;
+
+    connect jointLimiter.f2 -> actuator.f1;
+
+  }
+  instance Body body;
+  component Cylinder {
+    port
+      in (0:1) angle,
+      in int PortName0,
+      out (0:1) f2;
+
+  }
+  instance Cylinder cylinder;
+  component Sensor {
+    port
+      out int val2,
+      out (0:1) val1,
+      in (0:1) angle;
+
+    component SensorAmplifier {
+    }
+    instance SensorAmplifier sensorAmplifier;
+    component ServoValve {
+      port
+        in (0:1) f2,
+        out int f1;
+
+    }
+    instance ServoValve servoValve;
+    connect servoValve.f1 -> val2;
+
+    connect angle -> servoValve.f2;
+
+    connect angle -> val1;
+
+  }
+  instance Sensor sensor;
+  connect cylinder.f2 -> f2;
+
+  connect body.f1 -> cylinder.angle;
+
+  connect sensor.val2 -> cylinder.PortName0;
+
+  connect sensor.val2 -> body.angle;
+
+  connect sensor.val1 -> body.val2;
+
+}

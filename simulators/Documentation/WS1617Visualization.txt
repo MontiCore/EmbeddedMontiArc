@@ -1,0 +1,2 @@
+mkdocs Doku available under
+visualization/src/main/webapp/manuals/phase1/site/index.html

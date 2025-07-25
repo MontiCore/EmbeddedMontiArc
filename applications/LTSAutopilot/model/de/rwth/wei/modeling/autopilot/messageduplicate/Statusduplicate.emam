@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageduplicate;
+import de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Statusduplicate{
+ ports
+  // copy statusmessage for dupilcate in ports
+  dynamic in Statusmessage status_msg[0:32],
+
+  dynamic out Statusmessage status_msg1[0:32],
+  dynamic out Statusmessage status_msg2[0:32],
+  dynamic out Statusmessage status_msg3[0:32],
+  dynamic out Statusmessage status_msg4[0:32],
+  dynamic out Statusmessage status_msg5[0:32],
+  out Statusmessage smsg;
+
+  @ status_msg::connect{/*interface for dynamic ports*/}
+
+  implementation Math{
+    for i = 1:32
+      if is_connected(status_msg,i)
+        smsg = status_msg(i);
+        if ports_connect(status_msg1, i, smsg)
+           status_msg1(i) = smsg;
+        end
+        Z r = ports_free(status_msg1,i);
+
+        if ports_connect(status_msg2, i, smsg)
+           status_msg2(i) = smsg;
+        end
+        Z r1 = ports_free(status_msg2,i);
+
+        if ports_connect(status_msg3, i, smsg)
+           status_msg3(i) = smsg;
+        end
+        Z r2 = ports_free(status_msg3,i);
+
+        if ports_connect(status_msg4, i, smsg)
+           status_msg4(i) = smsg;
+        end
+        Z r3 = ports_free(status_msg4,i);
+
+        if ports_connect(status_msg5, i, smsg)
+           status_msg5(i) = smsg;
+        end
+        Z r4 = ports_free(status_msg5,i);
+      end
+    end
+  }
+}

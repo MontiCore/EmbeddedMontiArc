@@ -1,0 +1,5 @@
+package invalid
+
+typedef configuration ExcludeNeededConfiguration {
+    backend task main
+}

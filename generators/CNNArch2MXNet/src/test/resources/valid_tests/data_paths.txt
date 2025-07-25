@@ -1,0 +1,1 @@
+CifarClassifierNetwork data/CifarClassifierNetwork

@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package atari.preprocessor.util;
+
+component Downsampling {
+    ports
+        in Q^{210, 160} image,
+        out Q^{105, 80} sampledImage;
+
+    implementation Math {
+        B hCollect = true;
+        B wCollect = true;
+        Z hCount = 1;
+        Z wCount = 1;
+
+        for h=1:210
+            if wCollect
+                for w=1:160
+                    if hCollect
+                        sampledImage(hCount, wCount) = image(h, w);
+                        hCollect = false;
+                        wCount = wCount + 1;
+                    else
+                        hCollect = true;
+                    end
+                end
+                wCollect = false;
+                hCount = hCount + 1;
+                wCount = 1;
+            else
+                wCollect = true;
+            end
+        end
+    }
+}

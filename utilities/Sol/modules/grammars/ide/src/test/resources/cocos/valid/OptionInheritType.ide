@@ -1,0 +1,18 @@
+package valid
+
+typedef configuration OptionInheritType {
+    option option1: Common {
+        label "Some Label"
+        required true
+    }
+
+    option option2: CommonBoolean {
+        label "Some Label"
+        required true
+    }
+
+    configuration sub: OptionInheritTypeComponent {
+        inherit sub1 from option1
+        inherit sub2 from option2
+    }
+}

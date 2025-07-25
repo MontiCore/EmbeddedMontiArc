@@ -1,0 +1,1 @@
+SenetSmallFC training-data-debugging-small

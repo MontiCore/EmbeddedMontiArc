@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageparsing;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Collisionmessageparsing{
+  ports
+   in Coliisionmessage collision_message,
+
+   out Q  vehicleid,
+   out Z  timestamp,
+   out Z  vehicle_number,
+   out Q  intersection_x,
+   out Q  intersection_y,
+   out Q^{1,100} vehicleid_list,
+   out Q^{1,100} priority_tother;
+
+   implementation Math{
+
+     vehicleid = collision_message.vehicleid;
+     timestamp = collision_message.timestamp;
+     vehicle_number = collision_message.vehicle_number;
+     intersection_x = collision_message.intersection_x;
+     intersection_y = collision_message.intersection_y;
+     vehicleid_list = collision_message.vehicleid_list
+     priority_tother = collision_message.priority_tother;
+   }
+}

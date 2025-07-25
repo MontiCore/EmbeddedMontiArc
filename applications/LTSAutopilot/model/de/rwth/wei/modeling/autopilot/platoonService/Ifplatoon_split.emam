@@ -1,0 +1,68 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Ifplatoon_split{
+  ports
+  dynamic in  Trajectorymessage        traj_msg[0:32],
+
+  in  Z^{1,32}        platoonlist,
+  in  Z               platoon_member_num,
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  //in  B               isnextintersection,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+
+
+  out  Z               if_member_split,
+  // out  Q^{1,32}        platoonlist_me,
+  // out  Z               platoon_member_num_me,
+  out  Z               if_inter_split,
+  // out  Q^{1,32}        platoonlist_in,
+  // out  Z               platoon_member_num_in,
+  out  Q               split_next_x,
+  out  Q               split_next_y;
+
+
+  instance Trajduplicate              t_dup;
+  instance Split_memberstop           split_me;
+  instance Split_intersection         split_in;
+
+
+  @ traj_msg::connect{
+    connect traj_msg[?] -> t_dup.traj_msg[?];
+  }
+
+  @ t_dup.traj_msg1::connect{
+    connect t_dup.traj_msg1[?] -> split_me.traj_msg[?];
+  }
+
+    connect platoonlist -> split_me.platoonlist;
+    connect platoon_member_num -> split_me.platoon_member_num;
+
+
+  @ t_dup.traj_msg2::connect{
+    connect t_dup.traj_msg2[?] -> split_in.traj_msg[?];
+  }
+    connect platoonlist -> split_in.platoonlist;
+    connect platoon_member_num -> split_in.platoon_member_num;
+    connect trajectory_length -> split_in.trajectory_length;
+    connect trajectory_x -> split_in.trajectory_x;
+    connect trajectory_y -> split_in.trajectory_y;
+    // connect isnextintersection -> split_in.isnextintersection;
+    connect nextintersection_x -> split_in.nextintersection_x;
+    connect nextintersection_y -> split_in.nextintersection_y;
+
+    connect split_me.if_split -> if_member_split;
+    // connect split_me.new_platoonlist -> platoonlist_me;
+    // connect split_me.platoon_member_num_me -> platoon_member_num_me;
+
+    connect split_in.if_split -> if_inter_split;
+    // connect split_in.new_platoonlist -> platoonlist_in;
+    // connect split_in.new_platoon_member_num -> platoon_member_num_in;
+    connect split_in.split_next_x -> split_next_x;
+    connect split_in.split_next_y -> split_next_y;
+
+}

@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component ValveActuator {
+  ports
+    in Q desiredValvePosition,
+    in Q valvePosition,
+    out Boolean valveOpen,
+    out Boolean valveClose;
+}

@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.specification;
+
+import de.monticore.lang.monticar.semantics.arithmetic.Difference;
+
+component Equality<T> {
+    port
+        in T in1,
+        in T in2;
+
+    instance Difference diff1, diff2;
+
+    connect in1 -> diff1.in1;
+    connect in2 -> diff2.in1;
+    connect diff1.out1 -> diff2.in2;
+    connect diff2.out1 -> diff1.in2;
+}

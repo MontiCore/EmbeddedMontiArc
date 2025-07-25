@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package view.wbView;
+
+view WCET1 {
+    component WeatherBalloonSensors {
+        port
+            in Boolean controlSignalsIn,
+            out Boolean dataSaveInternalOut,
+            out Boolean dataAntennaOut;
+
+	    effect controlSignalsIn -> dataSaveInternalOut;
+    }
+}
+

@@ -1,0 +1,14 @@
+{
+  "extends": "./configs/base.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib/app",
+    "paths": {
+      "@components/*": ["src/app/components/*"],
+      "@services/*": ["src/app/services/*"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

@@ -1,0 +1,45 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+//expected:
+view Witness_HierarchicalPositive{
+  component PumpingSystem {
+   
+    component SensorReading {
+      port
+        out boolean pumpState,
+        out ValvePosition valvePosition;
+      
+      component PumpSensorReader {
+        port
+          out boolean pumpState;
+      }
+      instance PumpSensorReader pumpSensorReader;
+      
+      component ValveSensorReader {
+        port
+          out ValvePosition valvePosition;
+      }
+      instance ValveSensorReader valveSensorReader;
+      
+      connect pumpSensorReader.pumpState -> pumpState;
+      connect valveSensorReader.valvePosition -> valvePosition;
+    }
+    instance SensorReading sensorReading;
+    
+    component PumpActuator {
+      port
+        in boolean pumpState;
+    }
+    instance PumpActuator pumpActuator;
+
+    component ValveActuator {
+      port
+        in ValvePosition valvePosition;
+    }
+    instance ValveActuator valveActuator;
+    
+    connect sensorReading.pumpState -> pumpActuator.pumpState;
+    connect sensorReading.valvePosition -> valveActuator.valvePosition;
+  }
+}

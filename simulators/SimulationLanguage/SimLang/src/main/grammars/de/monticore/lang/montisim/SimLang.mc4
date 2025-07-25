@@ -1,0 +1,110 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Simulation-Settings language v1.0
+*/
+package de.monticore.lang.montisim;
+
+grammar SimLang extends de.monticore.lang.montisim.Weather, de.monticore.lang.monticar.Types2  {
+  SimLangCompilationUnit = ("package" package:(Name& || ".")+ ";")? (ImportStatement)* Simulation;
+
+  interface SimulationSetting;
+  interface SimulationEntity;
+
+  symbol scope Simulation = "sim" Name "{"
+    ((SimulationSetting | SimulationEntity) ";")*
+  "}";
+
+  //
+  // Simulator Configuration
+  //
+  SimulationRenderFrequency implements SimulationSetting = "sim_render_frequency" AlternativeInput;
+  SimulationLoopFrequency implements SimulationSetting = "sim_loop_frequency" AlternativeInput;
+  SimulationDuration implements SimulationSetting = "sim_duration" AlternativeInput;
+  SimulationType implements SimulationSetting = "sim_type" simType:["fixed"|"realtime"|"maxfps"] ;
+
+  MapOverlap implements SimulationSetting = "map_overlap" AlternativeInput;
+  MapSectorWidth implements SimulationSetting = "map_sector_width" AlternativeInput;
+  MapSectorHeight implements SimulationSetting = "map_sector_height" AlternativeInput;
+  MaxSectorUsers implements SimulationSetting = "max_sector_users" AlternativeInput;
+  Timeout implements SimulationSetting = "timeout" AlternativeInput;
+
+  //
+  // Environment+World Configuration
+  //
+  SingleWeather = (FixedWeather | SequenceWeather | RandomWeather);
+  WeatherList = "[" SingleWeather ("," SingleWeather)* "]";
+  Weather implements SimulationSetting = "weather" (SingleWeather|WeatherList) ;
+  FixedWeather = ["fixed"] WeatherScope;
+  SequenceWeather = ["sequence"] (WeatherScope NumberWithUnit)+;
+  RandomWeather = ["random"] (NumberWithUnit)?;
+ 
+  SingleTime = hours:NumberWithUnit ":" minutes:NumberWithUnit (":" seconds:NumberWithUnit (":" milliseconds:NumberWithUnit)?)?;
+  TimeList = "[" SingleTime ("," SingleTime)* "]" ;
+
+  Time implements SimulationSetting = "time" (SingleTime | TimeList) ;
+
+  MapPath implements SimulationSetting = "map_path" mapPath:Name ;
+  MapName implements SimulationSetting = "map_name" mapName:Name "." fileFormat:Name ;
+  MapHeight implements SimulationSetting = "map_height" (heightMode:["flat"|"random"]|(customHeight:Name)) ;
+  
+  Gravity implements SimulationSetting = "gravity" AlternativeInput;
+  
+  PedestrianDensity implements SimulationSetting = "pedestrian_density" AlternativeInput;
+
+  //
+  // Entity Configuration
+  //
+  Pedestrians implements SimulationEntity = ("pedestrian"
+                "(" startLat:NumberWithUnit "," startLong:NumberWithUnit ("," startZ:NumberWithUnit)? ")"
+                "->" 
+                "(" destLat:NumberWithUnit "," destLong:NumberWithUnit ("," destZ:NumberWithUnit)? ")"
+                ) ;
+
+  symbol CarModel = Name@Car;
+
+  //defined vehicle moving from start to destination pos
+  ExplicitVehicle implements SimulationEntity = "vehicle" Name
+              ("(" startLat:NumberWithUnit "," startLong:NumberWithUnit "," startRot:NumberWithUnit ")"
+              "->" 
+              "(" destLat:NumberWithUnit "," destLong:NumberWithUnit ("," destZ:NumberWithUnit)? ")"
+              ) (":" CarModel)?;
+              
+  //random vehicles spawning somewhere within a circle at latitude,longitude with radius r moving to somewhere within dest circle
+  PathedVehicle implements SimulationEntity = "vehicle"
+                  "(" startLat:NumberWithUnit "," startLong:NumberWithUnit "," spawnRadius:NumberWithUnit ")"
+                  "->"
+                  "(" destLat:NumberWithUnit "," destLong:NumberWithUnit "," destRadius:NumberWithUnit ")"
+                  (amount:NumberWithUnit)?;
+  
+  //completely random vehicle spawns and destinations with optional avoidance of path
+  RandomVehicle implements SimulationEntity = "vehicle" amount:NumberWithUnit ("(" startLat:NumberWithUnit "," startLong:NumberWithUnit ")" "->" "(" destLat:NumberWithUnit "," destLong:NumberWithUnit ")")?;
+
+ // Vehicle configuration with goals
+ interface VehicleSetting;
+ LTLVehicle implements SimulationEntity = (CarModel)? "vehicle" "{" (VehicleSetting ";")* "}" ;
+ Path implements VehicleSetting = "path"
+    "(" startLat:NumberWithUnit "," startLong:NumberWithUnit "," startAlt:NumberWithUnit ")"
+    (
+      "->"
+      "(" destLat:NumberWithUnit "," destLong:NumberWithUnit "," destAlt:NumberWithUnit ")"
+    )*;
+ RandomPath implements VehicleSetting = "randomPath";
+ Network implements VehicleSetting = "network" network:Name;
+ //LTLOperator = ["always" | "never" | "eventually" | "until" ];
+ //Comparator = ("<" | "<=" | ">" | ">=" | "="); // not working, tokenizer seems doesn't recognize 2 following symbols
+ //Comparator = ["lt" | "le" | "gt" | "ge" | "eq"];
+ Goal implements VehicleSetting= lTLOperator:Name metricName:Name comparator:Name target:NumberWithUnit;
+ GoalList implements VehicleSetting = "goals" "[" Goal ("," Goal)* "]";
+ Platoon implements VehicleSetting = "platoon" "{" "size" size:NumberWithUnit";" "}";
+
+
+  //
+  // Communication Configuration
+  //
+  interface ChannelSetting;
+  Channel implements SimulationEntity = channelType:["fixed"|"bound"] "channel" Name "{" (ChannelSetting ";")* "}" ;
+  TransferRate implements ChannelSetting = "transfer_rate" AlternativeInput;
+  Latency implements ChannelSetting = "latency" AlternativeInput;
+  Outage implements ChannelSetting = "outage" AlternativeInput;
+  Area implements ChannelSetting = "area" (["global"]|(point1:Coordinate (point2:Coordinate|radius:NumberWithUnit))) ;
+}

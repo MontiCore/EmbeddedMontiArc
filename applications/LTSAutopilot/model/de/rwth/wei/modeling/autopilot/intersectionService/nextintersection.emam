@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.IntersectionProcess;
+import  de.rwth.wei.modeling.messagestruct.*;
+
+component nextintersection{
+ // to find the nearest intersection of current vehicle
+ ports
+   in  Z               trajectory_length,
+   in  Q^{1,100}       trajectory_x,
+   in  Q^{1,100}       trajectory_y,
+   in  Z^{1,100}       isintersection,
+   in  Q               length,
+
+   out B               isnextintersection,
+   out Q               nextintersection_x,
+   out Q               nextintersection_y;
+
+   implementation Math{
+     isintersection = 0;
+     nextintersection_x = 0.0;
+     nextintersection_y = 0.0;
+     Q distance = 0.0;
+     for i = 2:trajectory_length
+        if (isintersection(1,i) == 1)
+           for j = 1:i-1
+              Q dx = trajectory_x(1,j+1)-trajectory_x(1,j);
+              Q dy = trajectory_y(1,j+1)-trajectory_y(1,j);
+              Q dis_sqrt = dx*dx + dy*dy;
+              Q dis = sqrt(dis_sqrt);
+              distance = distance + dis;
+           end
+           if distance <= 6.8*length
+             isintersection = 1;
+             nextintersection_x = trajectory_x(1,i);
+             nextintersection_y = trajectory_y(1,i);
+           end
+        end
+     end
+   }
+}

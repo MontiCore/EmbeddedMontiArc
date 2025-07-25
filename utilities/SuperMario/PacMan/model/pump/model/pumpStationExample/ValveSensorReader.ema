@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component ValveSensorReader {
+  ports
+    in Z valve,
+    out Q valvePosition;
+}

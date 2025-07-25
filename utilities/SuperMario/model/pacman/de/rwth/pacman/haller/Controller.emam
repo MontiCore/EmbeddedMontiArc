@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.haller;
+
+import de.rwth.pacman.haller.*;
+
+component Controller {
+    ports
+      in Z(0cm: 342cm) ghostX[4],
+      in Z(0cm: 426cm) ghostY[4],
+      in Z(0 : 1 : 3) ghostDirection[4],
+      in B ghostEatable[4],
+      in B ghostEaten[4],
+      in Z(0cm: 342cm) pacManX,
+      in Z(0cm: 426cm) pacManY,
+      in B pacManEaten,
+      in Z(0:oo) pacManLives,
+      in Z(0:oo) pacManScore,
+      in Z^{22,19} map,
+      
+      out Z(0 : 1 : 3) newPacManDirection;
+      
+      instance NearestGhost nearestGhost;
+      instance PickGhost picker;
+      instance AwayFromGhost away;
+
+      
+      connect ghostX[:] -> nearestGhost.ghostX[:];
+      connect ghostY[:] -> nearestGhost.ghostY[:];
+      connect pacManX -> nearestGhost.pacManX;
+      connect pacManY -> nearestGhost.pacManY;
+      
+      connect ghostX[:] -> picker.ghostX[:];
+      connect ghostY[:] -> picker.ghostY[:];
+      connect ghostDirection[:] -> picker.ghostDirection[:];
+      connect ghostEatable[:] -> picker.ghostEatable[:];
+      connect ghostEaten[:] -> picker.ghostEaten[:];
+      connect nearestGhost.nearestIndex -> picker.index;
+      
+      connect picker.gX -> away.ghostX;
+      connect picker.gY -> away.ghostY;
+      connect pacManX -> away.pacManX;
+      connect pacManY -> away.pacManY;
+      
+      //connect away.newPacManDirection -> tryDir.tryDirection;
+      connect pacManX -> tryDir.pacManX;
+      connect pacManY -> tryDir.pacManY;
+      connect map -> tryDir.map;
+      connect tryDir.newPacManDirection -> newPacManDirection;
+      
+}
