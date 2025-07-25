@@ -116,8 +116,8 @@
                 </repository>
 
                 <repository>
-                    <id>spring</id>
-                    <url>https://repo.spring.io/libs-release/</url>
+                    <id></id>
+                    <url>https://repo..io/libs-release/</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
