@@ -1,0 +1,113 @@
+/* (c) https://github.com/MontiCore/monticore */
+package examples;
+
+component flownet{
+    ports in Q(0:255)^{3, 384, 512} data_0,
+          in Q(0:255)^{3, 384, 512} data_1,
+          out Q(-oo:oo)^{2, 96, 128} target_0,
+          out Q(-oo:oo)^{2, 48, 64} target_1,
+          out Q(-oo:oo)^{2, 24, 32} target_2,
+          out Q(-oo:oo)^{2, 12, 16} target_3,
+          out Q(-oo:oo)^{2, 6, 8} target_4;
+
+    implementation CNN {
+
+        def conv(channels, kernel=3, stride=2, pad="same"){
+            Convolution(kernel=(kernel,kernel), stride=(stride,stride), channels=channels, padding=pad) ->
+            Relu()
+        }
+
+
+	    (data_0 | data_1) ->
+	    Concatenate() ->
+
+		conv(channels=64, kernel=7, stride=2, pad="same") ->
+       	conv(channels=128, kernel=5, stride=2, pad="same") ->
+
+        (
+        	conv(channels=256, kernel=5, stride=2, pad="same") ->
+        	conv(channels=256, kernel=3, stride=1, pad="same") ->
+
+			(
+				conv(channels=512, kernel=3, stride=2, pad="same") ->
+        		conv(channels=512, kernel=3, stride=1, pad="same") ->
+
+				(
+					 conv(channels=512, kernel=3, stride=2, pad="same") ->
+        			 conv(channels=512, kernel=3, stride=1, pad="same") ->
+
+					 (
+					 	conv(channels=1024, kernel=3, stride=2, pad="same") ->
+                        conv(channels=1024, kernel=3, stride=1, pad="same") ->
+                        (
+                             UpConvolutionolution(channels=512, kernel=(4,4), stride=(2,2), padding="same") ->
+                             Relu()
+                        |
+                            Convolution(kernel=(3,3), stride=(1,1), channels=2, padding="same") ->
+                            (
+                                target_4
+                            |
+                                UpConvolutionolution(kernel=(4,4), stride=(2,2), channels=2, padding="same")
+                            ) ->
+                            [1]
+                        ) ->
+                        Concatenate()
+					 |
+					    [0]
+					 ) ->
+					 Concatenate() ->
+                     (
+					     UpConvolutionolution(channels=256, kernel=(4,4), stride=(2,2), padding="same") ->
+                         Relu()
+                     |
+                        Convolution(kernel=(3,3), stride=(1,1), channels=2, padding="same") ->
+                        (
+                            target_3
+                        |
+                            UpConvolutionolution(kernel=(4,4), stride=(2,2), channels=2, padding="same")
+                        ) ->
+                        [1]
+                     ) ->
+                     Concatenate()
+				|
+				     [0]
+				) ->
+				Concatenate() ->
+                (
+			         UpConvolutionolution(channels=128, kernel=(4,4), stride=(2,2), padding="same") ->
+                     Relu()
+                |
+                    Convolution(kernel=(3,3), stride=(1,1), channels=2, padding="same") ->
+                    (
+                        target_2
+                    |
+                        UpConvolutionolution(kernel=(4,4), stride=(2,2), channels=2, padding="same")
+                    ) ->
+                    [1]
+                ) ->
+                Concatenate()
+			|
+			    [0]
+			) ->
+			Concatenate() ->
+            (
+			     UpConvolutionolution(channels=64, kernel=(4,4), stride=(2,2), padding="same") ->
+                 Relu()
+            |
+                Convolution(kernel=(3,3), stride=(1,1), channels=2, padding="same") ->
+                (
+                    target_1
+                |
+                    UpConvolutionolution(kernel=(4,4), stride=(2,2), channels=2, padding="same")
+                ) ->
+                [1]
+            ) ->
+            Concatenate()
+		|
+            [0]
+		) ->
+		Concatenate() ->
+		Convolution(kernel=(3,3), stride=(1,1), channels=2, padding="same") ->
+        target_0;
+    }
+}

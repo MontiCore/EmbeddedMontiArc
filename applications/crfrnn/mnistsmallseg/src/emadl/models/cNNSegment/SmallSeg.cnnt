@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration SmallSeg{
+     num_epoch:1
+     batch_size:32
+     normalize:false
+     context:cpu
+     eval_metric:accuracy_ignore_label{
+        axis:1
+        metric_ignore_label:255
+     }
+     load_checkpoint:false
+     load_pretrained:true
+     loss:softmax_cross_entropy_ignore_label{
+        loss_ignore_label:255
+        loss_axis:1
+     }
+     optimizer:sgd{
+         learning_rate:0.01
+         learning_rate_decay:0.85
+         step_size:750
+         weight_decay:0.0
+     }
+}

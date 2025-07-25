@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagestruct;
+
+struct Trajectorymessage{
+     Z                  vehicleid;
+     Z                  timestamp;
+     Z           trajectory_length;
+     CommonMatrixType   trajectory_x;
+     CommonMatrixType   trajectory_y;
+     Q           nextintersection_x;
+     Q           nextintersection_y;
+}
