@@ -1,0 +1,35 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<assembly
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+        xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    <id>conflang-example</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <includeSiteDirectory>false</includeSiteDirectory>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>src</outputDirectory>
+            <directory>src/main/java</directory>
+            <excludes>
+                <exclude>conflang/_ast/</exclude>
+                <exclude>conflang/_symboltable/</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>hwc</outputDirectory>
+            <directory>src/main/java</directory>
+            <includes>
+                <include>conflang/_ast/</include>
+                <include>conflang/_symboltable/</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory/>
+            <directory>src/main/grammars</directory>
+        </fileSet>
+        <fileSet>
+            <outputDirectory/>
+            <directory>src/main/resources</directory>
+        </fileSet>
+    </fileSets>
+</assembly>

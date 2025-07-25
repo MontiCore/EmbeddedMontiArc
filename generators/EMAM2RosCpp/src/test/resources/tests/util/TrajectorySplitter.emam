@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.util;
+
+import tests.structs.PositionWithDeltaTime;
+import tests.structs.Trajectory;
+
+
+component TrajectorySplitter<N1 m>{
+    port in Trajectory trajectoryIn;
+
+    port out PositionWithDeltaTime positionWithTimeOut[m];
+
+    implementation Math{
+        //TODO: 1 or 0 based?
+        for i = 1:1:m
+            positionWithTimeOut(i) = trajectoryIn.positionsWithDeltaTime(i);
+        end
+    }
+}

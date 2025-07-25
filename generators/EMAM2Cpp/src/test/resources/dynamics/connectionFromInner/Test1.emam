@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package connectionFromInner;
+
+dynamic component Test1 {
+
+    ports
+        dynamic in Q aIn[0:5],
+        dynamic out Q tOut[0:5];
+
+    @ aIn::connect {
+        connect aIn[?] -> tOut[?];
+    }
+
+}

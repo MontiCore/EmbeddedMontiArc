@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+import fas.basicLibrary.*;
+
+component BasicLookUpInstance{
+
+    instance LookUp<Q(-oo:oo),4>([0 1 2 3]) lookUp1;
+    instance LookUp<Q(-oo:oo),4>([0 5 4 4]) lookUp2;
+    instance LookUp<Q(-oo:oo),4>([1 2 7 9]) lookUp3;
+}
