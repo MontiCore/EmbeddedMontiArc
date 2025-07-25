@@ -1,0 +1,66 @@
+name: mnist-generator
+on:
+  push:
+    paths:
+      - 'applications/gans/mnist-generator/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 34901
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+  FileChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      runTestGAN: ${{steps.TestGAN.outputs.run}}
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check for file changes
+        run: |
+          CHANGES=$(git diff --name-only HEAD^ HEAD)
+          echo "$CHANGES"
+          echo "$CHANGES" > diff.txt
+      - name: Check TestGAN
+        id: TestGAN
+        run: |
+          exc=true
+          for path in $(cat diff.txt); do
+            if [[ $path == *README.md* ]]; then
+              echo "Matching path found: $path"
+              echo "DONT RUN"
+              exc=false
+              break
+            fi
+          done
+          echo "Final file status except check: $exc"
+          echo "run=$exc" >> $GITHUB_OUTPUT
+
+  TestGAN:
+    needs: FileChanges
+    if: ${{ !cancelled() && needs.FileChanges.outputs.runTestGAN == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/mnist-infogan/gans_mxnet:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/monticore/mnist-infogan/gans_mxnet:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/gans/mnist-generator
+            cd gluon/.test
+            chmod +x build.sh
+            ./build.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+
