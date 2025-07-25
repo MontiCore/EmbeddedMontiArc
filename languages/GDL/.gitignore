@@ -1,0 +1,14 @@
+/target/
+target/
+.project
+.settings/
+.classpath
+*.log
+*.iml
+.idea/
+/.gradle/
+/bin/
+.vsls.json
+/output.txt
+/out.pl
+.DS_Store

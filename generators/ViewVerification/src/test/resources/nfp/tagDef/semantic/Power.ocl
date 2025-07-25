@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tagDef.semantic;
+
+import tagDef.CnCExt;
+import tagDef.NFPExt;
+
+ocl Power {
+    context AbsEff eff, Cmp cmp inv:
+            let
+                selectedGraph = graph(cmp, eff);
+                selectedVals = List{max(s.compPower, 0 W) | s in selectedGraph};
+                aggregatedValue = sum(selectedVals, "W");
+            in
+                aggregatedValue < min(eff.viewPower, +oo W);
+}

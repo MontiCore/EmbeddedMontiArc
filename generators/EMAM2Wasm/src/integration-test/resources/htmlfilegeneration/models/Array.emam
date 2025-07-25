@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component Array {
+  ports
+    in Q(-10 : 5 ) inArray[3],
+    out Q(-10/3 m/s : 10 km/h) outArray[4];
+}

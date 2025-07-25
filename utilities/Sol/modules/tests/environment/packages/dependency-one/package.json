@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "version": "1.0.0",
+  "name": "@embeddedmontiarc/sol-tests-environment-dependency-one",
+  "license": "SEE LICENSE IN LICENSE",
+  "sol": {
+    "directories": {
+      "models": "models"
+    }
+  }
+}

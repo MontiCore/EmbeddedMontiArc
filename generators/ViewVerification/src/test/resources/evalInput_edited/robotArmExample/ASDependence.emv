@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample;
+
+/**
+  This view shows the actuator and the sensor inside the Body which is
+  considered a bad design since Sensor and Actuator should not be inside
+  a common parent.
+**/
+view ASDependence {
+
+    component Body {
+        component Actuator { }
+        instance Actuator actuator;
+
+        component Sensor { }
+        instance Sensor sensor;
+    }
+    instance Body body;
+    
+}

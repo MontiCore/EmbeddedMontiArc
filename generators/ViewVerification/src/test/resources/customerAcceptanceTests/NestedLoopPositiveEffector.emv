@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view NestedLoopPositiveEffector {
+    component NestedLoopComponent {
+        ports
+            in Boolean in1,
+            out Boolean out1;
+    }
+    
+    effect NestedLoopComponent.in1 -> NestedLoopComponent.out1;
+}

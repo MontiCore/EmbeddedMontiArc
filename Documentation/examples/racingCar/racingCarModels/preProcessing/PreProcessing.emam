@@ -1,0 +1,77 @@
+/* (c) https://github.com/MontiCore/monticore */
+package preProcessing;
+
+import carInfo;
+import roadInfo;
+import Point;
+import Lowpassfilter;
+import AssemblePoint;
+
+component PreProcessing{
+	
+	in Q(-45° : 0.001° : 45°) perfectSteering,
+	in Q(-oo : 0.0001 :oo ) distortedTargetPosX,
+	in Q(-oo : 0.0001 :oo ) distortedTargetPosY,
+	in Q(-oo : 0.0001 :oo ) distortedCurrPosX,
+	in Q(-oo : 0.0001 :oo ) distortedCurrPosY,
+	in Q(-180° : 0.001° : 180°) distortedCarYaw,
+	in Z(-1:1:6) perfectCurrGear,
+	in carInfo perfectCarSpecs,
+	in Q(0 m/s : 0.001 m/s : 75 m/s) distortedCurrVelocity,
+	in Q(0 m/s : 0.001 m/s : 75 m/s) distortedAllowedSpeed,
+	in roadInfo distortedRoadSpecs[20],
+	in Q(0 : 0.0001 :1 ) distortedGasPedal,
+	in Z(0 : 1 : 300) distortedCurrLap,
+	
+	out Point targetPos,
+	out Point currPos,
+	out Q(-oo : 0.0001 :oo ) currPosY,
+	out Q(-180° : 0.001° : 180°) carYaw,
+	out Z(-1:1:6) currGear,
+	out carInfo carSpecs,
+	out Q(0 m/s : 0.001 m/s : 75 m/s) currVelocity,
+	out Q(0 m/s : 0.001 m/s : 75 m/s) allowedSpeed,
+	out roadInfo roadSpecs[20],
+	out Q(0 : 0.0001 :1 ) gasPedal,
+	out Z(0 : 1 : 300) currLap;
+	
+	instance Lowpassfilter posXFilter<0.1>;
+	instance Lowpassfilter posYFilterdistorted
+	instance Lowpassfilter targetXFilter<0.1>;
+	instance Lowpassfilter targetYFilter<0.1>;
+	instance Lowpassfilter carYawFilter<0.1>;
+	instance Lowpassfilter currVelocityFilter<0.3>
+	instance Lowpassfilter gasPedalFilter<0.3>;
+	instance Lowpassfilter steeringFilter<0.3>;
+
+	instance AssemblePoint assembleCurrPos;
+	instance AssemblePoint assembleTargetPos;
+
+
+	connect distortedSteering -> steeringFilter.rawVal;
+	connect distortedTargetPosX -> targetXFilter.rawVal; 
+	connect distortedTargetPosY -> targetYFilter.rawVal;
+	connect distortedCurrPosX -> posXFilter.rawVal;
+	connect distortedCurrPosY -> posYFilter.rawVal;
+	connect distortedCarYaw -> carYawFilter.rawVal;
+	connect distortedCurrGear -> currGear;
+	connect distortedCarSpecs -> carSpecs;
+	connect distortedCurrVelocity -> currVelocityFilter.rawVal;
+	connect distortedAllowedSpeed -> allowedSpeed;
+	connect distortedRoadSpecs -> roadSpecs;
+	connect distortedGasPedal -> gasPedalFilter.rawVal;
+	connect distortedCurrLap -> currLap;
+	
+	connect steering.distortedVal -> steering;
+	connect targetXDistorte.distortedVal -> assemleTargetPos.X;
+	connect targetYDistorte.distortedVal -> assembleTargetPos.Y;
+	connect posXDistorte.distortedVal -> assembleCurrPos.X;
+	connect posYDistorte.distortedVal -> assembleCurrPos.Y;
+	connect currVelocityDistorte.distortedVal -> currVelocity;
+	connect gasPedalDistorte.distortedVal -> gasPedal;
+	connect carYawDistorte.distortedVal -> carYaw;
+
+
+	assembleTargetPos.point -> targetPos;
+	assemblecurrPos.point -> currPos;
+}

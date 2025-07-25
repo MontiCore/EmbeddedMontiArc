@@ -1,0 +1,15 @@
+(<= (legal test (do))
+    (mod 8 2 0)
+    (mod 9 3 ?X)
+    (is0 ?X)
+    (mod 9 2 ?Y)
+    (is1 ?Y)
+    (not (mod 9 0 ?Z))
+)
+
+(<= (next (success))
+    (does test (do))
+)
+
+(is0 0)
+(is1 1)

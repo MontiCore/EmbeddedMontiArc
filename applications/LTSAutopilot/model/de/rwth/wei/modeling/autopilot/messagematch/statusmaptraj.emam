@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagematch;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component statusmaptraj{
+ ports
+   // map the trajectorymessage to statusmessage
+   dynmamic in trajectorymessage traj_msg[0:32],
+   in statusmessage status_msg,
+
+   out statusmessage         map_status,
+   out trajectorymessage     map_traj,
+   //use as public variable
+   out trajectorymessage     tmsg;
+
+   implementation math{
+     map_status = status_msg;
+     for i = 1:32
+      if is_connected(traj_msg,i)
+         tmsg = traj_msg(i);
+         if status_msg.vehicleid == tmsg.vehicleid
+           map_traj = tmsg;
+         end
+      end
+     end
+   }
+}

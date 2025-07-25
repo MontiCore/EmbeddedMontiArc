@@ -1,0 +1,12 @@
+stages:
+- build
+
+LinuxBuild:
+  stage: build
+  image: node:latest
+  artifacts:
+    paths:
+    - ema-linter.vsix
+    expire_in: 8 weeks
+  script:
+  - ./build.sh

@@ -1,0 +1,14 @@
+(<= (legal test (do))
+    (succ 1 2)
+    (succ 1 ?X)
+    (is2 ?X)
+    (succ ?Y 7)
+    (is6 ?Y)
+)
+
+(<= (next (success))
+    (does test (do))
+)
+
+(is2 2)
+(is6 6)

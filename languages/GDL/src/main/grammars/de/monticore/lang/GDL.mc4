@@ -1,0 +1,56 @@
+package de.monticore.lang;
+
+grammar GDL extends de.monticore.literals.MCCommonLiterals {
+
+    scope Game = tuples:GameTuple*;
+
+    interface GameConstruct;
+    interface GameType;
+
+    GameRangeType implements GameType = "[" start:SignedNatLiteral "," end:SignedNatLiteral "]:";
+    GameValueType implements GameType = type:Name":";
+
+    scope GameTuple implements GameConstruct = type:GameType?"(" element:GameConstruct+ ")";
+    GameToken implements GameConstruct = type:GameType?"?"token:Name;
+    
+    GameValue implements GameConstruct = type:GameType?value:Name;
+    GameDigits implements GameConstruct = type:GameType?number:SignedNatLiteral;
+
+    interface GameKeyword extends GameConstruct;
+
+    GameInference implements GameKeyword = "<=";
+
+    GameRole implements GameKeyword = "role";
+    GameInit implements GameKeyword = "init";
+    GameNext implements GameKeyword = "next";
+    GameTrue implements GameKeyword = "true";
+    GameSees implements GameKeyword = "sees";
+
+    GameLegal implements GameKeyword = "legal";
+    GameDoes implements GameKeyword = "does";
+
+    GameNot implements GameKeyword = "not";
+    GameDistinct implements GameKeyword = "distinct";
+
+    GameGoal implements GameKeyword = "goal";
+    GameTerminal implements GameKeyword = "terminal";
+
+    GameCount implements GameKeyword = "count";
+    GameAdd implements GameKeyword = "add";
+    GameSub implements GameKeyword = "sub";
+    GameMult implements GameKeyword = "mult";
+    GameDiv implements GameKeyword = "div";
+    GameMod implements GameKeyword = "mod";
+    GameSucc implements GameKeyword = "succ";
+    GameLess implements GameKeyword = "less";
+    GameGreater implements GameKeyword = "greater";
+    GameEqual implements GameKeyword = "equal";
+    GameNumber implements GameKeyword = "number";
+
+    GameTypeDef implements GameKeyword = "type";
+    GameTypeMapDef implements GameKeyword = "typemap";
+    GameTypeCombineDef implements GameKeyword = "typecombine";
+
+    GameNoop implements GameKeyword = "noop";
+
+}

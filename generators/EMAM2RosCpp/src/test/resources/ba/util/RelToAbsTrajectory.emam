@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba.util;
+
+component RelToAbsTrajectory<N1 n = 2,N1 m = 5>{
+    port in Q^{3,m} relTrajectoryIn[n];
+    port in Q^{2,1} absPositionIn[n];
+    port out Q^{3,m} absTrajectoryOut[n];
+
+    implementation Math{
+        for i = 1:n
+            Q^{3,m} tmpRelTraj = relTrajectoryIn(i);
+            Q^{2,1} tmpAbsPos = absPositionIn(i);
+            Q^{3,m} tmpAbsTraj;
+            for j = 1:m
+                //x
+                tmpAbsTraj(1,j) = tmpRelTraj(1,j) + tmpAbsPos(1,1);
+                //y
+                tmpAbsTraj(2,j) = tmpRelTraj(2,j) + tmpAbsPos(2,1);
+                //dt
+                tmpAbsTraj(3,j) = tmpRelTraj(3,j);
+            end
+            absTrajectoryOut(i) = tmpAbsTraj;
+        end
+    }
+}

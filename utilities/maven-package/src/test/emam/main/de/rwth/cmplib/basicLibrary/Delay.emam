@@ -1,0 +1,12 @@
+package de.rwth.cmplib.basicLibrary;
+
+component Delay<T> (T value) {
+	port
+		in T in1,
+		out T out1;
+
+	implementation Math {
+	    out1 = 1;
+
+    }
+}

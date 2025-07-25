@@ -1,0 +1,6 @@
+package de.rwth.connectedcars.communication.packets;
+
+enum ActionType {
+    ACCELELERATE | 
+    BRAKE
+}

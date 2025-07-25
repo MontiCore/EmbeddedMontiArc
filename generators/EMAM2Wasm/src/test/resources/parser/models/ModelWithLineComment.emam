@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+//package abc;
+package models;
+
+//component Comment { }
+component ModelWithLineComment {
+}

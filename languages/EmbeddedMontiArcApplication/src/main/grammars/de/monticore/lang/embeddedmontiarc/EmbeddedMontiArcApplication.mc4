@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.embeddedmontiarc;
+
+
+grammar EmbeddedMontiArcApplication extends de.monticore.lang.embeddedmontiarc.EmbeddedMontiArcBehavior, de.monticore.lang.application.Application{
+    EMAAplCompilationUnit = EMACompilationUnit;
+
+    /*symbol scope*/ Component implements Element =
+        "actuator" Name
+        genericTypeParameters:TypeParameters2?
+        (  "("  (Parameter || ",")+  ")" )?
+        ("implements" superComponent:ReferenceType)?
+        body:ComponentBody;
+
+Interface implements Element =
+     ("variable"|"variables")
+    ports:(Port || ",")+ ";" ;
+    BehaviorEmbedding =  ApplicationStatements;
+
+    BehaviorName = "Application";
+
+}

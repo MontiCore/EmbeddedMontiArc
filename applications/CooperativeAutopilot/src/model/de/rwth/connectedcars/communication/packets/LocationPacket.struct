@@ -1,0 +1,7 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct LocationPacket {
+    Subject subject;
+    Q locationX;
+    Q locationY;
+}

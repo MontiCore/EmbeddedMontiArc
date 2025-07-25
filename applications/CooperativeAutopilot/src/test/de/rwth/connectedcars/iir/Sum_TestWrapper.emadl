@@ -1,0 +1,17 @@
+package de.rwth.connectedcars.iir;
+
+component Sum_TestWrapper {
+    ports
+        in Q summand1,
+        in Q summand2,
+        in Q summand3,
+        out Q sum1;
+        
+    instance Sum<3> sum;
+    
+    connect summand1 -> sum.summands[1];
+    connect summand2 -> sum.summands[2];
+    connect summand3 -> sum.summands[3];
+    
+    connect sum.sumResult -> sum1;
+}

@@ -1,0 +1,7 @@
+package de.rwth.connectedcars.iir;
+
+stream IIRAllInOneTest for IIRAllInOne_TestWrapper {
+    x: 5 tick 8 tick 13 tick 7;
+    
+    y: 5 tick 23 tick 77 tick 215;
+}

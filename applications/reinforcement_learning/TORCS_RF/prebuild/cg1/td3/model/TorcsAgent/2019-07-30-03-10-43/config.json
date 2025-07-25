@@ -1,0 +1,72 @@
+{
+    "critic_optimizer": "adam", 
+    "state_dim": [
+        29
+    ], 
+    "discount_factor": 0.99, 
+    "evaluation_samples": 1, 
+    "snapshot_interval": 150, 
+    "soft_target_update_rate": 0.005, 
+    "start_training": 0, 
+    "ctx": "gpu(0)", 
+    "actor_optimizer_params": {
+        "learning_rate": 0.001
+    }, 
+    "output_directory": "model/TorcsAgent/2019-07-30-03-10-43", 
+    "target_score": null, 
+    "replay_memory_params": {
+        "state_dtype": "float32", 
+        "state_dim": [
+            29
+        ], 
+        "rewards_dtype": "float32", 
+        "action_dtype": "float32", 
+        "sample_size": 100, 
+        "memory_size": 120000, 
+        "method": "buffer", 
+        "action_dim": [
+            3
+        ]
+    }, 
+    "strategy_params": {
+        "epsilon_decay": 8e-06, 
+        "epsilon_decay_per_step": true, 
+        "epsilon": 1, 
+        "action_low": -1, 
+        "mu": [
+            0, 
+            0, 
+            -1.2
+        ], 
+        "epsilon_decay_method": "linear", 
+        "min_epsilon": 0.0001, 
+        "theta": [
+            0.6, 
+            1, 
+            1
+        ], 
+        "action_high": 1, 
+        "epsilon_decay_start": 10, 
+        "sigma": [
+            0.3, 
+            0.2, 
+            0.05
+        ], 
+        "method": "ornstein_uhlenbeck", 
+        "action_dim": [
+            3
+        ]
+    }, 
+    "actor_optimizer": "adam", 
+    "critic_optimizer_params": {
+        "learning_rate": 0.001
+    }, 
+    "max_episode_step": 900000, 
+    "agent_name": "TorcsAgent", 
+    "verbose": true, 
+    "train_interval": 1, 
+    "training_episodes": 3500, 
+    "action_dim": [
+        3
+    ]
+}

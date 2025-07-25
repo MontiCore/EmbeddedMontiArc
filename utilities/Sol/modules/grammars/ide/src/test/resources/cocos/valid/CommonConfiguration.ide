@@ -1,0 +1,7 @@
+package valid
+
+typedef configuration CommonConfiguration {
+    label "Some nice Configuration Type"
+
+    backend task main
+}

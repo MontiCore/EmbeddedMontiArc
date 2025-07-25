@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas.basicLibrary;
+
+/* The Saturation block imposes upper and lower bounds on a signal. When the input signal is within the range specified by the Lower limit and Upper limit parameters, the input signal passes through unchanged. When the input signal is outside these bounds, the signal is clipped to the upper or lower bound.
+*/
+component Saturation<T> (T minValue, T maxValue){
+	port 
+		in T in1,
+		out T out1;
+   
+    implementation Math {
+       out1 = min(max(in1, minValue), maxValue);
+    }
+}

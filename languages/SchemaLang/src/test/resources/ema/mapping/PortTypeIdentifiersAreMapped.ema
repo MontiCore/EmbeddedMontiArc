@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package mapping;
+
+component PortTypeIdentifiersAreMapped {
+
+    ports in Q^{2} input_port,
+          out Z(-1:1)^{1} output_port;
+}

@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.basicLibrary;
+
+stream TestFallback for Fallback {
+    out1: 3 tick 3;
+}

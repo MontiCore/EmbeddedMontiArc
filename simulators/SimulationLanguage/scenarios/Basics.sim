@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Basics
+ * Focus: Observe a vehicle handling the basic mechanics of driving
+ * Details: 1 vehicle drives from one locality to another. Curves + straight road.
+*/
+sim Basics {
+  sim_duration 4h;
+
+  time 12:00;
+  
+  map_name Basics.osm;
+  
+  pedestrian_density 0.0;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+}

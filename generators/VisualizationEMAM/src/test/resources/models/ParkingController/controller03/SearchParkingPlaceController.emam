@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller03;
+
+component SearchParkingPlaceController {
+    port
+        in Q frontLeftSideSensor,
+        in Q backLeftSideSensor,
+        out B foundPlace;
+
+    implementation Math{
+        
+        static Q first = 0;
+        static Q second = 0;
+        static Q third = 0;
+        static Q found = 0;
+
+        if (frontLeftSideSensor > backLeftSideSensor) && (second == 1)  && (third == 1)
+            found = 1;
+            second = 0;
+            third = 0;
+        end
+        
+        if frontLeftSideSensor > backLeftSideSensor
+            first = 1;
+        end
+        
+        if frontLeftSideSensor < backLeftSideSensor
+            second = 1;
+        end
+        
+        if (frontLeftSideSensor == backLeftSideSensor) && (first == 1) && (second == 1)
+            first = 0;
+            second = 0;
+            third = 1;
+        end
+        
+        foundPlace = found > 0;
+    }
+}

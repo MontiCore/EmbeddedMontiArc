@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*
+ * Scenario: Pedestrian Masses
+ * Focus: Observe vehicle handling masses of pedestrians
+ * Details: masses of pedestrians
+*/
+sim PedestrianMasses {
+  sim_duration 4h;
+  
+  time 12:00;
+  
+  map_name PedestrianMasses.osm;
+  
+  pedestrian_density 20;
+  
+  car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0);
+}

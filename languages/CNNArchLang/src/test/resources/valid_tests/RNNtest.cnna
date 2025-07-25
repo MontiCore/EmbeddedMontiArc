@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture RNNtest{
+    def input Q(0:1)^{30000} source
+    def output Q(0:1)^{30000} target[5]
+
+    source -> Softmax() -> target[0];
+
+    timed <t> BeamSearch(max_length=5){
+        target[t-1] ->
+        FullyConnected(units=30000) ->
+        Softmax() ->
+        target[t]
+    };
+ }

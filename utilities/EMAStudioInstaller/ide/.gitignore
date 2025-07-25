@@ -1,0 +1,21 @@
+# Editors
+.idea
+
+# Build
+.browser_modules/
+node_modules/
+
+/cli/lib/
+/cli/docs/
+/packages/**/lib/
+/extensions/**/lib/
+/packages/**/docs/
+/extensions/**/docs/
+
+yarn-error.log
+lerna-debug.log
+
+/target/lib/
+/target/src-gen/
+/target/webpack.config.js
+/target/dist/
