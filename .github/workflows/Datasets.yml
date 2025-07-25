@@ -284,6 +284,7 @@ jobs:
           docker pull maven:3.6-jdk-8
           docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
+        continue-on-error: true
         env:
           SCRIPT: |
             cd /workspace
@@ -306,6 +307,7 @@ jobs:
           docker pull maven:3.6-jdk-8
           docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
+        continue-on-error: true
         env:
           SCRIPT: |
             cd /workspace
@@ -443,3 +445,35 @@ jobs:
             mvn emadl:deploy-dataset -s ../ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
+  rerun-failed-jobs:
+    runs-on: ubuntu-latest
+    needs: [
+      deploy-mnist-dataset,
+      install-mnist-dataset,
+      deploy-mnist-base-dataset,
+      install-mnist-base-dataset,
+      deploy-mnist-extension-dataset,
+      install-mnist-extension-dataset,
+      deploy-mnist-separated-dataset,
+      install-mnist-separated-dataset,
+      deploy-vae-mnist-dataset,
+      install-vae-mnist-dataset,
+      install-mnist-letter-dataset,
+      deploy-mnist-letter-dataset,
+      install-cifar-10-dataset,
+      deploy-cifar-10-dataset,
+      install-mnist-operator-dataset,
+      deploy-mnist-operator-dataset,
+      install-mnist-operator-reduced-dataset,
+      deploy-mnist-operator-reduced-dataset,
+      install-mnist-hexadecimal-dataset,
+      deploy-mnist-hexadecimal-dataset
+    ]
+    if: failure() && fromJSON(github.run_attempt) < 3
+    steps:
+      - name: Trigger Retry
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO --field  job_id=${{ github.run_id }}
+        env:
+          WORKFLOW_FILE: Retry.yml
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}

@@ -35,8 +35,8 @@ jobs:
             pip install numpy==1.19.1
             mkdir dev
             cd dev
-            git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/basic-simulator.git
-            git clone https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/simulators/simulation.git
+            cp ../../../simulators/basic-simulator .
+            cp ../../../simulators/simulation .
             cd simulation
             cd ROSInterface
             ./install.sh
@@ -44,7 +44,7 @@ jobs:
             cd ../../basic-simulator
             mvn clean install -s settings.xml -DskipTests
             cd ../..
-            git clone https://gitlab-ci-token:${{ secrets.GITLABTOKEN }}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+            cp ../../../generators/EMAM2Middleware
             cd EMAM2Middleware
             mvn clean install -s settings.xml -DskipTests
             cd target

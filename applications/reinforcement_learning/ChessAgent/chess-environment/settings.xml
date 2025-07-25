@@ -16,6 +16,7 @@
       <username>cibuild</username>
       <password>${env.cibuild}</password>
     </server>
+</servers>
 
   <mirrors>
     <mirror>
