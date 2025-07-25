@@ -1,0 +1,4 @@
+struct_msgs/tests_structs_NestedStruct fieldMultiNested1
+struct_msgs/tests_structs_NestedStruct fieldMultiNested2
+struct_msgs/tests_structs_BasicStruct fieldNested
+float64 fieldQ

@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@elysium/query-controller",
+  "version": "0.1.2",
+  "description": "Extension to control the IDE over query params.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@elysium/core": "^0.1.0",
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/editor": "latest",
+    "@elysium/workspace-initiator": "^0.1.0",
+    "@elysium/downloader": "^0.1.0",
+    "@elysium/dashboard": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/mode/mode-frontend-module"
+    },
+    {
+      "frontend": "lib/browser/query-controller-frontend-module"
+    }
+  ]
+}

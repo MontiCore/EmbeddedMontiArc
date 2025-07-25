@@ -1,0 +1,61 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.haller;
+
+
+/*
+Pacman.WALL    = 0;
+Pacman.BISCUIT = 1;
+Pacman.EMPTY   = 2;
+Pacman.BLOCK   = 3;
+Pacman.PILL    = 4;*/
+
+
+import de.rwth.pacman.haller.*;
+
+component TargetSelector {
+    ports
+        in Z(0cm: 342cm) pacManX,
+        in Z(0cm: 426cm) pacManY,
+        //in Z(0cm: 342cm) targetX,
+        //in Z(0cm: 426cm) targetY,
+        in Z^{22,19} map,
+        
+        out Z targetX,
+        out Z targetY;
+        
+    instance BreadthFirstsearch bfs;
+    
+    connect pacManX -> bfs.startX;
+    connect pacManY -> bfs.startY;
+    
+    
+    //connect bfs.targetX -> targetX;
+    //connect bfs.targetY -> targetY;
+
+        
+    implementation Math{
+        Z currDistance = 2000;
+        Z minDistance = oo;
+        
+        
+        for x = 0:342
+          
+            for y = 0:426
+            
+                if (map(y,x) == 1)
+                    currDistance = sqrt(x * pacManX + y * pacManY);
+                
+                    if(currDistance < minDistance)
+                        minDistance = currDistance;
+                    end
+                
+                end
+            
+            end
+            
+        end
+        
+    }
+
+      
+}

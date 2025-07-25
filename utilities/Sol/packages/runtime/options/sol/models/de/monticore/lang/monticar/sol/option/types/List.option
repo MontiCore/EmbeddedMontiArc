@@ -1,0 +1,6 @@
+package de.monticore.lang.monticar.sol.option.types
+
+typedef option List {
+    required prop label: string
+    composite array
+}

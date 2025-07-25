@@ -1,0 +1,17 @@
+package de.monticore.lang.monticar.sol.tests.ide.configurations
+
+import de.monticore.lang.monticar.sol.option.types.String
+
+typedef component configuration EMAM2WASM {
+    option rootModel: String {
+        label "Root Model"
+        required true
+    }
+
+    option someText: String {
+        label "Some Text"
+        required true
+    }
+
+    backend task main
+}

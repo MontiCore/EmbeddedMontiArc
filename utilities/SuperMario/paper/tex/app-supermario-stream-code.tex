@@ -1,0 +1,61 @@
+\begin{lstlisting}[label=lst:enemywatchertest_1, caption=Enemy watcher stream test]
+package de.rwth.supermario.haller.environment;
+
+stream Env_EnemyWatcher_Evade for EnemyWatcher {
+    EnemyDistX:         200 tick    100     tick     75;
+    EnemyDistY:           0 tick      0     tick      0;
+    EnemyVelocityX:     -10 tick    -10     tick    -10;
+    EnemyVelocityY:       0 tick      0     tick      0;
+            
+    movesTowardsPlayer:   1 tick      1     tick      1;
+    inJumpRange:          0 tick      0     tick      1;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[label=lst:enemywatchertest_2, caption=Enemy watcher stream test]
+package de.rwth.supermario.haller.environment;
+
+stream Env_EnemyWatcher_FromAbove for EnemyWatcher {
+    EnemyDistX:         200 tick    100     tick      5;
+    EnemyDistY:         128 tick    128     tick     32;
+    EnemyVelocityX:     -10 tick    -10     tick    -10;
+    EnemyVelocityY:       0 tick      0     tick      0;
+            
+    movesTowardsPlayer:   1 tick      1     tick      1;
+    inJumpRange:          0 tick      0     tick      0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[label=lst:enemywatchertest_3, caption=Enemy watcher stream test]
+package de.rwth.supermario.haller.environment;
+
+stream Env_EnemyWatcher_FromAbove for EnemyWatcher {
+    EnemyDistX:         -1 tick;
+    EnemyDistY:         -1 tick;
+    EnemyVelocityX:      0 tick;
+    EnemyVelocityY:      0 tick;
+            
+    movesTowardsPlayer:  0 tick;
+    inJumpRange:         0 tick;
+}
+\end{lstlisting}
+\pagebreak
+
+\begin{lstlisting}[label=lst:obstaclewatchertest, caption=Obstacle watcher stream test]
+package de.rwth.supermario.haller.environment;
+stream Env_ObstacleWatcher for ObstacleWatcher {
+  ObstacleDistX: 200 tick 100 tick 75 tick 50 tick 25 tick  0;
+  ObstacleDistX:   0 tick   0 tick  0 tick 25 tick 50 tick 75;
+    
+  inJumpRange:     0 tick   0 tick  1 tick  1 tick  1 tick  0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[label=lst:holewatchertest, caption=Hole watcher stream test]
+package de.rwth.supermario.haller.environment;
+stream Env_ObstacleWatcher for ObstacleWatcher {
+    holeDistance: 200 tick 100 tick 10 tick 0 tick 1200;
+    
+    inJumpRange:    0 tick   0 tick  1 tick	1 tick    0;
+}
+\end{lstlisting}

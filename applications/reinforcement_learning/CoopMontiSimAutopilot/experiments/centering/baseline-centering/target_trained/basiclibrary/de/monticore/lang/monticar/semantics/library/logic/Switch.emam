@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basicLibrary;
+
+
+component Switch<T=B> { // if no generic is given, then default type B is taken
+	port 
+		in T input1, //if
+	    in B cond, // condition
+		in T input2, //else
+		out T output;
+
+	implementation Math{
+	    if cond
+	        output=input1;
+	    else
+	        output=input2;
+	    end
+	}
+}

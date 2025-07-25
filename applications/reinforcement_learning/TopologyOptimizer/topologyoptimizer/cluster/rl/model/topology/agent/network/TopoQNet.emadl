@@ -1,0 +1,17 @@
+package topology.agent.network;
+
+component TopoQNet {
+    ports
+        in Z(0:oo)^{7} state,
+        out Q(-oo:oo)^{12} qvalues;
+
+    implementation CNN {
+        state ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=600) ->
+        Relu() ->
+        FullyConnected(units=12) ->
+        qvalues;
+    }
+}

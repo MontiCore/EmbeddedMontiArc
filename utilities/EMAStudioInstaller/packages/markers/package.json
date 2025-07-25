@@ -1,0 +1,31 @@
+{
+  "private": true,
+  "name": "@emastudio/markers",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio Markers Package.",
+  "keywords": [
+    "EmbeddedMontiArcStudio"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller.git"
+  },
+  "dependencies": {
+    "@elysium/core": "^0.1.0",
+    "@theia/core": "latest",
+    "@theia/markers": "latest"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/problem/problem-frontend-module"
+    }
+  ]
+}

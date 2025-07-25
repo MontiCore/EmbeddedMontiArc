@@ -1,0 +1,15 @@
+package pumpStationExample;
+
+view PhysicsAndControllerPumpingSystem {
+component PumpStation {
+  component PumpingSystem {
+    component PhysicsSimulation {}
+    instance PhysicsSimulation physicsSimulation;
+    component Controller {}
+    instance Controller controller;
+  }
+  instance PumpingSystem pumpingSystem;
+
+  connect physicsSimulation -> controller;
+}
+}

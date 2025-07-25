@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+ 
+component TankSensorReader {
+  ports
+    in Z level1,
+    out Z waterLevel1;
+}

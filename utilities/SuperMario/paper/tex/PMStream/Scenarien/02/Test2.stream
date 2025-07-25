@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman;
+
+stream Test2 for PacManWrapper {
+    ghostX: [54cm,150cm,170cm,70cm]             tick [52cm,150cm,168cm,70cm]        tick [50cm,150cm,166cm,70cm]        tick [48cm,150cm,164cm,70cm];
+    ghostY: [210cm,148cm,190cm,172cm]           tick [210cm,150cm,190cm,174cm]      tick [210cm,152cm,190cm,176cm]      tick [210cm,154cm,190cm,178cm];
+    ghostDirection: [2,1,2,1]                   tick [2,1,2,1]                      tick [2,1,2,1]                      tick [2,1,2,1];
+    ghostEatable: [false, false, false, false]  tick [false, false, false, false]   tick [false, false, false, false]   tick [false, false, false, false];
+    ghostEaten: [false, false, false, false]    tick [false, false, false, false]   tick [false, false, false, false]   tick [false, false, false, false];
+    pacManX: 150cm                              tick 150cm                          tick 148cm                          tick 146cm;
+    pacManY: 130cm                              tick 132cm                          tick 134cm                          tick 136cm;
+    pacManEaten: false                          tick false                          tick false                          tick false;       
+    pacManLives: 3                              tick 3                              tick 3                              tick 3;
+    pacManScore: 0                              tick 0                              tick 0                              tick 0;
+    map: ...
+    
+    newPacManDirection: 0                       tick 0                              tick 2                              tick 2;       
+}

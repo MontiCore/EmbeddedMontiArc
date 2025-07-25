@@ -1,0 +1,13 @@
+logs/*
+node_modules/*
+out/*
+syntax/gen/*
+!syntax/gen/.gitkeep
+package.old.json
+*.vsix
+*.versionsBackup
+**/.classpath
+**/.project
+**/.settings
+test.txt
+examples/

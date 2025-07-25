@@ -1,0 +1,34 @@
+
+import { injectable, inject } from "inversify";
+import { MenuContribution, MenuModelRegistry } from "@theia/core/lib/common/menu";
+import { CommonMenus } from "@emastudio/core/lib/browser";
+import { {{context.name}}Commands } from "./{{context.name | lower}}-command-contribution";
+import { {{context.name}}Conditions } from "./{{context.name | lower}}-conditions";
+
+export namespace {{context.name}}Menus {
+    export const {{context.name | upper}} = [...CommonMenus.FEATURES, "5_others"];
+}
+
+@injectable()
+export class {{context.name}}MenuContribution implements MenuContribution {
+    @inject({{context.name}}Conditions) protected readonly conditions: {{context.name}}Conditions;
+
+    public async registerMenus(registry: MenuModelRegistry): Promise<void> {
+        await Promise.all([
+            {% for button in context.getButtons() %}
+            this.registerMenu{{button.getScriptAsName()}}(registry){% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]);
+    }
+
+    {% for button in context.getButtons() %}
+    protected async registerMenu{{button.getScriptAsName()}}(registry: MenuModelRegistry): Promise<void> {
+        const menu = registry.registerMenuAction({{context.name}}Menus.{{context.name | upper}}, {
+            commandId: {{context.name}}Commands.{{button.getScriptAsConstant()}}.id
+        });
+
+        return this.conditions.check{{button.getScriptAsName()}}(menu);
+    }
+
+    {% endfor %}
+}

@@ -1,0 +1,7 @@
+package pumpStationExample;
+
+component UserButtonReader {
+  ports
+    in Boolean button,
+    out Enum userButton;
+}

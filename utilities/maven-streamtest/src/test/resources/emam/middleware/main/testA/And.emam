@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testA;
+
+component And {
+
+    port
+        in B in1,
+        in B in2,
+        out B out1;
+
+
+    implementation Math {
+        out1 = in1 && in2;
+    }
+}

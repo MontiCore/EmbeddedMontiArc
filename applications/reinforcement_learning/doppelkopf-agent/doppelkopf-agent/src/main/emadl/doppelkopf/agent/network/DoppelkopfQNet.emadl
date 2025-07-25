@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package doppelkopf.agent.network;
+
+component DoppelkopfQNet {
+    ports
+        in Q(0:1)^{2958} state,
+        out Q(-oo:oo)^{64} qvalues; 
+
+    implementation CNN {
+        state ->
+        FullyConnected(units=2958) ->
+        Relu() ->
+        FullyConnected(units=1024) ->
+        Relu() ->
+        FullyConnected(units=512) ->
+        Relu() ->
+        FullyConnected(units=128) ->
+        Relu() ->
+        FullyConnected(units=64) ->
+        qvalues;
+    }
+}

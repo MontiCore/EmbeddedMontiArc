@@ -1,0 +1,2 @@
+/usr/bin/ar qc libRosAdapter_cheetah_master.a  CMakeFiles/RosAdapter_cheetah_master.dir/RosAdapter_cheetah_master.cpp.o
+/usr/bin/ranlib libRosAdapter_cheetah_master.a
