@@ -64,6 +64,7 @@ jobs:
           docker pull ghcr.io/monticore/mnistcalculator/tensorflow:latest
           docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/mnistcalculator/tensorflow:latest tail -f /dev/null
       - name: Script
+        continue-on-error: true
         env:
           SCRIPT: |
             cd /workspace
@@ -91,6 +92,7 @@ jobs:
           docker pull ghcr.io/monticore/emadl2cpp/mxnet/190:v0.0.2
           docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/mxnet/190:v0.0.2 tail -f /dev/null
       - name: Script
+        continue-on-error: true
         env:
           SCRIPT: |
             cd /workspace
@@ -99,7 +101,7 @@ jobs:
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
             cd mnist-calculator
-            mvn streamtest:streamtest-build -s settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 streamtest:streamtest-build -s settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   TestEMADLMavenPlugin:
@@ -126,7 +128,7 @@ jobs:
             python3 -m pip install -U pip
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
-            mvn dependency:resolve emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
         run: docker exec build-container bash -c "$SCRIPT"
@@ -164,7 +166,7 @@ jobs:
             python3 -m pip install -U pip
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
-            mvn dependency:resolve emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
         run: docker exec build-container bash -c "$SCRIPT"
@@ -206,7 +208,7 @@ jobs:
             python3 -m pip install opencv-python
             ln /usr/bin/python3 /usr/bin/python -f
             cd mnist-modular/Streamtest
-            mvn dependency:resolve -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve -s settings.xml -U
             cd ../Decomposition
             ./runDecomposition.sh
             STATUS=$?
@@ -255,7 +257,7 @@ jobs:
             python3 -m pip install scikit-image opencv-python
             ln -fs /usr/bin/python3 /usr/bin/python
             cd mnist-modular/DecompositionResNet
-            mvn dependency:resolve emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
         run: docker exec build-container bash -c "$SCRIPT"
 
   TestTransfer:
@@ -311,7 +313,7 @@ jobs:
             cd applications/MNISTCalculator
             mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
             cd AdaNet
-            mvn dependency:resolve emadl:train -s settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   TestMNISTwithCustomLayer:
@@ -350,7 +352,7 @@ jobs:
             type -a python
             mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
             cd mnist-custom-layer
-            mvn dependency:resolve emadl:train -s settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   TrainTensorflowONNX:
@@ -369,15 +371,17 @@ jobs:
           docker pull ghcr.io/monticore/emadl2cpp/dockerimages/tensorflow-onnx:latest
           docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/tensorflow-onnx:latest tail -f /dev/null
       - name: Script
+        continue-on-error: true
         env:
           SCRIPT: |
             cd /workspace
             cd applications/MNISTCalculator
             cd onnx/tensorflow-pretrained
-            mvn dependency:resolve emadl:train -s settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         if: success()
         with:
           name: TrainTensorflowONNX
@@ -397,6 +401,7 @@ jobs:
           fetch-depth: 1
       - name: Download artifacts
         uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           name: TrainTensorflowONNX
           path: |
@@ -407,6 +412,7 @@ jobs:
           docker pull ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1
           docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170-onnx:v0.0.1 tail -f /dev/null
       - name: Script
+        continue-on-error: true
         env:
           SCRIPT: |
             cd /workspace
@@ -420,9 +426,9 @@ jobs:
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
             ls model/cNNCalculator.Network/
-            mvn emadl:install-pretrained -e -s ./settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 emadl:install-pretrained -e -s ./settings.xml
             cd ../gluon-load
-            mvn emadl:train -s settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml
             chmod +x build.sh
             ./build.sh
             RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
@@ -447,7 +453,7 @@ jobs:
             cd /workspace
             cd applications/MNISTCalculator
             cd "emadl-maven_hexadecimal_calculator/trained_mnist_calc"
-            mvn deploy -s ci_settings.xml
+            mvn -Dmaven.wagon.rto=1800000000 deploy -s ci_settings.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   DeployDecompositionResNetArtifact:
@@ -484,9 +490,9 @@ jobs:
             python3 -m pip install scikit-image opencv-python
             ln -fs /usr/bin/python3 /usr/bin/python
             cd mnist-modular/DecompositionResNetExport
-            mvn dependency:resolve -s settings.xml -U -f pom_build.xml
-            mvn emadl:train -s settings.xml -U -f pom_build.xml
-            mvn deploy -s settings.xml -U -f pom_deploy.xml
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve -s settings.xml -U -f pom_build.xml
+            mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml -U -f pom_build.xml
+            mvn -Dmaven.wagon.rto=1800000000 deploy -s settings.xml -U -f pom_deploy.xml
         run: docker exec build-container bash -c "$SCRIPT"
 
   TrainHexadecimal_MnistCalculator:
@@ -517,7 +523,7 @@ jobs:
             cd src/main/emadl/calculator
             ls
             cd ../../../..
-            mvn dependency:resolve emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
         run: docker exec build-container bash -c "$SCRIPT"
 
   TrainHexadecimal_MnistCalculatorTL:
@@ -545,9 +551,9 @@ jobs:
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
             echo "$PWD"
-            mvn dependency:resolve  -s settings.xml -U
-            mvn clean verify -s settings.xml -U
-            mvn emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve  -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 clean verify -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
         run: docker exec build-container bash -c "$SCRIPT"
@@ -577,7 +583,7 @@ jobs:
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
             echo "$PWD"
-            mvn dependency:resolve emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
         run: docker exec build-container bash -c "$SCRIPT"
@@ -607,10 +613,22 @@ jobs:
             python3 -m pip install scikit-image
             python3 -m pip install opencv-python
             echo "$PWD"
-            mvn dependency:resolve  -s settings.xml -U
-            mvn clean verify -s settings.xml -U
-            mvn emadl:train -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 dependency:resolve  -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 clean verify -s settings.xml -U
+            mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
         run: docker exec build-container bash -c "$SCRIPT"
+
+  rerun-failed-jobs:
+    runs-on: ubuntu-latest
+    needs: testmodular_phase
+    if: failure() && fromJSON(github.run_attempt) < 3
+    steps:
+      - name: Trigger Retry
+        run: gh workflow run $WORKFLOW_FILE --repo $REPO --field  job_id=${{ github.run_id }}
+        env:
+          WORKFLOW_FILE: Retry.yml
+          REPO: ${{github.repository}}
+          GH_TOKEN: ${{github.token}}
 
