@@ -1,0 +1,10 @@
+{
+    "languageName":"CNNArchLang",
+    "pomRoot":"settings/cnna",
+    "relativeMvnSettingsPath":"../settings.xml",
+    "useRunningServer":false,
+    "manualPort": 0,
+    "bufferSize": 1000,
+    "keywordsFile": "settings/cnna/keywords_cnna.txt",
+    "fileExtension": ".cnna"
+}

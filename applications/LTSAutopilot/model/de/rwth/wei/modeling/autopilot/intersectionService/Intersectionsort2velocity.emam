@@ -1,0 +1,212 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+
+dynamic component Intersectionsort2velocity{
+   ports
+     dynamic in  Statusmessage           status_msg[0:32],
+     dynamic in  Trajectorymessage       traj_msg[0:32],
+     dynamic in  Platoonmessage          platoon_msg[0:32],
+     dynamic in  Collisionmessage        collision_msg[0:32],
+
+     in  Z^32            vehicle_atintersection,
+     in  Z               vehicle_num,
+     in  Z^32            platoon_atintersection,
+     in  Z               platoon_num,
+     //vehicle status
+     in  Z               status,
+     in  Z               isplatoonheader,
+     in  Z               platoon_length,
+     in  Z               timestamp,
+     in  Z               vehicleid,
+     in  Q               nextintersection_x,
+     in  Q               nextintersection_y,
+     in  Q               dis2intersection,
+     // if frontvehicle exits
+     in  Z               if_frontvehicleexists,
+     in  Z               ifcurrentsplit,
+     //current information
+     in  Q^{1,100}       trajectory_x,
+     in  Q^{1,100}       trajectory_y,
+     in  Z               trajectory_length,
+     in  Q               velocity,
+     in  Q               length,
+     in  Q               width,
+
+
+     dynamic out Collisionmessage coll_message[0:32],
+     out Q               maximalallowedvelocity;
+
+     // the status of vehicle, vehicle in platoon will not process the intersection
+     instance Statusduplicate                   s_dup;
+     instance Trajduplicate                     t_dup;
+     instance Platoonduplicate                  p_dup;
+     instance Collisionduplicate                c_dup;
+     instance Onlysingle_velocity               onlys_v;
+     instance Singlewithplatoon_velocity        swp_v;
+     instance Platoonwithsingle_velocity        pws_v;
+     instance Platoonwithplatoon_velocity       pwp_v;
+
+
+     @ status_msg::connect{
+       connect status_msg[?] -> s_dup.status_msg[?];
+     }
+     @ traj_msg::connect{
+       connect traj_msg[?] -> t_dup.traj_msg[?];
+     }
+     @ platoon_msg::connect{
+       connect platoon_msg[?] -> p_dup.plat_msg[?];
+     }
+     @ collision_msg::connect{
+       connect collision_msg[?] -> c_dup.coll_msg[?];
+     }
+
+     // no other vehicle at the intersection
+     @ vehicle_num::value(0) && platoon_num::value(0){
+       connect 999999.0 -> maximalallowedvelocity;
+     }
+
+      //current vehicle is in the platoon
+     @ status::value(1) && isplatoonheader::value(0){
+       connect 999999.0 -> maximalallowedvelocity;
+     }
+
+
+     // intersection type 1, only single vehicle
+     @ status::value(0) && platoon_num::value(0) && vehicle_num::value(>0) && s_dup.status_msg1::connect{
+       connect s_dup.status_msg1[?] -> onlys_v.status_msg[?];
+     }
+     @ status::value(0) && platoon_num::value(0) && vehicle_num::value(>0) && t_dup.traj_msg1::connect{
+       connect t_dup.traj_msg1[?] -> onlys_v.traj_msg[?];
+     }
+     @ status::value(0) && platoon_num::value(0) && vehicle_num::value(>0) && c_dup.coll_msg1::connect{
+       connect c_dup.coll_msg1[?] -> onlys_v.collision_msg[?];
+     }
+     @ status::value(0) && platoon_num::value(0) && vehicle_num::value(>0) {
+       connect vehicle_atintersection -> onlys_v.vehicle_atintersection;
+       connect vehicle_num -> onlys_v.vehicle_num;
+       connect trajectory_length -> onlys_v.trajectory_length;
+       connect trajectory_x -> onlys_v.trajectory_x;
+       connect trajectory_y -> onlys_v.trajectory_y;
+       connect length -> onlys_v.length;
+       connect width -> onlys_v.width;
+       connect velocity -> onlys_v.velocity;
+       connect timestamp -> onlys_v.timestamp;
+       connect vehicleid -> onlys_v.vehicleid;
+       connect nextintersection_x -> onlys_v.nextintersection_x;
+       connect nextintersection_y -> onlys_v.nextintersection_y;
+       connect dis2intersection -> onlys_v.dis2intersection;
+       connect if_frontvehicleexists -> onlys_v.if_frontvehicleexists;
+
+       connect onlys_v.maximalallowedvelocity -> maximalallowedvelocity;
+     }
+     @ status::value(0) && platoon_num::value(0) && vehicle_num::value(>0) && onlys_v.coll_message::connect{
+       connect onlys_v.coll_message[?] -> coll_message[?];
+     }
+
+     // intersection type 2, single with platoon
+     @ status::value(0) && platoon_num::value(>0) && s_dup.status_msg2::connect{
+       connect s_dup.status_msg2[?] -> swp_v.status_msg[?];
+     }
+     @ status::value(0) && platoon_num::value(>0) && t_dup.traj_msg2::connect{
+       connect t_dup.traj_msg2[?] -> swp_v.traj_msg[?];
+     }
+     @ status::value(0) && platoon_num::value(>0) && p_dup.plat_msg1::connect{
+       connect p_dup.plat_msg1[?] -> swp_v.plat_msg[?];
+     }
+     @ status::value(0) && platoon_num::value(>0) && c_dup.coll_msg2::connect{
+       connect c_dup.coll_msg2[?] -> swp_v.coll_msg[?];
+     }
+     @ status::value(0)&& platoon_num::value(>0){
+       connect vehicle_atintersection -> swp_v.vehicle_atintersection;
+       connect vehicle_num -> swp_v.vehicle_num;
+       connect platoon_atintersection -> swp_v.platoon_atintersection;
+       connect platoon_num -> swp_v.platoon_num;
+       connect trajectory_length -> swp_v.trajectory_length;
+       connect trajectory_x -> swp_v.trajectory_x;
+       connect trajectory_y -> swp_v.trajectory_y;
+       connect length -> swp_v.length;
+       connect width -> swp_v.width;
+       connect velocity -> swp_v.velocity;
+       connect if_frontvehicleexists -> swp_v.if_frontvehicleexists;
+       connect timestamp -> swp_v.timestamp;
+       connect vehicleid -> swp_v.vehicleid;
+       connect nextintersection_x -> swp_v.nextintersection_x;
+       connect nextintersection_y -> swp_v.nextintersection_y;
+       connect dis2intersection -> swp_v.dis2intersection;
+       connect swp_v.maximalallowedvelocity -> maximalallowedvelocity;
+     }
+     @ status::value(0) && platoon_num::value(>0) && swp_v.coll_message::connect{
+       connect swp_v.coll_message[?] -> coll_message[?];
+     }
+
+     // intersection type 3, platoon with single
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(>0) && s_dup.status_msg3::connect{
+       connect s_dup.status_msg3[?] -> pws_v.status_msg[?];
+     }
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(>0) && t_dup.traj_msg3::connect{
+       connect t_dup.traj_msg3[?] -> pws_v.traj_msg[?];
+     }
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(>0){
+       connect vehicle_atintersection -> pws_v.vehicle_atintersection;
+       connect vehicle_num -> pws_v.vehicle_num;
+       connect trajectory_length -> pws_v.trajectory_length;
+       connect trajectory_x -> pws_v.trajectory_x;
+       connect trajectory_y -> pws_v.trajectory_y;
+       connect length -> pws_v.length;
+       connect width -> pws_v.width;
+       connect velocity -> pws_v.velocity;
+       connect timestamp -> pws_v.timestamp;
+       connect vehicleid -> pws_v.vehicleid;
+       connect nextintersection_x -> pws_v.nextintersection_x;
+       connect nextintersection_y -> pws_v.nextintersection_y;
+       connect dis2intersection -> pws_v.dis2intersection;
+       connect if_frontvehicleexists -> pws_v.if_frontvehicleexists;
+       connect ifcurrentsplit -> pws_v.ifcurrentsplit;
+       connect pws_v.maximalallowedvelocity -> maximalallowedvelocity;
+     }
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(>0) && pws_v.coll_message::connect{
+       connect pws_v.coll_message[?] -> coll_message[?];
+     }
+
+      // intersection type 4, platoon with platoon
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(0) && s_dup.status_msg4::connect{
+       connect s_dup.status_msg4[?] -> pwp_v.status_msg[?];
+     }
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(0) && t_dup.traj_msg4::connect{
+       connect t_dup.traj_msg4[?] -> pwp_v.traj_msg[?];
+     }
+     @ status::value(1) && isplatoonheader::value(1) && vehicle_num(0) && p_dup.plat_msg2::connect{
+       connect p_dup.plat_msg2[?] -> pwp_v.plat_msg[?];
+     }
+
+     @ status::value(1) && isplatoonheader::value(1){
+       connect platoon_atintersection -> pwp_v.platoon_atintersection;
+       connect platoon_num -> pwp_v.platoon_num;
+       connect trajectory_length -> pwp_v.trajectory_length;
+       connect trajectory_x -> pwp_v.trajectory_x;
+       connect trajectory_y -> pwp_v.trajectory_y;
+       connect length -> pwp_v.length;
+       connect width -> pwp_v.width;
+       connect velocity -> pwp_v.velocity;
+       connect if_frontvehicleexists -> pwp_v.if_frontvehicleexists;
+       connect nextintersection_x -> pwp_v.nextintersection_x;
+       connect nextintersection_y -> pwp_v.nextintersection_y;
+       connect dis2intersection -> pwp_v.dis2intersection;
+       connect platoon_length -> pwp_v.platoon_length;
+       connect ifcurrentsplit -> pwp_v.ifcurrentsplit;
+
+       connect pwp_v.maximalallowedvelocity -> maximalallowedvelocity;
+     }
+     @ s_dup.status_msg5::connect{}
+     @ t_dup.traj_msg5::connect{}
+     @ p_dup.plat_msg3::connect{}
+     @ p_dup.plat_msg4::connect{}
+     @ p_dup.plat_msg5::connect{}
+     @ p_dup.plat_msg6::connect{}
+     @ c_dup.coll_msg3::connect{}
+     @ c_dup.coll_msg4::connect{}
+     @ c_dup.coll_msg5::connect{}
+}

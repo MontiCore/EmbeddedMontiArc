@@ -1,0 +1,19 @@
+/* (c) https://github.com/MontiCore/monticore */
+package daimler;
+
+view SomeFAS3 {
+
+component Chart {
+
+  port out ? blinkenRechtsAktiv_bOut3;
+  
+    component SFunction {
+      port in Double in1;
+    }
+    instance SFunction sFunction;
+  
+  }
+instance Chart chart;
+  
+  effect chart -> xXX;
+}

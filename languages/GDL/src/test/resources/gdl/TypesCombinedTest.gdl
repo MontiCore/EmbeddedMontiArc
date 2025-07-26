@@ -1,0 +1,11 @@
+(<= (next combined:?x))
+
+(<= (next one:?x))
+(<= (next three:?x))
+
+(typecombine t1 one two)
+(typecombine combined t1 three)
+
+(type one 1)
+(type two 2)
+(type three 3)

@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+
+dynamic component If_frontcarexists{
+  ports
+    dynamic in Statusmessage       status_msg[0:32],
+    dynamic in Trajectorymessage   traj_msg[0:32],
+    dynamic in Platoonmessage      plat_msg[0:32],
+
+    in   Q              intersection_x,
+    in   Q              intersection_y,
+    in   Z              trajectory_length,
+    in   Q^{1,100}      trajectory_x,
+    in   Q^{1,100}      trajectory_y,
+    in   Q              length,
+    in   Q              width,
+
+    out  Z   if_frontvehicleexists;
+
+    instance Intersectionsvehicle_front   interfront;
+    instance Collisionpoint_single        collpoint[0:32];
+    instance If_front2array               front2array;
+
+    @ status_msg::connect{
+      connect status_msg[?] -> interfront.status_msg[?];
+    }
+    @ traj_msg::connect{
+      connect traj_msg[?] -> interfront.traj_msg[?];
+    }
+    @ plat_msg::connect{
+      connect plat_msg[?] -> interfront.plat_msg[?];
+    }
+    connect intersection_x -> interfront.next_x;
+    connect intersection_y -> interfront.next_y;
+    connect length -> interfront.car_length;
+
+    @ interfront.front_status_msg::connect{
+      connect interfront.front_status_msg[?] -> collpoint[?].status_message;
+      connect trajectory_length -> collpoint[?].trajectory_length_car1;
+      connect trajectory_x -> collpoint[?].trajectory_x_car1;
+      connect trajectory_y -> collpoint[?].trajectory_y_car1;
+      connect length -> collpoint[?].car1_length;
+      connect width -> collpoint[?].car1_width;
+      connect collpoint[?].isfrontvehicle -> front2array.isfrontvehicle[?];
+    }
+    // include inintial of if_frontvehicleexists
+    connect front2array.if_frontvehicleexists -> if_frontvehicleexists;
+}

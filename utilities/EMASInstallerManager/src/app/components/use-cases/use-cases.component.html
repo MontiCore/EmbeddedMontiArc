@@ -1,0 +1,29 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<div class="uk-height-1-1 content-container">
+    <form class="uk-flex uk-flex-column uk-height-1-1">
+        <div class="controls">
+            <button mat-fab matTooltip="Add Use Case" matTooltipPosition="before"
+                    (click)="addState()">
+                <mat-icon>add</mat-icon>
+            </button>
+        </div>
+        <div class="uk-flex-1 form-container">
+            <fieldset *ngFor="let state of states" class="use-case-form" [disabled]="state.saved" [style.opacity]="state.saved ? 0.7 : 1.0">
+                <legend class="legend" [style.height]="state.saved ? '40px' : 'auto'">
+                    <button mat-mini-fab matTooltip="Remove Use Case" matTooltipPosition="before"
+                            (click)="removeState(state)" *ngIf="!state.saved">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                    <img src="assets/images/saved.png" *ngIf="state.saved" style="height:50px;"/>
+                </legend>
+                <app-use-case-form [state]="state"></app-use-case-form>
+            </fieldset>
+        </div>
+        <div class="controls">
+            <button mat-raised-button type="submit" color="accent" matTooltip="Save Use Cases"
+                    matTooltipPosition="before" *ngIf="hasStates() && !isSaving()" [disabled]="hasErrors()"
+                    (click)="apply()">Save</button>
+            <mat-progress-bar color="accent" mode="indeterminate" *ngIf="isSaving()"></mat-progress-bar>
+        </div>
+    </form>
+</div>

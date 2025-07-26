@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+// different data type of userPumpState than in other views
+// component EmergencyController only mentioned here
+
+view SystemEmergencyController {
+
+  component PumpingSystem {
+
+   component EmergencyController {}
+   instance EmergencyController emergencyController;
+   component UserOperation {}
+   instance UserOperation userOperation;
+   component ModeArbiter {
+    port
+      in int userPumpState,
+      in ValvePosition valvePosition;
+   }
+   instance ModeArbiter modeArbiter;
+  }
+  instance PumpingSystem pumpingSystem;
+  connect emergencyController -> userOperation;
+  connect userOperation -> modeArbiter.userPumpState;
+  connect userOperation -> modeArbiter.valvePosition;
+}

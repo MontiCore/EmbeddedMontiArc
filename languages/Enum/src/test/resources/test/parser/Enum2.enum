@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.parser;
+
+enum Enum2 {
+  VALUE
+}

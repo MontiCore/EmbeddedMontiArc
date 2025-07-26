@@ -1,0 +1,12 @@
+package de.rwth.connectedcars.iir;
+
+component Multiply {
+    ports
+        in Q a,
+        in Q b,
+        out Q product;
+        
+    implementation Math {
+        product = a * b;
+    }
+}

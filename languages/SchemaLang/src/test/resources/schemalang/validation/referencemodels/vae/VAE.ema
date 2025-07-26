@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package vae;
+
+component VAE {
+
+    component Encoder{
+        ports
+            in X data,
+            out D encoding;
+    }
+
+    component Decoder{
+        ports
+            in D encoding,
+            out X data;
+    }
+
+    instance Encoder encoder;
+    instance Decoder decoder;
+
+    connect encoder.encoding -> decoder.encoding;
+}

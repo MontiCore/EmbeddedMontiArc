@@ -1,0 +1,42 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.haller;
+
+component BreadthFirstsearch {
+    ports
+        in Z(0cm: 342cm) startX,
+        in Z(0cm: 426cm) startY,
+        in Z^{22,19} map,
+        
+        out Z targetX,
+        out Z targetY;
+        
+    
+        
+    implementation Math{
+       
+        Z^{342} queueX; //how is this initialized??
+        Z^{426} queueY; //how is this initialized??
+        
+        Z index = 0;
+        Z x = startX;
+        Z y = startY;
+        
+        //Push start into queue
+        queueX(0) = startX;
+        queueY(0) = startY;
+        
+        
+        
+        
+        
+        
+        
+        
+        targetX = 4;
+        targetY = 5;
+        
+        
+
+    }
+}
+

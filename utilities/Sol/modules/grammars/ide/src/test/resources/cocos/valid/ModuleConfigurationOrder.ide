@@ -1,0 +1,7 @@
+package valid
+
+typedef module ModuleConfigurationOrder {
+    configuration config: ModuleConfigurationOrderConfiguration {
+
+    }
+}

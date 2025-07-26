@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test;
+
+actuator PacmanInputControl{
+    variable out Boolean moveDown,
+        out Boolean moveUp,
+        out Boolean moveLeft,
+        out Boolean moveRight;
+
+    connect true -> initDone;
+
+    implementation Application{
+        set variable moveDown  to "s";
+        set variable moveUp    to "w";
+        set variable moveLeft  to "a";
+        set variable moveRight to "d";
+    }
+}

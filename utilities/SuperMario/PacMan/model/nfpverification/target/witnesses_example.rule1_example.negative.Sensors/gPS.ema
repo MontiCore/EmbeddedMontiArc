@@ -1,0 +1,14 @@
+// positive 
+// aggregated value in model: 0 W
+
+package example.negative.units;
+
+component GPS
+/* [PowerCmp = 1 W] */
+{
+
+  ports
+    in Boolean sensorIn,
+    out Boolean sensorOut;
+
+}

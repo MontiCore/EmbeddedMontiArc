@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package clustering;
+
+component UnambiguousCluster{
+    // compA -> compB; compC -> compD
+
+    instance OutComp compA;
+    instance InComp compB;
+    instance OutComp compC;
+    instance InComp compD;
+
+    connect compA.out1 -> compB.in1;
+    connect compC.out1 -> compD.in1;
+}

@@ -1,0 +1,26 @@
+package emastudio.configurations
+
+import emastudio.configurations.EMAM2WASM
+
+typedef configuration PacMan {
+    label "Launch PacMan"
+    icon "some-icon-class"
+    category "EMAStudio"
+
+    option model: String {
+        label "Model"
+        required true
+    }
+
+    option modelPath: Path {
+        label "Model Path"
+        required true
+    }
+
+    configuration emam2wasm: EMAM2WASM<-1> {
+        inherit rootModel from model
+        inherit modelPath from modelPath
+    }
+
+    backend task main
+}

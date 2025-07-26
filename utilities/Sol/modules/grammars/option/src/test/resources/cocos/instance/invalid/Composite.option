@@ -1,0 +1,8 @@
+option subOptionsCoCo: String {
+    label "A Label"
+
+    option aSubOption: String {
+        label "A Label"
+        required true
+    }
+}

@@ -1,0 +1,89 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ba;
+
+component BallTracking{
+    port
+    in Q^{960,720,3} imageIn,
+    //GaussianBlur ports
+    in Z sizeXIn,
+    in Z sizeYIn,
+    in Q sigmaXIn,
+    in Q sigmaYIn,
+    //CvtColor ports
+    in Z colorConversionIn,
+    //InRange ports
+    in Q^{3} lowerBoundaryIn,
+    in Q^{3} upperBoundaryIn,
+    //Erode ports
+    in Z erosion_elemIn,
+    in Z iterationsIn1,
+    //Dilate ports
+    in Z dilation_elemIn,
+    in Z iterationsIn2,
+    //FindContours ports
+    in Z modeIn,
+    in Z methodIn,
+    //RectAngle ports
+	in Q^{3} colorIn,
+	in Z thicknessIn,
+	in Z lineTypeIn,
+    // i want to input the image again
+    out Q^{960,720,3} modImageOut;
+
+    instance CVGaussianBlur<960,720> gaussBlur;
+    instance CVCvtColor<960,720> cvtColor;
+	instance CVInRange<960,720> inRange;
+    instance CVErode<960,720> erode;
+    instance CVDilate<960,720> dilate;
+    instance CVFindContours<960,720> findContours;
+    instance CVLargestContour largestContour;
+    instance CVBoundingRect boundingRect;
+    instance CVRectangle<960,720> rectAngle;
+
+	//GaussianBlur
+	connect imageIn -> gaussBlur.src;
+    connect sizeXIn -> gaussBlur.sizeX;
+	connect sizeYIn -> gaussBlur.sizeY;
+	connect sigmaXIn -> gaussBlur.sigmaX;
+	connect sigmaYIn -> gaussBlur.sigmaY;
+	connect gaussBlur.dst -> cvtColor.src;
+	
+	//CvtColor
+	connect colorConversionIn -> cvtColor.colorConversion;
+	connect cvtColor.dst -> inRange.src;
+	
+	//InRange
+	connect lowerBoundaryIn -> inRange.lowerBoundary;
+	connect upperBoundaryIn -> inRange.upperBoundary;
+	connect inRange.dst -> erode.src;
+	
+	//Erode
+	connect erosion_elemIn -> erode.erosion_elem;
+	connect iterationsIn1 -> erode.iterations;
+	connect erode.dst -> dilate.src;
+	
+	//dilate
+	connect dilation_elemIn -> dilate.dilation_elem;
+	connect iterationsIn2 -> dilate.iterations;
+	connect dilate.dst -> findContours.image;
+	
+	//FindContours
+	connect modeIn -> findContours.mode;
+	connect methodIn -> findContours.method;
+	connect findContours.contours -> largestContour.contours;
+
+	//LargestContour
+	connect largestContour.lContour -> boundingRect.contour;
+
+	//BoundingRect
+	connect boundingRect.rect -> rectAngle.rect;
+	
+	//CVRectAngle
+	connect imageIn -> rectAngle.src;
+	connect colorIn -> rectAngle.color;
+	connect thicknessIn -> rectAngle.thickness;
+	connect lineTypeIn -> rectAngle.lineType;
+	//how to connect the src Image here as input
+	connect rectAngle.outputImg -> modImageOut;
+
+}
