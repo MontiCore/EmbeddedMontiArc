@@ -67,7 +67,7 @@ jobs:
         with:
           name: gen
           path: |
-            applications/CooperativeIntersection/applications/CooperativeIntersection/target/
+            applications/CooperativeIntersection/target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
