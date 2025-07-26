@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package symtab.instantiations;
+
+component Sub2 {
+    ports
+        in Byte sub_in_1,
+        out Byte sub_out_1;
+
+
+
+}

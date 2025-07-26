@@ -1,0 +1,198 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.embeddedmontiarc;
+
+/**
+ * Grammar for EmbeddedMontiArc.
+ *
+ */
+grammar EmbeddedMontiArc extends de.monticore.lang.monticar.Common2 {
+
+  /** ASTEMACompilationUnit represents the complete component
+   * @attribute package          The package declaration of this component
+   * @attribute importStatements List of imported elements
+   * @attribute Component the root component of the component
+   */
+  EMACompilationUnit =
+    ("package" package:(Name& || ".")+ ";")?
+    (ImportStatement )*
+    Component;
+
+
+  /* ======================================================*/
+  /* ===== Modified but based on old ARCD Grammar =========*/
+  /* ======================================================*/
+
+  /**
+  * A component may contain arbitrary many Elements. 
+  * This interface may be used as an extension point to 
+  * enrich components with further elements.
+  */
+  interface Element;
+
+
+  /**
+  * A component is a unit of computation or a data store.  
+  * The size of a component may scale from a single 
+  * procedure to a whole application. A component may be 
+  * either decomposed to subcomponents or is atomic. 
+  *
+  * @attribute name type name of this component
+  * @attribute head is used to set generic types, a  
+  *   configuration and a parent component
+  * @attribute instanceName if this optional name is given, 
+  *   a subcomponent is automatically created that 
+  *   instantiates this inner component type. This is only 
+  *   allowed for inner component definitions. 
+  * @attribute body contains the architectural elements 
+  *   inherited by this component
+  * A components head is used to define generic type 
+  * parameters that may be used as port types in the 
+  * component, to define configuration parameters that may 
+  * be used to configure the component, and to set the  
+  * parent component of this component.
+  *
+  * @attribute genericTypeParameters a list of type  
+  *   parameters that may be used as port types in the 
+  *   component
+  * @attribute parameters a list of Parameters that 
+  *   define a configurable component. If a configurable
+  *   component is referenced, these parameters have to be 
+  *   set.
+  * @attribute superComponent the type of the super 
+  *   component
+  */
+  
+  symbol scope Component implements Element =
+    ComponentModifier* "component" (["interface"])? Name
+	genericTypeParameters:TypeParameters2?
+    (  "("  (Parameter || ",")+  ")" )?
+    ("implements" superComponent:ReferenceType)?
+    body:ComponentBody;
+
+  interface ComponentModifier;
+
+  VirtModifier implements ComponentModifier =
+    VIRTUAL;
+  enum VIRTUAL =
+    "virtual" | VIRTUAL:"virt" | "nonvirtual" | NONVIRTUAL:"non-virt";
+
+  DFModifier implements ComponentModifier =
+    DIRECTFEEDTHROUGH;
+  enum DIRECTFEEDTHROUGH =
+    DF:"direct feedthrough" | "df" | NONDF:"nondirect feedthrough" | NONDF:"non-df";
+
+
+  /**
+  * The body contains architectural elements of 
+  * this component.
+  *
+  * @attribute elements list of architectural elements
+  */
+  ComponentBody =
+    ("{"
+      Element*
+    "}" );
+    
+  /**
+  * An Interface defines an interface of a component 
+  * containing in- and outgoing ports.
+  * @attribute ports a list of ports that are contained in 
+  *   this interface
+  */
+  Interface implements Element =
+     ("port"|"ports")
+    ports:(Port || ",")+ ";" ;
+
+ /**a
+  * An incoming port is used to receive messages, an 
+  * outgoing port is used to send messages of a specific 
+  * type. Ports can now also be specified as an array.
+  *
+  * @attribute incoming true, if this is an incoming port
+  * @attribute outgoing true, if this is an outgoing port
+  * @attribute type the message type of this port
+  * @attribute name an optional name of this port
+  */
+  /**might support auto type adding based on last previous type
+   * declaration later on
+   */
+   Port =
+          AdaptableKeyword? (incoming:["in"] | outgoing:["out"])
+          Type (Name? | Name ( "[" UnitNumberResolution "]" )?) ;
+
+
+  /**
+    * A subcomponent is used to create one or more instances
+    *  of another component. This way the hierarchical
+    * structure of a component is defined.
+    * @attribute type the type of the instantiated component
+    * @attribute arguments list of configuration parameters
+    *   that are to be set, if the instantiated component is
+    *   configurable.
+    * @attribute instances list of instances that should be
+    *   created
+    */
+    SubComponent implements Element =
+      "instance"
+      type:ReferenceType
+      ("(" arguments:(Expression || ",")+ ")" )?
+      ("{" (PortInitial || ",")+ "}")?
+      instances:(SubComponentInstance || ",")+ ";" ;
+
+
+  /**
+  * A subcomponent instance binds the name of an instance
+  * with an optional list of simple connectors used to
+  * connect this instance with other subcomponents/ports.
+  * It does also support component arrays.
+  * Simple connectors directly connect outgoing ports of the
+  * corresponding subcomponent declaration with one or more target ports.
+  *
+  * @attribute name the name of this instance
+  * @attribute connectors list of simple connectors
+  */
+  // TODO better/more intuitive name? e.g. "refConnector" (not really good...)
+  SubComponentInstance =
+    Name
+    ("[" UnitNumberResolution "]")?;
+
+  PortInitial =
+    Name ( "[" UnitNumberResolution "]" )?
+    "(" "t=0" ")"
+    (guess:["~"])? "="
+    Expression;
+
+  /**
+    * port1
+	* port1[2]
+	* port1[:]
+	* sub1.port1
+	* sub1[2].port1[3]
+	* sub1.*
+	* sub1[2].*
+  */
+  QualifiedNameWithArrayAndStar = QualifiedNameWithArray DotStar?;
+  DotStar = "." {noSpace()}? "*";
+  /**
+  * A connector connects one source port with one or many
+  * target ports.
+  *
+  * @attribute source source port or component instance
+  *   name
+  * @attribute targets a list of target ports or component
+  *   instance names
+  */
+  Connector implements Element=
+     "connect" (source:QualifiedNameWithArrayAndStar | 
+	            boolLiteral:BooleanLiteral | 
+				stringLiteral:StringLiteral| 
+				UnitNumberResolution) "->"
+    targets:ConnectorTargets ";" ;
+
+   ConnectorTargets = ["#"] | // route symbol terminates inputs
+                      (QualifiedNameWithArrayAndStar || ","  )+;
+  
+  // autoconnect and autoinstantiate is removed
+  // for autoconnect use "connect this.* -> sub1.*;" to connect all inports of the parent component to the inports of the sub1 subcomponent having the same name 
+}

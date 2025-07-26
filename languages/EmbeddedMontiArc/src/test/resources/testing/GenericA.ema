@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+
+component GenericA<N1 n=1>{
+    ports in B in1[n],
+          out B out1[n];
+
+
+}

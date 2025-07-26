@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package a;
+
+component SuperCompGeneric<T>{
+    port in T percentage[2],
+          out B success;
+
+}

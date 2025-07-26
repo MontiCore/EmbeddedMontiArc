@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package middleware.mqtt;
+
+component BasicParsing{
+    port in Q mqttInQ;
+    port in Q noMqttInQ;
+    port in Q emptyTagIn;
+    port in N mqttInN;
+    port in Z mqttInZ;
+    port in B mqttInB;
+    port out Q mqttOutQ;
+    port out Q noMqttOut;
+    port out N mqttOutN;
+    port out Z mqttOutZ;
+    port out B mqttOutB;
+}

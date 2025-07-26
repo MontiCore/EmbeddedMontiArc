@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing;
+component SIDegreePortTest{
+      ports in (0° : 0.1°: 45° ) angle,
+           out (-45° : 7°) outA;
+}

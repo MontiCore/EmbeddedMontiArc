@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example;
+
+import example.simulations.*;
+
+component Composition {
+	port
+		in Boolean in1,
+		out Boolean res;
+	
+	instance Sim1 sim1;
+	instance Sim2 sim2;
+	instance Sim3 sim3;
+
+	connect in1			-> sim1.in1;
+	connect in1 		-> sim2.in1;
+	connect sim1.out1 	-> sim3.in1;
+	connect sim2.out1 	-> sim3.in2;
+	connect sim3.out1 	-> res;
+}

@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package symtab.instantiations;
+
+component Top { // Component Top, ComponentInstance top
+
+    ports
+        in Byte top_in_1, // Port Top.top_in_1, PortInstance top.top_in_1
+        out Byte top_out_1; // Port Top.top_out_1, PortInstance top.top_out_1
+
+    instance Sub sub_1; // Component Sub, ComponentInstantiation sub_1
+
+    connect top_in_1 -> sub_1.sub_in_1;
+    connect sub_1.sub_out_1 -> top_out_1;
+
+}

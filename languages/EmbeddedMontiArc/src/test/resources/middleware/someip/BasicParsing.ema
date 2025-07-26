@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package middleware.someip;
+
+component BasicParsing{
+    port in Q someIPIn;
+    port in Q nosomeIPIn;
+    port in Q emptyTagIn;
+    port out Q someIPOut;
+    port out Q nosomeIPOut;
+}
