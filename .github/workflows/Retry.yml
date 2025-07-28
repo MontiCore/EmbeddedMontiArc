@@ -19,7 +19,7 @@ jobs:
                 if [[ "$STATUS" == "completed" && "$CONCLUSION" == "failure" ]]; then
                   break
                 fi
-                sleep 5
+                slepp 60
               done
               sleep 20
             env:

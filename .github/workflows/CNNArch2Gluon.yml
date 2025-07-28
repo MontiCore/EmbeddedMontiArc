@@ -213,7 +213,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            sleep 5
+            slepp 60
           done
         env:
           GH_TOKEN: ${{github.token}}
