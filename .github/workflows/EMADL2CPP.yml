@@ -569,7 +569,9 @@ jobs:
       image: ubuntu:22.04
     steps:
       - name: Install GIt
-        run: apt-get install git -y
+        run: |
+          apt-get update -qq
+          apt-get install git -y
       - name: Checkout latest commit
         uses: actions/checkout@v4
         with:
