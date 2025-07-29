@@ -565,6 +565,8 @@ jobs:
     if: ${{ !cancelled() && needs.docker_phase.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    container:
+      image: ubuntu:22.04
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4
