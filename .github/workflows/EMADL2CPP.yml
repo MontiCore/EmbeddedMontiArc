@@ -565,7 +565,13 @@ jobs:
     if: ${{ !cancelled() && needs.docker_phase.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    container:
+      image: ubuntu:22.04
     steps:
+      - name: Install GIt
+        run: |
+          apt-get update -qq
+          apt-get install git -y
       - name: Checkout latest commit
         uses: actions/checkout@v4
         with:
@@ -583,39 +589,38 @@ jobs:
         if: success()
         with:
           name: artifact-extraction
-          retention-days: 7
           path: |
             generators/EMADL2CPP/extractor/output
 
-  pages:
-    needs: [artifact-extraction, deploy_phase]
-    if: ${{ !cancelled() && needs.deploy_phase.result == 'success' &&  github.ref_name == 'master' && needs.artifact-extraction.result == 'success' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 120
-    steps:
-      - name: Checkout latest commit
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: artifact-extraction
-          path: |
-            generators/EMADL2CPP/generators/EMADL2CPP/extractor/output
-      - name: Script
-        shell: bash
-        run: |
-            cd generators/EMADL2CPP
-            mkdir .public
-            cp -r extractor/output/html/* .public
-            mv .public public
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        if: success()
-        with:
-          name: pages
-          retention-days: 7
-          path: |
-            generators/EMADL2CPP/public
+  #pages:
+  #  needs: [artifact-extraction, deploy_phase]
+  #  if: ${{ !cancelled() && needs.deploy_phase.result == 'success' &&  github.ref_name == 'master' && needs.artifact-extraction.result == 'success' }}
+  #  runs-on: ubuntu-latest
+  #  timeout-minutes: 120
+  #  steps:
+  #    - name: Checkout latest commit
+  #      uses: actions/checkout@v4
+  #      with:
+  #        fetch-depth: 1
+  #    - name: Download artifacts
+  #      uses: actions/download-artifact@v4
+  #      with:
+  #        name: artifact-extraction
+  #        path: |
+  #          generators/EMADL2CPP/generators/EMADL2CPP/extractor/output
+  #    - name: Script
+  #      shell: bash
+  #      run: |
+  #          cd generators/EMADL2CPP
+  #          mkdir .public
+  #          cp -r extractor/output/html/* .public
+  #          mv .public public
+  #    - name: Upload artifacts
+  #      uses: actions/upload-artifact@v4
+  #      if: success()
+  #      with:
+  #        name: pages
+  #        retention-days: 7
+  #        path: |
+  #          generators/EMADL2CPP/public
 
