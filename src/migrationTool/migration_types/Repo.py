@@ -5,6 +5,9 @@ from git import Repo
 
 
 class Repo:
+  """
+  Represents a repository in the migration tool.
+  """
   def __init__(self, name: str, repoID: str, images: list[str], path: str, namespace: str, active_branches: list[str],
                stale_branches: list[str], secrets: list, secrets_to_create: tuple[str, str] = [], ):
     self.name = name

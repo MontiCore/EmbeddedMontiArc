@@ -30,7 +30,6 @@ def GitlabToGithub(repoID: str, architecture: Architecture, config: Config, name
   :param architecture: The architecture object
   :param config: The configuration object.
   :param name: The name of the pipeline.
-  :param secrets: A list of names for secrets to be used in the pipeline.
   """
   repo = architecture.get_repo_by_ID(repoID)
   # Open the Gitlab CI file and parse it
@@ -67,8 +66,8 @@ def changeToUpdatedImages(progress, docker_migration, pipeline):
   """
   Changes the image names in the pipeline to the updated ones.
   :param pipeline: The pipeline object
-  :param architecture: The architecture object
-  :param repoID: The ID of the repository
+  :param docker_migration: Docker migration object
+  :param pipeline: Pipline object
   """
   dependencies = set()
   # Change the image names in the pipeline object
@@ -84,10 +83,8 @@ def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=Fa
   """
       Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits
       the changes.
-  :param repoIDS: RepoIDS of the contained repos
   :param architecture: Architecture object
   :param config: Config object
-  :param secrets: Secrets to be used in the pipeline
   """
   console = Console()
   github_file_path = os.path.join(os.getcwd(), "repos", config.monorepoName)

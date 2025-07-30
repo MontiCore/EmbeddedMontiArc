@@ -9,7 +9,7 @@ class TestPipeline(TestCase):
     self.job_b = Job.Job("b", "ubuntu:latest", "Second", [], ["a"], "", [])
     self.job_c = Job.Job("c", "ubuntu:latest", "Second", [], ["a"], "", [])
     self.pipeline = Pipeline.Pipeline(["First", "Second"], {"a": self.job_a, "b": self.job_b, "c": self.job_c},
-                                      {"First": ["a"], "Second": ["b", "c"]}, {"b": ["a"]}, ["First", "Second"])
+                                      {"First": ["a"], "Second": ["b", "c"]}, ["First", "Second"])
 
   def test_get_previous_stage_jobs(self):
     previous_jobs = self.pipeline.get_previous_stage_jobs(self.job_b)

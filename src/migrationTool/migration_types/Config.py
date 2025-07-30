@@ -5,6 +5,9 @@ from rich import print
 
 
 class Config:
+  """
+  Configuration class for the Migration Tool.
+  """
   def __init__(self, path="config.yaml"):
     with open(path, "r") as file:
       data = yaml.safe_load(file)

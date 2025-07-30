@@ -3,7 +3,7 @@ class Job:
   A class representing a single job in a CI/CD pipeline.
   """
 
-  def __init__(self, name: str, image: str, stage: str, script: list[str], needs: list[str] = [], when: str = "",
+  def __init__(self, name: str, image: str, stage: str, script: list[str], needs: list[str] = [],
                exc: list[str] = [], artifacts={}, only: list[str] = [], allowFailure=False, rules=[], trigger=dict,
                variables=dict):
     """
@@ -13,7 +13,6 @@ class Job:
     :param stage: Stage of the job in the pipeline
     :param script: Script to be executed in the job
     :param needs: List of jobs that need to be completed before this job can start
-    :param when: Condition for when the job should run
     :param exc: List of branches that should not trigger the job
     :param artifacts: Path to artifacts produced by the job
     :param only: List of branches that should trigger the job
@@ -25,7 +24,6 @@ class Job:
     self.stage = stage
     self.script = script
     self.needs = needs
-    self.when = when
     self.exc = exc
     self.artifacts = artifacts
     self.only = only
@@ -44,8 +42,6 @@ class Job:
       result += f"Script: {self.script}\n"
     if self.needs:
       result += f"Needs: {self.needs}\n"
-    if self.when:
-      result += f"When: {self.when}\n"
     if self.exc:
       result += f"Except: {self.exc}\n"
     if self.artifacts:

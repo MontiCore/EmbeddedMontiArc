@@ -21,7 +21,6 @@ class GithubActionConverter(Converter):
     :param architecture: Architecture object
     :param pipeline: Pipeline object
     :param compatibleImages: Set of images that can be run natively on the GitHub Actions runner
-    :param repoIDs: List of repo IDs to be migrated. If empty, all repos in the architecture are used
     :param rebuild: Whether to rebuild splitted large files or not
     container
     """
@@ -39,7 +38,7 @@ class GithubActionConverter(Converter):
           self.migrated_docker_images[repo.name] = [image]
         else:
           self.migrated_docker_images[repo.name].append(image)
-    self.file_change_job_needed = False  # ToDO: Validate
+    self.file_change_job_needed = False
 
   def parse_pipeline(self, repoID) -> str:
     """
@@ -116,9 +115,9 @@ class GithubActionConverter(Converter):
       else:
         for i, j in enumerate(job.needs):
           if i == 0:
-            needs_string += (f"{j.replace("/", "_").replace(" ", "_")} ")
+            needs_string += f"{j.replace("/", "_").replace(" ", "_")} "
           else:
-            needs_string += (f", {j.replace("/", "_").replace(" ", "_")}")
+            needs_string += f", {j.replace("/", "_").replace(" ", "_")}"
       i = self.pipeline.stages.index(job.stage)
       if i > 0:
         needs_string += f", {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}"
@@ -176,6 +175,10 @@ class GithubActionConverter(Converter):
 
     job_string += f"\t\ttimeout-minutes: {self.timeout}\n"
 
+    if job.allowFailure:
+        # If the job is allowed to fail, add the continue-on-error block
+        job_string += f"\t\tcontinue-on-error: true\n"
+
     # If the job publishes to pages it needs special permissions
     if job.artifacts:
       if "paths" in job.artifacts:
@@ -206,22 +209,32 @@ class GithubActionConverter(Converter):
 
     if job.trigger:
       # If the job is a trigger job, add the trigger block
-      repo_name = job.trigger["project"].split("/")[-1]
-      branch = job.trigger["branch"]
+      if "project" in job.trigger:
+        repo_name = job.trigger["project"].split("/")[-1]
+        triggered_repo = self.architecture.get_repo_by_name(repo_name)
+        if "branch" in job.trigger:
+          branch = job.trigger["branch"]
+        else:
+          branch = triggered_repo.get_branches_to_be_migrated()[0]
 
-      triggered_repo = self.architecture.get_repo_by_name(repo_name)
-      if triggered_repo is None:
-        print(f"[red] The repo {repo_name} has not been migrated yet!")
-      elif branch not in triggered_repo.get_branches_to_be_migrated():
-        print(f"[red] The branch {branch} of {repo_name} has not been part of the migration yet!")
-      job_string += GithubActionConverter.trigger(repo_name, branch)
+
+        if triggered_repo is None:
+          print(f"[red] The repo {repo_name} has not been migrated yet!")
+        elif branch not in triggered_repo.get_branches_to_be_migrated():
+          print(f"[red] The branch {branch} of {repo_name} has not been part of the migration yet!")
+        job_string += GithubActionConverter.trigger(repo_name+".yml",repo_name, branch)
+      elif "include" in job.trigger:
+        workflow_path = job.trigger["include"].split("/")[-1]
+        branch = "${{ github.ref_name }}"
+        repo = "${{ github.repository }}"
+        job_string += GithubActionConverter.trigger(workflow_path, repo_name=repo, branch=branch)
 
     elif job.script:
       # Add the script the job should run
       if native:
         # If native the script can be run directly
         job_string += f"\t\t\t- name: Script\n"
-        if job.allowFailure == True:
+        if job.allowFailure:
           job_string += "\t\t\t\tcontinue-on-error: true\n"
         job_string += "\t\t\t\tshell: bash\n"
         job_string += f"\t\t\t\trun: |\n"
@@ -231,7 +244,7 @@ class GithubActionConverter(Converter):
       else:
         # If not native, the script needs to be run in the docker container using docker exec
         job_string += f"\t\t\t- name: Script\n"
-        if job.allowFailure == True:
+        if job.allowFailure:
           job_string += "\t\t\t\tcontinue-on-error: true\n"
         # Create a SCRIPT variable that contains the script
         job_string += f"\t\t\t\tenv:\n"
@@ -246,7 +259,7 @@ class GithubActionConverter(Converter):
       # Once the script is done and the job was successful, upload the artifacts
       if job.artifacts:
         if "paths" in job.artifacts:
-          if job.artifacts["paths"] == ["public"] and job.name == "pages":
+          if job.artifacts["paths"][0].split("/")[-1] == "public" and job.name == "pages":
             # If the job is a pages job, deploy the pages
             job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
           else:
@@ -347,7 +360,6 @@ class GithubActionConverter(Converter):
     start += f"\t\t\t- name: Start Docker Container\n"
     start += f"\t\t\t\trun: |\n"
     if "ghcr.io" in image:
-      # ToDo: Change to github repo owner
       start += ('\t\t\t\t\techo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" '
                 '--password-stdin\n')
     start += f"\t\t\t\t\tdocker pull {image.lower()}\n"
@@ -438,10 +450,12 @@ class GithubActionConverter(Converter):
     return deploy
 
   @staticmethod
-  def trigger(repo_name: str, branch: str = "master") -> str:
+  def trigger(workflow_file: str, repo_name: str = "", branch: str = "master") -> str:
     """
         Creates the trigger for the pipeline.
-    :param repo_name: Name of the repo
+    :param workflow_file: Workflow file to be triggered
+    :param repo_name: Name of the repo to be triggered. If empty, the current repo is used
+    :param branch: Branch to run on. Default is master
     :return: String of the trigger block
     """
     trigger = ""
@@ -451,7 +465,7 @@ class GithubActionConverter(Converter):
     trigger += f"\t\t\t- name: Trigger {repo_name} pipeline\n"
     trigger += "\t\t\t\trun: gh workflow run $WORKFLOW_FILE --repo $REPO  --ref $BRANCH\n"
     trigger += "\t\t\t\tenv:\n"
-    trigger += f"\t\t\t\t\tWORKFLOW_FILE: {repo_name}.yml\n"
+    trigger += f"\t\t\t\t\tWORKFLOW_FILE: {workflow_file}\n"
     trigger += f"\t\t\t\t\tBRANCH: {branch}\n"
     trigger += f"\t\t\t\t\tREPO: {repo_name}\n"
     trigger += "\t\t\t\t\tGH_TOKEN: ${{github.token}}\n"
@@ -461,26 +475,26 @@ class GithubActionConverter(Converter):
     trigger += "\t\t\t\tid: get_run\n"
     trigger += "\t\t\t\trun: |\n"
     trigger += (f"\t\t\t\t\tRUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --json"
-                f"databaseId,createdAt \\\n")
+                f" databaseId,createdAt \\\n")
     trigger += ("\t\t\t\t\t--jq '[.[] | select(.createdAt > \"${{ steps.trigger_time.outputs.time }}\")] | sort_by("
                 ".createdAt) | last.databaseId')\n")
     trigger += "\t\t\t\t\techo \"Run ID: $RUN_ID\"\n"
     trigger += "\t\t\t\t\techo \"run_id=$RUN_ID\" >> $GITHUB_OUTPUT\n"
     trigger += "\t\t\t\tenv:\n"
     trigger += "\t\t\t\t\tGH_TOKEN: ${{github.token}}\n"
-    trigger += f"\t\t\t\t\tWORKFLOW_FILE: {repo_name}.yml\n"
+    trigger += f"\t\t\t\t\tWORKFLOW_FILE: {workflow_file}\n"
     trigger += f"\t\t\t\t\tBRANCH: {branch}\n"
     trigger += f"\t\t\t\t\tREPO: {repo_name}\n"
     trigger += "\t\t\t- name: Wait for Child Workflow to finish\n"
     trigger += "\t\t\t\trun: |\n"
     trigger += "\t\t\t\t\twhile true; do\n"
     trigger += ("\t\t\t\t\t\tSTATUS=$(gh run view \"${{ steps.get_run.outputs.run_id }}\" --repo=$REPO --json status"
-                "--jq '.status')\n")
+                " --jq '.status')\n")
     trigger += "\t\t\t\t\t\techo \"Current status: $STATUS\"\n"
     trigger += "\t\t\t\t\t\tif [[ \"$STATUS\" == \"completed\" ]]; then\n"
     trigger += "\t\t\t\t\t\t\tbreak\n"
     trigger += "\t\t\t\t\t\tfi\n"
-    trigger += "\t\t\t\t\t\tsleep 5\n"
+    trigger += "\t\t\t\t\t\tsleep 60\n"
     trigger += "\t\t\t\t\tdone\n"
     trigger += "\t\t\t\tenv:\n"
     trigger += "\t\t\t\t\tGH_TOKEN: ${{github.token}}\n"
@@ -711,12 +725,12 @@ class GithubActionConverter(Converter):
         jobString += "\t\t\t\t\t\tfi\n"
       jobString += "\t\t\t\t\tdone\n"
       jobString += '\t\t\t\t\techo "Final file status except check: $exc"\n'
-      if only and not exc:
-        jobString += '\t\t\t\t\techo "run=$only" >> $GITHUB_OUTPUT\n'
-      elif exc and not only:
-        jobString += '\t\t\t\t\techo "run=$exc" >> $GITHUB_OUTPUT\n'
-      elif only and exc:
-        jobString += '\t\t\t\t\techo "run=$((only && exc))" >> $GITHUB_OUTPUT\n'
+    if only and not exc:
+      jobString += '\t\t\t\t\techo "run=$only" >> $GITHUB_OUTPUT\n'
+    elif exc and not only:
+      jobString += '\t\t\t\t\techo "run=$exc" >> $GITHUB_OUTPUT\n'
+    elif only and exc:
+      jobString += '\t\t\t\t\techo "run=$((only && exc))" >> $GITHUB_OUTPUT\n'
     return jobString
 
   def __rules(self, job: Job):
@@ -791,16 +805,20 @@ class GithubActionConverter(Converter):
     push_indices = [i for i, command in enumerate(script) if "docker push" in command]
 
     if login_indices and build_indices and push_indices:
-      if login_indices[0] < build_indices[0] and build_indices[0] < push_indices[0]:
+      if login_indices[0] < build_indices[0] < push_indices[0]:
         # If the login command is before the build command, add the login command to the script
         docker_path = script[push_indices[0]].split(" ")[2]
         if ":" not in docker_path:
           docker_path += ":latest"
         image_migrated = False
-        for repo in self.migrated_docker_images:
-          for image in self.migrated_docker_images[repo]:
-            if docker_path.endswith(image):
+        repo = ""
+        image = ""
+        for repo_it in self.migrated_docker_images:
+          for image_it in self.migrated_docker_images[repo_it]:
+            if docker_path.endswith(image_it):
               image_migrated = True
+              repo = repo_it
+              image = image_it
               break
           if image_migrated:
             break
@@ -815,9 +833,8 @@ class GithubActionConverter(Converter):
           script[push_indices[0]] = 'docker push ghcr.io/$LOWERCASE_OWNER/' + repo.lower() + '/' + image.lower()
           script.insert(build_indices[0],
                         'LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")')
-    delete = []
     for i, command in enumerate(script):
-      # if "mvn" in command and False:
+      #if "mvn" in command and False:
       # command += (" -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 "
       #              "-Dmaven.wagon.http.readTimeout=600000000")
       command = command.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
@@ -825,7 +842,5 @@ class GithubActionConverter(Converter):
       command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$DEPLOY_KEY", "${{ secrets.GITLABTOKEN }}")
       script[i] = command
-    delete.reverse()
-    for i in delete:
-      script.pop(i)
+
     return script

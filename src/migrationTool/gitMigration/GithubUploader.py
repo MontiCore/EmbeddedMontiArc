@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 from migrationTool.gitMigration.Git import Git
 from migrationTool.gitMigration.Uploader import Uploader
-from migrationTool.migration_types import Architecture, Config
+from migrationTool.migration_types import Architecture, Config, Repo
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ class GithubUploader(Git, Uploader):
         raise
     return repo
 
-  def create_public_repo(self, name):
+  def create_public_repo(self, name: str):
     """
     Create a public repository on the target Git instance.
     :param name: Name of the repository to be created
@@ -73,7 +73,7 @@ class GithubUploader(Git, Uploader):
         raise
     return repo
 
-  def get_or_create_remote_repo(self, name):
+  def get_or_create_remote_repo(self, name: str):
     """
     Get or create a repository on the target Git instance.
     :param name: Name of the repository to be created
@@ -107,7 +107,7 @@ class GithubUploader(Git, Uploader):
         raise
     return repo
 
-  def create_secrets(self, github_repo, secrets):
+  def create_secrets(self, github_repo: git.Repo, secrets: dict[str, str]):
     """
     Create secrets for the repository on the target Git instance. If a secret already exists, it is not changed.
     :param github_repo: Github repo object
@@ -145,23 +145,21 @@ class GithubUploader(Git, Uploader):
     return [repo.name for repo in repos if repo.private]
 
   # ToDo: Rework to current design
-  def upload_repo(self, repoID, disable_scanning=False):
+  def upload_repo(self, repoID: str, disable_scanning: bool=False):
     """
     Upload a repository to the target Git instance.
     :param repoID: RepositoryID to be uploaded
-    :param secrets: secrets to be created
     :param disable_scanning: Whether to disable push protection in this repo
     """
     logger = logging.getLogger(__name__)
     print(logger.handlers)
     repo = self.architecture.get_repo_by_ID(repoID)
-    path = os.path.join(os.getcwd(), "repos", repo.name)
     repo_git = repo.get_repo()
     logger.info(f"Uploading {repo.name} to the target Git instance...")
     # self.set_upstream_for_branches(repo)
     github_repo = self.get_or_create_remote_repo(repo.name)
     if disable_scanning or True:
-      self.deactivate_push_protection(github_repo)
+      self.deactivate_push_protection(github_repo.url)
     self.create_secrets(github_repo, repo.secrets)
 
     existing_branches = [b.name for b in github_repo.get_branches()]
@@ -181,7 +179,7 @@ class GithubUploader(Git, Uploader):
             print()
         logger.info(f"Branch {branch} uploaded successfully.")
     if disable_scanning or True:
-      self.activate_push_protection(github_repo)
+      self.activate_push_protection(github_repo.url)
     github_repo.edit(default_branch="master")
 
   def get_monorepo_secrets(self):
@@ -199,11 +197,9 @@ class GithubUploader(Git, Uploader):
           logger.warning(f"Secret {name} defined multiple times with different values in architecture.yaml.")
     return secrets
 
-  def upload_mono_repo(self, disable_scanning=False):
+  def upload_mono_repo(self, disable_scanning: bool=False):
     """
     Upload a monorepo with multiple subtreesa to the target Git instance.
-    :param monorepo_name: Repo Object
-    :param secrets: Secrets to be created
     :param disable_scanning: Whether to disable push protection in this repo
     """
 
@@ -272,7 +268,7 @@ class GithubUploader(Git, Uploader):
       table.add_row(branch, status)
     console.print(table)
 
-  def push_subtree_wise(self, branch, local_repo):
+  def push_subtree_wise(self, branch, local_repo: git.Repo):
     """
         Upload one subtree after another in chronological order.
     :param branch: Branch to be uploaded
@@ -298,7 +294,6 @@ class GithubUploader(Git, Uploader):
           logger.error(f"Error pushing {push.hexsha}" + str(e))
           print(f"[red]Error pushing {push.hexsha}[/red]")
           return ":x:"
-      # a = local_repo.remote(name="origin").push(refspec=f"{push.hexsha}:refs/heads/{branch.name}")
       if a:
         print(f"[red]Error pushing {push.hexsha}[/red]")
         logger.error(f"Error pushing {push.hexsha}")
@@ -336,7 +331,7 @@ class GithubUploader(Git, Uploader):
             print()
         logger.info(f"Branch {branch.name} uploaded successfully.")
 
-  def push_commit_wise(self, existingBranches, localRepo):
+  def push_commit_wise(self, existingBranches: list[str], localRepo: git.Repo):
     """
         Push all commits of a branch in chronological order
     :param existingBranches: Branches existing in the github repo are skipped
@@ -356,7 +351,7 @@ class GithubUploader(Git, Uploader):
             a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True)
             commit_pbar.update(1)
 
-  def deactivate_push_protection(self, url):
+  def deactivate_push_protection(self, url:str):
     """
         Deactivates push protection for the given GitHub repository.
     :param url: URL to Github repository API
@@ -377,7 +372,7 @@ class GithubUploader(Git, Uploader):
       print("[red]Push protection deactivation failed. Push might not be possible. Either deactivate manually or push "
             "manually and remove blocked blobs.")
 
-  def activate_push_protection(self, url):
+  def activate_push_protection(self, url:str):
     """
         Activates Push Protection for the given GitHub repository.
     :param url: URL to Github repository API
@@ -454,11 +449,10 @@ def dockerImageMigration(self, architecture, repoID):
     repo.index.commit("Added Docker image migration workflow")
 """
 
-  def docker_image_migration_monorepo(self, repos_to_be_migrated=None):
+  def docker_image_migration_monorepo(self, repos_to_be_migrated: list[str]=None):
     """
         Adds a new GitHub action to migrate Docker images from GitLab to GitHub.
-    :param architecture: Architecture object
-    :param repos_to_be_migrated: List of repositories to be migrated. If None, all repositories are migrated.
+    :param repos_to_be_migrated: List of repository ids to be migrated. If None, all repositories are migrated.
     :return:
     """
     if repos_to_be_migrated is None:

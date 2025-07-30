@@ -2,7 +2,6 @@ import datetime
 import logging
 import os
 import subprocess
-import time
 
 import git
 import gitlab
@@ -52,7 +51,7 @@ class GitlabDownloader(Git, Downloader):
       repo_secrets["CI_API_V4_URL"] = {"Value": self.gl.api_url, "Secret": "N"}
       if env_variables:
         for secret in env_variables:
-          if (secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID"):
+          if secret == "CI_JOB_TOKEN" or secret == "CI_API_V4_URL" or secret == "CI_PROJECT_ID":
             continue
           else:
             repo_secrets[secret] = {"Value": "Please add a value",
@@ -172,7 +171,7 @@ class GitlabDownloader(Git, Downloader):
     """
     return repo.namespace["full_path"]
 
-  def clone_repo(self, repo_id, clone_path, absorb_submodules) -> tuple[str, str]:
+  def clone_repo(self, repo_id, clone_path) -> tuple[str, str]:
     """
     Clone a repository from GitLab to the local machine. Additionally it checks out all branches and removes the
     remote origin.
@@ -191,7 +190,7 @@ class GitlabDownloader(Git, Downloader):
     else:
       logging.info(f"Directory {clone_path} already exists, skipping clone.")
       print(f"Directory {clone_path} already exists, skipping clone.")
-      return (gitlab_repo.name, ":white_check_mark: [green] Skipped cloning [/green]",)
+      return gitlab_repo.name, ":white_check_mark: [green] Skipped cloning [/green]",
     # Clone
     default_branch = gitlab_repo.default_branch
     with CloneProgress() as progress:
@@ -203,23 +202,24 @@ class GitlabDownloader(Git, Downloader):
     # Check if LFS is used and download LFS objects if necessary
     lfs_check = subprocess.run(["git", "lfs", "ls-files"], cwd=clone_path, capture_output=True, text=True)
     if lfs_check.stdout:
-      logging.info("LFS-Objekte gefunden, LFS-Objekte werden heruntergeladen...")
-      typer.echo("LFS-Objekte werden heruntergeladen...")
+      logging.info("LFS-Objects found, being donwloaded...")
+      typer.echo("LFS-Objects are being downloaded...")
       process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                  text=True, )
       # for line in process.stdout:
       #    print(line.strip())
       rc = process.poll()
+      logger.info(rc)
 
     try:
       local_repo = git.Repo(clone_path)
     except git.exc.InvalidGitRepositoryError:
       logger.error(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
       typer.echo(f"Invalid Git repository at {clone_path}. Please consider deleting the folder manually.")
-      return (gitlab_repo.name, ":x: [red] Invalid Git repository, please delete the folder [/red]",)
-    self.checkout_branches(local_repo, absorb_submodules)
+      return gitlab_repo.name, ":x: [red] Invalid Git repository, please delete the folder [/red]",
+    self.checkout_branches(local_repo)
     self.remove_remote_origin(local_repo)
-    return (gitlab_repo.name, ":white_check_mark: [green] Successfully cloned [/green]",)
+    return gitlab_repo.name, ":white_check_mark: [green] Successfully cloned [/green]",
 
 
 class CloneProgress(RemoteProgress):

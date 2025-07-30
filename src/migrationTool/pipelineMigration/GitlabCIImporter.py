@@ -65,6 +65,7 @@ class GitlabCIImporter(Importer):
       general_before_script = self.__flattenList(self.yaml_data["before_script"])
 
     for name, parameter in self.yaml_data.items():
+      job_name = name
       if name == "stages":
         continue
       if "script" in parameter or "trigger" in parameter:
@@ -82,13 +83,22 @@ class GitlabCIImporter(Importer):
           else:
             sc = self.__flattenList(parameter.get("script", []))
 
+        if "pages" in parameter:
+          if parameter["pages"] == "true":
+            parameter["artifacts"] = {"paths": ["public"]}
+            job_name = "pages"
+          elif "publish" in parameter["pages"]:
+            parameter["artifacts"] = {"paths": parameter["pages"]["publish"]}
+            job_name = "pages"
+
+
         # Handle dependencies
         if "dependencies" in parameter:
           needs = parameter.get("dependencies", []) + parameter.get("needs", [])
         else:
           needs = parameter.get("needs", [])
-        jobs[name] = Job(name=name, image=parameter.get("image", general_image), stage=parameter.get("stage", ""),
-                         script=sc, needs=needs, when=parameter.get("when", ""), exc=parameter.get("except", []),
+        jobs[name] = Job(name=job_name, image=parameter.get("image", general_image), stage=parameter.get("stage", ""),
+                         script=sc, needs=needs,  exc=parameter.get("except", []),
                          artifacts=parameter.get("artifacts", []), only=parameter.get("only", []),
                          allowFailure=parameter.get("allow_failure", False), rules=parameter.get("rules", []),
                          trigger=parameter.get("trigger", {}), variables=parameter.get("variables", {}))
@@ -111,7 +121,7 @@ class GitlabCIImporter(Importer):
     job_needs = {}
     for stage in self.stages:
       for jobName in stage_jobs[stage]:
-        if self.jobs[jobName].needs != []:
+        if self.jobs[jobName].needs:
           for j in self.jobs[jobName].needs:
             if jobName in job_needs:
               job_needs[jobName].add(j)
@@ -156,4 +166,4 @@ class GitlabCIImporter(Importer):
     self.variables = self.__readVariables()
     self.jobs = self.__read_jobs()
     self.stage_dependencies, self.needs = self.__read_dependencies()
-    return Pipeline(self.stages, self.jobs, self.stage_dependencies, self.needs, self.__get_schedule(), self.variables)
+    return Pipeline(self.stages, self.jobs, self.stage_dependencies, self.__get_schedule(), self.variables)

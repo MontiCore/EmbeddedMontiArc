@@ -3,20 +3,18 @@ class Pipeline:
   Class representing a CI/CD pipeline.
   """
 
-  def __init__(self, stages, jobs, stageJobs, jobNeeds, schedule, variables={}):
+  def __init__(self, stages, jobs, stageJobs, schedule, variables={}):
     """
     Initializes the pipeline with the given stages, jobs, and their dependencies.
     :param stages: List of stages in the pipeline
     :param jobs: Dictionary of jobs in the pipeline
     :param stageJobs: Dictionary mapping each stage to its jobs
-    :param jobNeeds: Dictionary mapping each job to its dependencies
     :param schedule: List representing the order of stages in the pipeline
     """
 
     self.stages = stages
     self.jobs = jobs
     self.stageJobs = stageJobs
-    self.jobNeeds = jobNeeds
     self.schedule = schedule
     self.variables = variables
 
@@ -55,9 +53,6 @@ class Pipeline:
     if len(self.stageJobs[check_stage]) == 0:
       del self.stageJobs[check_stage]
       self.stages.remove(check_stage)
-    for jobName in self.jobNeeds:
-      if delete_job in self.jobNeeds[jobName]:
-        self.jobNeeds[jobName].remove(delete_job)
     for job in self.jobs.values():
       if delete_job in job.needs:
         job.needs.remove(delete_job)

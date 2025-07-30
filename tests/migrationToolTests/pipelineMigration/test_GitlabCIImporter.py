@@ -35,7 +35,7 @@ class TestGitlabCIImporter(TestCase):
       "test_job": "Name: test_job\nImage: docker:latest\nStage: test\nScript: ['echo \"This is a before script\"', "
                   "'echo \"This is a before script for test_job\"', 'echo \"This is a test job\"']\n",
       "test2_job": "Name: test2_job\nImage: docker:latest\nStage: test\nScript: ['echo \"This is a before script\"', "
-                   "'echo \"This is another test job\"']\nWhen: always\nAllow Failure: True\n",
+                   "'echo \"This is another test job\"']\nAllow Failure: True\n",
       "build_job": "Name: build_job\nImage: docker:latest\nStage: build\nScript: ['echo \"This is a before script\"', "
                    "'echo \"This is a build job\"']\nNeeds: ['test2_job', 'test_job']\nExcept: ['docu']\n",
       "deploy_job": "Name: deploy_job\nImage: docker:latest\nStage: deploy\nScript: ['echo \"This is a before "

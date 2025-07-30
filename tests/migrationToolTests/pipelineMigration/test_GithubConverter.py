@@ -496,7 +496,7 @@ class TestGithubActionConverter(TestCase):
       - name: Get latest run ID of Child Workflow after trigger time
         id: get_run
         run: |
-          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --jsondatabaseId,createdAt \\
+          RUN_ID=$(gh run list --workflow=$WORKFLOW_FILE --branch=$BRANCH --repo=$REPO --json databaseId,createdAt \\
           --jq '[.[] | select(.createdAt > "${{ steps.trigger_time.outputs.time }}")] | sort_by(.createdAt) | last.databaseId')
           echo "Run ID: $RUN_ID"
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
@@ -508,12 +508,12 @@ class TestGithubActionConverter(TestCase):
       - name: Wait for Child Workflow to finish
         run: |
           while true; do
-            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status--jq '.status')
+            STATUS=$(gh run view "${{ steps.get_run.outputs.run_id }}" --repo=$REPO --json status --jq '.status')
             echo "Current status: $STATUS"
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            sleep 5
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -694,6 +694,7 @@ class TestGithubActionConverter(TestCase):
     container:
       image: ubuntu:latest
     timeout-minutes: 120
+    continue-on-error: true
     steps:
       - name: Checkout latest commit
         uses: actions/checkout@v4

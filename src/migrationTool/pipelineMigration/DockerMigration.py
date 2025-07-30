@@ -57,7 +57,6 @@ class DockerMigration:
   def write_images_being_migrated(self):
     """
     Write the migrated docker images to the config file
-    :param dockerImages: List of migrated docker images
     """
     with open(self.path, "a") as file:
       for original_url, new_url in self.newImages.items():
@@ -196,7 +195,7 @@ class DockerMigration:
     if cached:
       logger.info(f"Cache hit for image path: {image_path}")
       return cached
-    # Otherwise for top-level group
+    # Otherwise, search for top-level group
     root_groups = self.gl.groups.list(search=image_path[0])
     root_group = None
 

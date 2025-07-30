@@ -146,11 +146,10 @@ class TestGithubSubTreeConverter(TestCase):
     """
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["trigger_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
-
     changed_variables = """        env:
           WORKFLOW_FILE: another-repo.yml
           BRANCH: ${{ github.ref_name }}
-          REPO: ${{github.repository}}
+          REPO: ${{ github.repository }}
           GH_TOKEN: ${{github.token}}
 """
     self.assertIn(changed_variables, pipeline)
