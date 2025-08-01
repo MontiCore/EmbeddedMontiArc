@@ -170,7 +170,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -231,7 +231,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -292,7 +292,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -353,7 +353,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -414,7 +414,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -475,7 +475,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -536,7 +536,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
@@ -597,7 +597,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
