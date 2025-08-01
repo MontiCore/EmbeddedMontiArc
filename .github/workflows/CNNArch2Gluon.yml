@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 24962
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 24962
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
 jobs:
   FileChanges:
     runs-on: ubuntu-latest
@@ -113,17 +113,17 @@ jobs:
           echo "Final run status: $run"
           echo "run=$run" >> $GITHUB_OUTPUT
   linux_phase:
-    needs: [BranchJobLinux, masterJobLinux]
+    needs: [ BranchJobLinux, masterJobLinux ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linux"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linux"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linux"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linux"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   masterJobLinux:
     needs: FileChanges
@@ -213,7 +213,7 @@ jobs:
             if [[ "$STATUS" == "completed" ]]; then
               break
             fi
-            slepp 60
+            sleep 60
           done
         env:
           GH_TOKEN: ${{github.token}}
