@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+import PIDTuple;
+
+component PID{
+	ports 
+		in Q( -oo : 0.001 : oo) error,
+		in PIDTuple tuple,
+		
+		out Q( -oo : 0.0001 : oo) output;
+		
+	implementation Math{
+	
+		static Z(0:1:oo) time_prev = now()-1;
+		static Q(-oo :0.001 : oo) int_error = 1;
+		static Q(-oo :0.001 : oo) windup_guard = 10;
+		static Q(-oo :0.001 : oo) prev_error = 0;
+		
+		Z(0:1:oo) time_now = now();
+		Z(1: 1 : oo) time_diff = time_now - time_prev;
+		
+		int_error = 0.5*time_diff*(error+prev_error);
+		
+		int_error = range(-windup_guard , windup_guard, int_error);
+				
+		Q(-oo: 0.001 :oo) P_term = tuple.P * error;
+		Q(-oo: 0.001 :oo) I_term = tuple.I * pid.int_error;
+		Q(-oo: 0.001 :oo) D_term = tuple.D * ((error - prev_error) / time_diff);
+
+		
+		time_prev = time_now;
+		prev_error = error;
+		
+		
+		output = P_term + I_term + D_term;
+		
+	}
+}

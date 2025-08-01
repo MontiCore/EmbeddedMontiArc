@@ -1,0 +1,6 @@
+package LDExtractorImpl
+
+typedef option List {
+    required prop label: string
+    composite array
+}

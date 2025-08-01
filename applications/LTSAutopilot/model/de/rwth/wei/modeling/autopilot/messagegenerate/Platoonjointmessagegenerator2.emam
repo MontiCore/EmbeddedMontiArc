@@ -1,0 +1,62 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagegenerate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Platoonjointmessagegenerator2{
+  ports
+  in Z                if_sendjointmsg,
+  in Z                vehicleid,
+  in Z                potentialid,
+  in Z                timestamp,
+  in Q                position_x,
+  in Q                position_y,
+
+  in Z^{1,100}         currentplatoonlist,
+  in Z                 currentplatoon_member_num,
+
+
+  dynamic out Platoonjointmessage  plat_joint_msg[0:32],
+  out Platoonjointmessage pjmsg,
+  out Z^{1,100} platoonlist;
+
+
+  implementation Math{
+    static Z lastrequestid = 0;
+    static Z lastimestamp = 0;
+    pjmsg.timestamp = timestamp;
+    pjmsg.vehicleid = vehicleid;
+    pjmsg.jointvehicleid = potentialid;
+    pjmsg.currentstate = 0;
+    pjmsg.position_x = position_x;
+    pjmsg.position_y = position_y;
+    pjmsg.platoon_num = 1 + currentplatoon_member_num;
+    pjmsg.position_y = position_y;
+    platoonlist(1,1) = vehicleid;
+    for k = 1:currentplatoon_member_num
+        platoonlist(1,(k+1)) = currentplatoonlist(1,k);
+    end
+    pjmsg.platoonlist = platoonlist;
+
+    if lastrequestid == potentialid
+       if timestamp - lastimestamp >= 5 && if_sendjointmsg == 1
+          Z a = 1;
+          if ports_connect(plat_joint_msg,a,pjmsg)
+             plat_joint_msg(a) = pjmsg;
+          end
+          Z r = ports_free(plat_joint_msg,a);
+          lastimestamp = timestamp;
+          lastrequestid = potentialid;
+       end
+    else
+      if if_sendjointmsg == 1
+        Z b = 1;
+        if ports_connect(plat_joint_msg,b,pjmsg)
+           plat_joint_msg(b) = pjmsg;
+        end
+        Z r1 = ports_free(plat_joint_msg,b);
+        lastimestamp = timestamp;
+        lastrequestid = potentialid;
+      end
+    end
+  }
+}

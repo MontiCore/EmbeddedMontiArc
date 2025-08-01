@@ -1,0 +1,112 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messagegenerate.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+
+dynamic component Intersectioncollisiontype3{
+  ports
+  // single vehicle(statusmessage and trajectorymessage)
+  dynamic in    Statusmessage           single_status_msg[0:32],
+  dynamic in    Trajectorymessage       single_traj_msg[0:32],
+
+
+  in  Z ^ 32          vehicle_atintersection,
+  in  Z               vehicle_num,
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Q               length,
+  in  Q               width,
+  in  Q               velocity,
+  in  Q               dis2intersection,
+  in  Z               if_frontvehicleexists,
+  in  Z               ifcurrentsplit,
+  // use for collisionmessage
+  in  Z               timestamp,
+  in  Z               vehicleid,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+
+  dynamic out   Collisionmessage         coll_message[0:32],
+  out  Z   is_highestpriority;
+
+  instance Statusmessageparsing         smpin3[0:32];
+  instance Trajectorymessageparsing     tmpin3[0:32];
+  instance Collisioninformation         collinfo3[0:32];
+  instance Collisionmessage_helper      collhelper3;
+  instance Collisionmessagegenerator    coll_generator3;
+  instance Platoonwithsingle_priority   pws_priority;
+
+  @ length::value(>100)&&single_status_msg::connect {
+
+  }
+  @ length::value(>100)&& single_traj_msg::connect{
+
+  }
+
+ @ single_status_msg::connect && single_traj_msg::connect{
+   // status information to single vehicle from the statusmessage
+   connect single_status_msg[?] -> smpin3[?].status_message;
+   connect smpin3[?].vehicleid -> collinfo3[?].car1_id;
+   connect smpin3[?].length -> collinfo3[?].car1_length;
+   connect smpin3[?].width -> collinfo3[?].car1_width;
+   connect smpin3[?].velocity -> collinfo3[?].car1_velocity;
+   connect smpin3[?].position_x -> collinfo3[?].car1_position_x;
+   connect smpin3[?].position_y -> collinfo3[?].car1_position_y;
+
+   // trajectory information from the trajectorymessage
+   connect single_traj_msg[?] -> tmpin3[?].traj_message;
+   connect tmpin3[?].trajectroy_x -> collinfo3[?].trajectory_x_car1;
+   connect tmpin3[?].trajectroy_y -> collinfo3[?].trajectory_y_car1;
+   connect tmpin3[?].trajectory_length -> collinfo3[?].trajectory_length_car1;
+   connect tmpin3[?].nextintersection_x -> collinfo3[?].car1_nextintersection_x;
+   connect tmpin3[?].nextintersection_y -> collinfo3[?].car1_nextintersection_y;
+
+   // collision information of single vehicle
+   connect trajectory_length -> collinfo3[?].trajectory_length;
+   connect trajectory_x -> collinfo3[?].trajectory_x;
+   connect trajectory_y -> collinfo3[?].trajectory_y;
+   connect nextintersection_x -> collinfo3[?].nextintersection_x;
+   connect nextintersection_y -> collinfo3[?].nextintersection_y;
+   connect length -> collinfo3[?].length;
+   connect width -> collinfo3[?].width;
+
+   connect collinfo3[?].iscollision -> collhelper3.iscollision[?];
+   connect collinfo3[?].collsion_id -> collhelper3.collsion_id[?];
+   connect collinfo3[?].proritytocurrent -> collhelper3.collisionpriority[?];
+   connect collinfo3[?].angletocurrent -> collhelper3.angletocurrent[?];
+   connect collinfo3[?].velocity_car1 -> collhelper3.velocity_car1[?];
+   connect collinfo3[?].dis2intersection_car1 -> collhelper3.dis2intersection[?];
+
+ }
+   connect timestamp -> coll_generator3.timestamp;
+   connect vehicleid -> coll_generator3.vehicleid;
+   connect nextintersection_x -> coll_generator3.intersection_x;
+   connect nextintersection_y -> coll_generator3.intersection_y;
+   connect collhelper3.vehicle_n -> coll_generator3.vehicle_n;
+   connect collhelper3.real_collsion_id -> coll_generator3.collision_id;
+   connect collhelper3.real_collisionpriority -> coll_generator3.collisionpriority;
+
+   // generate the collision message
+   @ coll_generator3.coll_message::connect{
+     connect coll_generator3.coll_message[?] -> coll_message[?];
+   }
+
+   connect vehicle_atintersection -> pws_priority.vehicle_atintersection;
+   connect vehicle_num -> pws_priority.vehicle_num;
+   connect velocity -> pws_priority.velocity;
+   connect length -> pws_priority.length;
+   connect dis2intersection -> pws_priority.dis2intersection;
+   connect if_frontvehicleexists -> pws_priority.if_frontvehicleexists;
+   connect ifcurrentsplit -> pws_priority.ifcurrentsplit;
+   connect collhelper3.all_iscollision -> pws_priority.iscollision;
+   connect collhelper3.all_collsion_id -> pws_priority.collision_id;
+   connect collhelper3.all_collisionpriority -> pws_priority.collisionpriority;
+   connect collhelper3.all_angletocurrent -> pws_priority.angletocurrent;
+   connect collhelper3.all_velocity_car1 -> pws_priority.velocity_car1;
+   connect collhelper3.all_dis2intersection -> pws_priority.dis2intersection_car1;
+
+   connect pws_priority.is_highestpriority -> is_highestpriority;
+}

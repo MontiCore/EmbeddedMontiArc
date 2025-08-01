@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package ddpg16;
+
+component DDPG<T,U>(N1 actor_output_dimension) {
+
+    component Actor {
+        ports in U input_actor,
+              out T^{actor_output_dimension} output_actor;
+    }
+
+    instance Actor actor;
+}

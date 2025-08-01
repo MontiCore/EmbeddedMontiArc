@@ -1,0 +1,150 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Changestatus_platoonmemebersplit{
+  ports
+  dynamic in Platoonmessage  plat_msg[0:32],
+
+  in   Z                 platoonheadid,
+  in   Z^{1,100}         platoonlist,
+  in   Z                 platoon_member_num,
+  in   Z                 timestamp,
+  in   Q                 position_x,
+  in   Q                 position_y,
+  in   Q                 vehicleid,
+  in   Q                 compass,
+  in   Q                 length,
+  in   Q                 width,
+  in   Q                 engine,
+  in   Q                 brakes,
+  in   Q                 steering,
+  in   Q                 velocity,
+  in   Q                 nextintersection_x,
+  in   Q                 nextintersection_y,
+
+  out  Z                 current_status,
+  out  Z                 currentplatoonheadid,
+  out  Z                 ifcurrentwillsplit,
+  out  Z                 current_platnum,
+  out  Z^{1,100}         currentplatoonlist,
+  out  Platoonmessage    pmsg,
+  out  Statusmessage     smsg,
+  out  Statusmessage     smsg1,
+  out  Statusmessage     smsg2,
+
+  dynamic out Statusmessage  status_msg[0:32];
+
+  @ plat_msg::connect{}
+
+  implementation Math{
+    static Z timestamp_store = 0;
+    static Q next_x = 0.0;
+    static Q next_y = 0.0;
+    Q dis = 0.0;
+    for i = 1:32
+        if is_connected(plat_msg,i)
+           pmsg = plat_msg(i);
+           if pmsg.vehicleid == platoonheadid
+              if pmsg.ifsplit == 1 && pmsg.intsersection_x != 0.0 && next_x == 0.0
+                 next_x = pmsg.intsersection_x;
+                 next_y = pmsg.intsersection_y;
+              end
+           end
+        end
+    end
+    if nextintersection_x != 0.0 && nextintersection_y != 0.0
+    // don't know if pass the intersection,if yes,send new statusmessage
+       if next_x != 0.0 && next_y != 0.0
+          Q sqrt_dis = (nextintersection_x - next_x)*(nextintersection_x - next_x) +(nextintersection_y - next_y)*(nextintersection_y - next_y);
+          dis = sqrt(sqrt_dis);
+          if dis > 10
+             // pass the intersection, change status
+             smsg.vehicleid = vehicleid;
+             smsg.timestamp = timestamp;
+             smsg.position_x = position_x;
+             smsg.position_y = position_y;
+             smsg.compass = compass;
+             smsg.platoon_headid = 0;
+             smsg.length = length;
+             smsg.width = width;
+             smsg.engine = engine;
+             smsg.brakes = brakes;
+             smsg.steering = steering;
+             smsg.velocity = velocity;
+             Z a = 1;
+             if ports_connect(status_msg,a,smsg)
+                status_msg(a) = smsg;
+             end
+             Z r = ports_free(status_msg,a);
+             current_status = 0;
+             currentplatoonheadid = vehicleid;
+             ifcurrentwillsplit = 0;
+             current_platnum = 0;
+             currentplatoonlist = platoonlist;
+             next_x = 0.0;
+             next_y = 0.0;
+          else
+             // haven't pass the intersection, still send old status statusmessage
+             if timestamp - timestamp_store >= 5
+               smsg1.vehicleid = vehicleid;
+               smsg1.timestamp = timestamp;
+               smsg1.position_x = position_x;
+               smsg1.position_y = position_y;
+               smsg1.compass = compass;
+               smsg1.platoon_headid = platoonheadid;
+               smsg1.length = length;
+               smsg1.width = width;
+               smsg1.engine = engine;
+               smsg1.brakes = brakes;
+               smsg1.steering = steering;
+               smsg1.velocity = velocity;
+               Z a1 = 1;
+               if ports_connect(status_msg,a1,smsg1)
+                  status_msg(a1) = smsg1;
+               end
+               Z r1 = ports_free(status_msg,a1);
+             end
+             current_status = 1;
+             currentplatoonheadid = platoonheadid;
+             ifcurrentwillsplit = 1;
+             current_platnum = platoon_member_num;
+             currentplatoonlist = platoonlist;
+          end
+       else
+         current_status = 1;
+         currentplatoonheadid = platoonheadid;
+         ifcurrentwillsplit = 1;
+         current_platnum = platoon_member_num;
+         currentplatoonlist = platoonlist;
+       end
+    end
+    if nextintersection_x == 0.0 && nextintersection_y == 0.0
+    // already pass the intersection, change status, send new status message
+        smsg2.vehicleid = vehicleid;
+        smsg2.timestamp = timestamp;
+        smsg2.position_x = position_x;
+        smsg2.position_y = position_y;
+        smsg2.compass = compass;
+        smsg2.platoon_headid = 0;
+        smsg2.length = length;
+        smsg2.width = width;
+        smsg2.engine = engine;
+        smsg2.brakes = brakes;
+        smsg2.steering = steering;
+        smsg2.velocity = velocity;
+        Z a2 = 1;
+        if ports_connect(status_msg,a2,smsg2)
+           status_msg(a2) = smsg2;
+        end
+        Z r2 = ports_free(status_msg,a2);
+        current_status = 0;
+        currentplatoonheadid = vehicleid;
+        ifcurrentwillsplit = 0;
+        current_platnum = 0;
+        currentplatoonlist = platoonlist;
+        next_x = 0.0;
+        next_y = 0.0;
+    end
+
+}

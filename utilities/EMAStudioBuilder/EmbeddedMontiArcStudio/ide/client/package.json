@@ -1,0 +1,19 @@
+{
+  "name": "online-ide",
+  "version": "0.0.1",
+  "author": "SE RWTH",
+  "dependencies": {
+    "testcafe": "^0.18.6",
+    "testcafe-browser-provider-browserstack": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/filesystem": "0.0.28",
+    "@types/jquery": "^3.2.18",
+    "@types/node": "^9.3.0",
+    "browser-detect": "^0.2.22",
+    "browserfs": "^1.4.3"
+  },
+  "scripts": {
+    "test": "node modules/se.rwth.common.test/test.runner.js"
+  }
+}

@@ -1,0 +1,11 @@
+# (c) https://github.com/MontiCore/monticore  
+stages:
+- linux
+
+test:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/mnistcalculator/mxnet:v0.0.3
+  script: 
+  - ./build.sh
+  - build/src/cpp/Translator resources/vocabularies/vocab.en resources/vocabularies/vocab.vi 'I am fine .'
+

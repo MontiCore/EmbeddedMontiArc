@@ -1,0 +1,57 @@
+package de.rwth.connectedcars.navigation;
+
+component SpeedLimitChange {
+
+  port
+      in  N (0 : 10)                     traj_length,
+      in  Q (-oo m : oo m) ^ 10          traj_x,
+      in  Q (-oo m : oo m) ^ 10          traj_y,
+      in  Q (-oo m : oo m) ^ 2           current_pos,
+      in  Q (0 m/s : oo m/s) ^ 9         upper_speed_limit,
+      
+      out Q (0 m : oo m)                 tempDist,      //distance to upcoming lower speed limit
+      out Q (0 m/s : oo m/s)             newSpeed;      //value of upcoming lower speed limit
+      
+  implementation Math{
+  
+    Q ^ 10 trajj_x = traj_x;
+    Q ^ 10 trajj_y = traj_y;
+    
+    N (0:10) limit = traj_length - 1; //number of speed limits
+    Q (0 m : oo m) partDist;
+    N (0:1) found = 0;
+    
+    Q x; //x and y used as temporary variables
+    Q y;
+
+    //Calculate distance to next change to lower speed limit
+    for i = 2:limit 
+      if found == 0
+        if i == 2 
+            x = (trajj_x(i) - current_pos(1));
+            y = (trajj_y(i) - current_pos(2));
+            partDist = sqrt(x*x + y*y);
+            
+        else 
+            x = (trajj_x(i) - trajj_x(i-1));
+            y = (trajj_y(i) - trajj_y(i-1));
+            partDist = partDist + sqrt(x*x + y*y);
+        end
+        //if lower speed limit found
+        if upper_speed_limit(i) < upper_speed_limit(1)
+            newSpeed = upper_speed_limit(i);
+            tempDist = partDist;
+            found = 1;
+        end
+      end
+    end
+   
+    //if no lower speed limit could be found
+    if found == 0
+        tempDist = 1000 m;
+        newSpeed = upper_speed_limit(1); //current speed limit
+    end
+  
+  }
+  
+}

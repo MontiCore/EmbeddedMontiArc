@@ -1,0 +1,11 @@
+package ba;
+
+component CVBoundingRect {
+    port
+        in Q contour,
+        out Q rect;
+
+    implementation Math {
+        rect = boundingRect(contour);
+    }
+}

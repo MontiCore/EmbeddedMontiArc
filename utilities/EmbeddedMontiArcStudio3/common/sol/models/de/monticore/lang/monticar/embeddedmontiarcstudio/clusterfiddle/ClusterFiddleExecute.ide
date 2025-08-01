@@ -1,0 +1,32 @@
+package de.monticore.lang.monticar.embeddedmontiarcstudio.clusterfiddle
+
+import de.monticore.lang.monticar.sol.option.types.String
+import de.monticore.lang.monticar.sol.option.types.Path
+import de.monticore.lang.monticar.generators.EMAM2Cpp
+import de.monticore.lang.monticar.generators.emam2cpp.Gpp
+
+typedef configuration ClusterFiddleExecute {
+    label "Open ClusterFiddle for Model"
+    category "EmbeddedMontiArcStudio"
+    tools [EMAM2Cpp, Gpp]
+
+    option modelsDirectory: Path {
+        label "Model Directory"
+        required true
+    }
+
+    option rootModel: String {
+        label "Root Model"
+        required true
+    }
+
+    option outputDirectory: Path {
+        label "Output Directory"
+        required true
+    }
+
+    backend task Copy
+    backend task Generate depends Copy
+    backend task Compile depends Generate
+    frontend task Open depends Compile
+}

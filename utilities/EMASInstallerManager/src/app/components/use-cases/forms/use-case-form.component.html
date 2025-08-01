@@ -1,0 +1,28 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<mat-form-field color="accent">
+    <input matInput placeholder="Name" [(ngModel)]="state.name" #name="ngModel">
+    <mat-hint>The name of the model in UpperCamelCase (e.g AutoPilot).</mat-hint>
+    <mat-error *ngIf="state.hasErrorWithControl('name', name.control)">{{state.getError('name')}}</mat-error>
+</mat-form-field>
+<mat-form-field>
+    <mat-select placeholder="Platform" [(value)]="state.platform">
+        <mat-option value="all">All</mat-option>
+        <mat-option value="win32">Windows</mat-option>
+        <mat-option value="linux">Linux</mat-option>
+    </mat-select>
+    <mat-hint>The target platform of the model.</mat-hint>
+</mat-form-field>
+<div>
+    <button mat-raised-button [color]="state.hasError('folder') ? 'error' : 'accent'" class="button" [disabled]="state.saved">
+        <label>
+            Select the Model Root... *
+            <input type="file" class="hidden" (change)="onFolderChange($event)" webkitdirectory/>
+        </label>
+    </button>
+    <button mat-raised-button [color]="state.hasError('mainFile') ? 'error' : 'accent'" class="button" [disabled]="state.saved">
+        <label>
+            Select the Main File...
+            <input type="file" class="hidden" (change)="onMainFileChange($event)"/>
+        </label>
+    </button>
+</div>

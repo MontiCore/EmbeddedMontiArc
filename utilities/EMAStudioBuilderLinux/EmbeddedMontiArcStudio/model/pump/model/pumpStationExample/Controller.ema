@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component Controller {
+  ports
+    in Enum userButtonIn,
+    in Z waterLevel1,
+    out Boolean desiredPumpState,
+    out Q desiredValvePosition;
+
+  instance UserOperation userOperation;
+  instance EMSOperation eMSOperation;
+  instance ModeArbiter modeArbiter;
+
+  connect userButtonIn -> userOperation.userButton;
+  connect userOperation.desiredPumpState -> modeArbiter.userPumpState;
+  connect userOperation.desiredValvePosition -> modeArbiter.userValvePosition;
+
+  connect waterLevel1 -> eMSOperation.waterLevel1;
+  connect eMSOperation.desiredPumpState -> modeArbiter.emsPumpState;
+  connect eMSOperation.desiredValvePosition -> modeArbiter.emsValvePosition;
+
+  connect modeArbiter.desiredPumpState -> desiredPumpState;
+  connect modeArbiter.desiredValvePosition -> desiredValvePosition;
+}

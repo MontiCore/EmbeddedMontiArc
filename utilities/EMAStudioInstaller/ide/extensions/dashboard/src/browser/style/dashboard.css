@@ -1,0 +1,78 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.p-Widget.dialogOverlay {
+    z-index:2;
+}
+
+.p-Widget.elysium-dashboard {
+    position:fixed;
+    width:100%;
+    height:100%;
+    background-color:var(--theia-layout-color3);
+    z-index:1;
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-title-bar {
+    display:flex;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    justify-content:space-between;
+    align-items:center;
+    text-align:center;
+    font-size:var(--theia-ui-font-size1);
+    background-color:var(--theia-ui-dialog-header-color);
+    color:var(--theia-ui-dialog-header-font-color);
+    padding:0 calc(var(--theia-ui-padding)*2);
+    height:28px;
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content {
+    display:flex;
+    flex-grow:2;
+    flex-direction:column;
+    justify-content:space-around;
+    align-items:stretch;
+    position:relative;
+    padding:calc(var(--theia-ui-padding)*2);
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items {
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item {
+    height:150px;
+    width:150px;
+    float:left;
+    margin:10px 10px 0 10px;
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item:hover {
+    background-color:var(--theia-menu-color2);
+    cursor:pointer;
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item .elysium-dashboard-item-caption {
+    position:relative;
+    top:50%;
+    transform:translate(-7%,-50%) rotateZ(35deg);
+    display:block;
+    text-align:center;
+    text-shadow:var(--theia-ui-expand-button-color) 1px 2px;
+    color:var(--theia-ui-font-color0);
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item.elysium-dashboard-icon-loader .elysium-dashboard-item-caption {
+    transform:translate(0%,-50%) rotateZ(35deg);
+}
+
+.p-Widget.elysium-dashboard .elysium-dashboard-content .elysium-dashboard-items .elysium-dashboard-item.elysium-dashboard-busy {
+    cursor:default !important;
+    background-color:rgba(0,0,0,0) !important;
+}

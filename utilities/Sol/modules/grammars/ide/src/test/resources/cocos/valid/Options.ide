@@ -1,0 +1,17 @@
+package valid
+
+typedef configuration Options {
+    label "Some Configuration"
+
+    option someOption: Common {
+        label "Some Label"
+        required true
+    }
+
+    configuration sub: OptionsComponent {
+        fill sub1 with "some value"
+        inherit sub2 from someOption
+    }
+
+    frontend task main
+}

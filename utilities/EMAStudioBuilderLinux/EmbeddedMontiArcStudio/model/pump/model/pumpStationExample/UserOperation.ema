@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component UserOperation {
+  ports
+    in Enum userButton,
+    out Boolean desiredPumpState,
+    out Q desiredValvePosition;
+}
+     

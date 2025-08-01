@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorModel;
+
+stream StatusControllerTest for StatusController {
+    fl: 70m tick 30 tick 32m;
+    fr: 70m tick 32 tick 30m;
+    slf: 5m tick 4m tick 5m;
+    slb: 5m tick 5m tick 4m;
+    srf: 5m tick 5m tick 4m;
+    srb: 5m tick 4m tick 5m;
+    br: 50m tick 90m tick 90m;
+    bl: 50m tick 90m tick 90m;
+
+    steering: 0deg tick -5deg tick 5deg;
+}

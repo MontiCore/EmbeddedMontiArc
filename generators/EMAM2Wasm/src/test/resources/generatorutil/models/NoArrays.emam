@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component NoArrays {
+  ports
+    in Q(1 m : 5 m) in1,
+    in Q^{2,3} in2,
+    out Q^{2,1} out1;
+}

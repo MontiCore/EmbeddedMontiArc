@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample;
+
+// The connection can be used in a positive way (and fail) to check that
+// interface completeness is enforced
+// in a negative way it ...
+
+view ConnectPilotDisplayAndPCM {
+component Flight_System {
+  // Display
+  component Pilot_Display {}
+  instance Pilot_Display pilot_Display;
+  
+  // Page_Content_Manager
+  component PCM {}
+  instance PCM pCM;
+  
+  connect pCM -> pilot_Display;
+  }
+}

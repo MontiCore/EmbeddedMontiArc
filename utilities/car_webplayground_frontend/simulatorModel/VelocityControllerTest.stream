@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorModel;
+
+stream VelocityControllerTest for VelocityController {
+    velocity: 0m/s tick 10m/s tick 11m/s;
+    time: 0s tick 10s tick 11s;
+
+    acceleration: 1m/s^2 tick 1m/s^2 tick 0m/s^2;
+}

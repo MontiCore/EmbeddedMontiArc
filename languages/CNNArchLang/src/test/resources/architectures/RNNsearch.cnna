@@ -1,0 +1,47 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture RNNsearch(max_length=50, vocabulary_size=30001, embedding_size=620, hidden_size=1000){
+    def input Q^{max_length, vocabulary_size} source
+    def output Q^{max_length, vocabulary_size} target
+
+    layer GRU(units=hidden_size, bidirectional=true) encoder;
+
+    source ->
+    Embedding(input=vocabulary_size, output=embedding_size) ->
+    encoder ->
+    FullyConnected(units=hidden_size, flatten=false) -> encoder.output;
+
+    layer GRU(units=hidden_size) decoder;
+
+    1 -> OneHot(n=vocabulary_size) -> target[0];
+    encoder.state[1] -> decoder.state;
+
+    unroll<t> BeamSearchStart(width=5, max_length=50) {
+        (
+            (
+                (
+                    decoder.state ->
+                    Repeat(n=max_length, dim=1)
+                |
+                    encoder.output
+                ) ->
+                Concatenate(dim=2) ->
+                FullyConnected(units=hidden_size, flatten=false) ->
+                Tanh() ->
+                FullyConnected(units=max_length) ->
+                Softmax()
+            |
+                encoder.output
+            ) ->
+            Dot()
+        |
+            target[t-1] ->
+            Embedding(input=vocabulary_size, output=hidden_size)
+        ) ->
+        Concatenate() ->
+        decoder ->
+        FullyConnected(units=vocabulary_size) ->
+        ArgMax() ->
+        OneHot(n=vocabulary_size) ->
+        target[t]
+    };
+}

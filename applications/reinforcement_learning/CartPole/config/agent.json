@@ -1,0 +1,10 @@
+{
+    "modelsDir": "src/model",
+    "outputDir": "target/agent",
+    "rootModel": "cartpole.agent.master",
+    "generators": [
+        "emadlcpp",
+        "roscpp"
+    ],
+    "emadlBackend": "GLUON"
+}

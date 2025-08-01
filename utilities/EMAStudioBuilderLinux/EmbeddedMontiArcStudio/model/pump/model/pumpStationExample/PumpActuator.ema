@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+component PumpActuator {
+  ports
+    in Boolean desiredPumpState,
+    in Boolean pumpState,
+    out Boolean pumpActuatorPort;
+}    

@@ -1,0 +1,192 @@
+// (c) https://github.com/MontiCore/monticore
+
+/* ============================================================ */
+/* ========================= Plugins ========================== */
+/* ============================================================ */
+
+plugins {
+    id 'java'
+    id "monticore" version "$mc_version"
+    id 'maven-publish'
+    id "com.github.johnrengelman.shadow" version "6.0.0"
+    // id "de.set.ecj" version "1.4.1" // Eclipse compiler as it's much faster than javac
+    id 'org.unbroken-dome.test-sets' version '3.0.1'
+}
+
+/* ============================================================ */
+/* ========================= Project ========================== */
+/* ============================================================ */
+
+group = 'de.monticore.lang'
+description = 'gdl'
+sourceCompatibility = '11'
+
+/* ============================================================ */
+/* ========================= Versions ========================= */
+/* ============================================================ */
+
+def junit_version = "4.13.1"
+def commons_cli_version = "1.4"
+def grammar_classifier = "grammars"
+def grammarDir = "src/main/grammars"
+// def mc_version = "4.5.3"
+def se_commons_version = "7.4.0-SNAPSHOT"
+
+
+/* ============================================================ */
+/* ======================= Configuration ====================== */
+/* ============================================================ */
+
+// configure non-standard source sets
+sourceSets {
+    main.java.srcDirs += [ "$projectDir/target/generated-sources/monticore/sourcecode"]
+
+    test {
+        java.srcDir "$projectDir/src/test/java"
+        resources.srcDir "$projectDir/src/test/resources"
+    }
+
+    sourceSets.main.resources { srcDirs = ["$projectDir/src/main/java"]; exclude "**/*.java" }
+}
+buildDir = file("$projectDir/target")
+
+configurations {grammar}
+
+test {
+    //exclude 'de/monticore/lang/gdl/*'
+    useJUnit()
+}
+
+/* ============================================================ */
+/* ======================= Dependencies ======================= */
+/* ============================================================ */
+
+repositories {
+    if(("true").equals(getProperty('useLocalRepo'))){
+        mavenLocal()
+    }
+    mavenCentral()
+    maven {
+        // credentials.username mavenUser
+        // credentials.password mavenPassword
+      url repo
+    }
+}
+
+dependencies {
+    grammar ("de.monticore:monticore-grammar:$mc_version") {capabilities {
+        requireCapability("de.monticore:monticore-grammar-grammars") }
+    }
+    implementation "de.se_rwth.commons:se-commons-logging:$se_commons_version"
+    implementation "org.antlr:antlr4-runtime:4.7.1"
+    implementation "de.monticore:monticore-generator:${project.properties['mc_version']}"
+    implementation "de.monticore:monticore-runtime:${project.properties['mc_version']}"
+    implementation "de.monticore:monticore-grammar:${project.properties['mc_version']}"
+    implementation "org.assertj:assertj-core:3.7.0"
+    implementation "commons-cli:commons-cli:$commons_cli_version"
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-collections4:4.1'
+    testImplementation "junit:junit:$junit_version"
+    
+}
+
+/* ============================================================ */
+/* ========================== Tasks =========================== */
+/* ============================================================ */
+
+task generateGDL(type: MCTask) {
+    grammar = file "$projectDir/$grammarDir/de/monticore/lang/GDL.mc4"
+    outputDir = file "$buildDir/generated-sources/monticore/sourcecode"
+    handcodedPath "$projectDir/src/main/java"
+    def uptoDate = incCheck("de/monticore/lang/GDL.mc4")
+    outputs.upToDateWhen { uptoDate }
+}
+
+compileJava.dependsOn(generateGDL)
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+    options.deprecation = false
+    options.warnings = false
+    options.headerOutputDirectory.convention(null)
+}
+
+// build sources jar in addition
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    archiveClassifier = "sources"
+}
+
+sourcesJar.dependsOn project.collect { it.tasks.withType(MCTask)}
+
+// build javadoc jar in addition
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = "javadoc"
+}
+
+// generated java doc contains errors, disable for now
+javadoc.failOnError(false)
+
+// build grammar jar as well
+task grammarJar(type: Jar) {
+    from("$projectDir/src/main/grammars/") { include "**/*.mc4" }
+    archiveClassifier = "grammars"
+}
+
+// all in one cli-jar
+shadowJar {
+    manifest {
+        attributes "Main-Class": "de.monticore.lang.gdl.${archiveBaseName.get().capitalize()}CLI"
+    }
+    archiveFileName = "${archiveBaseName.get()}-cli.${archiveExtension.get()}"
+    archiveClassifier = "cli"
+    minimize()
+}
+
+jar.dependsOn shadowJar
+
+/* ============================================================ */
+/* ======================= Publishing ========================= */
+/* ============================================================ */
+
+publishing {
+    // configure what artifacts to publish
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'de.monticore.lang'
+            artifactId = 'gdl'
+            version = project.properties['version']
+            from components.java
+        }
+    }
+    repositories.maven {
+        credentials.username mavenUser
+        credentials.password System.getenv("cibuild")
+        def releasesRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/"
+        def snapshotsRepoUrl = "https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/"
+        url = version.endsWith("SNAPSHOT") ? snapshotsRepoUrl : releasesRepoUrl
+    }
+}
+
+
+task copyGDLJarToBin(type: Copy) {
+    from "target/libs/GDL-${project.properties['version']}.jar"
+    into "bin/GDL-cli.jar"
+}   
+
+task copyGDLCliJarToBin(type: Copy) {
+    from 'target/libs/GDL-cli.jar'
+    into "bin/GDL-cli.jar"
+}   
+
+task buildAll(type: GradleBuild) {
+  tasks = [ 'build' ]
+}
+
+defaultTasks 'build', 'copyGDLJarToBin', 'copyGDLCliJarToBin'
+
+tasks.withType(Copy) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

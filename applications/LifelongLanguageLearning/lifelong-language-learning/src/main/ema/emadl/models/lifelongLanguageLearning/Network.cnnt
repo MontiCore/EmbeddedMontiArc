@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration Network{
+     num_epoch:1
+     batch_size:4
+	 checkpoint_period:1
+     log_period:10
+	 eval_train:false
+     normalize:false
+     context:cpu
+     load_checkpoint:false
+	 loss:cross_entropy
+     optimizer:adam{
+         learning_rate:0.00003
+		 weight_decay:0.01
+     }
+}

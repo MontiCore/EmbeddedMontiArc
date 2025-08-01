@@ -1,0 +1,66 @@
+package de.rwth.connectedcars.movement;
+
+component MovementController {
+
+  port
+
+      in  Q (-oo km/h : oo km/h) currentVel,
+      in  Q (-oo : oo)           currentAngle,
+      in  Q (-oo m : oo m)       calcPath_x,
+      in  Q (-oo m : oo m)       calcPath_y,
+      in  Q (-180 : 180)         nextTurnAngle,
+      in  Q (0 m/s : oo m/s) ^ 9 maxVelocity,
+      in  Q (0 m/s : oo m/s) ^ 9 minVelocity,
+      in  Q (0 : 180)            critTurnAngle,
+      in  Q (0 m : oo m)         dist2critAngle,
+      in  Q (0 m/s : oo m/s)     turnSpeed,
+      in  Q (0 m/s : oo m/s)     sharpTurnSpeed,
+      in  Q (0 : 180)            extraCritAngle,
+      in  Q (0 : oo)             velCoef,
+      in  Q (0 m : oo m)         lowSpeedLimitDist,
+      in  Q (0 m/s : oo m/s)     lowerSpeedLimit,
+      in  B								       emergencyBraking,
+           
+      out Q (-0.5 : 1.0)         gasRes,
+      out Q (0.0 : 1.0)          brakeRes,
+      out Q (-30.0 : 30.0)       steering_angle;
+      
+      
+  instance Velocity vel;
+  instance Steering steering;
+  instance KMH2MPS mps;
+  
+  connect currentVel -> mps.currentVelKMH;
+  
+  //connect steering
+  connect calcPath_x              -> steering.calcPath_x;
+  connect calcPath_y              -> steering.calcPath_y;
+  connect currentAngle            -> steering.currentAngle;
+  
+  connect steering.steering_angle -> steering_angle;
+  
+  //connect velocity
+  connect critTurnAngle     -> vel.critTurnAngle;
+  connect maxVelocity       -> vel.maxVelocity;
+  connect minVelocity       -> vel.minVelocity;
+  connect calcPath_x        -> vel.calcPath_x;
+  connect calcPath_y        -> vel.calcPath_y;
+  connect mps.currentVelMPS -> vel.currentVel;
+  connect steering.steering_angle -> vel.currentSteer;
+
+  connect nextTurnAngle     -> vel.nextTurnAngle;
+  connect dist2critAngle    -> vel.dist2critAngle;
+  connect turnSpeed         -> vel.normalTurnSpeed;
+  connect sharpTurnSpeed    -> vel.sharpTurnSpeed;
+  connect extraCritAngle    -> vel.extraCritAngle;
+  connect velCoef           -> vel.velCoef;
+  connect lowSpeedLimitDist -> vel.lowSpeedLimitDist;
+  connect lowerSpeedLimit   -> vel.lowerSpeedLimit;
+  connect emergencyBraking  -> vel.emergencyBraking;
+
+  connect vel.gasRes        -> gasRes;
+  connect vel.brakeRes      -> brakeRes;
+ 
+}
+  
+

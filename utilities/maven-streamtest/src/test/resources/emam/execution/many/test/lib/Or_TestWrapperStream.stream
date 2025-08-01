@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lib;
+
+stream Or_TestWrapperStream for Or_TestWrapper {
+    in1: true tick true tick false tick false;
+    in2: true tick false tick true tick false;
+
+    out1: true tick true tick true tick false;
+}

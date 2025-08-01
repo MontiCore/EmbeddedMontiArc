@@ -1,0 +1,10 @@
+
+(init (sees player1 (hidden 1)))
+
+(<= (legal player0 (see player1 hidden))
+    (true (sees player0 (hidden 1)))
+)
+
+(<= (next (failed))
+    (does player0 (see player1 hidden))
+)

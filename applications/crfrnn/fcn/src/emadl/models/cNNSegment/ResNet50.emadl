@@ -1,0 +1,79 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cNNSegment;
+
+component ResNet50<Z(2:oo) classes = 21>{
+    ports in Q(-1:1)^{3, 480, 480} data,
+         out Q(0:1)^{21, 480, 480} softmax;
+
+    implementation CNN {
+        def conv(kernel, channels, stride=1, act=true){
+            Convolution(kernel=(kernel,kernel), channels=channels, stride=(stride,stride)) ->
+            BatchNorm() ->
+            Relu(?=act)
+        }
+        def resGroup(innerChannels, outChannels, stride=1){
+            conv(kernel=1, channels=innerChannels) ->
+            conv(kernel=3, channels=innerChannels, stride=stride) ->
+            conv(kernel=1, channels=outChannels, act=false)
+        }
+        def resLayer(innerChannels, outChannels, stride=1, changedChannels=false){
+            (
+                resGroup(innerChannels=innerChannels,
+                         outChannels=outChannels,
+                         stride=stride,
+                         | = 32) ->
+                Add()
+            |
+                conv(kernel=1, channels=outChannels, stride=stride, act=false, ? = stride!=1 || changedChannels)
+            ) ->
+            Add() ->
+            Relu()
+        }
+
+        def fully_conv(filter, channels, dropout){
+            conv(kernel=filter, channels=channels) ->
+            Relu() ->
+            Dropout(p=dropout)
+        }
+
+        data ->
+        conv(kernel=7, channels=64, stride=2) ->
+        Pooling(pool_type="max", kernel=(3,3), stride=(2,2)) ->
+
+        resLayer(innerChannels=4, outChannels=256, changedChannels=true, -> = 3) ->
+        resLayer(innerChannels=8, outChannels=512, stride=2) ->
+
+        resLayer(innerChannels=8, outChannels=512, -> = 3) ->
+        resLayer(innerChannels=16, outChannels=1024, stride=2) ->
+        (
+            resLayer(innerChannels=16, outChannels=1024, -> = 5) ->
+            resLayer(innerChannels=32, outChannels=2048, stride=2) ->
+            (
+                resLayer(innerChannels=32, outChannels=2048, -> = 2) ->
+                /* fully convolutional layers, replacing fully connected layers */
+                fully_conv(filter=7, channels=4096, dropout=0.5) ->
+                fully_conv(filter=7, channels=4096, dropout=0.5) ->
+                Convolution(kernel=(1,1), channels=classes) ->
+
+                /* upsampling */
+                UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
+
+            |
+
+                Convolution(kernel=(4,4), channels=classes)
+
+            ) ->
+            /* skip4 */
+            Concatenate() ->
+            UpConvolution(kernel=(4,4), channels=classes, stride=(2,2))
+        |
+            /* skip 3 */
+            Convolution(kernel=(1,1), channels=classes)
+        ) ->
+
+        Concatenate() ->
+        UpConvolution(kernel=(16,16), channels=classes, stride=(8,8)) ->
+
+        softmax;
+    }
+}

@@ -1,0 +1,668 @@
+{
+  "config": {
+    "name": "TestVehicle",
+    "body": {
+      "mass": 1642.0,
+      "length": 4.971,
+      "width": 1.87,
+      "height": 1.383,
+      "center_of_gravity_height": 0.34575
+    },
+    "wheels": {
+      "diameter": 0.6612,
+      "width": 0.255,
+      "front_wheel_axis_offset": 1.0,
+      "max_turning_angle": 30.0,
+      "front_track_width": 1.57988,
+      "back_track_dist": 1.60274,
+      "wheelbase": 2.812,
+      "wheelbase_offset": 0.0
+    },
+    "powertrain": {
+      "type": "electrical",
+      "traction": "rear",
+      "braking": "front",
+      "max_braking_force": 5000.0,
+      "motor": {
+        "motor_efficiency": 0.7,
+        "regen_efficiency": 0.5,
+        "motor_peek_torque": 450.0
+      },
+      "battery": {
+        "type": "infinite",
+        "capacity": 1.8E8,
+        "critical_charge": 10.0
+      },
+      "transmission_ratio": 9.0
+    },
+    "physics": {
+      "type": "rigidbody"
+    },
+    "components": [
+      {
+        "type": "actuator",
+        "name": "SteeringActuator",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "physical_value_name": "steering",
+        "change_rate": 60.0,
+        "sensor": {
+          "type": "sensor",
+          "name": "UnnamedComponent",
+          "connected_to": [],
+          "priority": {},
+          "update_interval": [
+            0,
+            100000000
+          ],
+          "read_time": [
+            0,
+            1000000
+          ],
+          "send_only_changed": false
+        }
+      },
+      {
+        "type": "actuator",
+        "name": "BrakingActuator",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "physical_value_name": "braking",
+        "change_rate": 10.0,
+        "sensor": {
+          "type": "sensor",
+          "name": "UnnamedComponent",
+          "connected_to": [],
+          "priority": {},
+          "update_interval": [
+            0,
+            100000000
+          ],
+          "read_time": [
+            0,
+            1000000
+          ],
+          "send_only_changed": false
+        }
+      },
+      {
+        "type": "actuator",
+        "name": "GasActuator",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "physical_value_name": "gas",
+        "change_rate": "Infinity",
+        "sensor": {
+          "type": "sensor",
+          "name": "UnnamedComponent",
+          "connected_to": [],
+          "priority": {},
+          "update_interval": [
+            0,
+            100000000
+          ],
+          "read_time": [
+            0,
+            1000000
+          ],
+          "send_only_changed": false
+        }
+      },
+      {
+        "type": "sensor",
+        "name": "TrueVelocitySensor",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "physical_value_name": "true_velocity",
+        "update_interval": [
+          0,
+          100000000
+        ],
+        "read_time": [
+          0,
+          10000000
+        ],
+        "send_only_changed": false
+      },
+      {
+        "type": "sensor",
+        "name": "TruePositionSensor",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "physical_value_name": "true_position",
+        "update_interval": [
+          0,
+          100000000
+        ],
+        "read_time": [
+          0,
+          10000000
+        ],
+        "send_only_changed": false
+      },
+      {
+        "type": "sensor",
+        "name": "TrueCompassSensor",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "physical_value_name": "true_compass",
+        "update_interval": [
+          0,
+          100000000
+        ],
+        "read_time": [
+          0,
+          10000000
+        ],
+        "send_only_changed": false
+      },
+      {
+        "type": "navigation",
+        "name": "Navigation",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {}
+      },
+      {
+        "type": "constant_bus",
+        "name": "DefaultBus",
+        "connected_to": [],
+        "priority": {},
+        "mode": "instant",
+        "rate": 0.0
+      },
+      {
+        "type": "java_autopilot",
+        "name": "TestAutopilot",
+        "connected_to": [
+          "DefaultBus"
+        ],
+        "priority": {},
+        "compute_time": [
+          0,
+          0
+        ],
+        "maxVehicleAccel": 7.460690450979396
+      }
+    ],
+    "start_pos": [
+      0.0,
+      0.0
+    ],
+    "start_coords": {},
+    "start_osm_node": {},
+    "start_orientation": 0.0,
+    "task": {
+      "goals": [
+        {
+          "type": "path",
+          "ltl_operator": "eventually",
+          "path": [
+            [
+              -63.83,
+              -171.96
+            ]
+          ],
+          "range": 5.0
+        }
+      ]
+    }
+  },
+  "state": {
+    "eesystem": {
+      "components": {
+        "SteeringActuator": {
+          "sensor": {
+            "nextUpdate": [
+              4,
+              70000000
+            ]
+          },
+          "targetValue": 2.138957759123023
+        },
+        "BrakingActuator": {
+          "sensor": {
+            "nextUpdate": [
+              4,
+              70000000
+            ]
+          },
+          "targetValue": 0.0
+        },
+        "GasActuator": {
+          "sensor": {
+            "nextUpdate": [
+              4,
+              70000000
+            ]
+          },
+          "targetValue": 0.025600579481880503
+        },
+        "TrueVelocitySensor": {
+          "logic": {
+            "nextUpdate": [
+              4,
+              70000000
+            ]
+          }
+        },
+        "TruePositionSensor": {
+          "logic": {
+            "nextUpdate": [
+              4,
+              70000000
+            ]
+          }
+        },
+        "TrueCompassSensor": {
+          "logic": {
+            "nextUpdate": [
+              4,
+              70000000
+            ]
+          }
+        },
+        "Navigation": {
+          "targets": [
+            [
+              -63.83,
+              -171.96
+            ],
+            [
+              -63.83,
+              -171.96
+            ]
+          ],
+          "currentPath": {
+            "trajectoryX": [
+              16,
+              5.7813108846301935,
+              4.270347736560122,
+              4.289310779669538,
+              3.1923722851743537,
+              -9.68962336796794,
+              -18.338561497475773,
+              -23.091961640246605,
+              -42.70325305754577,
+              -45.76905551645384,
+              -49.706783445404504,
+              -76.86304284074316,
+              -92.37487821783468,
+              -107.28902274852298,
+              -76.17394045318929,
+              -63.41763696847143,
+              -63.83
+            ],
+            "trajectoryY": [
+              16,
+              -6.164792883105725,
+              -6.197132576848973,
+              -7.083116827073201,
+              -8.372977976211862,
+              -11.419718966323348,
+              -13.64361749913033,
+              -15.689604149597187,
+              -30.64532178345498,
+              -33.9255721190885,
+              -38.32889121431496,
+              -75.87941794250301,
+              -97.71810153550507,
+              -114.73092531183404,
+              -155.4727464348806,
+              -171.6345266987817,
+              -171.96
+            ]
+          },
+          "currentPos": [
+            -3.9864173310372286,
+            -14.116218391617224
+          ]
+        },
+        "DefaultBus": {},
+        "TestAutopilot": {
+          "currentVelocity": 29.793168576702126,
+          "currentPosition": [
+            -3.9864173310372286,
+            -14.116218391617224
+          ],
+          "currentCompass": 176.48927739643344,
+          "newTrajX": [
+            10,
+            3.1923722851743537,
+            -9.68962336796794,
+            -18.338561497475773,
+            -23.091961640246605,
+            -42.70325305754577,
+            -45.76905551645384,
+            -49.706783445404504,
+            -76.86304284074316,
+            -92.37487821783468,
+            -107.28902274852298
+          ],
+          "newTrajLength": 10,
+          "trajLength": 10,
+          "trajX": [
+            10,
+            3.1923722851743537,
+            -9.68962336796794,
+            -18.338561497475773,
+            -23.091961640246605,
+            -42.70325305754577,
+            -45.76905551645384,
+            -49.706783445404504,
+            -76.86304284074316,
+            -92.37487821783468,
+            -107.28902274852298
+          ],
+          "trajY": [
+            10,
+            -8.372977976211862,
+            -11.419718966323348,
+            -13.64361749913033,
+            -15.689604149597187,
+            -30.64532178345498,
+            -33.9255721190885,
+            -38.32889121431496,
+            -75.87941794250301,
+            -97.71810153550507,
+            -114.73092531183404
+          ],
+          "currentGas": 0.025600579481880503,
+          "currentSteering": 2.138957759123023,
+          "currentBrakes": 0.0,
+          "lastTime": [
+            0,
+            130000000
+          ],
+          "currSeg": {
+            "posStart": [
+              3.1923722851743537,
+              -8.372977976211862
+            ],
+            "posEnd": [
+              -9.68962336796794,
+              -11.419718966323348
+            ],
+            "dir": [
+              -0.9731523767464246,
+              -0.23016179446811966
+            ],
+            "normal": [
+              0.23016179446811966,
+              -0.9731523767464246
+            ],
+            "relPos": [
+              -7.178789616211582,
+              -5.743240415405362
+            ],
+            "length": 13.237388060656167,
+            "projPos": 8.307930697250383,
+            "orthoPos": 3.936764960301489,
+            "dist": 3.936764960301489,
+            "projDistToEnd": 4.929457363405785
+          },
+          "nextSeg": {
+            "posStart": [
+              -9.68962336796794,
+              -11.419718966323348
+            ],
+            "posEnd": [
+              -18.338561497475773,
+              -13.64361749913033
+            ],
+            "dir": [
+              -0.9684960149914635,
+              -0.24902905241287568
+            ],
+            "normal": [
+              0.24902905241287568,
+              -0.9684960149914635
+            ],
+            "relPos": [
+              5.703206036930711,
+              -2.696499425293876
+            ],
+            "length": 8.930277456623367,
+            "projPos": -4.852025622729854,
+            "orthoPos": 4.031812942916138,
+            "dist": 4.031812942916138,
+            "projDistToEnd": 13.78230307935322
+          },
+          "relPos": [
+            0.0,
+            0.0
+          ],
+          "targetDir": [
+            0.35776947276001897,
+            0.933809940170385
+          ],
+          "carDir": [
+            -0.9984311210003379,
+            -0.05599371945145793
+          ],
+          "mode": 1,
+          "target": 1
+        }
+      },
+      "events": [
+        {
+          "type": "receive",
+          "time": [
+            1608649390,
+            81067400
+          ],
+          "target": "Navigation",
+          "msg": {
+            "sender": "Navigation",
+            "name": "current_target_pos",
+            "message": [
+              -63.83,
+              -171.96
+            ],
+            "length": 16
+          }
+        }
+      ]
+    },
+    "powerTrain": {
+      "steering": {
+        "value": -20.399999999999977,
+        "lastValue": -20.99999999999998,
+        "min": -30.0,
+        "max": 30.0
+      },
+      "braking": {
+        "value": 0.0,
+        "lastValue": 0.0,
+        "min": 0.0,
+        "max": 1.0
+      },
+      "gas": {
+        "value": 0.025600579481880503,
+        "lastValue": 0.025600579481880503,
+        "min": -0.5,
+        "max": 1.0
+      },
+      "battery": {
+        "charge": "Infinity"
+      }
+    },
+    "physicsModel": {},
+    "physicalObject": {
+      "pos": [
+        -4.474389821722465,
+        -13.972892795386356,
+        0.676743428420249
+      ],
+      "rotation": [
+        [
+          -0.993550477315592,
+          0.11338957932996312,
+          -5.023199512965112E-4
+        ],
+        [
+          -0.11338878001265262,
+          -0.9935497010304452,
+          -0.00140575586615606
+        ],
+        [
+          -6.584778686822575E-4,
+          -0.001339731995902962,
+          0.999998885761917
+        ]
+      ],
+      "bbox": {
+        "type": "obb",
+        "offset": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "half_extent": [
+          2.4855,
+          0.935,
+          0.6915
+        ],
+        "axes": [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
+      "velocity": [
+        -8.121934255584955,
+        2.4420285031053397,
+        -0.016370893795243018
+      ],
+      "angularVelocity": [
+        -0.0059821051407189275,
+        0.0067690553924427,
+        -0.8132458184086883
+      ],
+      "mass": 1642.0,
+      "Jl": [
+        [
+          740.2120948333335,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          3642.9863550000005,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          3859.7592268333337
+        ]
+      ],
+      "J": [
+        [
+          777.5344609081583,
+          327.02171951647455,
+          -1.591457089670806
+        ],
+        [
+          327.02171951647455,
+          3605.665204441698,
+          -0.12508156493858813
+        ],
+        [
+          -1.5914570896708056,
+          -0.12508156493858813,
+          3859.758011316811
+        ]
+      ],
+      "Jl_i": [
+        [
+          0.0013509641452496943,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          2.745000674041778E-4,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          2.5908351822774995E-4
+        ]
+      ],
+      "J_i": [
+        [
+          0.001337123556555983,
+          -1.2127259504433775E-4,
+          5.473933914882528E-7
+        ],
+        [
+          -1.2127259504433775E-4,
+          2.8834035012334844E-4,
+          -4.065906448825551E-8
+        ],
+        [
+          5.473933914882528E-7,
+          -4.065906448825556E-8,
+          2.5908382420229074E-4
+        ]
+      ],
+      "R_T": [
+        [
+          -0.993550477315592,
+          -0.11338878001265262,
+          -6.584778686822575E-4
+        ],
+        [
+          0.11338957932996312,
+          -0.9935497010304452,
+          -0.001339731995902962
+        ],
+        [
+          -5.023199512965112E-4,
+          -0.00140575586615606,
+          0.999998885761917
+        ]
+      ],
+      "F": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "T": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "task": {
+      "activeDriveGoal": 0
+    }
+  }
+}

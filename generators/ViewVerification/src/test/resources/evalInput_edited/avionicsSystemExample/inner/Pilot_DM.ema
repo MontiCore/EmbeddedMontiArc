@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample.inner;
+
+component Pilot_DM {
+    port
+      in Menu_Cmd Menu_selection_from_Display,
+      out Page_Image New_Page_Image_To_Display,
+      out Page_Request New_Page_Request_To_PCM,
+      in Page_Content New_Page_Content_from_PCM;
+}

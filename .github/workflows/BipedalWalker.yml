@@ -1,0 +1,37 @@
+name: BipedalWalker
+on:
+  push:
+    paths:
+      - 'applications/reinforcement_learning/BipedalWalker/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 33025
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+jobs:
+
+  TestBuildAndTrain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/cartpole/rl-fix-new2:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/monticore/cartpole/rl-fix-new2:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd applications/reinforcement_learning/BipedalWalker
+            chmod +x install.sh
+            chmod +x run_training.sh
+            ./install.sh
+            ./run_training.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+

@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+import { injectable, inject } from "inversify";
+import { CommandContribution, CommandRegistry, Command } from "@theia/core/lib/common";
+import { {{context.name}}Conditions } from "./{{context.name | lower}}-conditions";
+import { ScriptsService } from "@emastudio/scripts/lib/browser";
+import { {{context.name}}Scripts } from "../common";
+
+export namespace {{context.name}}Icons {
+    {% for button in context.getButtonsWithUniqueImage() %}
+    export const {{button.getImageAsConstant()}}: string = "emastudio-{{context.name | lower}}-{{button.getImageAsIdentifier()}}-icon";
+    {% endfor %}
+}
+
+export namespace {{context.name}}Commands {
+    {% for button in context.getButtons() %}
+    export const {{button.getScriptAsConstant()}}: Command = {
+        id: "emastudio.{{context.name | lower}}.{{button.script}}",
+        label: "{{button.label}}",
+        iconClass: {{context.name}}Icons.{{button.getImageAsConstant()}}
+    };
+
+    {% endfor %}
+}
+
+@injectable()
+export class {{context.name}}CommandContribution implements CommandContribution {
+    @inject({{context.name}}Conditions) protected readonly conditions: {{context.name}}Conditions;
+    @inject(ScriptsService) protected readonly scriptsService: ScriptsService;
+
+    public async registerCommands(registry: CommandRegistry): Promise<void> {
+        await Promise.all([
+            {% for button in context.getButtons() %}
+            this.registerCommand{{button.getScriptAsName()}}(registry){% if not loop.last %},{% endif %}
+            {% endfor %}
+        ]);
+    }
+
+    {% for button in context.getButtons() %}
+    protected async registerCommand{{button.getScriptAsName()}}(registry: CommandRegistry): Promise<void> {
+        const command = registry.registerCommand({{context.name}}Commands.{{button.getScriptAsConstant()}}, {
+            execute: this.execute{{button.getScriptAsName()}}.bind(this)
+        });
+
+        return this.conditions.check{{button.getScriptAsName()}}(command);
+    }
+
+    {% endfor %}
+    {% for button in context.getButtons() %}
+    protected async execute{{button.getScriptAsName()}}(): Promise<void> {
+        await this.scriptsService.execute({
+            label: "{{button.label}}",
+            plugin: "{{context.name | lower}}",
+            script: {{context.name}}Scripts.{{button.getScriptAsConstant()}}
+        });
+    }
+
+    {% endfor %}
+}

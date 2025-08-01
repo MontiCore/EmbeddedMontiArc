@@ -1,0 +1,5 @@
+package de.rwth.connectedcars.communication.packets;
+
+struct PaymentInformationPacket {
+    Subject subject;
+}

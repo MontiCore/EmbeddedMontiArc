@@ -1,0 +1,168 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Singlewithplatoon_priority{
+  ports
+    dynamic in Collisionmessage    plat_coll_msg[0:32],
+
+    //single vehicle at intersection
+    in   Z ^ 32            vehicle_atintersection,
+    in   Z                 vehicle_num,
+    // platoon at intersection
+    in   Z ^ 32            platoon_atintersection,
+    in   Z                 platoon_num,
+    // basic information of current vehicle
+    in   Q                 velocity,
+    in   Q                 length,
+    in   Q                 nextintersection_x,
+    in   Q                 nextintersection_y,
+    in   Q                 dis2intersection,
+    in   Z                 if_frontvehicleexists,
+    // information of platoon length
+    in   Z ^ 32            platoonid,
+    in   Z ^ 32            platoonlength,
+    // if platoon will split in the intersection
+    in   Z ^ 32            platoonid1,
+    in   Z ^ 32            ifsplit,
+    // collision information of current to other vehicle
+    in   Z^{1,32}          iscollision,
+    in   Z^{1,32}          collision_id,
+    in   Z^{1,32}          collisionpriority,
+    in   Q^{1,32}          angletocurrent,
+    in   Q^{1,32}          velocity_car1,
+    in   Q^{1,32}          dis2intersection_car1,
+
+    out  Z                 is_highestpriority,
+    out  Collisionmessage  pcmsg,
+    out  Z^{1,100}         collisionpriority1,
+    out  Z^{1,100}         collision_id1;
+
+   @ plat_coll_msg::connect{}
+
+    implementation Math{
+      is_highestpriority = 1;
+      Q total_num = vehicle_num + platoon_num;
+      // update the collision information if there exists
+      for i8 = 1:32
+          Q collisionid = collision_id(1,i8);
+          for j8 = 1:32
+             if collisionid == platoonid1(j8) && ifsplit(j8) == 1
+                iscollision(1,i8) = 1;
+             end
+          end
+      end
+      // there is no front vehicle
+      if if_frontvehicleexists == 0
+         Z if_platoonfollows = 0;
+         Z followsid = 0;
+         Q followdistance = 0.0;
+         Z followslength = 0;
+         for j = 1: platoon_num
+            for k = 1 : total_num
+                if platoon_atintersection(j) == collision_id(1,k)
+                   if collisionpriority(1,k) == -3
+                      if_platoonfollows = 1;
+                      followsid = collision_id(1,k);
+                      followdistance = dis2intersection_car1(1,k);
+                   end
+                end
+            end
+         end
+         if if_platoonfollows == 1
+            for ii = 1:platoon_num
+               if platoonid(ii) == followsid
+                  followslength = platoonlength(ii);
+               end
+            end
+         end
+         // a platoon without front vehicle
+           Z if_platoonwithoutfront = 1;
+           for i2 = 1:platoon_num
+              if platoon_atintersection(i2) != followsid
+                  Z platoonid1 = platoon_atintersection(i2);
+                  for j2 = 1:32
+                     if is_connected(plat_coll_msg,j2)
+                        pcmsg = plat_coll_msg(j2);
+                        if pcmsg.vehicleid == platoonid1
+                           //figure if at current intersection
+                           collisionpriority1 = pcmsg.priority_tother;
+                           collision_id1 = pcmsg.vehicleid_list;
+                           Z vehicle_n1 = pcmsg.vehicle_number;
+
+                           for k2 = 1:vehicle_n1
+                              if collisionpriority1(1,k2) == 3
+                                 if_platoonwithoutfront = 0;
+                              end
+                           end
+                           // there exists platoon without front vehicle
+                           if if_platoonwithoutfront ==1
+                              for i3 = 1:total_num
+                                 if collision_id(1,i3) == platoonid1 && iscollision(1,i3) == 1 && dis2intersection_car1(1,i3) < 5.8 * length
+                                    is_highestpriority = 0;
+                                 end
+                              end
+
+                           // platoon with front vehicles
+                           elseif if_platoonwithoutfront == 0
+                              Q followdistance1 = 99999.0;
+                              for i4 = 1:total_num
+                                  if collision_id(1,i4) == platoonid1
+                                     followdistance1 = dis2intersection_car1(1,i4);
+                                  end
+                              end
+                              for j3 = 1:total_num
+                                 if platoonid(j3) == platoonid1
+                                    if if_platoonfollows == 0
+                                        for i6 = 1:total_num
+                                            //have collision with platoon
+                                            if collision_id(1,i6) == platoonid1 && iscollision(1,i6) == 1
+                                               is_highestpriority = 0;
+                                            end
+                                            // have collision with platoon's front vehicle
+                                            for j6 = 1:vehicle_n1
+                                               if collisionpriority1(1,j6) == 3
+                                                  for k6 = 1:total_num
+                                                     if collision_id(1,k6) == collision_id1(1,j6) && iscollision(1,k6) == 1
+                                                        is_highestpriority = 0;
+                                                     end
+                                                  end
+                                               end
+                                            end
+                                        end
+                                    // take the priority to current, wenn length is bigger than current follow or distance is smaller(length same)
+                                    elseif platoonlength(j3) > followslength ||(platoonlength(j3) == followslength && followdistance1 < followdistance)
+                                       for i5 = 1:total_num
+                                           //have collision with platoon
+                                           if collision_id(1,i5) == platoonid1 && iscollision(1,i5) == 1
+                                              is_highestpriority = 0;
+                                           end
+                                           // have collision with platoon's front vehicle
+                                           for j5 = 1:vehicle_n1
+                                              if collisionpriority1(1,j5) == 3
+                                                 for k5 = 1:total_num
+                                                    if collision_id(1,k5) == collision_id1(1,j5) && iscollision(1,k5) == 1
+                                                       is_highestpriority = 0;
+                                                    end
+                                                 end
+                                              end
+                                           end
+                                        end//for i5 = 1:total_num
+                                    end // else if platoonlength(j3) > followslength ||(platoonlength(j3) == followslength && followdistance1 < followdistance)
+                                 end//if platoonid(j3) == platoonid1
+                              end //for j3 = 1:total_num
+                           end //if if_platoonwithoutfront = 1
+                        end //if pcmsg.vehicleid == platoonid1
+                     end//if is_connected(plat_coll_msg,j2)
+                  end//for j2 = 1:32
+              end//if platoon_atintersection(i2) != followsid
+           end//for i2 = 1:platoon_num
+        // if vehicle or platoon in non stop area
+        for i7 = 1: total_num
+            if iscollision(i7) == 1 && dis2intersection_car1(i7) < 1.3*length
+               is_highestpriority = 0;
+            end
+        end
+      end // if is_frontvehicle == 0
+    }
+}

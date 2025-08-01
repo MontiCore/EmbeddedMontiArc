@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+.toolbar {
+  padding:0;
+  height:40px;
+  -webkit-app-region:drag
+}
+
+.mat-tab-nav-bar {
+  ::ng-deep .mat-tab-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+
+.content-container {
+  background-color:#212121;
+}
+
+.toolbar button {
+  -webkit-app-region:no-drag;
+}
+
+.spinner-container {
+  width:45%;
+}

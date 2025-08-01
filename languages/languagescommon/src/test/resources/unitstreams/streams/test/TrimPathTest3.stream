@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test;
+
+stream TrimPathTest3 for TrimPath {
+	currentPositionX: 79.4910133407; 
+    currentPositionY: 179.7230820202;
+    plannedTrajectoryLength: 3;
+    plannedTrajectoryX: [ 79.4915612642117, 96.0333051214162, 166.07179102592943];
+    plannedTrajectoryY: [ 179.7269796001963, 176.1775541995725, 167.7849875997056];
+	
+	trimmedTrajectoryLength: 3;
+    trimmedTrajectoryX: [ 0, 0, 0];
+    trimmedTrajectoryY: [ 0, 0, 0];
+}

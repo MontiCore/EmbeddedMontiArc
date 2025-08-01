@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package cheetah;
+
+import cheetah.agent.CheetahActor;
+
+component Master {
+    ports
+        in Q^{26} state,
+        out Q(-1:1)^{6} action;
+
+    instance CheetahActor cheetah;
+    
+    connect state -> cheetah.state;
+    connect cheetah.action -> action;
+}

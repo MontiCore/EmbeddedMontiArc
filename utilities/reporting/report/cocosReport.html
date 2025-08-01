@@ -1,0 +1,195 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Component Quality Grouped</title>
+  <link href="images/favicon.ico" type="image/x-icon" rel="icon"/>
+  <script src="js/dataTable/jquery-3.3.1.min.js"></script>
+  <script src="js/dataTable/jquery.dataTables.min.js"></script>
+  <script src="js/dataTable/dataTables.fixedHeader.min.js"></script>
+  <script src="js/dataTable/dataTables.rowGroup.min.js"></script>
+  <script src="js/dataTable/dataTables.select.min.js"></script>
+  <script src="js/customDataTable.js"></script>
+  <link rel="stylesheet" media="all" href="css/bootstrap-2.3.2.min.css">
+  <link rel="stylesheet" media="all" href="css/fixedHeader.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/select.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/jquery.dataTables.min.css">
+  <link rel="stylesheet" media="all" href="css/customTable.css">
+  <link rel="stylesheet" media="all" href="css/childControlImages.css">
+</head>
+<body>
+  <!-- <div class="myTableContainer"> -->
+    <table id="my-table" class="display cell-border dataTable" role="grid" style="width: 100%;" width="100%" cellspacing="0">
+    
+      <thead>
+        <tr>
+          <th style="visibility: hidden;">Root</th>
+          <th style="visibility: hidden;">Order</th>
+          <th class="nowrap"><img src="images/next.png" style="height: 24px; width:auto;">&nbsp;Expand</th>
+          <th class="grow" style="width: 50%"><div><span>Name</span></div></th>
+          <th>Log</th>
+          <th class="grow"><div><span>Type</span></div></th>
+          <th class="grow"><div><span>Valid</span></div></th>
+          <th class="grow"><div><span>Parsing</span></div></th>
+          <th class="grow">
+            <div class="shortLabel">Resolving</div>
+            <div class="fullLabel" style="display: none">Resolve Symbol Table</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">CompName</div>
+            <div class="fullLabel" style="display: none">Component Name Capitalized</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">CompInstance</div>
+            <div class="fullLabel" style="display: none">Component With Type Parameters Has Instance</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">ConnectorEnd</div>
+            <div class="fullLabel" style="display: none">Connector End Point Correctly Qualified</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">ParamOrder</div>
+            <div class="fullLabel" style="display: none">Default Parameters Have Correct Order</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">InPort</div>
+            <div class="fullLabel" style="display: none">In Port Unique Sender</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">InRosPort</div>
+            <div class="fullLabel" style="display: none">In Ros Port Ros Sender</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">PortConfig</div>
+            <div class="fullLabel" style="display: none">Only Incoming Port Is Config</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">Package</div>
+            <div class="fullLabel" style="display: none">Package Lower Case</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">ParamNames</div>
+            <div class="fullLabel" style="display: none">Parameter Names Unique</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">PortType</div>
+            <div class="fullLabel" style="display: none">Port Type Only Boolean Or SIUnit</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">PortUsage</div>
+            <div class="fullLabel" style="display: none">Port Usage</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">SubComps</div>
+            <div class="fullLabel" style="display: none">Referenced Sub Component Exists</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">ConnectorSrc</div>
+            <div class="fullLabel" style="display: none">Simple Connector Source Exists</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">SrcTarget</div>
+            <div class="fullLabel" style="display: none">Source Target Number Match</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">SubCompsCon</div>
+            <div class="fullLabel" style="display: none">Sub Components Connected</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">TopCompName</div>
+            <div class="fullLabel" style="display: none">Top Level Component Has No Instance Name</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">TypeNames</div>
+            <div class="fullLabel" style="display: none">Type Parameter Names Unique</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">UniquePorts</div>
+            <div class="fullLabel" style="display: none">Unique Ports</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">AtomicComp</div>
+            <div class="fullLabel" style="display: none">Atomic Component</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">Matrix1</div>
+            <div class="fullLabel" style="display: none">Matrix Assignment Declaration Check</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">Matrix2</div>
+            <div class="fullLabel" style="display: none">Matrix Assignment Check</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">DynBody</div>
+            <div class="fullLabel" style="display: none">Dynamic Component Dynamic Body Elements</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">NoDyn1</div>
+            <div class="fullLabel" style="display: none">NoDynamic New Component And Port</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">NoDyn2</div>
+            <div class="fullLabel" style="display: none">NoDynamic New Connects Outside Event Handler</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">SubCompsEMAM</div>
+            <div class="fullLabel" style="display: none">Referenced Sub Component Exists EMAM</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">Layer</div>
+            <div class="fullLabel" style="display: none">Check Layer</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">RangeOps</div>
+            <div class="fullLabel" style="display: none">Check Range Operators</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">VarNames</div>
+            <div class="fullLabel" style="display: none">Check Variable Name</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">LayerName</div>
+            <div class="fullLabel" style="display: none">Check Layer Name</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">Argument</div>
+            <div class="fullLabel" style="display: none">Check Argument</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">LayerRec</div>
+            <div class="fullLabel" style="display: none">Check Layer Recursion</div>
+          </th>
+          <th class="grow">
+            <div class="shortLabel">BehaviorName</div>
+            <div class="fullLabel" style="display: none">Check Behavior Name</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  <!-- <div> -->
+  <script src="js/cocosReport.js"></script>
+  <script>
+    var tableName = "my-table";
+    var tableReference = "#" + tableName;
+    var project = getURLParameter('project');
+    var dataInfix = "";
+    if (project != undefined)
+      dataInfix = "projects/" + project + "/";
+    var dataFile = "data/" + dataInfix + "data.json";
+    var dataParsingErroredFile = "data/" + dataInfix + "dataParsingErrored.json";
+    var dataResolvingErroredFile = "data/" + dataInfix + "dataResolvingErrored.json";
+    var infoFile = "data/" + dataInfix + "info.json";
+    var table;
+    $(document).ready(function () {
+        // enableLogging(true)
+        initHeader();
+        createTable_custom([dataFile, dataParsingErroredFile, dataResolvingErroredFile, infoFile]);
+    });
+  </script>
+
+</body>
+</html>

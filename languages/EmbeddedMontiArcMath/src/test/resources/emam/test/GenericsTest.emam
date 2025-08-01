@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test;
+
+component GenericsTest{
+    ports
+        in Q a,
+        out Q b;
+
+
+    component TestT<T> {
+        ports
+            out T c;
+
+        implementation Math {
+            T var=c;
+
+        }
+    }
+
+    instance TestT<Q> tq;
+}

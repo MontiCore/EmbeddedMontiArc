@@ -1,0 +1,6 @@
+# Build
+/node_modules/
+/src-gen/
+/target/
+/lib/
+/sol/artifacts/

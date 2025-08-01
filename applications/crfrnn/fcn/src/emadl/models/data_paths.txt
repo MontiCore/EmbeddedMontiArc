@@ -1,0 +1,1 @@
+cNNSegment.FCN  /home/jt529748/.mxnet/datasets/voc

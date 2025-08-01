@@ -1,0 +1,111 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+// just care about the front vehicle
+dynamic component Single_process{
+  ports
+  dynamic in  Statusmessage            status_msg[0:32],
+  dynamic in  Trajectorymessage        traj_msg[0:32],
+  dynamic in  Platoonmessage           plat_msg[0:32],
+  dynamic in  Platoonjointmessage      plat_joint_msg[0:32],
+
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Z               isnextintersection,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+  in  Z               currenttimestamp,
+  in  Z               vehicleid,
+  in  Q               compass,
+  in  Q               length,
+  in  Q               width,
+  in  Q               engine,
+  in  Q               brake,
+  in  Q               steering,
+  in  Q               velocity,
+  in  Q               position_x,
+  in  Q               position_y,
+
+  out Z               after_platnum,
+  out Z^{1,100}       after_platlist,
+  dynamic out   Platoonmessage           out_plat_msg[0:32],
+  dynamic out   Platoonjointmessage      out_plat_joint_msg[0:32];
+
+
+  instance  Statusduplicate        s_dup;
+  instance  Platoonduplicate       p_dup;
+  // find the potential header (single vehicle or platoon, send joint message)
+  instance  Potentialheader        po_header;
+  // no potential header, and have joint message from other vehicle, send platoon message
+  instance  Currentisheader        current_header;
+
+  @ status_msg::connect{
+    connect status_msg[?] -> s_dup.status_msg[?];
+  }
+
+  @ plat_msg::connect{
+    connect plat_msg[?] -> p_dup.plat_msg[?];
+  }
+
+  @ s_dup.status_msg1::connect{
+    connect s_dup.status_msg1[?] -> po_header.status_msg[?];
+  }
+  @ traj_msg::connect{
+    connect traj_msg[?] -> po_header.traj_msg[?];
+  }
+  @ p_dup.plat_msg1::connect{
+    connect p_dup.plat_msg1[?] -> po_header.plat_msg[?];
+  }
+
+  connect trajectory_length -> po_header.trajectory_length;
+  connect trajectory_x -> po_header.trajectory_x;
+  connect trajectory_y -> po_header.trajectory_y;
+  connect isnextintersection -> po_header.isnextintersection;
+  connect nextintersection_x -> po_header.nextintersection_x;
+  connect nextintersection_y -> po_header.nextintersection_y;
+  connect position_x -> po_header.position_x;
+  connect position_y -> po_header.position_y;
+  connect length -> po_header.length;
+  connect width -> po_header.width;
+
+
+  connect po_header.potentialid -> current_header.platoonrequestid;
+  connect po_header.if_potentialheaderexists -> current_header.if_potentialheaderexists;
+  connect po_header.if_sendjointmsg -> current_header.if_sendjointmsg;
+  connect currenttimestamp -> current_header.currenttimestamp;
+  connect vehicleid -> current_header.vehicleid;
+  connect compass -> current_header.compass;
+  connect length -> current_header.length;
+  connect width -> current_header.width;
+  connect engine -> current_header.engine;
+  connect brake -> current_header.brake;
+  connect steering -> current_header.steering;
+  connect velocity -> current_header.velocity;
+  connect position_x -> current_header.position_x;
+  connect position_y -> current_header.position_y;
+
+
+  @ plat_joint_msg::connect{
+    connect plat_joint_msg[?] -> current_header.plat_joint_msg[?];
+  }
+
+  @ s_dup.status_msg2::connect{
+    connect s_dup.status_msg2[?] -> current_header.status_msg[?];
+  }
+
+  @ p_dup.plat_msg2::connect{
+    connect p_dup.plat_msg2[?] -> current_header.plat_msg[?];
+  }
+
+  @ current_header.new_plat_joint_msg::connect{
+    connect current_header.new_plat_joint_msg[?] -> out_plat_joint_msg[?];
+  }
+  @ current_header.new_plat_msg::connect{
+    connect current_header.new_plat_msg[?] -> out_plat_msg[?];
+  }
+  connect current_header.after_platnum -> after_platnum;
+  connect current_header.after_platlist -> after_platlist;
+
+}

@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "de.rwth.modelling";
+option java_outer_classname = "ModelProtos";
+
+package model;
+
+service Model {
+  rpc Execute (ModelInputs) returns (ModelOutputs) {}
+}
+
+message ModelInputs {
+  double     time_increment = 1;
+  Actuation  actuation      = 2;
+  SensorData sensor_data    = 3;
+  Trajectory trajectory     = 4;
+}
+
+message ModelOutputs {
+  Actuation actuation = 1;
+}
+
+message Actuation {
+  double engine         = 1;
+  double steering_angle = 2;
+  double brakes         = 3;
+}
+
+message SensorData {
+  double velocity = 1;
+  Point  position = 2;
+  double compass  = 3;
+}
+
+message Trajectory {
+  repeated Point points = 1;
+}
+
+message Point {
+  double x = 1;
+  double y = 2;
+}

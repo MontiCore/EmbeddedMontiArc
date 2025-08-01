@@ -1,0 +1,22 @@
+/* (c) https://github.com/MontiCore/monticore */
+package topology.agent.strategy;
+
+component GreedyDiscreteStrategy<Z(1:oo) n = 12> {
+    ports
+        in Q(-oo:oo)^{n} values,
+        out Z(0:n) action;
+
+    implementation Math {
+        Z best_action = 0;
+        Q value_of_best_action = values(1);
+
+        for i=2:n
+            if values(i) > value_of_best_action
+                best_action = i-1;
+                value_of_best_action = values(i);
+            end
+        end
+
+        action = best_action;
+    }
+}

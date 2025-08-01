@@ -1,0 +1,215 @@
+Doppelkopf/Doppelkopf.gdl
+
+# https://www.online-doppelkopf.com/spiele/82.403.634
+
+COMMAND
+random (deal player1 kreuz_ass_1)
+COMMAND
+random (deal player1 pik_koenig_1)
+COMMAND
+random (deal player1 karo_neun_1)
+COMMAND
+random (deal player1 kreuz_koenig_1)
+COMMAND
+random (deal player1 kreuz_zehn_1)
+COMMAND
+random (deal player1 pik_dame_1)
+COMMAND
+random (deal player1 karo_koenig_1)
+COMMAND
+random (deal player1 herz_bube_1)
+COMMAND
+random (deal player1 karo_dame_1)
+COMMAND
+random (deal player1 herz_dame_1)
+COMMAND
+random (deal player1 herz_zehn_1)
+COMMAND
+random (deal player1 herz_zehn_2)
+COMMAND
+random (deal player2 kreuz_neun_1)
+COMMAND
+random (deal player2 pik_ass_1)
+COMMAND
+random (deal player2 herz_koenig_1)
+COMMAND
+random (deal player2 kreuz_koenig_2)
+COMMAND
+random (deal player2 karo_ass_1)
+COMMAND
+random (deal player2 pik_ass_2)
+COMMAND
+random (deal player2 karo_dame_2)
+COMMAND
+random (deal player2 pik_zehn_1)
+COMMAND
+random (deal player2 karo_ass_2)
+COMMAND
+random (deal player2 karo_neun_2)
+COMMAND
+random (deal player2 karo_zehn_1)
+COMMAND
+random (deal player2 karo_bube_1)
+COMMAND
+random (deal player3 kreuz_ass_2)
+COMMAND
+random (deal player3 pik_koenig_2)
+COMMAND
+random (deal player3 herz_ass_1)
+COMMAND
+random (deal player3 kreuz_dame_1)
+COMMAND
+random (deal player3 herz_neun_1)
+COMMAND
+random (deal player3 herz_dame_2)
+COMMAND
+random (deal player3 karo_koenig_2)
+COMMAND
+random (deal player3 pik_bube_1)
+COMMAND
+random (deal player3 herz_bube_2)
+COMMAND
+random (deal player3 pik_bube_2)
+COMMAND
+random (deal player3 kreuz_bube_1)
+COMMAND
+random (deal player3 karo_zehn_2)
+COMMAND
+random (deal player4 kreuz_neun_2)
+COMMAND
+random (deal player4 pik_neun_1)
+COMMAND
+random (deal player4 herz_neun_2)
+COMMAND
+random (deal player4 kreuz_zehn_2)
+COMMAND
+random (deal player4 herz_koenig_2)
+COMMAND
+random (deal player4 pik_neun_2)
+COMMAND
+random (deal player4 pik_dame_2)
+COMMAND
+random (deal player4 pik_zehn_2)
+COMMAND
+random (deal player4 kreuz_bube_2)
+COMMAND
+random (deal player4 kreuz_dame_2)
+COMMAND
+random (deal player4 herz_ass_2)
+COMMAND
+random (deal player4 karo_bube_2)
+COMMAND
+random (deal_finish)
+COMMAND
+player1 (vorbehalt gesund)
+COMMAND
+player2 (vorbehalt gesund)
+COMMAND
+player3 (vorbehalt gesund)
+COMMAND
+player4 (vorbehalt gesund)
+COMMAND
+player1 (spielen kreuz_ass_1)
+COMMAND
+player2 (spielen kreuz_neun_1)
+COMMAND
+player3 (spielen kreuz_ass_2)
+COMMAND
+player4 (spielen kreuz_neun_2)
+COMMAND
+player1 (spielen pik_koenig_1)
+COMMAND
+player2 (spielen pik_ass_1)
+COMMAND
+player3 (spielen pik_koenig_2)
+COMMAND
+player4 (spielen pik_neun_1)
+COMMAND
+player2 (spielen herz_koenig_1)
+COMMAND
+player3 (spielen herz_ass_1)
+COMMAND
+player4 (spielen herz_neun_2)
+COMMAND
+player1 (spielen karo_neun_1)
+COMMAND
+player1 (spielen kreuz_koenig_1)
+COMMAND
+player2 (spielen kreuz_koenig_2)
+COMMAND
+player3 (spielen kreuz_dame_1)
+COMMAND
+player4 (spielen kreuz_zehn_2)
+COMMAND
+player3 (spielen herz_neun_1)
+COMMAND
+player4 (spielen herz_koenig_2)
+COMMAND
+player1 (spielen kreuz_zehn_1)
+COMMAND
+player2 (spielen karo_ass_1)
+COMMAND
+player2 (spielen pik_ass_2)
+COMMAND
+player3 (spielen herz_dame_2)
+COMMAND
+player4 (spielen pik_neun_2)
+COMMAND
+player1 (spielen pik_dame_1)
+COMMAND
+player1 (spielen karo_koenig_1)
+COMMAND
+player2 (spielen karo_dame_2)
+COMMAND
+player3 (spielen karo_koenig_2)
+COMMAND
+player4 (spielen pik_dame_2)
+COMMAND
+player4 (spielen pik_zehn_2)
+COMMAND
+player1 (spielen herz_bube_1)
+COMMAND
+player2 (spielen pik_zehn_1)
+COMMAND
+player3 (spielen pik_bube_1)
+COMMAND
+player3 (spielen herz_bube_2)
+COMMAND
+player4 (spielen kreuz_bube_2)
+COMMAND
+player1 (spielen karo_dame_1)
+COMMAND
+player2 (spielen karo_ass_2)
+COMMAND
+player1 (spielen herz_dame_1)
+COMMAND
+player2 (spielen karo_neun_2)
+COMMAND
+player3 (spielen pik_bube_2)
+COMMAND
+player4 (spielen kreuz_dame_2)
+COMMAND
+player4 (spielen herz_ass_2)
+COMMAND
+player1 (spielen herz_zehn_1)
+COMMAND
+player2 (spielen karo_zehn_1)
+COMMAND
+player3 (spielen kreuz_bube_1)
+COMMAND
+player1 (spielen herz_zehn_2)
+COMMAND
+player2 (spielen karo_bube_1)
+COMMAND
+player3 (spielen karo_zehn_2)
+COMMAND
+player4 (spielen karo_bube_2)
+COMMAND
+random (auswerten)
+PARTIAL_STATE
+(ablauf geben)
+(spiel 2)
+(punkte player1 3)
+(punkte player2 3)
+(punkte player3 -3)
+(punkte player4 -3)

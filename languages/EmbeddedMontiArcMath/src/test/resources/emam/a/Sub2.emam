@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package a;
+
+component Sub2 implements SuperComp{
+  port in (-oo:oo) in1,
+        out B out1;
+}

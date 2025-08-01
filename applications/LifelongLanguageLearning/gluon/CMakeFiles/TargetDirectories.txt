@@ -1,0 +1,8 @@
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/src/cpp/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/src/cpp/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/src/cpp/CMakeFiles/LifelongLanguageLearning.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/target/CMakeFiles/rebuild_cache.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/target/CMakeFiles/edit_cache.dir
+/home/julian/Documents/MontiCore/EpisodicMemoryInlifelongLanguageLearning/gluon/target/CMakeFiles/lifelongLanguageLearning_network.dir

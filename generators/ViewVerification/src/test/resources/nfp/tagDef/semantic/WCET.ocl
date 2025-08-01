@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tagDef.semantic;
+
+import tagDef.CnCExt;
+import tagDef.NFPExt;
+
+ocl WCET {
+    context AbsEff eff, Cmp cmp inv:
+            let
+                selectedPaths = paths(cmp, eff, 0);
+                aggregatedValues = List{sum(selectedVals, "s") |  path in selectedPaths , selectedVals =
+                                                                List{max(e.compWCET, 0 s) | e in path}
+                                 };
+            in
+                forall a in aggregatedValues: (a < min(eff.viewWCET, +oo s));
+
+}
+

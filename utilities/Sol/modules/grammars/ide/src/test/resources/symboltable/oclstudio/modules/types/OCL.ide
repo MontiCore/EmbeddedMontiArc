@@ -1,0 +1,7 @@
+package oclstudio.modules.types
+
+typedef module OCL {
+    label "OCL"
+    icon "some-icon-class"
+    category "OCL"
+}

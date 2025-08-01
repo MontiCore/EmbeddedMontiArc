@@ -1,0 +1,14 @@
+component AdaNetBaseGenerated{
+    ports in Z(0:255)^{1, 32, 32} image, out Q(0:1)^{10} predictions;
+
+    implementation CNN {
+        image ->
+       FullyConnected(| = 2, units=layerWidth)->
+       Concatenate()->
+       FullyConnected(units=layerWidth)->
+       FullyConnected(units=classes) ->
+        FullyConnected(units = 10) ->
+        predictions
+        ;
+    }
+}

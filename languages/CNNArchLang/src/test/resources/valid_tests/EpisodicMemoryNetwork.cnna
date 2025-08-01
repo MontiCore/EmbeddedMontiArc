@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture EpisodicMemoryNetwork{
+    def input Z(0:255)^{128} data
+    def output Q(0:1)^{33} softmax
+
+    data ->
+    EpisodicMemory(replayInterval=78, replayBatchSize=100, replaySteps=1, replayGradientSteps=1, memoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="no_replacement", useLocalAdaptation=true, localAdaptationK=32, localAdaptationGradientSteps=30, queryNetDir="pretrained", queryNetPrefix="network_name-", queryNetNumInputs=1) ->
+    FullyConnected(units=33) ->
+    EpisodicMemory(replayInterval=78, replayBatchSize=100, replaySteps=1, replayGradientSteps=1, memoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="no_replacement", useLocalAdaptation=true, localAdaptationK=32, localAdaptationGradientSteps=30, queryNetDir="pretrained", queryNetPrefix="network_name-", queryNetNumInputs=1) ->
+	FullyConnected(units=33) ->
+    EpisodicMemory(replayInterval=78, replayBatchSize=100, replaySteps=1, replayGradientSteps=1, memoryStoreProb=1, maxStoredSamples=-1, memoryReplacementStrategy="no_replacement", useLocalAdaptation=true, localAdaptationK=32, localAdaptationGradientSteps=30, queryNetDir="pretrained", queryNetPrefix="network_name-", queryNetNumInputs=1) ->
+	FullyConnected(units=33) ->
+    Softmax() ->
+    softmax;
+}

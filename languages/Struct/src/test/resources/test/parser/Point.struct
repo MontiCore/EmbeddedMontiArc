@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.parser;
+
+struct Point {
+  Q x;
+  Q y;
+}

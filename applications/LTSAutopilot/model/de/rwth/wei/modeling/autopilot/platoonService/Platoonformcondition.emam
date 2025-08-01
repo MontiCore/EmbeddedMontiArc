@@ -1,0 +1,161 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Platoonformcondition{
+  ports
+    in  Statusmessage       match_status_msg,
+    in  Platoonmessage      match_plat_msg,
+
+    in  Trajectorymessage   matched_traj_msg_plat,
+    in  Z                   ifmatchsuccess_plat,
+    in  Trajectorymessage   matched_traj_msg_single,
+    in  Z                   ifmatchsuccess_single,
+
+    in  Statusmessage       match_tail_status_msg,
+    in  Z                   if_tailmatchsuccess,
+
+    in  Z                   trajectory_length,
+    in  Q^{1,100}           trajectory_x,
+    in  Q^{1,100}           trajectory_y,
+    in  Z                   isnextintersection,
+    in  Q                   nextintersection_x,
+    in  Q                   nextintersection_y,
+    in  Z                   if_inplatoon,
+    in  Z                   frontplatoonid,
+    in  Z                   frontvehicleid,
+    in  Q                   position_x,
+    in  Q                   position_y,
+
+    out Z                   potentialid,
+    out Z                   if_potentialheaderexists,
+    out Z                   if_sendjointmsg,
+    out Z                   checkpathsimilarity,
+    out Trajectorymessage   checktrajectorymessage;
+
+
+    implementation Math{
+      potentialid = 0.0;
+      if_potentialheaderexists = 0;
+      if_sendjointmsg = 0;
+      checkpathsimilarity = 0;
+      if if_inplatoon == 1 && ifmatchsuccess_plat == 0
+      // find the platoon but without trajectorymessage
+          Q plat_x = match_status_msg.position_x;
+          Q plat_y = match_status_msg.position_x;
+          Q sqrt_dis_plat = (plat_x - position_x)*(plat_x - position_x) +(plat_y - position_y)*(plat_y - position_y);
+          Q dis_plat = sqrt(sqrt_dis_plat);
+          if dis_plat <= 16.0
+            potentialid = frontplatoonid;
+            if_potentialheaderexists = 1;
+            if_sendjointmsg = 0;
+          end
+      end
+      if if_inplatoon == 1 && ifmatchsuccess_plat == 1
+      // find the platoon, also match the trajectorymessage
+         Q next_x = matched_traj_msg_plat.nextintersection_x;
+         Q next_y = matched_traj_msg_plat.nextintersection_y;
+
+         if isnextintersection == 0
+             if if_tailmatchsuccess == 1
+                Q tail_x = match_tail_status_msg.position_x;
+                Q tail_y = match_tail_status_msg.position_y;
+                Q sqrt_dis_tail = (position_x - tail_x)*(position_x - tail_x) + (position_y - tail_y)*(position_y - tail_y);
+                Q dis_tail = sqrt(sqrt_dis_tail);
+                if dis_tail <= 16.0
+                    potentialid = frontplatoonid;
+                    if_potentialheaderexists = 1;
+                    if_sendjointmsg = 1;
+                end
+             else
+                 potentialid = frontplatoonid;
+                 if_potentialheaderexists = 1;
+                 if_sendjointmsg = 0;
+             end
+         end
+
+         if next_x == 0.0 && next_y == 0.0 && isnextintersection != 0
+            potentialid = 0.0;
+            if_potentialheaderexists = 0;
+            if_sendjointmsg = 0;
+         end
+
+         if next_x != 0.0 && next_y != 0.0 && isnextintersection != 0
+            Q sqrt_disinter = (next_x - nextintersection_x)*(next_x - nextintersection_x) +(next_y - nextintersection_y)*(next_y - nextintersection_y);
+            Q disinter = sqrt(sqrt_disinter);
+            if disinter < 8.0
+                if if_tailmatchsuccess == 1
+                   Q tail_x1 = match_tail_status_msg.position_x;
+                   Q tail_y1 = match_tail_status_msg.position_y;
+                   Q sqrt_dis_tail1 = (position_x - tail_x1)*(position_x - tail_x1) + (position_y - tail_y1)*(position_y - tail_y1);
+                   Q dis_tail1 = sqrt(sqrt_dis_tail1);
+                   if dis_tail1 <= 16.0
+                       potentialid = frontplatoonid;
+                       if_potentialheaderexists = 1;
+                       if_sendjointmsg = 0;
+                       checkpathsimilarity = 1;
+                       checktrajectorymessage = matched_traj_msg_plat;
+                   end
+                else
+                    potentialid = frontplatoonid;
+                    if_potentialheaderexists = 1;
+                    if_sendjointmsg = 0;
+                end
+            end
+         end
+      end
+      if if_inplatoon == 0 && frontvehicleid != 0.0 &&ifmatchsuccess_single == 0
+      // find the vehicle but without trajectorymessage
+         Q single_x = match_status_msg.position_x;
+         Q single_y = match_status_msg.position_x;
+         Q sqrt_dis_single = (single_x - position_x)*(single_x - position_x) +(single_y - position_y)*(single_y - position_y);
+         Q dis_single = sqrt(sqrt_dis_single);
+         if dis_single <= 16.0
+           potentialid = frontvehicleid;
+           if_potentialheaderexists = 1;
+           if_sendjointmsg = 0;
+         end
+      end
+      if if_inplatoon == 0 && frontvehicleid != 0.0 &&ifmatchsuccess_single == 1
+      // find the vehicle, also match the trajectorymessage
+          Q next_x = matched_traj_msg_single.nextintersection_x;
+          Q next_y = matched_traj_msg_single.nextintersection_y;
+
+          if isnextintersection == 0
+              Q tail_x = match_status_msg.position_x;
+              Q tail_y = match_status_msg.position_x;
+              Q sqrt_dis_tail = (position_x - tail_x)*(position_x - tail_x) + (position_y - tail_y)*(position_y - tail_y);
+              Q dis_tail = sqrt(sqrt_dis_tail);
+              if dis_tail <= 16.0
+                  potentialid = frontvehicleid;
+                  if_potentialheaderexists = 1;
+                  if_sendjointmsg = 1;
+              end
+          end
+
+          if next_x == 0.0 && next_y == 0.0 && isnextintersection != 0
+             potentialid = 0.0;
+             if_potentialheaderexists = 0;
+             if_sendjointmsg = 0;
+          end
+
+          if next_x != 0.0 && next_y != 0.0 && isnextintersection != 0
+             Q sqrt_disinter = (next_x - nextintersection_x)*(next_x - nextintersection_x) +(next_y - nextintersection_y)*(next_y - nextintersection_y);
+             Q disinter = sqrt(sqrt_disinter);
+             if disinter < 8.0
+                Q tail_x1 = match_status_msg.position_x;
+                Q tail_y1 = match_status_msg.position_y;
+                Q sqrt_dis_tail1 = (position_x - tail_x1)*(position_x - tail_x1) + (position_y - tail_y1)*(position_y - tail_y1);
+                Q dis_tail1 = sqrt(sqrt_dis_tail1);
+                if dis_tail1 <= 16.0
+                    potentialid = frontvehicleid;
+                    if_potentialheaderexists = 1;
+                    if_sendjointmsg = 0;
+                    checkpathsimilarity = 1;
+                    checktrajectorymessage = matched_traj_msg_single;
+                end
+             end
+          end
+      end
+    }
+}

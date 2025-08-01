@@ -1,0 +1,31 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Messageupdate_platoon_helper{
+ ports
+   in  platoonmessage     plat_msg,
+   in  trajectorymessage  traj_msg,
+
+   out  statusmessage      update_plat_msg,
+   out  trajectorymessage  update_traj_msg;
+
+  instance  platoonmessageparsing       plat_parse;
+  instance  trajectorymessageparsing    traj_parse;
+  instance  update_condition            up_cd;
+  instance  update_platoon              upp;
+
+  connect status_msg -> plat_parse.plat_message;
+  connect traj_msg -> traj_parse.traj_message;
+  connect plat_parse.timestamp -> up_cd.status_ts;
+  connect traj_parse.timestamp -> up_cd.traj_ts;
+  connect plat_parse.position_x -> up_cd.position_x;
+  connect plat_parse.position_y -> up_cd.position_y;
+  connect traj_parse.trajectroy_x -> up_cd.trajectroy_x;
+  connect traj_parse.trajectroy_y -> up_cd.trajectroy_y;
+  connect up_cd.update_type -> upp.update_type;
+  connect plat_msg -> upp.status_msg;
+  connect traj_msg -> upp.traj_msg;
+  connect upp.update_plat_msg -> update_plat_msg;
+  connect upp.update_traj_msg -> update_traj_msg;
+}

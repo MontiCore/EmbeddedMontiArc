@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.specification;
+
+import de.monticore.lang.monticar.semantics.library.arithmetic.Gain;
+
+component Variable<T> {
+    port
+        out T out1;
+    
+    instance Gain<T>(1) gain;
+    
+    connect gain.out1 -> gain.in1, out1;
+}

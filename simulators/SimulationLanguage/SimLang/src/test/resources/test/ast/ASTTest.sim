@@ -1,0 +1,68 @@
+/* (c) https://github.com/MontiCore/monticore */
+sim ASTTest {
+  sim_render_frequency 60ms;
+  sim_loop_frequency (60m:1m:80m);
+  sim_duration [50m,4h,5h,6h];
+  sim_type maxfps;
+  weather fixed {temperature 290K;
+                 humidity 0.2;
+                 pressure 100Pa;
+                 wind_strength 2km/h;
+                 //wind_direction 38.0°;
+                 precipitation_type snow;
+                 precipitation_amount 5mm;
+                 clouding stratus;
+                 sight unlimited;
+                 };
+  time 1:22:33:444;
+  map_path Maps;
+  map_name HorsterDreieck.osm;
+  map_height flat;
+  map_overlap 10;
+  map_sector_width 100;
+  map_sector_height 100;
+  max_sector_users 1234;
+  timeout 12h;
+  gravity 12m/s^2;
+  
+  pedestrian(10.10, 10.0, 10)->(0, 20.0, 0.0);
+  pedestrian_density 2.0;
+  
+  vehicle car1(-22, -34.0, 90)->(-1, 0, 10);
+  vehicle(123, -94, 201)->(1024, 960, 200);
+  vehicle 1000;
+  vehicle 1234 (-150, -150) -> (500, 600);
+
+  vehicle {
+     //path random;
+     //amount 500;
+     path (1, 0, 0)->(1, 1, 0)->(1, 1, 1);
+
+     network LTE;
+
+     goals [
+         always acceleration lt 100m/s^2,
+         eventually speed eq 0m/s,
+         never battery lt 0.1
+         // timeF constraint
+     ];
+
+     platoon {
+       size 5;
+     };
+  };
+
+  fixed channel LTE {
+    transfer_rate 20Hz;
+    latency 10ms;
+    outage 0.001;
+    area global;
+  };
+  
+  bound channel ICE {
+    transfer_rate 2Hz;
+    latency 1s;
+    outage 0.99;
+    area (10,10) 30;
+  };
+}

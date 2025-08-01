@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+
+dynamic component Nonstopareawithsingle{
+ ports
+   dynamic in Statusmessage status_msg[0:32],
+
+   in  Q           nextintersection_x,
+   in  Q           nextintersection_y,
+   in  Z           trajectory_length,
+   in  Q^{1,100}   trajectory_x,
+   in  Q^{1,100}   trajectory_y,
+   in  Q           length,
+   in  Q           width,
+
+   out Z          if_collinnonstop;
+
+   instance Nonstopareavehicle         non_v;
+   instance Collisionpoint_single      collpoint[0:32];
+   instance If_nonstopsingle2array     ifns2array;
+
+
+   //find vehicles in or near to the non stop area
+   connect nextintersection_x -> non_v.nextintersection_x;
+   connect nextintersection_y -> non_v.nextintersection_y;
+   @ status_msg::connect{
+     connect status_msg[?] -> non_v.status_msg[?];
+   }
+
+   @ non_v.non_status_msg::connect{
+     connect non_v.non_status_msg[?] -> collpoint[?].status_message;
+     connect trajectory_length -> collpoint[?].trajectory_length_car1;
+     connect trajectory_x -> collpoint[?].trajectory_x_car1;
+     connect trajectory_y -> collpoint[?].trajectory_y_car1;
+     connect length -> collpoint[?].car1_length;
+     connect width -> collpoint[?].car1_width;
+     connect collpoint[?].isfrontvehicle -> ifns2array.isfrontvehicle[?];
+     connect collpoint[?].iscollision -> ifns2array.iscollision[?];
+   }
+   connect ifns2array.if_collinnonstop -> if_collinnonstop;
+}

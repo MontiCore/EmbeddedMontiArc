@@ -1,0 +1,91 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component If_platooninnonstop{
+  ports
+  dynamic in Platoonmessage       plat_msg[0:32],
+  dynamic in Statusmessage        status_msg[0:32],
+  dynamic in Trajectorymessage    traj_msg[0:32],
+  in  Q           nextintersection_x,
+  in  Q           nextintersection_y,
+  in  Q           length,
+
+
+  dynamic out Statusmessage        tail_status_msg[0:32],
+  dynamic out Trajectorymessage    tail_traj_msg[0:32],
+  out Platoonmessage pmsg,
+  out Statusmessage  smsg,
+  out Trajectorymessage tmsg,
+  out Trajectorymessage tmsg1,
+  out Z^{1,100}  vehiclelist;
+
+  @ plat_msg::connect{}
+  @ status_msg::connect{}
+  @ traj_msg::connect{}
+  implementation Math{
+    Z counter = 1;
+    for i = 1:32
+       if is_connected(plat_msg,i)
+          pmsg = plat_msg(i);
+          vehiclelist = pmsg.platoon_member;
+          Z  vehicle_num = pmsg.member_num;
+          for j = 1:32
+            if is_connected(traj_msg,j)
+               tmsg = traj_msg(j);
+               if tmsg.vehicleid == pmsg.vehicleid
+                  Q inter_x = tmsg.nextintersection_x;
+                  Q inter_y = tmsg.nextintersection_y;
+                  Q sqrt_dis = (inter_x - nextintersection_x)*(inter_x - nextintersection_x) + (inter_y - nextintersection_y)*(inter_y - nextintersection_y);
+                  Q dis = sqrt(sqrt_dis);
+                  if inter_x == 0.0 || dis > 2 * length
+                     Q tailid = vehiclelist(1,vehicle_num);
+                     Q inter_x1 = 0.0;
+                     Q inter_y1 = 0.0;
+                     B if_statusmatch = 0;
+                     B if_trajmatch = 0;
+                     for k = 1:32
+                        if is_connected(status_msg,k)
+                           smsg = status_msg(k);
+                           if smsg.vehicleid == tailid
+                              if_statusmatch = 1;
+                           end
+                        end
+                     end
+                     for n = 1:32
+                        if is_connected(traj_msg,n)
+                           tmsg1 = traj_msg(n);
+                           if tmsg1.vehicleid == tailid
+                              if_trajmatch = 1;
+                              inter_x1 = tmsg1.nextintersection_x;
+                              inter_y1 = tmsg1.nextintersection_y;
+                           end
+                           if if_statusmatch == 1
+                              if inter_x1 != 0.0 && inter_y1 != 0.0 && if_trajmatch == 1
+                                Q sqrt_dis1 = (inter_x1 - nextintersection_x) * (inter_x1 - nextintersection_x) + (inter_y1 - nextintersection_y) * (inter_y1 - nextintersection_y);
+                                Q dis1 = sqrt(sqrt_dis1);
+                                if dis1 < 2 * length
+                                    if ports_connect(tail_status_msg, counter, smsg)
+                                       tail_status_msg(counter) = smsg;
+                                    end
+                                    Z r = ports_free(tail_status_msg,counter);
+
+                                    if ports_connect(tail_traj_msg, counter, tmsg1)
+                                       tail_traj_msg(counter) = tmsg1;
+                                    end
+                                    Z r1 = ports_free(tail_status_msg,counter);
+
+                                    counter = counter + 1;
+                                end
+                             end
+                           end
+                        end// if is_connected(traj_msg,m)
+                     end// for n = 1:32
+                  end// if nextintersection_x == 0.0 || dis > 2 * length
+               end// if tmsg.vehicleid == pmsg.vehicleid
+            end//   if is_connected(traj_msg,j)
+          end// for j = 1:32
+       end// if is_connected(plat_msg,i)
+    end// for i = 1:32
+  }
+}

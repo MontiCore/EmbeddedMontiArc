@@ -1,0 +1,18 @@
+package de.rwth.connectedcars.communication.scenarios;
+
+import de.rwth.connectedcars.communication.packets.*;
+
+component SwitchingLane {
+    ports
+        in SwitchingLanesPacket sl_bc_in[6],
+        in B sl_updated_bc_in[6],
+        in SwitchingLanesPacket sl_in[6],
+        in B sl_updated_in[6],
+
+        out B sl_updated_bc_out,
+        out SwitchingLanesPacket sl_bc_out,
+        out B sl_updated_out[6],
+        out SwitchingLanesPacket sl_out[6];
+
+    
+}

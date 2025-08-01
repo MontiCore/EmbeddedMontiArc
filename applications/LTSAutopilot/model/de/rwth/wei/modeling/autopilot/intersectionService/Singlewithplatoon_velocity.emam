@@ -1,0 +1,154 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+import  de.rwth.wei.modeling.autopilot.messagematch.*;
+
+// single vehicle mit platoon, front of platoon or there is platoon
+dynamic component Singlewithplatoon_velocity{
+ports
+  dynamic in  Statusmessage           status_msg[0:32],
+  dynamic in  Trajectorymessage       traj_msg[0:32],
+  dynamic in  Platoonmessage          plat_msg[0:32],
+  dynamic in  Collisionmessage        coll_msg[0:32],
+
+
+  in  Z ^ 32          vehicle_atintersection,
+  in  Z               vehicle_num,
+  in  Z ^ 32          platoon_atintersection,
+  in  Z               platoon_num,
+  // current information
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Q               length,
+  in  Q               width,
+  in  Q               velocity,
+  in  Z               if_frontvehicleexists,
+  // use for collisionmessage
+  in  Z               timestamp,
+  in  Z               vehicleid,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+  in  Q               dis2intersection,
+
+  dynamic out Collisionmessage coll_message[0:32],
+  out Q               maximalallowedvelocity;
+
+  instance  Trajduplicate                 traj_dup;
+  instance  Collisionduplicate            coll_dup;
+  instance  Platoonduplicate              plat_dup;
+  instance  Platoonlength2array           p2a;
+  instance  Beaconmessage2vehicle         b2v1;
+  instance  Beaconmessage2platoon         b2p1;
+  instance  Collmessage2platoon           c2p1;
+  instance  Intersectioncollisiontype2    inter_type2;
+  instance  Distance2max_allowedvelocity  dis2v2;
+
+  // duplicate the trajectorymessage
+  @ traj_msg::connect{
+    connect traj_msg[?] -> traj_dup.traj_msg[?];
+  }
+
+  // beacon message to the single vehicle
+  @ status_msg::connect{
+    connect status_msg[?] -> b2v1.status_msg[?];
+  }
+
+  @ traj_dup.traj_msg1::connect {
+    connect traj_dup.traj_msg1[?] -> b2v1.traj_msg[?];
+  }
+
+  connect vehicle_atintersection -> b2v1.vehiclelist;
+  connect vehicle_num -> b2v1.list_num;
+
+  @ b2v1.newstatus_msg::connect {
+    connect b2v1.newstatus_msg[?] -> inter_type2.single_status_msg[?];
+  }
+  @ b2v1.newtraj_msg::connect {
+    connect b2v1.newtraj_msg[?] -> inter_type2.single_traj_msg[?];
+  }
+
+  // duplicate platoon message
+  @ plat_msg::connect{
+    connect plat_msg[?] -> plat_dup.plat_msg[?];
+  }
+  // make array for the platoon length
+  @ plat_dup.plat_msg1::connect{
+    connect plat_dup.plat_msg1[?] -> p2a.plat_msg[?];
+  }
+
+  connect p2a.platoonid -> inter_type2.platoonid;
+  connect p2a.platoonlength -> inter_type2.platoonlength;
+
+  // beacon message to the platoon
+  @ plat_dup.plat_msg2::connect{
+    connect plat_dup.plat_msg2[?] -> b2p1.plat_msg[?];
+  }
+  @ traj_dup.traj_msg2::connect {
+    connect traj_dup.traj_msg2[?] -> b2p1.traj_msg[?];
+  }
+
+  connect platoon_atintersection -> b2p1.platoonlist;
+  connect platoon_num -> b2p1.list_num;
+
+  @ b2p1.newplat_msg::connect{
+    connect b2p1.newplat_msg[?] -> inter_type2.plat_msg[?];
+  }
+  @ b2p1.newtraj_msg::connect{
+    connect b2p1.newtraj_msg[?] -> inter_type2.plat_traj_msg[?];
+  }
+
+  @ coll_msg::connect{
+    connect coll_msg[?] -> coll_dup.coll_msg[?];
+  }
+  // collisionmessage 2 platoon
+  connect platoon_atintersection -> c2p1.platoonlist;
+  connect platoon_num -> c2p1.list_num;
+  @ coll_dup.coll_msg2::connect{
+    connect coll_dup.coll_msg2[?] -> c2p1.coll_message[?];
+  }
+  @ c2p1.newcoll_message::connect{
+    connect c2p1.newcoll_message[?] -> inter_type2.plat_coll_msg[?];
+  }
+
+  connect vehicle_atintersection -> inter_type2.vehicle_atintersection;
+  connect vehicle_num -> inter_type2.vehicle_num;
+  connect platoon_atintersection -> inter_type2.platoon_atintersection;
+  connect platoon_num -> inter_type2.platoon_num;
+
+  connect trajectory_length -> inter_type2.trajectory_length;
+  connect trajectory_x -> inter_type2.trajectory_x;
+  connect trajectory_y -> inter_type2.trajectory_y;
+  connect length -> inter_type2.length;
+  connect width -> inter_type2.width;
+  connect velocity -> inter_type2.velocity;
+  connect dis2intersection -> inter_type2.dis2intersection;
+  connect if_frontvehicleexists -> inter_type2.if_frontvehicleexists;
+  connect timestamp -> inter_type2.timestamp;
+  connect vehicleid -> inter_type2.vehicleid;
+  connect nextintersection_x -> inter_type2.nextintersection_x;
+  connect nextintersection_y -> inter_type2.nextintersection_y;
+
+  // get the current collision message
+  @ inter_type2.coll_message::connect{
+    connect inter_type2.coll_message[?] -> coll_message[?];
+  }
+
+  connect inter_type2.is_highestpriority -> dis2v2.is_highestpriority;
+  connect length -> dis2v2.length;
+  connect dis2intersection -> dis2v2.dis2intersection;
+
+  connect dis2v2.maximalallowedvelocity -> maximalallowedvelocity;
+
+  @ traj_dup.traj_msg3::connect{}
+  @ traj_dup.traj_msg4::connect{}
+  @ traj_dup.traj_msg5::connect{}
+  @ coll_dup.coll_msg3::connect{}
+  @ coll_dup.coll_msg4::connect{}
+  @ coll_dup.coll_msg5::connect{}
+  @ plat_dup.plat_msg3::connect{}
+  @ plat_dup.plat_msg4::connect{}
+  @ plat_dup.plat_msg5::connect{}
+  @ plat_dup.plat_msg6::connect{}
+}

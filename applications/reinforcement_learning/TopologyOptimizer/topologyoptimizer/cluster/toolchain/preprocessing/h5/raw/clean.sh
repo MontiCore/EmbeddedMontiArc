@@ -1,0 +1,1 @@
+find . ! -name clean.sh -type f -delete

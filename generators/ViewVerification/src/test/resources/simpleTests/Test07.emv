@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests;
+
+view Test07 {
+	component ACA {
+		ports out ? ?;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		ports in ? ?;
+	}
+	instance ACB acb;
+}

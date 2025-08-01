@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.haller;
+
+component PickGhost {
+    ports
+        in Z(0cm: 342cm) ghostX[4],
+        in Z(0cm: 426cm) ghostY[4],
+        in Z(0 : 1 : 3) ghostDirection[4],
+        in B ghostEatable[4],
+        in B ghostEaten[4],
+        in Z index,
+      
+        out Z(0m: 342cm) gX,
+        out Z(0m: 426cm) gY,
+        out Z(0 : 1 : 3) gDir,
+        out B gEatable,
+        out B gEaten;
+      
+    implementation Math {
+        Z i = index;
+        gX = ghostX(i);
+        gY = ghostY(i);
+        gDir = ghostDirection(i);
+        gEatable = ghostEatable(i);
+        gEaten = ghostEaten(i);
+    }
+}

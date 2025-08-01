@@ -1,0 +1,18 @@
+package topology.agent.network;
+
+component TopoQNet {
+    ports
+        in Q(0:oo)^{1} state,
+        out Q(0:1)^{7} action;
+
+    implementation CNN {
+        state ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=600) ->
+        Relu() ->
+        FullyConnected(units=7) ->
+        Tanh() ->
+        action;
+    }
+}

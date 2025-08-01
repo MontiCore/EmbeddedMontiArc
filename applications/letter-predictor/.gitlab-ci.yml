@@ -1,0 +1,13 @@
+stages:
+  - test
+
+TestLetterPredictor:
+  stage: test
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/generators/emadl2cpp/mxnet/190:v0.0.2
+  when: always
+  script:
+    - apt update && apt install -y libomp-dev
+    - python3 -m pip install -U pip
+    - python3 -m pip install scikit-image opencv-python
+    - mvn dependency:resolve emadl:train -s settings.xml -U
+    

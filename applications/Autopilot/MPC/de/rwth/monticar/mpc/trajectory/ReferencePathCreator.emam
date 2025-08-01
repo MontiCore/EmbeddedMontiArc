@@ -1,0 +1,176 @@
+/* (c) https://github.com/MontiCore/monticore */
+// ReferencePathCreator
+//
+
+package de.rwth.monticar.mpc.trajectory;
+
+component ReferencePathCreator<Q dt = 0.05>
+{
+    ports
+        // state vector z
+        in Q                                        inputx,
+        in Q                                        inputy,
+        in Q (0.0 m/s : 0.01 m/s : oo m/s)          desiredVelocity,
+		in Q                                        yaw,
+
+        // trajectory trimmed to current position
+        in  Z (0 : 100)                             trajectory_length,
+        in  Q (-oo m : 0.01 m : oo m) ^ {1,100}     inputtrajectory_x,
+        in  Q (-oo m : 0.01 m : oo m) ^ {1,100}     inputtrajectory_y,
+
+        // reference trajectory for prediction horizon
+        out Q^{4, 5}                                   z_ref;
+		
+	implementation Math
+    {
+		Q dt = 0.05;
+		Q dist;
+		Q lowestdist = 1000000000;
+		Q position;
+		Q start_x;
+		Q start_y;
+		Q direction;
+		Q d;
+		Q^{2,100} trajectory;
+		Q^{2} z;
+		Q ul;
+		Q error;
+		Q velocity;
+		
+		z(1) = inputx;
+		z(2) = inputy;
+		
+		trajectory(1,:) = inputtrajectory_x(1,:);
+		trajectory(2,:) = inputtrajectory_y(1,:);
+		
+		
+		
+		Q ds = desiredVelocity*dt;
+		velocity = desiredVelocity;
+		
+		//find closest trajectory point to current position
+		for i=1 : trajectory_length
+			
+			dist = sqrt((trajectory(1,i) - z(1))*(trajectory(1,i) - z(1)) + (trajectory(2,i) - z(2))*(trajectory(2,i) - z(2)));
+			
+			if (dist < lowestdist)
+				
+				lowestdist = dist;
+				position = i;
+			end	
+		end
+		
+		//Find closest point on straight line between trajectory points x-1, x, x+1
+		
+		//If closest trajectory pair==1, only look at straight line between x and x+1
+		if position == 1
+			Q error = minimize(ul)
+				abs(z(1) - (trajectory(1,position) + ul* (trajectory(1,position+1) - trajectory(1,position)))) + 
+				abs(z(2) - (trajectory(2,position) + ul* (trajectory(2,position+1) - trajectory(2,position))));
+			subject to
+				0 <= ul <= 1;
+			end
+			
+			d =ul;
+		
+			start_x = trajectory(1,position) + d* (trajectory(1,position+1) - trajectory(1,position));
+			start_y = trajectory(2,position) + d* (trajectory(2,position+1) - trajectory(2,position));
+			direction = atan2(trajectory(1,position+1) - trajectory(1,position), trajectory(2,position+1) - trajectory(2,position));
+			
+		else 
+			//look at line from i-1 to i and i to i+1 and determine shortest distance
+			Q first = minimize(Q u2)
+				abs(z(1) - (trajectory(1,position) + u2* (trajectory(1,position+1) - trajectory(1,position)))) + abs(z(2) - (trajectory(2,position) + u2* (trajectory(2,position+1) - trajectory(2,position))));
+			subject to
+				0 <= u2 <= 1;
+			end
+			
+			
+			Q second = minimize(Q u3)
+				abs(z(1) - (trajectory(1,position-1) + u3* (trajectory(1,position) - trajectory(1,position-1)))) + abs(z(2) - (trajectory(2,position-1) + u3*(trajectory(2,position) - trajectory(2,position-1))));
+			subject to
+				0 <= u3 <= 1;
+			end
+		
+			
+			if( first > second)
+				d=u3;
+				start_x = trajectory(1,position-1) + d* (trajectory(1,position) - trajectory(1,position-1));
+				start_y = trajectory(2,position-1) + d* (trajectory(2,position) - trajectory(2,position-1));
+				direction = atan2(trajectory(1,position) - trajectory(1,position-1), trajectory(2,position) - trajectory(2,position-1));
+			else
+				d=u2;
+				start_x = trajectory(1,position) + d* (trajectory(1,position+1) - trajectory(1,position));
+				start_y = trajectory(2,position) + d* (trajectory(2,position+1) - trajectory(2,position));
+				direction = atan2(trajectory(1,position+1) - trajectory(1,position), trajectory(2,position+1) - trajectory(2,position));
+				position = position +1;
+			end
+		end 
+		
+	Q^{2} possiblenext;
+	Q^{2} next;
+	Q diffdist = sqrt((trajectory(1,position) - start_x)*(trajectory(1,position) - start_x) + (trajectory(2,position) - start_y)*(trajectory(2,position) - start_y));
+	
+	possiblenext(1) = start_x + sin(direction)*ds;
+	possiblenext(2) = start_y + cos(direction)*ds;
+	
+	//Check if next possible pair is still on the straight line
+	if ds/diffdist < 1
+		next = possiblenext;
+	
+	//if possible pair is not on the straight line, next pair is the next trajectory point and velocity is recaculated
+	else
+	
+		position = position+1;
+		next(1) = trajectory(1,position);
+		next(2) = trajectory(2,position);
+		velocity = sqrt((trajectory(1,position) - start_x)*(trajectory(1,position) - start_x) + (trajectory(2,position) - start_y)*(trajectory(2,position) - start_y));
+		direction = atan2(trajectory(1,position+1) - trajectory(1,position),trajectory(2,position+1) - trajectory(2,position));
+		
+	end
+	
+	z_ref(1,1) = next(1);
+	z_ref(2,1) = next(2);
+	z_ref(3,1) = direction;
+	z_ref(4,1) = velocity;
+	
+	velocity = desiredVelocity;
+	
+	for p= 2: 5
+		
+		possiblenext(1) = z_ref(1,p-1) + sin(direction)*ds;
+		possiblenext(2) = z_ref(2,p-1) + cos(direction)*ds;
+		
+		diffdist = sqrt((trajectory(1,position) - z_ref(1,p-1))*(trajectory(1,position) - z_ref(1,p-1)) + (trajectory(2,position) - z_ref(2,p-1))*(trajectory(2,position) - z_ref(2,p-1)));
+	
+		if ds/diffdist < 1
+			next = possiblenext;
+		
+		
+		else
+	
+			position = position+1;
+			next(1) = trajectory(1,position);
+			next(2) = trajectory(2,position);
+			velocity = sqrt((trajectory(1,position) - z_ref(1,p-1))*(trajectory(1,position) - z_ref(1,p-1)) + (trajectory(2,position) - z_ref(2,p-1))*(trajectory(2,position) - z_ref(2,p-1)));
+			direction = atan2(trajectory(1,position+1) - trajectory(1,position),trajectory(2,position+1) - trajectory(2,position));
+		
+		end
+		
+		
+		//First new trajectory point
+		z_ref(1,p) = next(1);
+		z_ref(2,p) = next(2);
+		z_ref(3,p) = direction;
+		z_ref(4,p) = velocity;
+	
+		velocity = desiredVelocity;
+		
+	end
+	
+	}	
+		
+}
+		
+				
+				

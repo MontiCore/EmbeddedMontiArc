@@ -1,0 +1,41 @@
+package de.rwth.pacman.heithoff2.decision;
+
+// check whether an intersection (3 or more non-blocked paths) is reached
+
+component NextIntersection {
+    ports
+      in Q(-1m: 19m) pacManX,
+      in Q(0m: 22m) pacManY,
+      in Z^{22,19} map,
+      
+      out B interSectionReached;
+      
+    implementation Math {
+        Z pacX = round(pacManX + 1);
+        Z pacY = round(pacManY + 1);
+        interSectionReached = 0;
+        if (abs(pacManX - pacX) < 0.01) && (abs(pacManY - pacY) < 0.01)
+            Z^{1,4} xOffSet = [0,0,-1,1];
+            Z^{1,4} yOffSet = [1,-1,0,0];
+            Z newPathsFound = 0;
+            for i = 1:4
+                Z indexY = 1;
+                Z indexX = i;
+                Z xOff = xOffSet(indexY, indexX);
+                Z yOff = yOffSet(indexY, indexX);
+                Q xT = pacX + xOff + 1;
+                Q yT = pacY + yOff + 1;
+                
+                Z nextTile = map(yT, xT);
+                if (nextTile == 0) || (nextTile == 3)
+                    newPathsFound = newPathsFound;
+                else
+                    newPathsFound = newPathsFound + 1;
+                    if newPathsFound > 2
+                        interSectionReached = 1;
+                    end
+                end
+            end
+        end
+    }
+}

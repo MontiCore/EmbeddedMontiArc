@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+configuration FCN{
+     num_epoch:1
+     batch_size:8
+     normalize:false
+     context:gpu
+     load_checkpoint:true
+     loss:softmax_cross_entropy{
+        loss_axis:1
+     }
+     optimizer:sgd{
+         learning_rate:0.001
+         learning_rate_decay:0.9
+         step_size:200
+         weight_decay:0.0001
+     }
+}

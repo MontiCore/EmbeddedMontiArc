@@ -1,0 +1,19 @@
+package turtlebot.preprocessor.move;
+
+component ResetRobot {
+    ports
+        in  B         inReset,
+        out Q         resetDone,
+        out B         inPos,
+        out Q^{4}     reset_model;
+
+    implementation Math {
+        resetDone = false;
+        inPos = true;
+        if inReset
+            inPos = false;
+            resetDone = true;
+        end
+
+    }
+}

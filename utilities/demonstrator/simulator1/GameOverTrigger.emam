@@ -1,0 +1,20 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulator1;
+
+component GameOverTrigger {
+    port
+        in Q x,
+        in Q y,
+        in Q time,        //use to know when to stop after passing the circle
+        out B status;
+
+    implementation Math{
+
+        B aboveBnd = x > 200;
+        B belowBnd = x < -200;
+        B rightBnd = y > 120;
+        B leftBnd = y < -50;         
+  
+        status = aboveBnd || belowBnd || rightBnd || leftBnd;
+    }
+}

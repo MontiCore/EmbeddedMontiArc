@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view SystemEmergencyControllerFixed {
+component PumpStation {
+  component PumpingSystem {
+
+  component EmergencyController {}
+  instance EmergencyController emergencyController;
+  component UserOperation {}
+  instance UserOperation userOperation;
+  component ModeArbiter {
+    ports
+      in Boolean userPumpState,
+      in scalar.Q userValvePosition;
+  }
+  instance ModeArbiter modeArbiter;
+  }
+  instance PumpingSystem pumpingSystem;
+  connect emergencyController -> userOperation;
+  connect userOperation -> modeArbiter.userPumpState;
+  connect userOperation -> modeArbiter.userValvePosition;
+}
+}

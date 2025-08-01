@@ -1,0 +1,8 @@
+package valid
+
+typedef configuration CircularDependencyTask {
+    label "Some Configuration"
+
+    backend task main depends peer1
+    frontend task peer1
+}

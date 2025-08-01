@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests.atomic;
+
+view PosTest {    
+    atomic component AtomicComponent { }
+    instance AtomicComponent atomicComponent;
+}
+

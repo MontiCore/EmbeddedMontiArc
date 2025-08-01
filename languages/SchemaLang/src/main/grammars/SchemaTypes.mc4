@@ -1,0 +1,54 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+component grammar SchemaTypes extends de.monticore.MCBasics, de.monticore.MCLiterals, de.monticore.MCBasicTypes1, ConfLangLiterals
+                            /*, de.monticore.expressions.ExpressionsBasis , de.monticore.SIUnitLiterals, SIUnitTypes */ {
+
+    /**
+     * Common interface of all types in SchemaLang.
+     */
+    interface SchemaType extends Type;
+
+    /**
+     * Common interface of all types having a range.
+     */
+    interface TypeWithRange extends SchemaType = range:Range?;
+
+    /**
+     * Common interface of all types having a domain.
+     */
+    interface TypeWithDomain extends SchemaType = values:Domain?;
+
+    /**
+     * Common interface of all EmbeddedMontiArc types in SchemaLang.
+     */
+    interface EMAType extends SchemaType;
+
+    /**
+     * Primitive types corresponding to EmbeddedMontiArc.
+     */
+    BooleanType implements EMAType = type:"B";
+    NaturalNumberWithZeroType implements EMAType, TypeWithRange, TypeWithDomain = type:"N" range:Range? values:Domain?;
+    NaturalNumberWithoutZeroType implements EMAType, TypeWithRange, TypeWithDomain = type:"N1" range:Range? values:Domain?;
+    WholeNumberType implements EMAType, TypeWithRange, TypeWithDomain = type:"Z" range:Range? values:Domain?;
+    RationalNumberType implements EMAType, TypeWithRange, TypeWithDomain = type:"Q" range:Range? values:Domain?;
+    ComplexNumberType implements EMAType, TypeWithRange, TypeWithDomain = type:"C" range:Range? values:Domain?;
+    MatrixType implements EMAType, TypeWithRange = type:EMAType range:Range? dimension:Dimension;
+
+    /**
+     * SchemaLang types.
+     */
+    StringType implements SchemaType, TypeWithDomain = type:"string" values:Domain?;
+    ListType implements SchemaType = SchemaType type:"*";
+    ComponentType implements SchemaType = type:"component";
+    ObjectType implements SchemaType = type:QualifiedName;
+
+    interface Range;
+    ClosedRange implements Range = left:"[" min:NumberWithInf ":" (step:NumberWithInf ":")? max:NumberWithInf right:"]";
+    OpenRange implements Range = left:"(" min:NumberWithInf ":" (step:NumberWithInf ":")? max:NumberWithInf right:")";
+    RightOpenRange implements Range = left:"[" min:NumberWithInf ":" (step:NumberWithInf ":")? max:NumberWithInf right:")";
+    LeftOpenRange implements Range = left:"(" min:NumberWithInf ":" (step:NumberWithInf ":")? max:NumberWithInf right:"]";
+
+    Dimension = "^" ("{" matrixDim:(Literal || ",")+ "}" | vecDim:Literal);
+    NumberWithInf = number:SignedNumericLiteral | ((posInf:"+" | negInf:"-")? InfinityLiteral);
+    Domain = "<" values:(SignedLiteral || ",")* ">";
+}

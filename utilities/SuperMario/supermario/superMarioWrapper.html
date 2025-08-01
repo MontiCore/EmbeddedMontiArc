@@ -1,0 +1,376 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html lang="en-us">
+<style>
+  .model {
+    overflow: hidden;
+    width: fit-content;
+  }
+  .ports {
+    overflow: hidden;
+  }
+  .inports {
+    float: left;
+    margin: 10px;
+  }
+  .outports {
+    float: left;
+    margin: 10px;
+  }
+
+  .header {
+    margin: 0 auto;
+    width: fit-content;
+  }
+
+  .type {
+    width: max-content;
+    margin: 2px 15px 2px 2px;
+    color: grey;
+  }
+  .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 10px;
+  }
+  .button {
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100px;
+  }
+  #reset {
+    background-color: #d22b23;
+  }
+  #execute {
+    background-color: #24d231;
+  }
+  .error {
+    color: red;
+    margin: 10px;
+  }
+
+  textarea {
+    height: 1em;
+    width: 200px;
+    padding: 3px;
+  }
+</style>
+<head>
+  <script type="text/javascript"
+          src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.1/math.min.js"></script>
+  <script type="text/javascript" src="superMarioWrapper_wrapper.js"></script>
+  <script type="text/javascript" src="superMarioWrapper.js"></script>
+  <title>SuperMarioWrapper</title>
+</head>
+<body>
+<div class="container">
+  <div class="model">
+    <div class="header">
+      <h2>SuperMarioWrapper</h2>
+    </div>
+    <div class="ports">
+      <div class="inports">
+        <div class="header">
+          <h3>Inports</h3>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Z^{1, 2}</div>
+            </td>
+            <td>
+              <div class="label">
+                marioPosition:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-marioPosition"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z^{1, 2}</div>
+            </td>
+            <td>
+              <div class="label">
+                marioVelocity:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-marioVelocity"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                marioHeight:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-marioHeight"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z^{5, 2}</div>
+            </td>
+            <td>
+              <div class="label">
+                nextEnemyPositions:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-nextEnemyPositions"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z^{5, 2}</div>
+            </td>
+            <td>
+              <div class="label">
+                nextObstaclePositions:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-nextObstaclePositions"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                nextHole:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-nextHole"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z^{5, 2}</div>
+            </td>
+            <td>
+              <div class="label">
+                nextLootCrates:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-nextLootCrates"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Q</div>
+            </td>
+            <td>
+              <div class="label">
+                tickSize:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-tickSize"></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                marioResting:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="inport-field-marioResting"></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div class="outports">
+        <div class="header">
+          <h3>Outports</h3>
+        </div>
+        <table>
+          <tr>
+            <td>
+              <div class="type">Z(-1 : 1 : 1)</div>
+            </td>
+            <td>
+              <div class="label">
+                marioDirection:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-marioDirection" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                marioJump:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-marioJump" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                marioDown:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-marioDown" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="type">Z</div>
+            </td>
+            <td>
+              <div class="label">
+                marioShoot:
+              </div>
+            </td>
+            <td>
+              <div class="field">
+                <textarea id="outport-field-marioShoot" readonly></textarea>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div class="buttons">
+      <div class="reset">
+        <button class="button" id="reset" onclick="reset()">Reset</button>
+      </div>
+      <div class="execute">
+        <button class="button" id="execute" onclick="exec()">Execute</button>
+      </div>
+    </div>
+  </div>
+  <div class="error" id="error"></div>
+</div>
+
+<script>
+  var url_string = window.location.href;
+  var url = new URL(url_string);
+    document.getElementById("inport-field-marioPosition").value = url.searchParams.get("marioPosition");
+    document.getElementById("inport-field-marioVelocity").value = url.searchParams.get("marioVelocity");
+    document.getElementById("inport-field-marioHeight").value = url.searchParams.get("marioHeight");
+    document.getElementById("inport-field-nextEnemyPositions").value = url.searchParams.get("nextEnemyPositions");
+    document.getElementById("inport-field-nextObstaclePositions").value = url.searchParams.get("nextObstaclePositions");
+    document.getElementById("inport-field-nextHole").value = url.searchParams.get("nextHole");
+    document.getElementById("inport-field-nextLootCrates").value = url.searchParams.get("nextLootCrates");
+    document.getElementById("inport-field-tickSize").value = url.searchParams.get("tickSize");
+    document.getElementById("inport-field-marioResting").value = url.searchParams.get("marioResting");
+
+  function exec() {
+    clearOutportFields();
+    clearErrors();
+
+    try {
+      setMarioPosition(document.getElementById("inport-field-marioPosition").value);
+      setMarioVelocity(document.getElementById("inport-field-marioVelocity").value);
+      setMarioHeight(document.getElementById("inport-field-marioHeight").value);
+      setNextEnemyPositions(document.getElementById("inport-field-nextEnemyPositions").value);
+      setNextObstaclePositions(document.getElementById("inport-field-nextObstaclePositions").value);
+      setNextHole(document.getElementById("inport-field-nextHole").value);
+      setNextLootCrates(document.getElementById("inport-field-nextLootCrates").value);
+      setTickSize(document.getElementById("inport-field-tickSize").value);
+      setMarioResting(document.getElementById("inport-field-marioResting").value);
+
+      execute();
+
+      document.getElementById("outport-field-marioDirection").value = getMarioDirection();
+      document.getElementById("outport-field-marioJump").value = getMarioJump();
+      document.getElementById("outport-field-marioDown").value = getMarioDown();
+      document.getElementById("outport-field-marioShoot").value = getMarioShoot();
+    }
+    catch (err) {
+      if (err.message === undefined) {
+        document.getElementById("error").innerText = err;
+      }
+      else {
+        document.getElementById("error").innerHTML = err.message;
+      }
+    }
+  }
+
+  function reset() {
+    init();
+    clearInportFields();
+    clearOutportFields();
+    clearErrors();
+  }
+
+  function clearInportFields() {
+    document.getElementById("inport-field-marioPosition").value = "";
+    document.getElementById("inport-field-marioVelocity").value = "";
+    document.getElementById("inport-field-marioHeight").value = "";
+    document.getElementById("inport-field-nextEnemyPositions").value = "";
+    document.getElementById("inport-field-nextObstaclePositions").value = "";
+    document.getElementById("inport-field-nextHole").value = "";
+    document.getElementById("inport-field-nextLootCrates").value = "";
+    document.getElementById("inport-field-tickSize").value = "";
+    document.getElementById("inport-field-marioResting").value = "";
+  }
+
+  function clearOutportFields() {
+    document.getElementById("outport-field-marioDirection").value = "";
+    document.getElementById("outport-field-marioJump").value = "";
+    document.getElementById("outport-field-marioDown").value = "";
+    document.getElementById("outport-field-marioShoot").value = "";
+  }
+
+  function clearErrors() {
+    document.getElementById("error").innerHTML = "";
+  }
+</script>
+</body>
+</html>

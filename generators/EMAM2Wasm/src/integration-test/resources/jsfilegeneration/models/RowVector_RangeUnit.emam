@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component RowVector_RangeUnit {
+  ports
+    in Q(-10/3 m/s : 10 km/h)^{1,3} inRangeUnit,
+    out Q(-10/3 m/s : 10 km/h)^{1,3} outRangeUnit;
+}

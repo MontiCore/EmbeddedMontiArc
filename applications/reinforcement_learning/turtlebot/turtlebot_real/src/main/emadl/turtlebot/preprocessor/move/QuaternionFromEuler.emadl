@@ -1,0 +1,24 @@
+package turtlebot.preprocessor.move;
+// Source: https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+// input: EulerAngles {roll, pitch, yaw}
+// return: a vecotr of {quaternion.w, quaternion.x, quaternion.y, quaternion.z}
+
+component QuaternionFromEuler {
+    ports
+        in Q^{3} eulerAngles,
+        out Q^{4} quaternion; 
+
+    implementation Math {
+        Q cr = cos(eulerAngles(1) * 0.5);
+        Q sr = sin(eulerAngles(1) * 0.5);
+        Q cp = cos(eulerAngles(2) * 0.5);
+        Q sp = sin(eulerAngles(2) * 0.5);
+        Q cy = cos(eulerAngles(3) * 0.5);
+        Q sy = sin(eulerAngles(3) * 0.5);
+
+        quaternion(1) = cr * cp * cy + sr * sp * sy;
+        quaternion(2) = sr * cp * cy - cr * sp * sy;
+        quaternion(3) = cr * sp * cy + sr * cp * sy;
+        quaternion(4) = cr * cp * sy - sr * sp * cy;
+    }
+}

@@ -1,0 +1,6 @@
+target/
+build/
+CMakeLists.txt
+model/
+*.log
+ComposedNetworks

@@ -1,0 +1,39 @@
+# (c) https://github.com/MontiCore/monticore  
+language: generic
+addons:
+  apt:
+    packages:
+      - oracle-java8-set-default
+before_install:
+  - >-
+    openssl aes-256-cbc 
+    -K $encrypted_986202362027_key 
+    -iv $encrypted_986202362027_iv 
+    -in scripts/github_deploy_key.enc 
+    -out scripts/github_deploy_key 
+    -d
+  - chmod 600 scripts/github_deploy_key
+  - eval $(ssh-agent -s)
+  - ssh-add scripts/github_deploy_key
+script:
+- mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+  -B clean install --settings "./settings.xml"
+#- bash ./scripts/gitPullSimple.sh
+# does not work reliable because of the limited github api response rate
+- bash ./scripts/gitpull.sh "EmbeddedMontiArc"
+- bash ./scripts/gitpull.sh "MontiSim"
+- bash ./scripts/gitpull.sh "MontiCore"
+after_success:
+- source ./scripts/zipAndMd5Models.sh
+- emaZip=$(createZip EmbeddedMontiArc)
+- msZip=$(createZip MontiSim)
+- emaGZip=$(createGrammarZip EmbeddedMontiArc)
+- msGZip=$(createGrammarZip MontiSim)
+- mcGZip=$(createGrammarZip MontiCore)
+- java -jar target/reporting-0.8.5-SNAPSHOT-jar-with-dependencies.jar EmbeddedMontiArc -tt -tc -zn $emaZip -svg -grammar -gzn $emaGZip
+- java -jar target/reporting-0.8.5-SNAPSHOT-jar-with-dependencies.jar MontiSim -tt -tc -zn $msZip -svg -grammar -gzn $msGZip -m
+- java -jar target/reporting-0.8.5-SNAPSHOT-jar-with-dependencies.jar MontiCore -grammar -gzn $mcGZip -m
+- bash ./scripts/deploy.sh $emaZip $msZip $emaGZip $msGZip $mcGZip
+env:
+  global:
+  - COMMIT_AUTHOR_EMAIL: malte.heithoff@rwth-aachen.de

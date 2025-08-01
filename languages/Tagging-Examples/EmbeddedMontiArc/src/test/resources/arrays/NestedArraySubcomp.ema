@@ -1,0 +1,6 @@
+/* (c) https://github.com/MontiCore/monticore */
+package arrays;
+
+component NestedArraySubcomp{
+    instance SimpleComp simpleSubcomps[5];
+}

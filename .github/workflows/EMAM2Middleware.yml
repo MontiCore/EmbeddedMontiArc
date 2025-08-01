@@ -1,0 +1,212 @@
+name: EMAM2Middleware
+on:
+  push:
+    paths:
+      - 'generators/EMAM2Middleware/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 17660
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+  linuxCompile_phase:
+    needs: [CompileJobLinux]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage linuxCompile"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage linuxCompile"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+  integration_phase:
+    needs: [linuxCompile_phase, SomeIPIntegrationJob, Ros2IntegrationJob, RosIntegrationJob, MqttIntegrationJob]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage integration"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage integration"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  CompileJobLinux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull maven:3-jdk-8
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/EMAM2Middleware
+            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
+        run: docker exec build-container bash -c "$SCRIPT"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: CompileJobLinux
+          retention-days: 1 day
+          path: |
+            generators/EMAM2Middleware/target/
+
+  DeployJobLinux:
+    needs: [CompileJobLinux, integration_phase]
+    if: ${{ !cancelled() && needs.integration_phase.result == 'success' &&  github.ref_name == 'master' && needs.CompileJobLinux.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: CompileJobLinux
+          path: |
+            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+      - name: Start Docker Container
+        run: |
+          docker pull maven:3-jdk-8
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/EMAM2Middleware
+            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  MqttIntegrationJob:
+    needs: [CompileJobLinux, linuxCompile_phase]
+    if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: CompileJobLinux
+          path: |
+            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emam2mqtt:v1
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emam2mqtt:v1 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/EMAM2Middleware
+            chmod 770 ./src/test/bash/integrationTestMqtt.sh
+            ./src/test/bash/integrationTestMqtt.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  RosIntegrationJob:
+    needs: [CompileJobLinux, linuxCompile_phase]
+    if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: CompileJobLinux
+          path: |
+            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emam2middleware/ema-ros-kinetic:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emam2middleware/ema-ros-kinetic:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/EMAM2Middleware
+            ./src/test/bash/integrationTestRos.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  SomeIPIntegrationJob:
+    needs: [CompileJobLinux, linuxCompile_phase]
+    if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: CompileJobLinux
+          path: |
+            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emam2someip:v2
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emam2someip:v2 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/EMAM2Middleware
+            chmod 770 ./src/test/bash/integrationTestSomeIP.sh
+            ./src/test/bash/integrationTestSomeIP.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+
+  Ros2IntegrationJob:
+    needs: [CompileJobLinux, linuxCompile_phase]
+    if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: CompileJobLinux
+          path: |
+            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+      - name: Start Docker Container
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull ghcr.io/monticore/emam2middleware/ema-ros-crystal:latest
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emam2middleware/ema-ros-crystal:latest tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd generators/EMAM2Middleware
+            ./src/test/bash/integrationTestRos2.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+

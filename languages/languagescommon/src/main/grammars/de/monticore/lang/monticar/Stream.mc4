@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.monticar;
+
+/**
+ * Grammar for common elements that should be imported from somewhere else in future.
+ */
+grammar Stream extends de.monticore.common.Common {
+
+  StreamCompilationUnit =
+    ("package" package:(Name& || ".")+ ";")?
+    ComponentStream;
+
+  symbol scope ComponentStream = "stream" Name "{"
+    NamedStream+
+  "}";
+  
+  symbol scope NamedStream = Name ("." fieldQualifier:Name)* ":" Stream ";" ;
+  
+  Stream = (AllowedType || "tick")+;
+
+  AllowedType = SignedLiteral | FilePath;
+
+  FilePath = "file::" StringLiteral;
+
+
+}

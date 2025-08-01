@@ -1,0 +1,58 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.heithoff2;
+
+component CheckPath<Z xOffSet = 0, Z yOffSet = 0> {
+    ports
+        in Z(-10cm: 190cm) pacManX,
+        in Z(0cm: 210cm) pacManY,
+        in Z(-10cm: 190cm) ghostX[4],
+        in Z(0cm: 210cm) ghostY[4],
+        in B ghostEatable[4],
+        in Z^{22,19} map,
+        
+        out B safe;
+        
+        implementation Math {
+            Z xC = (pacManX + xOffSet) / 10;
+            Z yC = (pacManY + yOffSet) / 10;
+            Z xOld = pacManX / 10;
+            Z yOld = pacManY / 10;
+            Z xOffSet[4] = [0,0,-1,1];
+            Z yOffSet[4] = [1,-1,0,0]
+            
+            if(xInit < 1)
+                safe = 1;
+            else 
+                Z loop = 1;
+                while loop == 1 
+                    // Check for Ghosts
+                    for i = 1:4
+                        Z xG = ghostX(i) / 10;
+                        Z yG = ghostY(i) / 10;
+                        if (xG == xC) || (yG == yC) 
+                            safe = 0;
+                            loop = 0;
+                        end
+                    end
+                    if loop == 1
+                        // Check new paths
+                        Z newPathsFound = 0;
+                        for i = 1:4
+                            Z nextTile = map(yC + yOffSet(i), xC + xOffSet(i));
+                            if (nextTile == 0) || (nextTile == 3)
+                                newPathsFound = newPathsFound;
+                            else
+                                newPathsFound = newPathsFound + 1;
+                                if newPathsFound > 1
+                                    loop = 0;
+                                    safe = 1;
+                                end
+                                xC = xC + xOffSet(i);
+                                yC = yC + yOffSet(i);
+                            end
+                        end
+                    end
+                end
+            end
+        }
+}

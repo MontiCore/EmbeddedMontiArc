@@ -1,0 +1,53 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package child
+
+import child.parents.*
+
+language EmbeddedMontiArcDL extends EmbeddedMontiArc, EmbeddedMontiArcMath {
+    template emadlComponent {
+        path "EmbeddedMontiArcDL.njk"
+        label "EmbeddedMontiArcDL Component"
+
+        /*
+         * Package
+         */
+        option packageName: String {
+            label "Package"
+            required true
+        }
+
+        /*
+         * Component
+         */
+        option componentName: String {
+            label "Component"
+            required true
+        }
+
+        /*
+         * Ports
+         */
+        option ports: List {
+            label "Add Port"
+
+            option direction: String {
+                label "Direction"
+                required true
+            }
+
+            option type: String {
+                label "Type"
+                required true
+            }
+
+            option name: String {
+                label "Name"
+                required true
+            }
+        }
+    }
+
+    exclude template emamComponent
+}

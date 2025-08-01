@@ -1,0 +1,75 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+
+
+dynamic component Split_intersection{
+  ports
+  dynamic in  Trajectorymessage   traj_msg[0:32],
+
+  in  Z^{1,100}       platoonlist,
+  in  Z               platoon_member_num,
+  in  Z               trajectory_length,
+  in  Q^{1,100}       trajectory_x,
+  in  Q^{1,100}       trajectory_y,
+  in  Q               nextintersection_x,
+  in  Q               nextintersection_y,
+
+
+
+  out  Z               if_split,
+  out  Q               split_next_x,
+  out  Q               split_next_y;
+
+
+  instance  Trajectorymessageparsing    tparse[0:32];
+  instance  Trajectoryafterintersection tafter1;
+  instance  Trajectoryafterintersection tafter[0:32];
+  instance  Path_similarity             pathsim[0:32];
+  instance  Split2array                 s2a;
+
+    connect trajectory_length -> tafter1.trajectory_length;
+    connect trajectory_x -> tafter1.trajectory_x;
+    connect trajectory_y -> tafter1.trajectory_y;
+    connect nextintersection_x -> tafter1.nextintersection_x;
+    connect nextintersection_y -> tafter1.nextintersection_y;
+    connect 1 -> tafter1.iftrimmed;
+
+  @ traj_msg::connect{
+    connect traj_msg[?] -> tparse[?].traj_message;
+    connect tparse[?].trajectory_length -> tafter[?].trajectory_length;
+    connect tparse[?].trajectory_x -> tafter[?].trajectory_x;
+    connect tparse[?].trajectory_y -> tafter[?].trajectory_y;
+    connect tparse[?].nextintersection_x -> tafter[?].nextintersection_x;
+    connect tparse[?].nextintersection_y -> tafter[?].nextintersection_y;
+    connect 1 -> tafter[?].iftrimmed;
+
+
+    connect tafter[?].if_enoughlong -> pathsim[?].if_enoughlong_car1;
+    connect tafter[?].after_trajectory_length -> pathsim[?].trajectory_length_car1;
+    connect tafter[?].after_trajectory_x -> pathsim[?].trajectory_x_car1;
+    connect tafter[?].after_trajectory_y -> pathsim[?].trajectory_y_car1;
+    connect tafter[?].distance -> pathsim[?].distance;
+
+    connect 1 -> pathsim[?].if_check;
+    connect tafter1.if_enoughlong -> pathsim[?].if_enoughlong;
+    connect tafter1.after_trajectory_length -> pathsim[?].trajectory_length;
+    connect tafter1.after_trajectory_x -> pathsim[?].trajectory_x;
+    connect tafter1.after_trajectory_y -> pathsim[?].trajectory_y;
+    connect tafter1.distance -> pathsim[?].distance;
+
+    connect pathsim[?].similarity -> s2a.similarity[?];
+    connect tparse[?].vehicleid -> s2a.vehicleid[?];
+  }
+    connect platoonlist -> s2a.platoonlist;
+    connect platoon_member_num -> s2a.platoon_member_num;
+    connect nextintersection_x -> s2a.nextintersection_x;
+    connect nextintersection_y -> s2a.nextintersection_y;
+
+    connect s2a.if_split -> if_split;
+    connect s2a.split_next_x -> split_next_x;
+    connect s2a.split_next_y -> split_next_y;
+    // connect s2a.new_platoonlist -> new_platoonlist;
+    // connect s2a.new_platoon_member_num -> new_platoon_member_num;
+}

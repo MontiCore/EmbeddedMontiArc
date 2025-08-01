@@ -1,0 +1,18 @@
+package de.rwth.connectedcars.movement;
+
+component PIDcoef {
+
+  port 
+      out Q (0 : oo) kI,
+      out Q (0 : oo) kD,
+      out Q (0 : oo) kP;
+      
+  implementation Math{
+  
+    kP = 0.2;
+    kI = 0;
+    kD = 0.03;
+    
+  }
+ 
+}

@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman.heithoff2;
+
+component NormalizePosition {
+    ports
+      in (-1m: 19m) pacManX,
+      in (0m: 22m) pacManY,
+      in (-1m: 19m) ghostX[4],
+      in (0m: 22m) ghostY[4],
+      out (-1m: 19m) newPacManX,
+      out (0m: 22m) newPacManY,
+      out (-1m: 19m) newGhostX[4],
+      out (0m: 22m) newGhostY[4];
+      
+    implementation Math {
+        newPacManX = pacManX + 1;
+        newPacManY = pacManY + 1;
+        for i = 1:4
+            newGhostX(i) = ghostX(i) + 1;
+            newGhostY(i) = ghostY(i) + 1;
+        end
+    }
+}

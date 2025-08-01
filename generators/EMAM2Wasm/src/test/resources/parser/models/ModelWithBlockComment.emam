@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+/*package abc;*/
+package /*xyz*/ models;
+
+//component Comment { }
+component /*BlockComment*/ ModelWithBlockComment {
+}

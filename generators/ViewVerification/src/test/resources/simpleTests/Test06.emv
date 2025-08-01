@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests;
+
+//This view is supposed not to be satisfied
+
+view Test06 {
+	component ACA {
+		ports out ? out1;
+	}
+	instance ACA aca;
+	
+	component ACB {
+		ports in Boolean in2;
+	}
+	instance ACB acb;
+	
+	connect aca.out1 -> acb;
+}

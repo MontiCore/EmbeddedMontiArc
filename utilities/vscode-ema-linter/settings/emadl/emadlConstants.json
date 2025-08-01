@@ -1,0 +1,10 @@
+{
+    "languageName":"EmbeddedMontiArcDL",
+    "pomRoot":"settings/emadl",
+    "relativeMvnSettingsPath":"../settings.xml",
+    "useRunningServer":false,
+    "manualPort": 0,
+    "bufferSize": 1000,
+    "keywordsFile": "settings/emadl/keywords_emadl.txt",
+    "fileExtension": ".emadl"
+}

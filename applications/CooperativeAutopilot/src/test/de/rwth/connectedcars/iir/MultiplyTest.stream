@@ -1,0 +1,8 @@
+package de.rwth.connectedcars.iir;
+
+stream MultiplyTest for Multiply {
+    a: 5 tick 1.5;
+    b: 3 tick 2;
+    
+    product: 15 tick 3;
+}

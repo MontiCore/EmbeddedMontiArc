@@ -1,0 +1,5 @@
+package valid
+
+typedef configuration ExistingReference {
+    tool Common
+}

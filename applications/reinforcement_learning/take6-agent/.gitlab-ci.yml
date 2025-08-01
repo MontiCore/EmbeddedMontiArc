@@ -1,0 +1,83 @@
+stages:
+- linuxBuildJava17
+- linuxBuildJava1_8
+- linuxTrain
+
+TestBuildJava17:
+  stage: linuxBuildJava17
+  image: maven:3.8.4-openjdk-17-slim
+  artifacts:
+    paths:
+      - "6nimmt-environment/target/"
+    expire_in: 1 week
+  before_script:
+    - apt-get update
+    - apt-get install software-properties-common -y
+    - apt-get install -y gnupg2
+    - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+    - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+    - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+    - apt-add-repository ppa:swi-prolog/stable -y 2>/dev/null
+    - apt-get install -y swi-prolog
+
+
+  script:
+    - cd 6nimmt-environment
+    - mvn clean package -s settings.xml
+
+TestBuildJava1_8:
+  stage: linuxBuildJava1_8
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  dependencies:
+    - TestBuildJava17
+  before_script:
+    - apt-get update
+    - apt-get install -y maven 
+  artifacts:
+    paths:
+      - "6nimmt-agent/generator-target/"
+    expire_in: 1 week
+  script:
+    # get generator start
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@git.rwth-aachen.de/monticore/EmbeddedMontiArc/generators/EMAM2Middleware.git
+    - cd EMAM2Middleware
+    - mvn clean package -s settings.xml -DskipTests
+    - cd ..
+    - cp "EMAM2Middleware/target/embedded-montiarc-math-middleware-generator"*"jar-with-dependencies.jar" 6nimmt-agent/embedded-montiarc-math-middleware-generator-jar-with-dependencies.jar
+    # get generator end
+    - cd 6nimmt-agent
+    - chmod 777 *.sh
+    - ./install.sh
+  
+TestTrain:
+  stage: linuxTrain
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  dependencies:
+    - TestBuildJava17
+    - TestBuildJava1_8
+
+  before_script:
+      - apt-get update
+      - apt-get install -y maven
+      - apt-get install -y gnupg2
+      - echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+      - echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+      - apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+      - apt-get update
+      - apt-get install -y swi-prolog
+      - apt-get install software-properties-common -y
+      - add-apt-repository ppa:openjdk-r/ppa -y
+      - apt-get update
+      - apt install openjdk-11-jdk -y
+
+  script:
+      - cd 6nimmt-environment
+      - roscore &
+      - sleep 2
+      - java --version
+      - java -cp "target/snimmt-environment-1.0-SNAPSHOT.jar" de.gdl.rl.environment.games.snimmt.SnimmtEnv --training &
+      - echo "wait 5 seconds ..."
+      - sleep 5
+      - cd ../6nimmt-agent
+      - chmod 777 *.sh
+      - ./run_training.sh

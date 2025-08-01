@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.pacman;
+
+stream Test1 for PacManWrapper {
+    ghostX: [70cm,88cm,112cm,130cm]             tick [70cm,86cm,114cm,130cm]        tick [70cm,84cm,116cm,130cm]        tick [70cm,82cm,118cm,130cm]        tick [70cm,80cm,120cm,130cm];
+    ghostY: [92cm,70cm,70cm,92cm]               tick [94cm,70cm,70cm,94cm]          tick [96cm,70cm,70cm,96cm]          tick [98cm,70cm,70cm,98cm]          tick [100cm,70cm,70cm,100cm];
+    ghostDirection: [1,2,3,1]                   tick [1,2,3,1]                      tick [1,2,3,1]                      tick [1,2,3,1]                      tick [2,0,0,1];
+    ghostEatable: [false, false, false, false]  tick [false, false, false, false]   tick [false, false, false, false]   tick [false, false, false, false]   tick [false, false, false, false];
+    ghostEaten: [false, false, false, false]    tick [false, false, false, false]   tick [false, false, false, false]   tick [false, false, false, false]   tick [false, false, false, false];
+    pacManX: 70cm                               tick 70cm                           tick 70cm                           tick 70cm                           tick 70cm;
+    pacManY: 130cm                              tick 132cm                          tick 134cm                          tick 136cm                          tick 138cm;
+    pacManEaten: false                          tick false                          tick false                          tick false                          tick false;       
+    pacManLives: 3                              tick 3                              tick 3                              tick 3                              tick 3;
+    pacManScore: 0                              tick 0                              tick 0                              tick 0                              tick 0;
+    map: ...
+    newPacManDirection: 1                       tick 1                              tick 1                              tick 1                              tick 1;       
+}

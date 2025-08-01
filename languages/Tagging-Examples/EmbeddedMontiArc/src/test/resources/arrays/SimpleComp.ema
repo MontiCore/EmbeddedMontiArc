@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package arrays;
+
+component SimpleComp{
+    ports in Q in1,
+          out Q out1;
+}

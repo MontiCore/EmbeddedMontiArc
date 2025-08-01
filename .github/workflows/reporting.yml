@@ -1,0 +1,57 @@
+name: reporting
+on:
+  push:
+    paths:
+      - 'utilities/reporting/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 17676
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+  linux_phase:
+    needs: [masterJobLinux]
+    if: ${{ !cancelled()}}
+    runs-on: ubuntu-latest
+    steps:
+        - run: |
+            echo "Finished stage linux"
+          if: ${{!contains(needs.*.result, 'failure')}}
+        - run: |
+            echo "Failed stage linux"
+            exit 1
+          if: ${{contains(needs.*.result, 'failure')}}
+
+  masterJobLinux:
+    if: ${{ !cancelled() && github.ref_name == 'master' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Start Docker Container
+        run: |
+          docker pull maven:3-jdk-8
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+      - name: Script
+        env:
+          SCRIPT: |
+            cd /workspace
+            cd utilities/reporting
+            git config user.name "gitlab-ci"
+            git config user.email "malte.heithoff@rwth-aachen.de"
+            curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            python get-pip.py
+            pip install python-gitlab
+            python scripts/syncProjects.py "EmbeddedMontiArc" ${{ secrets.GITLABTOKEN }}
+            chmod +x ./scripts/deploy.sh
+            mvn -Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
+            java -jar target/reporting-0.9.8-jar-with-dependencies.jar "EmbeddedMontiArc" "-testCoCos" "-timeout" "3" "-cTimeout" "2" "-testTests" "-grammar"
+            python scripts/emaProjectPipelines.py report/data/dataProjectPipelines.json ${{ secrets.GITLABTOKEN }}
+            ./scripts/deploy.sh
+        run: docker exec build-container bash -c "$SCRIPT"
+

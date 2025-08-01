@@ -1,0 +1,73 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+.sol-runtime-modules.dialog {
+    display:flex;
+    max-height:400px;
+    overflow-y:auto;
+}
+
+.sol-runtime-modules.dialog .loader-container,
+.sol-runtime-modules.dialog .message-container {
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+}
+
+.sol-runtime-modules .categories {
+    width:100%;
+}
+
+.sol-runtime-modules .categories .MuiTreeItem-root:focus {
+    border:none;
+    box-shadow:none;
+}
+
+.sol-runtime-modules .categories .MuiTreeItem-label {
+    display:flex;
+    align-items:center;
+    font-size:var(--theia-ui-font-size1);
+}
+
+.sol-runtime-modules .categories .MuiTreeItem-root:focus {
+    border:none;
+    box-shadow:none;
+}
+
+.sol-runtime-modules .categories .MuiTreeItem-root:focus > .MuiTreeItem-content {
+    background-color:var(--theia-accent-color3);
+}
+
+.sol-runtime-modules .categories .MuiTreeItem-content:hover {
+    background-color:var(--theia-accent-color4);
+}
+
+.sol-runtime-modules .module-type {
+    height:24px;
+    display:flex;
+    align-items:center;
+}
+
+.sol-runtime-modules .module-type:hover {
+    cursor:pointer;
+    background-color:var(--theia-accent-color4);
+}
+
+.sol-runtime-modules .module-type.selected {
+    background-color:var(--theia-accent-color3);
+}
+
+.sol-runtime-modules .module-type .icon {
+    font-size:calc(var(--theia-content-font-size) * 0.8);
+    text-align:center;
+    margin-right:var(--theia-ui-padding);
+}
+
+.sol-runtime-modules .module-type .label {
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    max-width:200px;
+}

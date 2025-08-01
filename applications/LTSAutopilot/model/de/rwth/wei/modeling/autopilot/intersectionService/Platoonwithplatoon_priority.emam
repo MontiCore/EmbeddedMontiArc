@@ -1,0 +1,81 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+
+component Platoonwithplatoon_priority{
+ports
+  // platoon at intersection
+  in   Z ^ 32            platoon_atintersection,
+  in   Z                 platoon_num,
+  // basic information of current platoon
+  in   Q                 velocity,
+  in   Q                 length,
+  in   Q                 dis2intersection,
+  in   Z                 if_frontvehicleexists,
+  in   Z                 ifcurrentsplit,
+  in   Z                 platoon_length,
+  // paltoon length at intersection(map to platoonid)
+  in   Z ^ 32            platoonid,
+  in   Z ^ 32            platoonlength,
+  // if platoon will split in the intersection
+  in   Z ^ 32            platoonid1,
+  in   Z ^ 32            ifsplit,
+  // collision information
+  in   Z^{1,32}          iscollision,
+  in   Z^{1,32}          collision_id,
+  in   Z^{1,32}          collisionpriority,
+  in   Q^{1,32}          angletocurrent,
+  in   Q^{1,32}          velocity_car1,
+  in   Q^{1,32}          dis2intersection_car1,
+
+  out  Z                 is_highestpriority;
+
+  implementation Math{
+    is_highestpriority = 1;
+    // if current will split, update the collision information
+    if ifcurrentsplit == 1
+       for i5 = 1:platoon_num
+          iscollision(1,i5) = 1;
+       end
+    end
+    // update the collision information if there exists
+    for i2 = 1:platoon_num
+        Q collisionid = collision_id(1,i2);
+        for j2 = 1:platoon_num
+           if collisionid == platoonid1(j2) && ifsplit(j2) == 1
+              iscollision(1,i2) = 1;
+           end
+        end
+    end
+
+    if if_frontvehicleexists == 0
+      for i1 = 1: platoon_num
+         if iscollision(1,i1) == 1 && dis2intersection_car1(1,i1) < 1.3 * length
+            is_highestpriority = 0;
+         end
+      end
+      for i = 1:platoon_num
+         if iscollision(1,i) == 1
+            for j = 1:platoon_num
+               if collision_id(1,i) == platoonid(j)
+                  Q platoon_length_car1 = platoonlength(j);
+                  Q dis2intersection1 = dis2intersection_car1(i);
+                  if platoon_length > platoon_length_car1
+                     if dis2intersection > 5.8 * length && dis2intersection1 >= 1.3 * length && dis2intersection1 <= 1.8 * length
+                        is_highestpriority = 0;
+                     end
+                  elseif platoon_length < platoon_length_car1
+                     if dis2intersection <= 5.8 * length
+                       is_highestpriority = 0;
+                     end
+                  else
+                     if dis2intersection < dis2intersection1
+                        is_highestpriority = 0;
+                     end
+                  end
+               end
+            end
+         end
+      end
+    end
+  }
+}

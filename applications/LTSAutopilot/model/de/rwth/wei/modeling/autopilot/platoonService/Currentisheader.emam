@@ -1,0 +1,117 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+import  de.rwth.wei.modeling.autopilot.messagegenerate.*;
+
+dynamic component Currentisheader{
+  ports
+  dynamic in  Statusmessage            status_msg[0:32],
+  dynamic in  Platoonmessage           plat_msg[0:32],
+  dynamic in  Platoonjointmessage      plat_joint_msg[0:32],
+
+
+  in  Z                potentialid,
+  in  Z                if_potentialheaderexists,
+  in  Z                if_sendjointmsg,
+  in  Z                currenttimestamp,
+  in  Z                vehicleid,
+  in  Q                compass,
+  in  Q                length,
+  in  Q                width,
+  in  Q                engine,
+  in  Q                brake,
+  in  Q                steering,
+  in  Q                velocity,
+  in  Q                position_x,
+  in  Q                position_y,
+
+
+
+  out Z                after_platnum,
+  out Z^{1,100}        after_platlist,
+  dynamic out Platoonjointmessage      new_plat_joint_msg[0:32],
+  dynamic out Platoonmessage           new_plat_msg[0:32];
+
+
+  instance  Platoonjointmessageparsing       platjparse[0:32];
+  instance  Platoonjoint2array               p2array;
+  instance  Ifnearestfollowingvehicle        if_nearfollow;
+  instance  Sendjointorplatoonmessage        send;
+  instance  Platoonjointmessagegenerator1    platj_generator;
+  instance  Platoonmessagegenerator1         plat_generator;
+
+  @ plat_joint_msg::connect{
+    connect plat_joint_msg[?] -> platjparse[?].plat_joint_msg;
+    connect platjparse[?].vehicleid -> p2array.vehicleid[?];
+    connect platjparse[?].jointvehicleid -> p2array.jointvehicleid[?];
+    connect platjparse[?].currentstate -> p2array.currentstate[?];
+    connect platjparse[?].position_x -> p2array.position_x[?];
+    connect platjparse[?].position_y -> p2array.position_y[?];
+    connect platjparse[?].platoon_num -> p2array.platoon_num[?];
+    connect platjparse[?].platoonlist -> p2array.platoonlist[?];
+  }
+
+  connect p2array.new_vehicleid -> if_nearfollow.new_vehicleid;
+  connect p2array.new_position_x -> if_nearfollow.new_position_x;
+  connect p2array.new_position_y -> if_nearfollow.new_position_y;
+  connect p2array.new_currentstate -> if_nearfollow.new_currentstate;
+  connect p2array.new_platoon_num -> if_nearfollow.new_platoon_num;
+  connect p2array.new_platoonlist -> if_nearfollow.new_platoonlist;
+  connect p2array.vehicle_num -> if_nearfollow.vehicle_num;
+
+  connect position_x -> if_nearfollow.position_x;
+  connect position_y -> if_nearfollow.position_y;
+  connect vehicleid -> if_nearfollow.vehicleid;
+
+  @ status_msg::connect{
+    connect status_msg[?] -> if_nearfollow.status_msg[?];
+  }
+  @ plat_msg::connect{
+    connect plat_msg[?] -> if_nearfollow.plat_msg[?];
+  }
+
+
+  connect if_nearfollow.if_followrequest -> send.if_followrequest;
+  connect if_potentialheaderexists -> send.if_potentialheaderexists;
+  connect if_sendjointmsg -> send.if_sendjointmsg;
+
+  connect send.send_joint_message -> platj_generator.if_sendjointmsg;
+  connect potentialid -> platj_generator.potentialid;
+  connect vehicleid -> platj_generator.vehicleid;
+  connect currenttimestamp -> platj_generator.timestamp;
+  connect position_x -> platj_generator.position_x;
+  connect position_y -> platj_generator.position_y;
+
+
+  @ platj_generator.plat_joint_msg::connect{
+    connect platj_generator.plat_joint_msg[?] -> new_plat_joint_msg[?];
+  }
+
+
+  connect send.send_plat_message -> plat_generator.send_plat_message;
+
+
+  connect if_nearfollow.platoon_num -> plat_generator.platoon_num;
+  connect if_nearfollow.platoonlist -> plat_generator.platoonlist;
+
+  connect currenttimestamp -> plat_generator.timestamp;
+  connect position_x -> plat_generator.position_x;
+  connect position_y -> plat_generator.position_y;
+  connect vehicleid -> plat_generator.vehicleid;
+  connect compass -> plat_generator.compass;
+  connect length -> plat_generator.length;
+  connect width -> plat_generator.width;
+  connect engine -> plat_generator.engine;
+  connect brake -> plat_generator.brake;
+  connect steering -> plat_generator.steering;
+  connect velocity -> plat_generator.velocity;
+  connect 0 -> plat_generator.ifsplit;
+
+  @ plat_generator.plat_msg::connect{
+    connect plat_generator.plat_msg[?] -> new_plat_msg[?];
+  }
+  connect plat_generator.after_platnum -> after_platnum;
+  connect plat_generator.after_platlist -> after_platlist;
+
+}

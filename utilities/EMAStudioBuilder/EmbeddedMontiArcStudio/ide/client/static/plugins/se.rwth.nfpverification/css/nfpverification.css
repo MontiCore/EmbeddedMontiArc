@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+.icon-minus {
+    background:url("../images/minus.png") #c0c2c3 no-repeat center;
+    background-size:100% 100%;
+	cursor:pointer !important;
+	top:-1px;
+}
+
+.icon-plus {
+    background:url("../images/plus.png") #c0c2c3 no-repeat center;
+    background-size:100% 100%;
+	cursor:pointer !important;
+	top:-1px;
+}

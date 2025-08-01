@@ -1,0 +1,9 @@
+package models;
+
+component ScalarPort {
+  ports
+    in B in1,
+    out B out1;
+
+  connect in1 -> out1;
+}

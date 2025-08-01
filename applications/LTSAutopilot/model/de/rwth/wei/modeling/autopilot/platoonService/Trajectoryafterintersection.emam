@@ -1,0 +1,49 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+
+// trajectory after the intersection node
+component Trajectoryafterintersection{
+  ports
+    in  Z             trajectory_length,
+    in  Q^{1,100}     trajectory_x,
+    in  Q^{1,100}     trajectory_y,
+    in  Q             nextintersection_x,
+    in  Q             nextintersection_y,
+    in  Z             iftrimmed,
+
+
+    out  Z           if_enoughlong,
+    out  Z           after_trajectory_length,
+    out  Q^{1,100}   after_trajectory_x,
+    out  Q^{1,100}   after_trajectory_y,
+    out  Q           distance;
+
+    implementation Math{
+      if_enoughlong = 0;
+      after_trajectory_length = 0;
+      distance = 0.0;
+      if iftrimmed == 1
+        if nextintersection_x != 0.0 && nextintersection_y != 0.0
+           for i = 1:trajectory_length
+             if trajectory_x(1,i) == nextintersection_x && trajectory_y(1,i) == nextintersection_y
+                for j = 1:(trajectory_length-i)
+                   after_trajectory_x (1,j) = trajectory_x(1,j+i);
+                   after_trajectory_y (1,j) = trajectory_y(1,j+i);
+                   after_trajectory_length = trajectory_length - i;
+                end
+             end
+           end
+           Q dx = after_trajectory_x(1,1);
+           Q dy = after_trajectory_x(1,1);
+           Q dxx = after_trajectory_x(1,after_trajectory_length);
+           Q dyy = after_trajectory_x(1,after_trajectory_length);
+           Q sqrt_dis = (dx - dxx)*(dx - dxx) + (dy - dyy)*(dy - dyy);
+           Q dis = sqrt(sqrt_dis);
+           if dis > 12.0
+              if_enoughlong = 1;
+              distance = dis;
+           end
+        end
+     end
+    }
+}

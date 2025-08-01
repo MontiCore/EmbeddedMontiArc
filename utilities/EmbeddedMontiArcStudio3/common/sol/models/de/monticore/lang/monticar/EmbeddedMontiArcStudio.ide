@@ -1,0 +1,13 @@
+package de.monticore.lang.monticar
+
+import de.monticore.lang.monticar.embeddedmontiarcstudio.clusterfiddle.ClusterFiddle
+import de.monticore.lang.monticar.embeddedmontiarcstudio.common.Visualize
+import de.monticore.lang.monticar.embeddedmontiarcstudio.clusterfiddle.ClusterFiddleExecute
+
+ide EmbeddedMontiArcStudio {
+    registry "registry.git.rwth-aachen.de/monticore/embeddedmontiarc/utilities/embeddedmontiarcstudio-3:0.0.1"
+    build "build" resolved from CWD
+
+    include module types [ClusterFiddle]
+    include configuration types [Visualize, ClusterFiddleExecute]
+}

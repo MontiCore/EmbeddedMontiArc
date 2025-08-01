@@ -1,0 +1,50 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageduplicate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Trajduplicate{
+ports
+  // copy trajectorymessage for dupilcate in ports
+  dynamic in Trajectorymessage   traj_msg[0:32],
+
+  dynamic out Trajectorymessage  traj_msg1[0:32],
+  dynamic out Trajectorymessage  traj_msg2[0:32],
+  dynamic out Trajectorymessage  traj_msg3[0:32],
+  dynamic out Trajectorymessage  traj_msg4[0:32],
+  dynamic out Trajectorymessage  traj_msg5[0:32],
+  out Trajectorymessage tmsg;
+
+  @ traj_msg::connect{/*interface for dynamic ports*/}
+
+  implementation Math{
+    for i = 1:32
+      if is_connected(traj_msg,i)
+        tmsg = traj_msg(i);
+        if ports_connect(traj_msg1, i, tmsg)
+           traj_msg1(i) = tmsg;
+        end
+        Z r = ports_free(traj_msg1,i);
+
+        if ports_connect(traj_msg2, i, tmsg)
+           traj_msg2(i) = tmsg;
+        end
+        Z r1 = ports_free(traj_msg2,i);
+
+        if ports_connect(traj_msg3, i, tmsg)
+           traj_msg3(i) = tmsg;
+        end
+        Z r2 = ports_free(traj_msg3,i);
+
+        if ports_connect(traj_msg4, i, tmsg)
+           traj_msg4(i) = tmsg;
+        end
+        Z r3 = ports_free(traj_msg4,i);
+
+        if ports_connect(traj_msg5, i, tmsg)
+           traj_msg5(i) = tmsg;
+        end
+        Z r4 = ports_free(traj_msg5,i);
+      end
+    end
+  }
+}

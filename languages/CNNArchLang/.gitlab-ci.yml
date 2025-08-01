@@ -1,0 +1,55 @@
+#
+#
+# (c) https://github.com/MontiCore/monticore
+#
+# The license generally applicable for this project
+# can be found under https://github.com/MontiCore/monticore.
+#
+
+# (c) https://github.com/MontiCore/monticore
+#
+
+stages:
+#- test
+#- windows
+- linux
+
+
+#include:
+#  template: License-Management.gitlab-ci.yml
+  
+#license_management:
+#  variables:
+#    MAVEN_CLI_OPTS: --settings=settings.xml
+masterJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  script: 
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
+  - mvn package -s settings.xml
+  except:
+    changes:
+    - README.md
+    - .gitignore
+    - .gitlab-ci.yml
+  only:
+  - master
+  
+#masterJobWindows:
+#  stage: windows
+#  script: 
+#  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+#  tags:
+#  - Windows10
+#  except:
+#    changes:
+#    - README.md
+#    - .gitignore
+
+BranchJobLinux:
+  stage: linux
+  image: maven:3-jdk-8
+  script: 
+  - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml
+  except:
+  - master

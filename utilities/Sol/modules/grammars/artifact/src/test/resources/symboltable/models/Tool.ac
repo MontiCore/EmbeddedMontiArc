@@ -1,0 +1,13 @@
+package models
+
+tool Tool {
+    alias TOOL in ENV
+    path "some/imaginary/path" resolved from CWD
+    prefix "java -jar"
+    environment ToolEnvironment
+
+    artifact SOME_RESOURCE {
+        alias RESOURCE in ENV
+        path "some/imaginary/path" resolved from ROOT
+    }
+}

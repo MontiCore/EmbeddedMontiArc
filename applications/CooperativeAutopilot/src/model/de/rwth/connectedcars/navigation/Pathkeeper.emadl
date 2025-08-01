@@ -1,0 +1,139 @@
+package de.rwth.connectedcars.navigation;
+
+component Pathkeeper {
+
+  port 
+      in  N (0 : 10)                     traj_length,
+      in  Q (-oo m : oo m) ^ 10          traj_x,
+      in  Q (-oo m : oo m) ^ 10          traj_y,
+      in  Q (-oo m : oo m) ^ 2           current_pos,
+
+      out Q (-oo m : oo m)               nextDirection_x,
+      out Q (-oo m : oo m)               nextDirection_y,
+      out Q (-oo m : oo m)               closestPointX,
+      out Q (-oo m : oo m)               closestPointY,  
+      out N (0:10)                       driveToSegment;
+  
+  implementation Math {
+    
+ 
+    Q ^ 10 trajj_x = traj_x;
+    Q ^ 10 trajj_y = traj_y;
+    N (0:10) trajj_length = traj_length;
+    
+    Q x; //x and y used as temporary variables
+    Q y;
+        
+    //search closest point to trajjectory from current position
+    //look at https://git.rwth-aachen.de/se-student/ws2021/labs/connectedcars/ema/-/blob/dev/Documentation/traj_cal_algorithm.pdf
+    //for info about the algorithm
+    N (0:10) closestSegment = 0;
+    Q (-oo m : oo m) smallestDistance = -1 m;
+    Q (-oo m : oo m) delta = 5 m;  
+
+
+  if trajj_length == 0 
+      nextDirection_x = 5 m;
+      nextDirection_y = 5 m;
+
+  elseif trajj_length == 2
+      nextDirection_x = trajj_x(1) - current_pos(1);
+      nextDirection_y = trajj_y(1) - current_pos(1);
+
+  else
+      N (0:16) test = trajj_length - 1;
+      
+    for i = 1:test       
+        Q (-oo m : oo m) dx = trajj_x(i+1) - trajj_x(i);
+        Q (-oo m : oo m) dy = trajj_y(i+1) - trajj_y(i);
+        Q (-oo m : oo m) tempX = 0 m;
+        Q (-oo m : oo m) tempY = 0 m;
+        Q t = 0;
+        Q bx = 0;
+        Q s = 0;
+        Q testDif = 0;
+        Q testDif1 = 0;
+        Q testDif2 = 0;
+
+        if dx == 0 m
+            t = (current_pos(2) - trajj_y(i)) / dy;
+        else
+            bx = -(dy/dx);
+            s = (trajj_y(i) + ((dy/dx) * (current_pos(1) - trajj_x(i))) - current_pos(2)) / (1 - (bx *  (dy/dx)));        
+            t = (current_pos(1) + (s * bx) - trajj_x(i)) / (dx);
+        end
+        
+        //check if calculated point is in bounds
+        if t >= 0 && t <= 1
+            tempX = trajj_x(i) + (t * dx);
+            tempY = trajj_y(i) + (t * dy);
+            x = (tempX - current_pos(1));
+            y = (tempY - current_pos(2));
+            
+            testDif = sqrt(x*x + y*y);
+        
+        //else calculate which of the 2 ending points is closer
+        else
+            x = (trajj_x(i) - current_pos(1));
+            y = (trajj_y(i) - current_pos(2)); 
+            testDif1 = sqrt(x*x + y*y);
+            
+            x = (trajj_x(i+1) - current_pos(1));
+            y = (trajj_y(i+1) - current_pos(2));
+            testDif2 = sqrt(x*x + y*y);
+            
+            if testDif1 > testDif2 
+                testDif = testDif2;
+                tempX = trajj_x(i+1);
+                tempY = trajj_y(i+1);
+
+            else
+                testDif = testDif1;
+                tempX = trajj_x(i);
+                tempY = trajj_y(i);
+            end
+
+        end 
+
+        if testDif < smallestDistance || smallestDistance < 0 m
+            smallestDistance = testDif;
+            closestSegment = i;
+            closestPointX = tempX;
+            closestPointY = tempY;
+            driveToSegment = i;
+        end
+
+    end
+
+                
+    //check if calculated point is already reached
+    if smallestDistance > delta
+        nextDirection_x = closestPointX - current_pos(1);
+        nextDirection_y = closestPointY - current_pos(2);
+    else
+        N (0:1) found = 0;
+        N (0:10) range = trajj_length - closestSegment;
+        for i = 1:range
+            //search for closest point that is not too close
+            Q nextD = 0;
+            x = (trajj_x(closestSegment+i) - current_pos(1));
+            y = (trajj_y(closestSegment+i) - current_pos(2));
+            nextD = sqrt(x*x + y*y);
+            
+            if found == 0 && (nextD > delta || closestSegment == trajj_length - 1)
+                nextDirection_x = trajj_x(closestSegment + i) - current_pos(1);
+                nextDirection_y = trajj_y(closestSegment + i) - current_pos(2);
+                found = 1;
+                driveToSegment = closestSegment + i;
+                closestPointX = trajj_x(closestSegment + i);
+                closestPointY = trajj_y(closestSegment + i);
+            end
+        end
+        
+    end
+    
+  end
+
+  }
+
+}

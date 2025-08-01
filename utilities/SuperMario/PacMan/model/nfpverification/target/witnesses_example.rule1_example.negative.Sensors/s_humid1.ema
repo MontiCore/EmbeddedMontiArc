@@ -1,0 +1,14 @@
+// positive 
+// aggregated value in model: 50 mW
+
+package example.negative.units;
+
+component Humidity
+/* [PowerCmp = 100 mW] */
+{
+
+  ports
+    in Boolean sensorIn,
+    out Boolean sensorOut;
+
+}

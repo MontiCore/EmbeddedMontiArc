@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package effector;
+
+view View {
+  component Constant3 {
+      port out ? out1;
+  }
+  instance Constant3 constant3;
+
+  component SliderGain2 {
+  }
+  instance SliderGain2 sliderGain2;
+  
+  effect constant3 -> sliderGain2;
+}

@@ -1,0 +1,135 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cloud9</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+	<!-- Added -->
+    <script>
+        var username = localStorage.getItem("username");
+        var reponame = localStorage.getItem("reponame");
+        var branchname = localStorage.getItem("branchname");
+
+        if(username === null || reponame === null || branchname === null) {
+            window.location.href = ".";
+        }
+    </script>
+
+    <!-- Added -->
+    <link href="static/plugins/se.rwth.ide.ui/css/ui.css" type="text/css" rel="stylesheet"/>
+	<link href="static/plugins/se.rwth.simulate/css/simulate.css" type="text/css" rel="stylesheet"/>
+	<link href="static/plugins/se.rwth.visualize/css/visualize.css" type="text/css" rel="stylesheet"/>
+	<link href="static/plugins/se.rwth.report/css/report.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.test/css/test.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.viewverification/css/viewverification.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.pacman.play/css/play.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.emam2wasm.generate/css/generate.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.stop/css/stop.css" type="text/css" rel="stylesheet"/>
+    <link href="static/plugins/se.rwth.rebuild/css/rebuild.css" type="text/css" rel="stylesheet"/>
+
+    <script src="static/plugins/se.rwth.ide.base/base.js"></script>
+	<script src="modules/se.rwth.common.vfs/browserfs.min.js"></script>
+	<script src="modules/se.rwth.common.vfs/vfs.js"></script>
+</head>
+<body>
+    <!-- Added -->
+    <div id="loader-container">
+        <img src="modules/se.rwth.common.loader/images/loader.svg"/>
+        <span id="loader-percentage">0%</span>
+    </div>
+
+    <a id="se-rwth-logo" href="http://www.se-rwth.de/" target="_blank"></a>
+
+    <!--<link rel="stylesheet" type="text/css" href="plugins/c9.ide.layout.classic/loading-flat.css"/>-->
+
+    <script src="static/mini_require.js"></script>
+    <script src="configs/require_config.js"></script>
+    <script src="static/plugins/se.rwth.ide.plugins/plugins.js"></script>
+    <script>
+        var start = Date.now();
+
+        require(["lib/architect/architect"], function (architect) {
+            plugins.push({
+                consumes: [],
+                provides: ["auth.bootstrap"],
+                setup: function(options, imports, register) {
+                    register(null, {
+                        "auth.bootstrap": {
+                            login: function(callback) { callback(); }
+                        }
+                    });
+                }
+            });
+
+            architect.resolveConfig(plugins, function(err, config) {
+                if(err) throw err;
+
+                var errored;
+                var counter = 0;
+                var messageLoader = document.getElementById("loader-percentage");
+
+                function setMessage(message) {
+                    messageLoader.innerHTML = message;
+                }
+
+                function updatePercentage(counter) {
+                    var length = plugins.length;
+                    var percentage = counter / length * 100;
+                    var roundedPercentage = (percentage - 0.5) >> 0;
+                    var message = roundedPercentage + '%';
+
+                    setMessage(message);
+                }
+
+                var app = architect.createApp(config, function(err, app){
+                    if(err) {
+                        errored = true;
+                        console.error(err.stack);
+                        alert(err);
+                    }
+                });
+
+                app.on("error", function(err){
+                    console.error(err.stack);
+                    if(!errored) alert(err);
+                });
+
+                app.on("service", function(name, plugin, options) {
+                    if(!plugin.name) plugin.name = name;
+                    updatePercentage(counter++);
+                });
+
+                app.on("ready", function() {
+                    window.app = app.services;
+                    window.app.__defineGetter__("_ace", function(){
+                        return this.tabManager.focussedTab.editor.ace;
+                    });
+                    Object.keys(window.app).forEach(function(n) {
+                        if (/[^\w]/.test(n))
+                            window.app[n.replace(/[^\w]/, "_") + "_"] = window.app[n];
+                    });
+
+                    done();
+                });
+
+                // For Development only
+                function done() {
+                    var c9 = app.services.c9;
+
+                    c9.ready();
+                    c9.totalLoadTime = Date.now() - start;
+
+                    console.warn("Total Load Time: ", Date.now() - start);
+                    document.getElementById("loader-container").remove();
+                }
+            }, function loadError(mod) {
+                if (mod.id === "plugins/c9.ide.clipboard/html5")
+                    return alert("Unable to load html5.js.\n\nThis may be caused by a false positive in your virus scanner. Please try reloading with ?packed=1 added to the URL.");
+            });
+        });
+    </script>
+</body>
+</html>

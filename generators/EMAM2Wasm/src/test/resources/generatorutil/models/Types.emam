@@ -1,0 +1,29 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component Types {
+  ports
+    in B bool,
+    //out N natural,
+    in Z integer,
+    out Q rational,
+    in C complex,
+    out B^{3, 4} boolMatrix,
+    in N^{3, 4} naturalMatrix,
+    out Z^{3, 4} integerMatrix,
+    in Q^{3, 4} rationalMatrix,
+    out C^{3, 4} complexMatrix,
+    in B boolArray[3],
+    //out N naturalArray[3],
+    in Z integerArray[3],
+    out Q rationalArray[3],
+    in C complexArray[3],
+    out B^{2, 2} boolMatrixArray[2],
+    in N^{2, 2} naturalMatrixArray[2],
+    out Z^{2, 2} integerMatrixArray[2],
+    in Q^{2, 2} rationalMatrixArray[2],
+    out C^{2, 2} complexMatrixArray[2],
+    in Q(-10 : 0.01 : oo) rangeNoUnit,
+    out Z(0 g : 1 kg) rangeUnit,
+    in Q(-oo m/s : 0.5 m/s : oo m/s)^{3, 4} matrixRangeUnit;
+}

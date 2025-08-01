@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component SuperComponent{
+    port in (1:1:100) percentage;
+
+}

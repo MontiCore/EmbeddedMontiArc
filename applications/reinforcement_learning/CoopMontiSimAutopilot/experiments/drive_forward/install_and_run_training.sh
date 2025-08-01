@@ -1,0 +1,1 @@
+../../Autopilot/install_and_run_training.sh

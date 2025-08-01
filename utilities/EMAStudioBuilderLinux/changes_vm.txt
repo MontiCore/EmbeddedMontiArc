@@ -1,0 +1,2 @@
+added to chrome-linux to prevent issues with auto-login: --password-store=basic
+set pause_time=true in _whole_framework.launch to prevent crashing caused by performance issues

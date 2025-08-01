@@ -1,0 +1,30 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<div class="uk-flex uk-width-1-1">
+    <div class="uk-width-1-2">
+        <mat-form-field color="accent">
+            <input matInput placeholder="Name" [(ngModel)]="state.name" #name="ngModel">
+            <mat-hint>The name of the extension in UpperCamelCase (e.g AutoPilot).</mat-hint>
+            <mat-error *ngIf="state.hasErrorWithControl('name', name.control)">{{state.getError('name')}}</mat-error>
+        </mat-form-field>
+        <mat-menu #menu="matMenu" xPosition="after">
+            <button mat-menu-item (click)="state.addButton()">
+                <mat-icon>add_circle_outline</mat-icon>
+                <span>Button</span>
+            </button>
+        </mat-menu>
+    </div>
+    <div class="uk-flex-1">
+        <button mat-mini-fab matTooltip="Add Extension Element" matTooltipPosition="after"
+                class="add-button" [matMenuTriggerFor]="menu" [disabled]="state.saved">
+            <mat-icon>add</mat-icon>
+        </button>
+    </div>
+</div>
+<mat-divider class="divider"></mat-divider>
+<div class="uk-width-1-1 form-container" *ngFor="let button of state.getButtons()">
+    <app-extension-button-form [state]="button"></app-extension-button-form>
+    <button mat-mini-fab matTooltip="Remove Button" matTooltipPosition="above"
+            class="control-button" (click)="removeButton(button)" [disabled]="button.saved">
+        <mat-icon>clear</mat-icon>
+    </button>
+</div>

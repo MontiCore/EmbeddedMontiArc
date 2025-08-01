@@ -1,0 +1,5 @@
+package invalid
+
+typedef module nameFormatModuleType {
+    label "Some nice Module Type"
+}

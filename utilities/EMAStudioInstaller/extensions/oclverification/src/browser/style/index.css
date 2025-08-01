@@ -1,0 +1,20 @@
+/*
+ * Copyright (C) 2018 SE RWTH.
+ *
+ * TODO: Include License.
+ */
+
+.emastudio-oclverification-icon {
+    background-size:contain;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-color:#FFF;
+}
+
+.emastudio-oclverification-eye {
+    background-image:url("../images/eye.png");
+}
+
+.emastudio-oclverification-tick {
+    background-image:url("../images/tick.png");
+}

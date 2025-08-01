@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageupdate;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Messageupdate{
+ ports
+   dynamic in statusmessage           single_status_msg[0:32],
+   dynamic in trajectorymessage       single_traj_msg[0:32],
+   dynamic in platoonmessage          platoon_status_msg[0:32],
+   dynamic in trajectorymessage       platoon_traj_msg[0:32],
+
+   dynamic out statusmessage           update_single_status_msg[0:32],
+   dynamic out trajectorymessage       update_single_traj_msg[0:32],
+   dynamic out platoonmessage          update_platoon_status_msg[0:32],
+   dynamic out trajectorymessage       update_platoon_traj_msg[0:32];
+
+   instance   messageupdate_platoon_helper  msg_ph[0:32];
+   instance   messageupdate_single_helper   msg_sh[0:32];
+
+   @ single_status_msg::connect && single_traj_msg::connect{
+     connect single_status_msg[?] -> msg_sh[?].status_msg;
+     connect single_traj_msg[?] -> msg_sh[?].traj_msg;
+     connect msg_sh[?].update_status_msg -> update_single_status_msg[?];
+     connect msg_sh[?].update_traj_msg -> update_single_traj_msg[?];
+
+   }
+   @ platoon_status_msg::connect && platoon_traj_msg::connect{
+     connect platoon_status_msg[?] -> msg_ph[?].plat_msg;
+     connect single_traj_msg[?] -> msg_ph[?].traj_msg;
+     connect msg_ph[?].update_plat_msg -> update_platoon_status_msg[?];
+     connect msg_ph[?].update_traj_msg -> update_platoon_traj_msg[?];
+   }
+
+}

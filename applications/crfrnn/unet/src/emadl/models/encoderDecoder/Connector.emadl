@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package encoderDecoder;
+
+component Connector {
+    ports in Q(0:1)^{1, 480, 480} image,
+          out Z(0:255)^{480,480} segmented;
+
+    instance Unet <64, 21> predictor;
+    instance DeOneHotImage <21,480,480> deonehot;
+    //instance Normalize <sth, sth> normalize;
+
+    connect image -> predictor.data;
+
+    connect predictor.softmax -> deonehot.inputVector;
+
+    connect deonehot.maxValues -> segmented;
+}

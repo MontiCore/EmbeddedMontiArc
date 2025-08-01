@@ -1,0 +1,13 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.library.differential;
+
+component Derivation<T>(T dvalue = 0) {
+	port
+		in T in1,
+		out T out1;
+
+	implementation Math{
+	    in1(t=0) = dvalue;
+	    out1 == diff(in1);
+	}
+}

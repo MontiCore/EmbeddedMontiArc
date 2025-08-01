@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messageparsing;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Trajectorymessageparsing1{
+    ports
+    in  Trajectorymessage  traj_message,
+
+    out Z               vehicleid,
+    out Z               timestamp,
+    out Z               trajectory_length,
+    out Q^{1,100}       trajectroy_x,
+    out Q^{1,100}       trajectroy_y,
+    out Q               nextintersection_x,
+    out Q               nextintersection_y;
+
+    implementation Math{
+       vehicleid = traj_message.vehicleid;
+       timestamp = traj_message.timestamp;
+       trajectory_length = traj_message.trajectory_length;
+       trajectroy_x = traj_message.trajectory_x;
+       trajectroy_y = traj_message.trajectory_y;
+       nextintersection_x = traj_message.nextintersection_x;
+       nextintersection_y = traj_message.nextintersection_y;
+    }
+}

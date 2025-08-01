@@ -1,0 +1,5 @@
+package invalid
+
+typedef module IncludeExcludedModule1 {
+
+}

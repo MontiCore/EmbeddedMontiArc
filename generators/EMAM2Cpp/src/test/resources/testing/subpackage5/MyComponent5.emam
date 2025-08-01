@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package testing.subpackage5;
+
+component MyComponent5 {
+    port
+      in  Q (0.0 : 0.1 : 100.0)     in1,
+      out Q (0.0 : 0.1 : 100.0)     out1;
+
+    implementation Math {
+      Q THRESHOLD = 20.0;
+      if in1 > THRESHOLD
+        out1 = in1 - THRESHOLD;
+      else
+        out1 = 0.0;
+      end
+    }
+}

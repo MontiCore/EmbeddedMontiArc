@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view PhysicsInsidePumpingSystem {
+component PumpStation {
+  component PumpingSystem {
+    component PhysicsSimulation {}
+    instance PhysicsSimulation physicsSimulation;
+  }
+  instance PumpingSystem pumpingSystem;
+}
+}
