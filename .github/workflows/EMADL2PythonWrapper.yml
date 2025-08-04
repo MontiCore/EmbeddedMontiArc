@@ -6,23 +6,26 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 26620
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 26620
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   windows_phase:
-    needs: []
+    needs: [ ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage windows"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage windows"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage windows"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage windows"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   masterJobLinux:
     needs: windows_phase

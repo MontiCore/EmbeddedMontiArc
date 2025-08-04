@@ -6,9 +6,12 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 62182
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  CI_PROJECT_ID: 62182
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   FileChanges:
     runs-on: ubuntu-latest
@@ -39,17 +42,17 @@ jobs:
           echo "Final file status only check: $only"
           echo "run=$only" >> $GITHUB_OUTPUT
   docker_phase:
-    needs: [buildDocker]
+    needs: [ buildDocker ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage docker"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage docker"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage docker"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage docker"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   buildDocker:
     needs: FileChanges
@@ -65,12 +68,12 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-            cd applications/torcsdprl
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            cd Docker
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17 .
-            docker push ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17
+          cd applications/torcsdprl
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          cd Docker
+          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+          docker build -t ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17 .
+          docker push ghcr.io/$LOWERCASE_OWNER/dockerimages/mxnet17
 
   TestBuild:
     needs: docker_phase

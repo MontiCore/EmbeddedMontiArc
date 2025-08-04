@@ -6,10 +6,13 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 59285
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 59285
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   FileChanges:
     runs-on: ubuntu-latest
@@ -40,29 +43,29 @@ jobs:
           echo "Final file status only check: $only"
           echo "run=$only" >> $GITHUB_OUTPUT
   docker_phase:
-    needs: [buildDockerMxNet180]
+    needs: [ buildDockerMxNet180 ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage docker"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage docker"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage docker"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage docker"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   jar_phase:
-    needs: [docker_phase, TestWithJar]
+    needs: [ docker_phase, TestWithJar ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage jar"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage jar"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage jar"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage jar"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   buildDockerMxNet180:
     needs: FileChanges
@@ -78,12 +81,12 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-            cd applications/gans/3d-gan
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            cd Gluon/.test/docker
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/mxnet180 .
-            docker push ghcr.io/$LOWERCASE_OWNER/mxnet180
+          cd applications/gans/3d-gan
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          cd Gluon/.test/docker
+          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+          docker build -t ghcr.io/$LOWERCASE_OWNER/mxnet180 .
+          docker push ghcr.io/$LOWERCASE_OWNER/mxnet180
 
   Train3D-GAN:
     needs: jar_phase

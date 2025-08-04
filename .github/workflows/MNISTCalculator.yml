@@ -6,47 +6,50 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 25225
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 25225
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   prebuild_phase:
-    needs: [DeployMnistCalcArtifact]
+    needs: [ DeployMnistCalcArtifact ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage prebuild"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage prebuild"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage prebuild"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage prebuild"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   test_phase:
-    needs: [prebuild_phase, TestGluonONNX, TrainHexadecimal_MnistCalculatorTL, TrainOperator_MnistCalculator, TestTENSORFLOW, TestEMADLMavenPlugin, TestMNISTwithCustomLayer, TrainHexadecimal_MnistCalculator, TestMavenStreamtestPlugin, TestMnistWithAdaNet, TrainOperator_MnistCalculatorTL, DeployDecompositionResNetArtifact, TrainTensorflowONNX]
+    needs: [ prebuild_phase, TestGluonONNX, TrainHexadecimal_MnistCalculatorTL, TrainOperator_MnistCalculator, TestTENSORFLOW, TestEMADLMavenPlugin, TestMNISTwithCustomLayer, TrainHexadecimal_MnistCalculator, TestMavenStreamtestPlugin, TestMnistWithAdaNet, TrainOperator_MnistCalculatorTL, DeployDecompositionResNetArtifact, TrainTensorflowONNX ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage test"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage test"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage test"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage test"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   testmodular_phase:
-    needs: [test_phase, TestTransfer, TestDecomposition, TestDecompositionResNet, TestModularModels]
+    needs: [ test_phase, TestTransfer, TestDecomposition, TestDecompositionResNet, TestModularModels ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage testmodular"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage testmodular"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage testmodular"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage testmodular"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   TestTENSORFLOW:
     needs: prebuild_phase
@@ -224,7 +227,7 @@ jobs:
             applications/MNISTCalculator/mnist-modular/Streamtest/output/*
 
   TestDecompositionResNet:
-    needs: [TestEMADLMavenPlugin, test_phase]
+    needs: [ TestEMADLMavenPlugin, test_phase ]
     if: ${{ !cancelled() && needs.test_phase.result == 'success' && needs.TestEMADLMavenPlugin.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -390,7 +393,7 @@ jobs:
             applications/MNISTCalculator/onnx/tensorflow-pretrained/model/
 
   TestGluonONNX:
-    needs: [TrainTensorflowONNX, prebuild_phase]
+    needs: [ TrainTensorflowONNX, prebuild_phase ]
     if: ${{ !cancelled() && needs.prebuild_phase.result == 'success'      && github.ref_name != 'modular_testing' && needs.TrainTensorflowONNX.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -457,7 +460,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   DeployDecompositionResNetArtifact:
-    needs: [TestEMADLMavenPlugin, prebuild_phase]
+    needs: [ TestEMADLMavenPlugin, prebuild_phase ]
     if: ${{ !cancelled() && needs.prebuild_phase.result == 'success' && needs.TestEMADLMavenPlugin.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120

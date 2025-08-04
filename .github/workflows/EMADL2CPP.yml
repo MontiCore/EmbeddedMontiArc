@@ -6,10 +6,13 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 17712
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 17712
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   FileChanges:
     runs-on: ubuntu-latest
@@ -151,41 +154,41 @@ jobs:
           echo "Final file status only check: $only"
           echo "run=$only" >> $GITHUB_OUTPUT
   docker_phase:
-    needs: [buildDockerTensorflowONNX, buildDockerPyTorch, buildDockerMXNet170DGL, buildDockerMXNet170, buildDockerDGLQD, buildDockerMXNet150, buildDockerMXNet170onnx]
+    needs: [ buildDockerTensorflowONNX, buildDockerPyTorch, buildDockerMXNet170DGL, buildDockerMXNet170, buildDockerDGLQD, buildDockerMXNet150, buildDockerMXNet170onnx ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage docker"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage docker"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage docker"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage docker"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   linux_phase:
-    needs: [docker_phase, artifact-extraction, integrationMXNetJobLinux, integrationGluonJobLinux, integrationCaffe2JobLinux, integrationPythonWrapperTest, integrationTensorflowJobLinux, modularityTest, integrationPyTorchJobLinux, UnitTestJobLinux]
+    needs: [ docker_phase, artifact-extraction, integrationMXNetJobLinux, integrationGluonJobLinux, integrationCaffe2JobLinux, integrationPythonWrapperTest, integrationTensorflowJobLinux, modularityTest, integrationPyTorchJobLinux, UnitTestJobLinux ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linux"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linux"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linux"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linux"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   deploy_phase:
-    needs: [linux_phase, git_masterJobLinux]
+    needs: [ linux_phase, git_masterJobLinux ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage deploy"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage deploy"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage deploy"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage deploy"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   git_masterJobLinux:
     needs: linux_phase
@@ -370,7 +373,7 @@ jobs:
             generators/EMADL2CPP/target
 
   modularityTest:
-    needs: [docker_phase, FileChanges]
+    needs: [ docker_phase, FileChanges ]
     if: ${{ !cancelled() && needs.docker_phase.result == 'success' && needs.FileChanges.outputs.runmodularityTest == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -443,8 +446,8 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/mxnet150
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/mxnet150
 
   buildDockerMXNet170:
     needs: FileChanges
@@ -459,8 +462,8 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/mxnet170
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/mxnet170
 
   buildDockerMXNet170onnx:
     needs: FileChanges
@@ -475,8 +478,8 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/mxnet170
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/mxnet170
 
   buildDockerTensorflowONNX:
     needs: FileChanges
@@ -492,12 +495,12 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/tensorflow
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/tensorflow-onnx:latest -f Dockerfile-onnx .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/tensorflow-onnx:latest
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/tensorflow
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+          docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/tensorflow-onnx:latest -f Dockerfile-onnx .
+          docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/tensorflow-onnx:latest
 
   buildDockerMXNet170DGL:
     needs: FileChanges
@@ -512,12 +515,12 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/mxnet170
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1 -f Dockerfile-dgl .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/mxnet170
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+          docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1 -f Dockerfile-dgl .
+          docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/mxnet170-dgl:v0.0.1
 
   buildDockerDGLQD:
     needs: FileChanges
@@ -533,12 +536,12 @@ jobs:
         shell: bash
         continue-on-error: true
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/dglqd
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/dgl-qd:latest -f Dockerfile .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/dgl-qd:latest
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/dglqd
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+          docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/dgl-qd:latest -f Dockerfile .
+          docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/dgl-qd:latest
 
   buildDockerPyTorch:
     needs: FileChanges
@@ -553,12 +556,12 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd generators/EMADL2CPP
-            cd src/test/resources/docker/pytorch
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-            LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
-            docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/pytorch:latest -f Dockerfile .
-            docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/pytorch:latest
+          cd generators/EMADL2CPP
+          cd src/test/resources/docker/pytorch
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")
+          docker build -t ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/pytorch:latest -f Dockerfile .
+          docker push ghcr.io/$LOWERCASE_OWNER/emadl2cpp/dockerimages/pytorch:latest
 
   artifact-extraction:
     needs: docker_phase
@@ -579,11 +582,11 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd generators/EMADL2CPP
-            apt-get update -qq && apt-get install -y -qq openjdk-11-jre-headless python3 python3-pip git
-            cd extractor
-            pip3 install -r requirements.txt
-            python3 extract.py ${{ secrets.GITLABTOKEN }}
+          cd generators/EMADL2CPP
+          apt-get update -qq && apt-get install -y -qq openjdk-11-jre-headless python3 python3-pip git
+          cd extractor
+          pip3 install -r requirements.txt
+          python3 extract.py ${{ secrets.GITLABTOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
