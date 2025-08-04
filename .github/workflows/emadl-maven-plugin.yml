@@ -6,10 +6,13 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 49355
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 49355
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   FileChanges:
     runs-on: ubuntu-latest
@@ -46,41 +49,41 @@ jobs:
           echo "Final file status except check: $exc"
           echo "run=$exc" >> $GITHUB_OUTPUT
   linux_phase:
-    needs: [BranchJobLinux, MasterDeployJobLinux]
+    needs: [ BranchJobLinux, MasterDeployJobLinux ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linux"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linux"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linux"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linux"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   page_phase:
-    needs: [linux_phase, pages]
+    needs: [ linux_phase, pages ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage page"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage page"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage page"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage page"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   trigger_apps_phase:
-    needs: [page_phase, trigger-3d-gan, trigger-coopautopilot, trigger-kipf-gnn, trigger-doppelkopf, trigger-sentiment, trigger-tictactoe, trigger-mnist-vae, trigger-mnistcalc]
+    needs: [ page_phase, trigger-3d-gan, trigger-coopautopilot, trigger-kipf-gnn, trigger-doppelkopf, trigger-sentiment, trigger-tictactoe, trigger-mnist-vae, trigger-mnistcalc ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage trigger_apps"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage trigger_apps"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage trigger_apps"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage trigger_apps"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   BranchJobLinux:
     needs: FileChanges
@@ -616,7 +619,7 @@ jobs:
           REPO: ${{github.repository}}
 
   pages:
-    needs: [linux_phase, FileChanges]
+    needs: [ linux_phase, FileChanges ]
     if: ${{ !cancelled() && needs.linux_phase.result == 'success' &&  github.ref_name == 'master' && needs.FileChanges.outputs.runpages == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120

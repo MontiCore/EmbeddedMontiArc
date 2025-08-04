@@ -6,23 +6,26 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 69053
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 69053
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   linuxCompile_phase:
-    needs: [CompileJobLinux]
+    needs: [ CompileJobLinux ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linuxCompile"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linuxCompile"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linuxCompile"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linuxCompile"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   CompileJobLinux:
     runs-on: ubuntu-latest
@@ -53,7 +56,7 @@ jobs:
             utilities/GDLTools/target/
 
   DeployJobLinux:
-    needs: [CompileJobLinux, linuxCompile_phase]
+    needs: [ CompileJobLinux, linuxCompile_phase ]
     if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120

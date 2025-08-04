@@ -6,22 +6,25 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 26302
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  CI_PROJECT_ID: 26302
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   generate_phase:
-    needs: [gen]
+    needs: [ gen ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage generate"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage generate"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage generate"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage generate"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   gen:
     runs-on: ubuntu-latest
@@ -53,7 +56,7 @@ jobs:
             applications/CooperativeIntersection/target/
 
   comp:
-    needs: [gen, generate_phase]
+    needs: [ gen, generate_phase ]
     if: ${{ !cancelled() && needs.generate_phase.result == 'success' && needs.gen.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120

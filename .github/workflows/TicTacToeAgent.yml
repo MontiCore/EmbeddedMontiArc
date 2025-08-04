@@ -6,35 +6,38 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 69051
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 69051
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   linuxBuildJava17_phase:
-    needs: [TestBuildJava17]
+    needs: [ TestBuildJava17 ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linuxBuildJava17"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linuxBuildJava17"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linuxBuildJava17"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linuxBuildJava17"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   linuxBuildJava1_8_phase:
-    needs: [linuxBuildJava17_phase, TestBuildJava1_8]
+    needs: [ linuxBuildJava17_phase, TestBuildJava1_8 ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linuxBuildJava1_8"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linuxBuildJava1_8"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linuxBuildJava1_8"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linuxBuildJava1_8"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   TestBuildJava17:
     runs-on: ubuntu-latest
@@ -53,17 +56,17 @@ jobs:
       - name: Script
         shell: bash
         run: |
-            cd applications/reinforcement_learning/TicTacToeAgent
-            apt-get update
-            apt-get install software-properties-common -y
-            apt-get install -y gnupg2
-            echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
-            echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
-            apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
-            apt-add-repository ppa:swi-prolog/stable -y 2>/dev/null
-            apt-get install -y swi-prolog
-            cd tictactoe-environment
-            mvn clean package -s settings.xml
+          cd applications/reinforcement_learning/TicTacToeAgent
+          apt-get update
+          apt-get install software-properties-common -y
+          apt-get install -y gnupg2
+          echo "deb http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+          echo "deb-src http://ppa.launchpad.net/swi-prolog/stable/ubuntu $(cat /etc/os-release | grep -oP -m 1 "VERSION_CODENAME=\K\w+") main" | tee -a /etc/apt/sources.list
+          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys EF8406856DBFCA18
+          apt-add-repository ppa:swi-prolog/stable -y 2>/dev/null
+          apt-get install -y swi-prolog
+          cd tictactoe-environment
+          mvn clean package -s settings.xml
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -74,7 +77,7 @@ jobs:
             applications/reinforcement_learning/TicTacToeAgent/tictactoe-environment/target/
 
   TestBuildJava1_8:
-    needs: [TestBuildJava17, linuxBuildJava17_phase]
+    needs: [ TestBuildJava17, linuxBuildJava17_phase ]
     if: ${{ !cancelled() && needs.linuxBuildJava17_phase.result == 'success' && needs.TestBuildJava17.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -120,7 +123,7 @@ jobs:
             applications/reinforcement_learning/TicTacToeAgent/tictactoe-agent/generator-target/
 
   TestTrain:
-    needs: [TestBuildJava17 , TestBuildJava1_8, linuxBuildJava1_8_phase]
+    needs: [ TestBuildJava17 , TestBuildJava1_8, linuxBuildJava1_8_phase ]
     if: ${{ !cancelled() && needs.linuxBuildJava1_8_phase.result == 'success' && needs.TestBuildJava17.result == 'success' && needs.TestBuildJava1_8.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
