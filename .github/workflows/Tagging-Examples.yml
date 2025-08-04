@@ -6,35 +6,38 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 17646
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 17646
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   EMA_phase:
-    needs: [TaggingEMA]
+    needs: [ TaggingEMA ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage EMA"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage EMA"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage EMA"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage EMA"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   CD4A_phase:
-    needs: [EMA_phase, TaggingCD4A]
+    needs: [ EMA_phase, TaggingCD4A ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage CD4A"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage CD4A"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage CD4A"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage CD4A"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   TaggingEMA:
     runs-on: ubuntu-latest

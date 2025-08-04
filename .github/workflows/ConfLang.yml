@@ -6,37 +6,40 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 55457
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
-  MAVEN_OPTS : -Xmx4096m -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
-  MAVEN_CLI_OPTS : --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true
+  CI_PROJECT_ID: 55457
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+  MAVEN_OPTS: -Xmx4096m -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+  MAVEN_CLI_OPTS: --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   build_phase:
-    needs: [build]
+    needs: [ build ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage build"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage build"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage build"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage build"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   report_phase:
-    needs: [build_phase, ]
+    needs: [ build_phase, ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage report"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage report"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage report"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage report"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   build:
     runs-on: ubuntu-latest
@@ -60,7 +63,7 @@ jobs:
       - name: Reporting
         uses: dorny/test-reporter@v2
         continue-on-error: true
-        if : ${{ always() }}
+        if: ${{ always() }}
         with:
           name: build
           path: |

@@ -6,35 +6,38 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 17660
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 17660
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   linuxCompile_phase:
-    needs: [CompileJobLinux]
+    needs: [ CompileJobLinux ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage linuxCompile"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage linuxCompile"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage linuxCompile"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage linuxCompile"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   integration_phase:
-    needs: [linuxCompile_phase, SomeIPIntegrationJob, Ros2IntegrationJob, RosIntegrationJob, MqttIntegrationJob]
+    needs: [ linuxCompile_phase, SomeIPIntegrationJob, Ros2IntegrationJob, RosIntegrationJob, MqttIntegrationJob ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage integration"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage integration"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage integration"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage integration"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   CompileJobLinux:
     runs-on: ubuntu-latest
@@ -65,7 +68,7 @@ jobs:
             generators/EMAM2Middleware/target/
 
   DeployJobLinux:
-    needs: [CompileJobLinux, integration_phase]
+    needs: [ CompileJobLinux, integration_phase ]
     if: ${{ !cancelled() && needs.integration_phase.result == 'success' &&  github.ref_name == 'master' && needs.CompileJobLinux.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -93,7 +96,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   MqttIntegrationJob:
-    needs: [CompileJobLinux, linuxCompile_phase]
+    needs: [ CompileJobLinux, linuxCompile_phase ]
     if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -123,7 +126,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   RosIntegrationJob:
-    needs: [CompileJobLinux, linuxCompile_phase]
+    needs: [ CompileJobLinux, linuxCompile_phase ]
     if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -152,7 +155,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   SomeIPIntegrationJob:
-    needs: [CompileJobLinux, linuxCompile_phase]
+    needs: [ CompileJobLinux, linuxCompile_phase ]
     if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -182,7 +185,7 @@ jobs:
         run: docker exec build-container bash -c "$SCRIPT"
 
   Ros2IntegrationJob:
-    needs: [CompileJobLinux, linuxCompile_phase]
+    needs: [ CompileJobLinux, linuxCompile_phase ]
     if: ${{ !cancelled() && needs.linuxCompile_phase.result == 'success' && needs.CompileJobLinux.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120

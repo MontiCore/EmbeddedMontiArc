@@ -10,6 +10,9 @@ env:
   CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
   GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
   cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   FileChanges:
     runs-on: ubuntu-latest

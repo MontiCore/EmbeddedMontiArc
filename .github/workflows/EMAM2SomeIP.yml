@@ -6,35 +6,38 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 29949
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+  CI_PROJECT_ID: 29949
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   project_phase:
-    needs: [BranchJobProject]
+    needs: [ BranchJobProject ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage project"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage project"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage project"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage project"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
   adapter_phase:
-    needs: [project_phase, BranchJobAdapter]
+    needs: [ project_phase, BranchJobAdapter ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage adapter"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage adapter"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage adapter"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage adapter"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   BranchJobDeploy:
     needs: adapter_phase

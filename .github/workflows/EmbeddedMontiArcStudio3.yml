@@ -6,24 +6,27 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 39210
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
-  MAVEN_OPTS : -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
-  NODE_OPTIONS : --max-old-space-size=4096
+  CI_PROJECT_ID: 39210
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  MAVEN_OPTS: -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+  NODE_OPTIONS: --max-old-space-size=4096
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   install_phase:
-    needs: [install]
+    needs: [ install ]
     if: ${{ !cancelled()}}
     runs-on: ubuntu-latest
     steps:
-        - run: |
-            echo "Finished stage install"
-          if: ${{!contains(needs.*.result, 'failure')}}
-        - run: |
-            echo "Failed stage install"
-            exit 1
-          if: ${{contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Finished stage install"
+        if: ${{!contains(needs.*.result, 'failure')}}
+      - run: |
+          echo "Failed stage install"
+          exit 1
+        if: ${{contains(needs.*.result, 'failure')}}
 
   install:
     if: ${{ github.ref_name != 'master' }}

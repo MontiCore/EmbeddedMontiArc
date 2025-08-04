@@ -6,6 +6,9 @@ on:
         description: 'ID of the job to retry'
         required: true
 
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   retry_job:
     runs-on: ubuntu-latest

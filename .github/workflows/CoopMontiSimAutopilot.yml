@@ -6,9 +6,12 @@ on:
   workflow_dispatch:
   pull_request:
 env:
-  CI_PROJECT_ID : 63620
-  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  CI_PROJECT_ID: 63620
+  CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+concurrency:
+  group: branch-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
 
   TestBuild:
