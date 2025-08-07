@@ -69,7 +69,7 @@ jobs:
           SCRIPT: |
             cd /workspace
             cd applications/BallTracking
-            cp ../../generators/EMADL2CPP .
+            cp -r ../../generators/EMADL2CPP .
             cd EMADL2CPP
             mvn clean install -s settings.xml -DskipTests
             cd ..
