@@ -79,7 +79,7 @@ jobs:
         with:
           name: build
           path: |
-            - ./target/surefire-reports/TEST-*.xml
+            languages/SchemaLang/target/surefire-reports/TEST-*.xml
           reporter: java-junit
 
   deploy:

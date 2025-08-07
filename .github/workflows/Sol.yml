@@ -59,7 +59,7 @@ jobs:
         with:
           name: install
           path: |
-            - */*/*/target/surefire-reports/TEST-*.xml
+            utilities/Sol/*/*/*/target/surefire-reports/TEST-*.xml
           reporter: java-junit
 
   pages:
