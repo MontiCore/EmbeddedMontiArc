@@ -91,7 +91,7 @@ jobs:
         with:
           name: TestBuildJava17
           path: |
-            applications/reinforcement_learning/ChessAgent/applications/reinforcement_learning/ChessAgent/chess-environment/target/
+            applications/reinforcement_learning/ChessAgent/chess-environment/target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -137,13 +137,13 @@ jobs:
         with:
           name: TestBuildJava17
           path: |
-            applications/reinforcement_learning/ChessAgent/applications/reinforcement_learning/ChessAgent/chess-environment/target/
+            applications/reinforcement_learning/ChessAgent/chess-environment/target/
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: TestBuildJava1_8
           path: |
-            applications/reinforcement_learning/ChessAgent/applications/reinforcement_learning/ChessAgent/chess-agent/generator-target/
+            applications/reinforcement_learning/ChessAgent/chess-agent/generator-target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
