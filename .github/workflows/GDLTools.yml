@@ -70,7 +70,7 @@ jobs:
         with:
           name: CompileJobLinux
           path: |
-            utilities/GDLTools/utilities/GDLTools/target/
+            utilities/GDLTools/target/
       - name: Start Docker Container
         run: |
           docker pull maven:3.8.3-openjdk-17

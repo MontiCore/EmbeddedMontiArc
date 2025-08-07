@@ -82,7 +82,7 @@ jobs:
         with:
           name: CompileJobLinux
           path: |
-            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+            generators/EMAM2Middleware/target/
       - name: Start Docker Container
         run: |
           docker pull maven:3-jdk-8
@@ -110,7 +110,7 @@ jobs:
         with:
           name: CompileJobLinux
           path: |
-            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+            generators/EMAM2Middleware/target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -140,7 +140,7 @@ jobs:
         with:
           name: CompileJobLinux
           path: |
-            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+            generators/EMAM2Middleware/target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -169,7 +169,7 @@ jobs:
         with:
           name: CompileJobLinux
           path: |
-            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+            generators/EMAM2Middleware/target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -199,7 +199,7 @@ jobs:
         with:
           name: CompileJobLinux
           path: |
-            generators/EMAM2Middleware/generators/EMAM2Middleware/target/
+            generators/EMAM2Middleware/target/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin

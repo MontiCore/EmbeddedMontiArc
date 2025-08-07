@@ -241,7 +241,7 @@ jobs:
         with:
           name: TestEMADLMavenPlugin
           path: |
-            applications/MNISTCalculator/applications/MNISTCalculator/emadl-maven-plugin/output/*
+            applications/MNISTCalculator/emadl-maven-plugin/output/*
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -408,7 +408,7 @@ jobs:
         with:
           name: TrainTensorflowONNX
           path: |
-            applications/MNISTCalculator/applications/MNISTCalculator/onnx/tensorflow-pretrained/model/
+            applications/MNISTCalculator/onnx/tensorflow-pretrained/model/
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
@@ -474,7 +474,7 @@ jobs:
         with:
           name: TestEMADLMavenPlugin
           path: |
-            applications/MNISTCalculator/applications/MNISTCalculator/emadl-maven-plugin/output/*
+            applications/MNISTCalculator/emadl-maven-plugin/output/*
       - name: Start Docker Container
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
