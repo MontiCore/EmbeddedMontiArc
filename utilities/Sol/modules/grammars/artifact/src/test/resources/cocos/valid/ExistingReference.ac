@@ -1,0 +1,6 @@
+package valid
+
+tool ExistingReference {
+    language Language
+    environment Environment
+}

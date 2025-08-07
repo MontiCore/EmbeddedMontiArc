@@ -1,0 +1,12 @@
+package ba;
+
+component CVCvtColor<N n =960,N m=720> {
+    port
+    in Q^{n,m,3} src,
+    in Z colorConversion,
+    out Q^{n,m,3} dst;
+
+    implementation Math{
+        dst = cvtColor(src, colorConversion);
+    }
+}

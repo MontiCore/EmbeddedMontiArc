@@ -1,0 +1,41 @@
+- !de.monticar.lang.monticar.generator.python.RosTag
+  component: ba.intersection.intersectionController
+#subscribers
+  subscriber:
+    - !de.monticar.lang.monticar.generator.python.RosInterface
+      ports:
+        objectIdIn[:]: objects[:].object_id
+        #absPositionIn: TODO: converter method?
+        #absPositionIn[1]: objects[1].motion_state.pose.pose.position
+        #TODO:...
+        #relTrajectoryIn
+        #TODO:...
+      topic: /sim/objects_ground_truth
+      type: automated_driving_msgs/ObjectStateArray
+#publishers
+#TODO: better syntax for muliple out ports?
+  publisher:
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          objectIdOut[1]: object_id
+          stopOut[1]: data
+        topic: /stop
+        type: sim_intersection/BoolWithId
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          objectIdOut[2]: object_id
+          stopOut[2]: data
+        topic: /stop
+        type: sim_intersection/BoolWithId
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          objectIdOut[3]: object_id
+          stopOut[3]: data
+        topic: /stop
+        type: sim_intersection/BoolWithId
+      - !de.monticar.lang.monticar.generator.python.RosInterface
+        ports:
+          objectIdOut[4]: object_id
+          stopOut[4]: data
+        topic: /stop
+        type: sim_intersection/BoolWithId

@@ -1,0 +1,13 @@
+package ba;
+
+component CVErode<N n=960,N m=720> {
+    port
+    in Q^{n,m} src,
+    in Z erosion_elem,
+    in Z iterations,
+    out Q^{n,m} dst;
+
+    implementation Math{
+        dst = erode(src, erosion_elem, iterations);
+    }
+}

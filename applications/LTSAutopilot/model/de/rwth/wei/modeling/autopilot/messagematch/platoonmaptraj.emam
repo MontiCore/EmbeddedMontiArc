@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.armin.modeling.autopilot.messagematch;
+import  de.rwth.armin.modeling.autopilot.messagestruct.*;
+
+dynamic component platoonmaptraj{
+  ports
+  in  platoonmessage plat_msg,
+  dynamic trajectorymessage traj_msg[0:32].
+
+  out platoonmessage map_plat,
+  out trajectorymessage map_traj,
+  // use as public variable
+  out trajectorymessage tmsg;
+
+  implementation math{
+    map_plat = plat_msg;
+    for i = 1:32
+      if is_connected(traj_msg,i)
+        tmsg = traj_msg(i);
+        if tmsg.vehicleid == plat_msg.vehicleid
+           map_traj = tmsg;
+        end
+      end
+    end
+  }
+}

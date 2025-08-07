@@ -1,0 +1,9 @@
+package de.rwth.connectedcars.movement;
+
+stream EmergencyBrakingTest for EmergencyBraking {
+	emergencyBraking: true tick false;
+	gasResIn: 1 tick 1;
+	brakeResIn: 0 tick 0;
+	gasResOut: 0 tick 1;
+	brakeResOut: 1 tick 0; 
+}

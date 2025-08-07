@@ -1,0 +1,5 @@
+package valid
+
+typedef configuration AtLeastOneTask {
+    backend task main
+}

@@ -1,0 +1,29 @@
+package fas_views;
+
+view FA-77 {
+  component FAS {
+    ports
+	  in ? V_Sign_kmh,
+	  out ? Limiter_active_b;
+	  
+	  component Limiter {
+	    ports
+		  in ? V_Sign_kmh,
+		  out ? VMax_kmh,
+		  out ? Limiter_active_b;
+	  }
+	  instance Limiter limit;
+	  
+	  component VelocityControl {
+	    port
+		  in ? VMax_kmh;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect limit.V_Sign_kmh -> limit.VMax_kmh;
+	  effect V_Sign_kmh -> limit.V_Sign_kmh;
+	  
+	  connect limit.VMax_kmh -> veloCont.VMax_kmh;
+	  connect limit.Limiter_active_b -> Limiter_active_b;
+  }
+}

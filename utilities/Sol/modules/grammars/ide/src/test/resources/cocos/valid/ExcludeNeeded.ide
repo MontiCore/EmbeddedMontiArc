@@ -1,0 +1,8 @@
+package valid
+
+ide ExcludeNeeded {
+    registry "some/registry"
+    build "some/build/folder" resolved from CWD
+
+    include module type ExcludeNeededModule
+}

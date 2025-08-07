@@ -1,0 +1,35 @@
+{
+  "name": "@embeddedmontiarc/sol-development-tsc",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": ["src", "lib", "bin"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "bin": {
+    "tscx": "bin/tscx"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-rename": "^1.4.0",
+    "gulp-typescript": "^5.0.1",
+    "minimist": "^1.2.0",
+    "strip-dirs": "^3.0.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=3.5.3"
+  },
+  "devDependencies": {
+    "@types/gulp": "^4.0.6",
+    "@types/gulp-rename": "^0.0.33",
+    "@types/minimist": "^1.2.0",
+    "@types/node": "^12.0.10"
+  }
+}

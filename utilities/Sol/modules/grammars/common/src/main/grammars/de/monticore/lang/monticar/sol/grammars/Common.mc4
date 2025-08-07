@@ -1,0 +1,104 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ * A component grammar holding the common productions used in the different Sol grammars.
+ */
+component grammar Common extends de.monticore.MCBasics, de.monticore.MCLiterals {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /*
+     * An interface to be implemented by productions representing a type.
+     */
+    interface Type;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     * A package statement without trailing semicolon.
+     */
+    PackageStatement =
+        "package" package:(Name& || ".")+
+    ;
+
+    /**
+     * An import statement without trailing semicolon.
+     */
+    ImportStatement =
+        "import" import:(Name& || ".")+ ("." star:["*"])?
+    ;
+
+    /**
+     * A production representing a path in the project and which can resolved from either Current Working Directory,
+     * Parent directory, or Root directory.
+     */
+    ProjectPath =
+        path:StringLiteral "resolved" "from" origin:["CWD" | "PARENT" | "ROOT"]
+    ;
+
+    /**
+     * A production representing a primitive data type.
+     */
+    PrimitiveType implements Type =
+        identifier:"string" | identifier:"boolean" | identifier:"number"
+    ;
+
+    /**
+     * A production representing an array type based on the previous primitive data types.
+     */
+    ArrayType implements Type =
+        PrimitiveType "[" "]"
+    ;
+
+    /**
+     * A production representing a list of primitive values based on primitive data types, and which forms a value of
+     * an array type.
+     */
+    SignedLiteralList =
+        "[" literal:SignedLiteral "]" "as" type:ArrayType
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+
+    ast Type =
+        method public String getIdentifier() {}
+
+        method public boolean isArray() {
+            return false;
+        }
+    ;
+
+    ast ArrayType =
+        method public String getIdentifier() {
+            return String.format("%s[]", this.getPrimitiveType().getIdentifier());
+        }
+
+        method public boolean isArray() {
+            return true;
+        }
+    ;
+
+    ast SignedLiteralList =
+        method public String getTypeIdentifier() {
+            return this.getType().getIdentifier();
+        }
+    ;
+
+    ast ProjectPath =
+        method public String getPathValue() {
+            return this.getPath().getValue();
+        }
+    ;
+}

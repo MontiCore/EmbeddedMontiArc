@@ -1,0 +1,7 @@
+[{
+  "uri": "file://de/rwth/armin/modeling/autopilot/Autopilot.emam",
+  "opener": "code-editor-opener"
+}, {
+  "uri": "file://README.md",
+  "opener": "code-editor-preview"
+}]

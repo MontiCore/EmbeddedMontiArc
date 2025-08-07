@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+import PIDTupleAggregation;
+
+function  PIDTupleAggregation tupleOut =  mutate(PIDTupleAggregation tupleToMutate)
+	PIDTupleAggregation tuple;
+
+	for (i = 0:size(tupleToMutate)-1){ 
+		tuple.PIDTuples[i].P = tupleToMutate.PIDTuples[i].P + ((randn()-0.5)*(tupleToMutate.PIDTuples[i].P)/10);
+		tuple.PIDTuples[i].I = tupleToMutate.PIDTuples[i].I + ((randn()-0.5)*(tupleToMutate.PIDTuples[i].I)/10);
+		tuple.PIDTuples[i].D = tupleToMutate.PIDTuples[i].D + ((randn()-0.5)*(tupleToMutate.PIDTuples[i].D)/10);
+	}
+	tupleOut = tuple;
+
+end

@@ -1,0 +1,68 @@
+/* (c) https://github.com/MontiCore/monticore */
+component sensorSimulation;
+import carInfo;
+import roadInfo;
+
+
+component SensorSimulation{
+	ports
+	in Q(-45° : 0.001° : 45°) perfectSteering,
+	in Q(-oo : 0.0001 :oo ) perfectTargetPosX,
+	in Q(-oo : 0.0001 :oo ) perfectTargetPosY,
+	in Q(-oo : 0.0001 :oo ) perfectCurrPosX,
+	in Q(-oo : 0.0001 :oo ) perfectCurrPosY,
+	in Q(-180° : 0.001° : 180°) perfectCarYaw,
+	in Z(-1:1:6) perfectCurrGear,
+	in carInfo perfectCarSpecs,
+	in Q(0 m/s : 0.001 m/s : 75 m/s) perfectCurrVelocity,
+	in Q(0 m/s : 0.001 m/s : 75 m/s) perfectAllowedSpeed,
+	in roadInfo perfectRoadSpecs[20],
+	in Q(0 : 0.0001 :1 ) perfectGasPedal,
+	in Z(0 : 1 : 300) perfectCurrLap,
+	
+	out Q(-oo : 0.0001 :oo ) targetPosX,
+	out Q(-oo : 0.0001 :oo ) targetPosY,
+	out Q(-oo : 0.0001 :oo ) currPosX,
+	out Q(-oo : 0.0001 :oo ) currPosY,
+	out Q(-180° : 0.001° : 180°) carYaw,
+	out Z(-1:1:6) currGear,
+	out carInfo carSpecs,
+	out Q(0 m/s : 0.001 m/s : 75 m/s) currVelocity,
+	out Q(0 m/s : 0.001 m/s : 75 m/s) allowedSpeed,
+	out roadInfo roadSpecs[20],
+	out Q(0 : 0.0001 :1 ) gasPedal,
+	out Z(0 : 1 : 300) currLap;
+	
+	instance Distortion posXDistorte<0.7>;
+	instance Distortion posYDistorte<0.7>;
+	instance Distortion targetXDistorte<0.7>;
+	instance Distortion	targetYDistorte<0.7>;
+	instance Distortion	carYawDistorte<0.7>;
+	instance Distortion	currVelocityDistorte<2>;
+	instance Distortion	gasPedalDistorte<0.02>;
+	instance Distortion steeringDistorte<0.02>;
+
+
+	connect perfectSteering -> steeringDistorte.perfectVal;
+	connect perfectTargetPosX -> targetXDistorte.perfectVal; 
+	connect perfectTargetPosY -> targetYDistorte.perfectVal;
+	connect perfectCurrPosX -> posXDistorte.perfectVal;
+	connect perfectCurrPosY -> posYDistorte.perfectVal;
+	connect perfectCarYaw -> carYawDistorte.perfectVal;
+	connect perfectCurrGear -> currGear;
+	connect perfectCarSpecs -> carSpecs;
+	connect perfectCurrVelocity -> currVelocityDistorte.perfectVal;
+	connect perfectAllowedSpeed -> allowedSpeed;
+	connect perfectRoadSpecs -> roadSpecs;
+	connect perfectGasPedal -> gasPedalDistorte.perfectVal;
+	connect perfectCurrLap -> currLap;
+	
+	connect steering.distortedVal -> steering;
+	connect targetXDistorte.distortedVal -> targetPosX;
+	connect targetYDistorte.distortedVal -> targetPosY;
+	connect posXDistorte.distortedVal -> currPosX;
+	connect posYDistorte.distortedVal -> currPosY;
+	connect currVelocityDistorte.distortedVal -> currVelocity;
+	connect gasPedalDistorte.distortedVal -> gasPedal;
+	connect carYawDistorte.distortedVal -> carYaw;		
+}

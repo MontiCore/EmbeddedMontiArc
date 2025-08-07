@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component MultiplePorts {
+  ports
+    in B inBool,
+    in Z inUnbounded,
+    in Q(-5/2 : 5) inBounded,
+    in Q(-oo : 0.1 : oo) inStep,
+    in Z(-oo mN : oo GN) inUnit,
+    in Z(-oo m : 10 km)^{2,3} inUpperBound,
+    in Z(1 m/h : oo km/s) inLowerBound,
+    in Q(-10 MW : 5 W : 20 kW) inStepUnit,
+
+    out B outBool,
+    out Z outUnbounded,
+    out Q(-5/2 : 5) outBounded,
+    out Q(-oo : 0.1 : oo) outStep,
+    out Z(-oo mN : oo GN) outUnit,
+    out Z(-oo m : 10 km)^{2,3} outUpperBound,
+    out Z(1 m/h : oo km/s) outLowerBound,
+    out Q(-10 MW : 5 W : 20 kW) outStepUnit;
+}

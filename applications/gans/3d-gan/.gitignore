@@ -1,0 +1,10 @@
+target/*
+
+resources/realData/*
+
+model/*
+
+.jar
+
+.directory 
+

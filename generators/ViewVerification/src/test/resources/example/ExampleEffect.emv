@@ -1,0 +1,12 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example;
+
+view ExampleEffect {
+    component AComp {
+        ports
+		    in Boolean in1,
+			out Boolean out1;
+	
+		effect in1 -> out1;
+	}
+}

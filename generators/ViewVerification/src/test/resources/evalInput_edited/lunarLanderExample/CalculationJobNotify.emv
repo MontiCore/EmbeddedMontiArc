@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// It is also responsible for notifying the calling
+// component of whether the simulator has terminated, and
+// with what state (landed safely, crashed, and so on).
+
+view CalculationJobNotify {
+
+  component Calculation {
+    port
+      out ? callerNotification;
+  }
+  instance Calculation calculation;
+
+}

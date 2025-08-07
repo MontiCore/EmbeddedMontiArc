@@ -1,0 +1,30 @@
+/* (c) https://github.com/MontiCore/monticore */
+package controller;
+
+import carInfo;
+
+component GearComputation{
+	ports 
+		in (0 m/s : 75 m/s) currSpeed,
+		in carInfo carSpecs,
+		in (-1 : 1 : 6 ) currGear,
+
+		out (-1 : 1 : 6 ) gear;
+		
+	implementation Math{
+		Q(-oo : 0.01 : oo) gr_up = carSpecs.gearRatio[currGear + carSpecs.gearOffset];
+		Q(-oo : 0.01 :oo) omega = carSpecs.enginerpmRedLine/gr_up;
+		
+		if(omega*carSpecs.wheelRadius < currSpeed){
+			gear = currGear+1;
+		}else{
+			Q(-oo: 0.001 : oo) gear_down = carSpecs.gearRatio[currGear + carSpecs.gearOffset-1];
+			omega = carSpecs.engineRpmRedLine/gear_down;
+			if (currGear > 1 && omega*carSpecs.wheelRadius > currSpeed){
+				gear = currGear-1;
+			}else{
+			 gear = currGear;
+			}
+		}
+	}
+}

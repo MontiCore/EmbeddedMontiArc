@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package temporal;
+
+component SlaDoe{
+    ports in Q(0:1)^{1025, 1025} graph,
+        in Q(0:oo)^{1025, 1800} features,
+        out Q(-oo:oo)^{200} predictions;
+
+    implementation CNN {
+        layer GraphConv(input_dim=1800, output_dim=64, nodes=1025) gc1;
+        layer GraphConv(input_dim=64, output_dim=32, nodes=1025) gc2;
+
+        (graph | features) ->
+        gc1;
+
+        (graph | gc1.output -> Relu()) ->
+        gc2;
+
+        (graph | gc2.output -> Relu()) ->
+        GraphAvgPool() ->
+        Relu() ->
+
+        FullyConnected(units=200) ->
+        predictions;
+    }
+}

@@ -1,0 +1,19 @@
+(init (start))
+
+(<= (legal test (noop))
+    (true (start))
+)
+
+// state cant change from noop move
+(<= (next (failure))
+    (does test (noop))
+)
+
+(<= (legal test (do))
+    (true (start))
+)
+
+// noop should no longer be legal
+(<= (next (success))
+    (does test (do))
+)

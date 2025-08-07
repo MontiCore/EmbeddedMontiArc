@@ -1,0 +1,6 @@
+package valid
+
+typedef option Common {
+    required prop label: string
+    required prop required: boolean
+}

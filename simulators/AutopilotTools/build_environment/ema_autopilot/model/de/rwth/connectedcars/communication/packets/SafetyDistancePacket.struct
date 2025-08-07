@@ -1,0 +1,8 @@
+package de.rwth.connectedcars.communication.packets;
+
+
+struct SafetyDistancePacket {
+    Subject subject;
+    ActionType actionType;
+    Q targetVelocity;
+}

@@ -1,0 +1,46 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-5 {
+  component FAS {
+    ports
+	  in ? Distance_Object_m,
+	  in ? V_Obj_rel_kmh,
+	  in ? V_Vehicle_kmh,
+	  out ? Acusti_warn_b;
+	  
+	  component EmergencyBrake {
+	    ports
+		  in ? Distance_Object_m,
+		  in ? V_Obj_rel_ms,
+		  in ? V_Vehicle_ms,
+		  out ? Acusti_warn_b;
+	  }
+	  instance EmergencyBrake emBrake;
+	  
+	  component Distancewarner {
+	    ports
+          in ? Distance_Object_m,
+		  in ? V_Vehicle_ms,
+		  out ? Acusti_warn_b;
+	  }
+	  instance Distancewarner distwarn;
+	  
+	  connect Distance_Object_m -> emBrake.Distance_Object_m;
+	  connect Distance_Object_m -> distwarn.Distance_Object_m;
+	  
+	  effect V_Obj_rel_kmh -> emBrake.V_Obj_rel_ms;
+	  effect V_Vehicle_kmh -> emBrake.V_Vehicle_ms;
+	  effect V_Vehicle_kmh -> distwarn.V_Vehicle_ms;
+	  
+	  effect emBrake.Distance_Object_m -> emBrake.Acusti_warn_b;
+	  effect emBrake.V_Obj_rel_ms -> emBrake.Acusti_warn_b;
+	  effect emBrake.V_Vehicle_ms -> emBrake.Acusti_warn_b;
+	  
+	  effect distwarn.Distance_Object_m -> distwarn.Acusti_warn_b;
+	  effect distwarn.V_Vehicle_ms -> distwarn.Acusti_warn_b;
+	  
+	  effect distwarn.Acusti_warn_b -> Acusti_warn_b;
+	  effect emBrake.Acusti_warn_b -> Acusti_warn_b;
+  }
+}

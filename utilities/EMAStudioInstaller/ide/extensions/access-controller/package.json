@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@elysium/access-controller",
+  "version": "0.1.2",
+  "description": "Extension which enables embedding and controlling the IDE in the embedded context.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/editor": "latest",
+    "@theia/workspace": "latest",
+    "@theia/monaco": "latest"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/access-controller-frontend-module"
+    }
+  ]
+}

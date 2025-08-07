@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package calculator;
+
+component Sum {
+    ports
+        in Q(-oo:oo)^{3} a,
+        out Q(-oo:oo) b;
+    
+    implementation Math {
+        Q(-oo:oo) result;
+        result = a(1) + a(2) + a(3);
+        b = result;
+    }
+}

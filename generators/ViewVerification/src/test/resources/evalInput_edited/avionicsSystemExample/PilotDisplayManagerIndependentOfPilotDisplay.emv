@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample;
+
+view PilotDisplayManagerIndependentOfPilotDisplay {
+
+  // Display
+  component Pilot_Display {}
+  instance Pilot_Display pilot_Display;
+
+  // Display_Manager
+  component Pilot_DM {}
+  instance Pilot_DM pilot_DM;
+
+}

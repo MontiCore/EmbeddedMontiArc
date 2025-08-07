@@ -1,0 +1,90 @@
+name: ema-lsp
+on:
+  push:
+    paths:
+      - 'utilities/ema-lsp/**'
+  workflow_dispatch:
+  pull_request:
+env:
+  CI_PROJECT_ID : 36188
+  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4
+  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}
+  cibuild : ${{ secrets.SE_NEXUS_PASSWORD }}
+jobs:
+  FileChanges:
+    runs-on: ubuntu-latest
+    outputs:
+      runmasterLinux: ${{steps.masterLinux.outputs.run}}
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Check for file changes
+        run: |
+          CHANGES=$(git diff --name-only HEAD^ HEAD)
+          echo "$CHANGES"
+          echo "$CHANGES" > diff.txt
+      - name: Check masterLinux
+        id: masterLinux
+        run: |
+          exc=true
+          for path in $(cat diff.txt); do
+            if [[ $path == *.gitlab-ci.yml* ]]; then
+              echo "Matching path found: $path"
+              echo "DONT RUN"
+              exc=false
+              break
+            fi
+            if [[ $path == *.gitignore* ]]; then
+              echo "Matching path found: $path"
+              echo "DONT RUN"
+              exc=false
+              break
+            fi
+            if [[ $path == *README.md* ]]; then
+              echo "Matching path found: $path"
+              echo "DONT RUN"
+              exc=false
+              break
+            fi
+          done
+          echo "Final file status except check: $exc"
+          echo "run=$exc" >> $GITHUB_OUTPUT
+
+  masterLinux:
+    needs: FileChanges
+    if: ${{ !cancelled() && github.ref_name == 'master' && needs.FileChanges.outputs.runmasterLinux == 'true' }}
+    runs-on: ubuntu-latest
+    container:
+      image: maven:latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd utilities/ema-lsp
+            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
+
+  branchLinux:
+    needs: FileChanges
+    if: ${{ github.ref_name != 'master' }}
+    runs-on: ubuntu-latest
+    container:
+      image: maven:latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout latest commit
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            cd utilities/ema-lsp
+            mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B install --settings settings.xml -U
+

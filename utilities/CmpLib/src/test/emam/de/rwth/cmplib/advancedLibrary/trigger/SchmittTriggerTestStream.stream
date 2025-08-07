@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.cmplib.advancedLibrary.trigger;
+
+
+
+stream SchmittTriggerTestStream for SchmittTriggerTest {
+    in1: 0.1 tick 0.5 tick 1 tick 0.9 tick 0.75 tick 0.6;
+
+    out1: false tick false tick true tick true tick true tick false;
+}

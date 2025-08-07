@@ -1,0 +1,16 @@
+package example.model.units;
+
+component Controller {
+    port
+      in Boolean controlSignalsIn,
+      out Boolean dataSaveInternalOut,
+      out Boolean dataAntennaOut,
+      out Boolean sensorRequest1,
+      out Boolean sensorRequest2,
+      out Boolean sensorRequest3,
+      out Boolean sensorRequest4,
+      in Boolean sensorResponse1,
+      in Boolean sensorResponse2,
+      in Boolean sensorResponse3,
+      in Boolean sensorResponse4;
+}

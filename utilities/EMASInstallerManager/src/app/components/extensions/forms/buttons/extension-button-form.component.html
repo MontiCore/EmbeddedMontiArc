@@ -1,0 +1,18 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<mat-form-field color="accent">
+    <input matInput placeholder="Label" [(ngModel)]="state.label" #label="ngModel">
+    <mat-hint>The label standing besides the icon of the button.</mat-hint>
+    <mat-error *ngIf="state.hasErrorWithControl('label', label.control)">{{state.getError('label')}}</mat-error>
+</mat-form-field>
+<mat-form-field color="accent">
+    <input matInput placeholder="Script" [(ngModel)]="state.script" #script="ngModel">
+    <mat-hint>The name of the script which should be executed when the button is clicked.</mat-hint>
+    <mat-error *ngIf="state.hasErrorWithControl('script', script.control)">{{state.getError('script')}}</mat-error>
+</mat-form-field>
+<button mat-raised-button [color]="state.hasError('image') ? 'error' : 'accent'" class="button" [disabled]="state.saved">
+    <label>
+        Select an Icon... *
+        <input type="file" class="hidden" (change)="onImageChange($event)" accept="image/*"/>
+    </label>
+</button>
+<img class="image" [style.visibility]="state.image ? 'visible' : 'hidden'" [src]="state.image ? 'file://' + state.image!.path : ''"/>

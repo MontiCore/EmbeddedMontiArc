@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+ 
+
+ 
+
+component NormalizedLaplacian<N1 n = 2500>{
+
+    ports in diag Q(-oo:oo)^{n,n} degree,
+
+          in Q(-oo:oo)^{n,n} similarity,
+
+          out Q(-oo:oo)^{n,n} nLaplacian;
+
+ 
+
+    implementation Math{
+
+        nLaplacian = degree^(-0.5) * similarity * degree^(-0.5);
+
+    }
+
+}

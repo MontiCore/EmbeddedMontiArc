@@ -1,0 +1,23 @@
+/* (c) https://github.com/MontiCore/monticore */
+package portRequest;
+
+dynamic component PortRequest1 {
+    ports
+        dynamic in B a[0:8],
+        dynamic out B b[0:8];
+
+        //in Q c,
+        //dynamic out Q d [0:3];
+
+    //connect a[1] -> b[1];
+    //connect a[2] -> b[2];
+
+    @ b::connect && a::connect {
+        connect a[?] -> b[?];
+    }
+/*
+    @ d::connect {
+        connect c -> d[?];
+    }
+*/
+}

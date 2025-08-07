@@ -1,0 +1,32 @@
+{
+  "name": "@embeddedmontiarc/sol-development-cli",
+  "description": "",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "files": ["src", "lib", "bin"],
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w",
+    "test": "sol theia build --config configs/webpack.config"
+  },
+  "bin": {
+    "sol": "bin/sol"
+  },
+  "publishConfig": {
+    "registry": "https://nexus.se.rwth-aachen.de/repository/embeddedmontiarcstudio/"
+  },
+  "dependencies": {
+    "@theia/cli": "latest",
+    "execa": "1.0.0",
+    "fs-extra": "^8.1.0",
+    "minimist": "^1.2.0",
+    "nunjucks": "^3.2.0"
+  },
+  "devDependencies": {
+    "@types/execa": "0.9.0",
+    "@types/fs-extra": "4.0.9",
+    "@types/nunjucks": "^3.1.1"
+  }
+}

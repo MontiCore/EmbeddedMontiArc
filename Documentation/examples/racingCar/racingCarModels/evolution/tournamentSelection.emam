@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+
+function PIDTupleAggregation winner =   tournamentSelection(PIDTupleAggregation popultaion[20],Z(0:1:19) k )
+	Q(-oo : 0.001 : oo) bestFitness = -oo;
+	Z(0:1:19) bestIndex = round(rand()*19);
+	for (i=1:(k-1)) {
+		Z(0:1:19) index = round(rand()*19);
+		if(population[index].fitness > population[bestIndex].fitness){
+			bestIndex = index;
+		}
+	}
+	winner = bestIndex;
+end	
+

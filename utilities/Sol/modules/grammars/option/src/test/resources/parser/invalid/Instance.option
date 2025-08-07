@@ -1,0 +1,7 @@
+option abc {
+    label = "ABC";
+
+    option def {
+        required = "ABC";
+    }
+}

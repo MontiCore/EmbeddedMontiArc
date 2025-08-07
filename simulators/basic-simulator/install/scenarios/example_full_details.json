@@ -1,0 +1,190 @@
+{
+    "name": "explicit",
+    "map_name": "aachen",
+    "max_duration": [60,0],
+    "tick_duration": [0,10000000],
+    "cars": [
+        {
+            "name": "TestVehicle",
+            "start_pos": [ -123.09, 21.64 ],
+            "start_orientation": -30.0,
+            "task": {
+                "goals": [
+                    {
+                        "type": "path",
+                        "ltl_operator": "eventually",
+                        "path": [ [-63.83, -171.96] ],
+                        "range": 5
+                    }
+                ]
+            },
+            "body": {
+                "mass": 1642.0,
+                "length": 4.971,
+                "width": 1.87,
+                "height": 1.383,
+                "center_of_gravity_height": 0.34575
+            },
+            "wheels": {
+                "diameter": 0.6612,
+                "width": 0.255,
+                "front_wheel_axis_offset": 1.0,
+                "max_turning_angle": 30.0,
+                "front_track_width": 1.57988,
+                "back_track_dist": 1.60274,
+                "wheelbase": 2.812,
+                "wheelbase_offset": 0.0
+            },
+            "powertrain": {
+                "type": "electrical",
+                "traction": "rear",
+                "braking": "front",
+                "max_braking_force": 5000.0,
+                "motor": {
+                    "motor_efficiency": 0.7,
+                    "regen_efficiency": 0.5,
+                    "motor_peek_torque": 450.0
+                },
+                "battery": {
+                    "type": "infinite",
+                    "capacity": 1.8E8,
+                    "critical_charge": 10.0
+                },
+                "transmission_ratio": 9.0
+            },
+            "physics": {
+                "type": "rigidbody"
+            },
+            "components": [
+                { 
+                    "type": "constant_bus",
+                    "name": "DefaultBus",
+                    "mode": "instant",
+                    "rate": 0.0,
+                    "connected_to": [
+                        "SteeringActuator",
+                        "BrakingActuator",
+                        "GasActuator",
+                        "TrueVelocitySensor",
+                        "TruePositionSensor",
+                        "TrueCompassSensor",
+                        "Navigation",
+                        "TestAutopilot"
+                    ]
+                },
+                {
+                    "type": "actuator",
+                    "name": "SteeringActuator",
+                    "physical_value_name": "steering",
+                    "change_rate": 60.0,
+                    "sensor": {
+                        "type": "sensor",
+                        "name": "UnnamedComponent",
+                        "update_interval": [
+                            0,
+                            100000000
+                        ],
+                        "read_time": [
+                            0,
+                            1000000
+                        ],
+                        "send_only_changed": false
+                    }
+                },
+                {
+                    "type": "actuator",
+                    "name": "BrakingActuator",
+                    "physical_value_name": "braking",
+                    "change_rate": 10.0,
+                    "sensor": {
+                        "type": "sensor",
+                        "name": "UnnamedComponent",
+                        "update_interval": [
+                            0,
+                            100000000
+                        ],
+                        "read_time": [
+                            0,
+                            1000000
+                        ],
+                        "send_only_changed": false
+                    }
+                },
+                {
+                    "type": "actuator",
+                    "name": "GasActuator",
+                    "physical_value_name": "gas",
+                    "change_rate": "Infinity",
+                    "sensor": {
+                        "type": "sensor",
+                        "name": "UnnamedComponent",
+                        "update_interval": [
+                            0,
+                            100000000
+                        ],
+                        "read_time": [
+                            0,
+                            1000000
+                        ],
+                        "send_only_changed": false
+                    }
+                },
+                {
+                    "type": "sensor",
+                    "name": "TrueVelocitySensor",
+                    "physical_value_name": "true_velocity",
+                    "update_interval": [
+                        0,
+                        100000000
+                    ],
+                    "read_time": [
+                        0,
+                        10000000
+                    ],
+                    "send_only_changed": false
+                },
+                {
+                    "type": "sensor",
+                    "name": "TruePositionSensor",
+                    "physical_value_name": "true_position",
+                    "update_interval": [
+                        0,
+                        100000000
+                    ],
+                    "read_time": [
+                        0,
+                        10000000
+                    ],
+                    "send_only_changed": false
+                },
+                {
+                    "type": "sensor",
+                    "name": "TrueCompassSensor",
+                    "physical_value_name": "true_compass",
+                    "update_interval": [
+                        0,
+                        100000000
+                    ],
+                    "read_time": [
+                        0,
+                        10000000
+                    ],
+                    "send_only_changed": false
+                },
+                {
+                    "type": "navigation",
+                    "name": "Navigation"
+                },
+                {
+                    "type": "java_autopilot",
+                    "name": "TestAutopilot",
+                    "compute_time": [
+                        0,
+                        0
+                    ],
+                    "maxVehicleAccel": 7.460690450979396
+                }
+            ]
+        }
+    ]
+}

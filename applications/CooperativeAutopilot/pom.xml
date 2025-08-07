@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.rwth.connectedcars.ema</groupId>
+    <artifactId>autopilot</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <!-- .. SE-Libraries .................................................. -->
+        <emadl_plugin.version>0.0.4-SNAPSHOT</emadl_plugin.version>
+        <streamtest.version>0.0.24-SNAPSHOT</streamtest.version>
+        <!-- <EMADL2CPP.version>0.4.8-SNAPSHOT</EMADL2CPP.version> -->
+
+        <!-- .. Compiler ...................................................... -->
+        <compiler.version>3.8.1</compiler.version>
+
+        <!-- .. Misc .......................................................... -->
+        <java.version>1.8</java.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+
+    <!-- <dependencies>
+        <dependency>
+            <groupId>de.monticore.lang.monticar.utilities</groupId>
+            <artifactId>maven-streamtest</artifactId>
+            <version>${streamtest.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies> -->
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.utilities</groupId>
+                <artifactId>maven-streamtest</artifactId>
+                <version>${streamtest.version}</version>
+                <configuration>
+                    <pathMain>./src/model</pathMain>
+                    <pathTest>./src/test</pathTest>
+                    <pathTmpOut>./target/tmp</pathTmpOut>
+                    <wrapperTestExtension>_TestWrapper</wrapperTestExtension>
+                    <showBuildAndRunOutput>true</showBuildAndRunOutput>
+                    <generator>MinGW</generator>
+                    <rootModel>de.rwth.connectedcars.TestAutoPilot</rootModel>
+                    <importArmadillo>true</importArmadillo>
+                    <generateServerAdapter>true</generateServerAdapter>
+                    <generateLibraryInterface>true</generateLibraryInterface>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>streamtest-build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.utilities</groupId>
+                <artifactId>emadl-maven-plugin</artifactId>
+                <version>${emadl_plugin.version}</version>
+                <configuration>
+                    <scenarioFolder>./src/test/scenarios</scenarioFolder>
+                    <mapsFolder>./src/test/maps</mapsFolder>
+                    <autopilotsFolder>./target/tmp/de.rwth.connectedcars.TestAutoPilot</autopilotsFolder>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>se-nexus</id>
+            <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
+

@@ -1,0 +1,17 @@
+package valid
+
+typedef component configuration OptionsComponent {
+    label "Some Configuration"
+
+    option sub1: Common {
+        label "Some Label"
+        required true
+    }
+
+    option sub2: Common {
+        label "Some Label"
+        required true
+    }
+
+    backend task main
+}

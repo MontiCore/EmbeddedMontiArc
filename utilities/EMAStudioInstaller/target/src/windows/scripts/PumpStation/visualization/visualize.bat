@@ -1,0 +1,11 @@
+@echo off
+
+call "..\..\common\variables"
+
+if exist "%SVG_HOME%\SVG" rmdir "%SVG_HOME%\SVG" /s /q
+mkdir "%SVG_HOME%\SVG"
+
+"%JAVA_HOME%\bin\java.exe" -jar "%VISUALIZATION_EMAM_HOME%\visualization-emam.jar" ^
+   --model "pumpStationExample.pumpStation" ^
+   --modelPath "%HOME%\models\PumpStation\model\\" ^
+   --outputPath "%SVG_HOME%\SVG\\"

@@ -1,0 +1,40 @@
+// add the following library files (contains the local path, and all zip url which need to be downloaded and unpacked in the local path
+//
+// if you need to update your library (e.g. new JAR file), then just upload it anywhere in a release at
+//  https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/
+// and update the link here in this dependency file
+// please do not commit large JAR files in the github master branch
+// based on the github master branch and this file automatically new self-extracting portable Windows 64 bit releases are created
+
+
+* EmbeddedMontiArcStudio\
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/armadillo-8.200.2.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/apache-tomcat-9.0.5.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/chrome.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/externallibs.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/ide.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/jdk.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/lib.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/emam2cpp.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/mingw64.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/nodejs.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/precompiled.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/reporting.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries2/emam2wasm.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/viewverification/viewverification.zip
+// new dependencies here: https://rwth-aachen.sciebo.de/apps/files/?dir=/EmbeddedMontiArc/dependencies&fileid=1238725838
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.06.15.ocl-verification&files=oclverification.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.08.22.visualisation&files=visualisation.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.streamTesting&files=streamTesting.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.pacman&files=pacman.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.11.supermario&files=supermario.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.20.visualization-emam&files=visualization-emam.zip
+
+* EmbeddedMontiArcStudio\distributed-simulator\
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/PostgreSQLPortable.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/RMIModelServer.zip
+** https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/libraries/SmartFoxServer_2X.zip
+
+* EmbeddedMontiArcStudio\visualization-emam\
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.16.visualisation&files=visualisation.zip
+** https://rwth-aachen.sciebo.de/s/igDWzLpdO5zYHBj/download?path=%2Fshared%2F18.07.20.math-pretty-printer&files=math-pretty-printer.zip

@@ -1,0 +1,27 @@
+/* (c) https://github.com/MontiCore/monticore */
+package evolution;
+
+component MSE{
+	ports
+		in Q(0: 0.001: oo) errors,
+		in bool reset,
+			
+		out mseOut;
+
+	implementation Math{
+		static Z(0: 1 : oo) time_prev = now()-1;
+		static Z(0: 1 : oo) totalTime = 0;
+		static Q(0: 0.001 : oo) totalError = 0;
+		if(reset){
+			mseOut = totalError / totalTime;
+			totalError = 0;
+			totalTime = 0;
+		}else{
+			Z(0: 1 : oo) dt = time_prev - now();
+			totalError = totalError + errors*errors*dt;
+			totalTime = totalTime+dt; 
+			mseOut = totalError / totalTime;
+		}
+		time_prev = now();
+	}
+}

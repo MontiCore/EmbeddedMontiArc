@@ -1,0 +1,34 @@
+// negative 
+// aggregated value in model: (2.1999999999999984 ± 8.9E-16) W
+
+package example.negative;
+
+component Sensors {
+/* [LatencyCmp = 5 s, PowerCmp = 1 W] */
+
+
+  instance s_control1 /* [LatencyCmpInst = 50 ms, PowerCmpInst = 2 W] */;
+  instance s_gps1 /* [LatencyCmpInst = 950 ms, PowerCmpInst = 50 mW] */;
+  instance s_gps2 /* [LatencyCmpInst = 750 ms, PowerCmpInst = 50 mW] */;
+  instance s_temp1 /* [LatencyCmpInst = 55 ms, PowerCmpInst = 50 mW] */;
+  instance s_humid1 /* [LatencyCmpInst = 50 ms, PowerCmpInst = 50 mW] */;
+
+  component Controller {
+
+  }
+
+  component GPS {
+
+  }
+
+  component Temperature {
+
+  }
+
+  component Humidity {
+
+  }
+
+
+
+}

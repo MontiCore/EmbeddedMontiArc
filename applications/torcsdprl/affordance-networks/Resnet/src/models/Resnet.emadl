@@ -1,0 +1,65 @@
+
+component Resnet  {
+    ports in Z(0:255)^{3, 210, 280} data,
+        out Q(0:1)^{14} predictions;
+
+    implementation CNN {
+        def swish(){
+            (
+                [0]
+            |
+                Sigmoid() 
+            ) ->
+            BroadcastMultiply()
+        }
+
+        def conv(kernel=(3,3), channels){
+            (
+                [0]
+            |
+                Convolution(kernel=kernel, channels=channels, stride=(1,1)) ->
+                BatchNorm() ->
+                swish() -> 
+                Convolution(kernel=kernel, channels=channels, stride=(1,1))   
+            ) ->
+            Add() ->
+            BatchNorm() ->
+            swish()
+        }
+
+        def convFirst(kernel=(3,3), channels, stride=(1,1)){
+            (
+                [0] ->
+                Convolution(kernel=(1,1), channels=channels, stride=stride)
+            |
+                [0] ->
+                Convolution(kernel=kernel, channels=channels, stride=stride) ->
+                BatchNorm() ->
+                swish() -> 
+                Convolution(kernel=kernel, channels=channels, stride=(1,1))  
+            ) ->
+            Add() ->
+            BatchNorm() ->
+            swish()
+        }    
+
+
+        data ->
+        Convolution(kernel=(7,7), channels=64, stride=(2,2)) ->
+        BatchNorm() ->
+        swish() ->
+        Pooling(pool_type="max", kernel=(3,3), stride=(2,2)) ->
+        convFirst(channels=64) ->
+        conv(channels=64) ->
+        convFirst(channels=128, stride=(2,2)) ->
+        conv(channels=128) ->
+        convFirst(channels=256, stride=(2,2)) ->
+        conv(channels=256) ->
+        convFirst(channels=512, stride=(2,2)) ->
+        conv(channels=512) ->
+        GlobalPooling(pool_type="avg") ->
+        FullyConnected(units=14) ->
+        Sigmoid() ->
+        predictions;
+    }
+}

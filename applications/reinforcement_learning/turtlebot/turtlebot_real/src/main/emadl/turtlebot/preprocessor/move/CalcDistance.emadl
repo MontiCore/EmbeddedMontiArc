@@ -1,0 +1,17 @@
+package turtlebot.preprocessor.move;
+
+component CalcDistance {
+    ports
+        in  Q^{2} first_point,
+        in  Q^{2} second_point,
+        out Q     distance;
+
+    implementation Math {
+        
+        Q firTerm = first_point(1) - second_point(1);
+        
+        Q secTerm = first_point(2) - second_point(2);
+
+        distance = sqrt(firTerm * firTerm + secTerm * secTerm);
+    }
+}

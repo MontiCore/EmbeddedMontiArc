@@ -1,0 +1,88 @@
+# (c) https://github.com/MontiCore/monticore  
+version: '{build}'
+skip_tags: true
+clone_depth: 10
+clone_folder: C:\EMAStudioBuilder
+platform:
+  - x64
+install:
+  - ps: |
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      $dl = "C:\EMAStudioBuilder\download\"       
+      $dep = "C:\EMAStudioBuilder\dependencies\"       
+      $dir = $dep
+        
+      # download new dependencies if dependencies.txt has changed
+      if(!(Test-Path -path $dep)) {
+        New-Item -ItemType directory -Path C:\EMAStudioBuilder\download
+        New-Item -ItemType directory -Path C:\EMAStudioBuilder\dependencies
+        Set-Location -Path C:\EMAStudioBuilder\download 
+        
+        "Dependencies have changed. Downloading again."
+ 
+
+        
+        foreach($line in Get-Content C:\EMAStudioBuilder\dependencies.txt) {
+        
+            # if line begins with * extract directory
+            if($line -match '^\*\s.+'){
+               $dir = $dep + $line.Remove(0,2)
+               New-Item -ItemType Directory -Force -Path $dir
+            }
+            
+            # if line beginns with ** extract link
+            if($line -match '^\*\*.+'){
+                $link = $line.Remove(0,3)
+        
+                # if it is a zip download and extract
+                if($link -match '[a-zA-Z0-9\-\.]+\.zip'){
+                  $filename = $matches[0]
+                  "Downloading " + $filename + " from: " + $link
+                  appveyor DownloadFile $link -FileName $filename
+                  "Extracting " + $filename + " to " + $dir
+                  [System.IO.Compression.ZipFile]::ExtractToDirectory($dl + $filename, $dir)
+                }
+            }
+        }
+        
+      } else {
+        "Loading dependencies from cache."
+      }
+  - ps: |
+      "Copy dependencies to build/"
+      Copy-Item -Recurse -Force "C:\EMAStudioBuilder\dependencies\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
+  - ps: |
+      "Copy project items to build/"
+      Copy-Item -Recurse -Force "C:\EMAStudioBuilder\EmbeddedMontiArcStudio" -Destination "C:\EMAStudioBuilder\build" 
+      Copy-Item -Force "C:\EMAStudioBuilder\ide.bat" -Destination "C:\EMAStudioBuilder\build\ide.bat" 
+  - ps: |
+      "Packing to self-extracting exe"
+
+      Set-Location -Path C:\EMAStudioBuilder\ 
+      appveyor DownloadFile "https://github.com/EmbeddedMontiArc/EMAStudioBuilder/releases/download/tools/7ZipPortable.zip" -FileName "7ZipPortable.zip"
+      Add-Type -AssemblyName System.IO.Compression.FileSystem
+      [System.IO.Compression.ZipFile]::ExtractToDirectory("C:\EMAStudioBuilder\7ZipPortable.zip", "C:\EMAStudioBuilder\")
+      C:\EMAStudioBuilder\7ZipPortable\App\7-Zip64\7z.exe a EmbeddedMontiArcStudio.exe -sfx -t7z -m0=lzma2 -mx5 "C:\EMAStudioBuilder\build"
+ 
+build: off    
+# Cache extracted dependencies, still need to be copied every time from dependencies/ to build/
+cache:
+  - /build/download -> dependencies.txt
+  - /build/7z -> dependencies.txt
+  - /build/curl -> dependencies.txt
+
+ 
+#deploy:
+#  - provider: GitHub
+#    auth_token:
+#      secure: MDkehPr8Z/c0NH8YWPjXOdhQ+wHOeleKb4S0vAKz3pt24W+TVWOurkTFbKUQZ2x3
+#    release: EmbeddedMontiArcStudio-v$(appveyor_build_version)
+#    description: "Release description"
+#    artifact: C:\EMAStudioBuilder\EmbeddedMontiArcStudio.exe        
+#    prerelease: true
+#    draft: false
+#    force_update: false
+#    repository: https://github.com/EmbeddedMontiArc/EmbeddedMontiArcStudio
+#    on:
+#      branch: master  
+#      appveyor_repo_tag: false 

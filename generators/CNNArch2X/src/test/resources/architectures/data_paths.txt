@@ -1,0 +1,1 @@
+ComponentName /path/to/training/data

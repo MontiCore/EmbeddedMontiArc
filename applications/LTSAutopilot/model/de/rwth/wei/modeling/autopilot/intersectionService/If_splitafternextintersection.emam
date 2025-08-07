@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component If_splitafternextintersection{
+ ports
+  dynamic in Platoonmessage  plat_msg[0:32],
+  out  Z ^ 32        platoonid,
+  out  Z ^ 32        ifsplit,
+  out  Platoonmessage pmsg;
+
+  @ plat_msg::connect{/* interface for dynamic port*/}
+
+  implementation Math{
+    Z counter = 1;
+    for j = 1:32
+      platoonid(j) = 0;
+      ifsplit(j) = 0;
+    end
+    for i = 1:32
+       if is_connected(plat_msg,i)
+          pmsg = plat_msg(i);
+          platoonid(counter) = pmsg.vehicleid;
+          ifsplit(counter) = pmsg.ifsplit;
+       end
+    end
+  }
+}

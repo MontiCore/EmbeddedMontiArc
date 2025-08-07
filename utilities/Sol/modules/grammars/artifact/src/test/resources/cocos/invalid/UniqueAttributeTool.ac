@@ -1,0 +1,11 @@
+package invalid
+
+tool UniqueAttributeTool {
+    path "some/awesome/path" resolved from CWD
+    path "some/awesome/path" resolved from CWD
+
+    artifact SOME_RESOURCE {
+        path "some/other/awesome/path" resolved from CWD
+        path "some/awesome/path" resolved from CWD
+    }
+}

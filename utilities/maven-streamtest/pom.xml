@@ -1,0 +1,181 @@
+<!-- (c) https://github.com/MontiCore/monticore -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>de.monticore.lang.monticar.utilities</groupId>
+    <artifactId>maven-streamtest</artifactId>
+    <packaging>maven-plugin</packaging>
+    <version>0.0.35-SNAPSHOT</version>
+
+    <name>maven-package Streamtest Mojo</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <EMAM2Middleware.version>0.1.6-SNAPSHOT</EMAM2Middleware.version>
+        <EMADLGenerator.version>0.5.16-SNAPSHOT</EMADLGenerator.version>
+        <cnnarch-generator.version>0.4.20-SNAPSHOT</cnnarch-generator.version>
+        <source.plugin>2.4</source.plugin>
+        <!--misc-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220320</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-math-middleware-generator</artifactId>
+            <version>${EMAM2Middleware.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.monticore.lang.monticar</groupId>
+            <artifactId>embedded-montiarc-emadl-generator</artifactId>
+            <version>${EMADLGenerator.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.5</version>
+                <configuration>
+                    <goalPrefix>streamtest</goalPrefix>
+                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>mojo-descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>help-goal</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <!-- Source Jar Configuration -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${source.plugin}</version>
+                <executions>
+                    <execution>
+                        <id>create source jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                        <configuration>
+                            <excludeResources>false</excludeResources>
+                            <includes>
+                                <include>**/*.java</include>
+                                <include>**/*.ftl</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>de.monticore.lang.monticar</groupId>
+                                    <artifactId>cnnarch-generator</artifactId>
+                                    <version>${cnnarch-generator.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                    <includes>schemas/**/*.*</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    
+     <!-- == DISTRIBUTION ==================================================== -->
+
+  <distributionManagement>
+    <repository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>se-nexus</id>
+      <url>https://nexus.se.rwth-aachen.de/content/repositories/embeddedmontiarc-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+</project>

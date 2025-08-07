@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simpleTests.ignoreCompNames;
+import simpleTests.ignoreCompNames.*;
+
+component Car {
+    
+    instance Engine firstEngine;
+    instance Engine secondEngine;
+    
+    instance Wheel firstWheel;
+    instance Wheel secondWheel;
+        
+    connect firstEngine.out1 -> secondWheel.in1;
+    connect secondEngine.out1 -> firstWheel.in1;
+}

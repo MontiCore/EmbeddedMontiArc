@@ -1,0 +1,1 @@
+%HOME%\exec\TestsForCurrentModel.exe > %HOME%\testResults\%1

@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package robotArmExample.lib;
+
+component ServoValve {
+
+  port
+    in (0:1) portIn,
+    out (0:1) portOut;
+}

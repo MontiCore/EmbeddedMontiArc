@@ -1,0 +1,35 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.misc;
+
+import tests.structs.Trajectory;
+
+//TODO: variable size?
+component CompareTrajectory{
+    port in Trajectory trajectoryIn[4];
+    port out Z(0:1) stopOut[4];
+
+
+    //TODO: dynamic size?
+    instance TrajectoryConflict trajectoryConflict[3];
+
+    //TODO: autoconnect?
+    connect trajectoryIn[1] -> trajectoryConflict[1].trajectoryA;
+    connect trajectoryIn[2] -> trajectoryConflict[1].trajectoryB;
+
+    connect trajectoryIn[1] -> trajectoryConflict[2].trajectoryA;
+    connect trajectoryIn[3] -> trajectoryConflict[2].trajectoryB;
+
+    connect trajectoryIn[1] -> trajectoryConflict[3].trajectoryA;
+    connect trajectoryIn[4] -> trajectoryConflict[3].trajectoryB;
+
+    connect trajectoryIn[2] -> trajectoryConflict[4].trajectoryA;
+    connect trajectoryIn[3] -> trajectoryConflict[4].trajectoryB;
+
+    connect trajectoryIn[2] -> trajectoryConflict[5].trajectoryA;
+    connect trajectoryIn[4] -> trajectoryConflict[5].trajectoryB;
+
+    connect trajectoryIn[3] -> trajectoryConflict[6].trajectoryA;
+    connect trajectoryIn[4] -> trajectoryConflict[6].trajectoryB;
+
+
+}

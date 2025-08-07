@@ -1,0 +1,9 @@
+/* (c) https://github.com/MontiCore/monticore */
+package simulatorModel;
+
+stream StatusControllerTest for StatusController {
+    x: 0m tick 200m tick -200m tick 250m;
+    y: 0m tick 120m tick -50m tick 50m;
+    
+    status: false tick false tick false tick true;
+}

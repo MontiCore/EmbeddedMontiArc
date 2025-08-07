@@ -1,0 +1,48 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+component Platoonwithsingle_priority{
+ports
+  in   Z ^ 32            vehicle_atintersection,
+  in   Z                 vehicle_num,
+  in   Q                 velocity,
+  in   Q                 length,
+  in   Q                 dis2intersection,
+  in   Z                 if_frontvehicleexists,
+  in   Z                 ifcurrentsplit,
+  in   Z ^ 32            platoonid,
+  in   Z ^ 32            platoonlength,
+  //collision information
+  in   Z^{1,32}          iscollision,
+  in   Z^{1,32}          collision_id,
+  in   Z^{1,32}          collisionpriority,
+  in   Q^{1,32}          angletocurrent,
+  in   Q^{1,32}          velocity_car1,
+  in   Q^{1,32}          dis2intersection_car1,
+
+  out  Z                 is_highestpriority;
+
+  implementation Math{
+     is_highestpriority = 1;
+     if ifcurrentsplit == 1
+        for i = 1:32
+           iscollision(1,i) = 1;
+        end
+     end
+     if if_frontvehicleexists == 0
+        if dis2intersection > 5.8 * length
+           for j = 1:vehicle_num
+              if iscollision(j) == 1 && dis2intersection_car1(j) < 1.8 * length && dis2intersection_car1(j) >= 1.3 * length
+                 is_highestpriority = 0;
+              end
+           end
+        end
+        for k = 1:vehicle_num
+           if iscollision(k) == 1 && dis2intersection_car1(k) < 1.3 * length
+              is_highestpriority = 0;
+           end
+        end
+     end
+  }
+}

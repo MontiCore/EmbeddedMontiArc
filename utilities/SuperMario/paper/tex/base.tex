@@ -1,0 +1,123 @@
+\documentclass{elsarticle}
+%%\documentclass[review]{elsarticle}
+
+\usepackage{float}
+\usepackage{lineno,hyperref}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{subfigure} 
+\usepackage{flafter}
+\modulolinenumbers[5]
+
+\bibliographystyle{elsarticle-num}
+
+\lstdefinelanguage{EMAM}
+{
+	% list of keywords
+	alsoletter=->,
+	literate=
+	{->}{$\rightarrow{}$}{1},
+	mathescape=true,
+	morekeywords={
+		package, import, component, stream, ports, port, in, out, instance,
+		Q, Z, B, N1, ->, connect, tick, \{
+		implementation, Math, if, else, elseif, end, for, while, &&, ||, >, >=, <, ==, <=
+	},
+	sensitive=true, % keywords are case-sensitive
+	morecomment=[l]{//}, % l is for line comment
+	morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+}
+
+\lstset{
+	columns=fullflexible,
+	frame=single,
+	breaklines=true,
+	language=EMAM,
+	aboveskip=0pt,
+	framesep=0pt,
+}
+
+%\lstset{
+%	float,
+%	floatplacement=H
+%}
+%\makeatletter
+%\let\lst@floatdefault\lst@float
+%\makeatother
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A Case Study of the Component and Connector Modeling Language EmbeddedMontiArc}
+\tnotetext[mytitlenote]{}
+
+%% Group authors per affiliation:
+\author{Philipp Haller, Malte Heithoff}
+\address{Supervised by: Michael von Wenckstern and Bernhard Rumpe \\ Software Engineering, RWTH Aachen University}
+
+
+
+\begin{abstract}
+\input{abstract}
+\end{abstract}
+
+\begin{keyword}
+EmbeddedMontiArc, Component \& Connector Models, Case Study, Supermario, Pacman
+\end{keyword}
+
+\end{frontmatter}
+
+\linenumbers
+
+
+\newpage
+\section{Introduction (by Philipp Haller)}
+\label{sec:intro}
+\input{introduction}
+
+
+\section{Context (by Philipp Haller)}
+\label{sec:context}
+\input{context}
+
+
+\section{Approach}
+\label{sec:approach}
+\input{approach}
+
+
+\section{Case Study Execution}
+\label{sec:implementation}
+\input{implementation}
+
+
+\section{Evaluation (by Malte Heithoff)}
+\label{sec:evaluation}
+\input{evaluation}
+
+\section{Conclusion (by Haller and Heithoff)}
+\label{sec:conclusion}
+\input{conclusion}
+\begin{appendix}
+\section{Pacman EmbeddedMontiArc Code}
+\input{app-pacman-ema-code}
+\section{Pacman Stream Test Code}
+\input{app-pacman-stream-code}
+
+\clearpage
+\section{Supermario EmbeddedMontiArc Code}
+\input{app-supermario-ema-code}
+
+\clearpage
+\section{Supermario Stream Test Code}
+\input{app-supermario-stream-code}
+\end{appendix}
+
+\clearpage
+%\section*{References}
+\bibliography{bibliography}
+
+
+
+\end{document}

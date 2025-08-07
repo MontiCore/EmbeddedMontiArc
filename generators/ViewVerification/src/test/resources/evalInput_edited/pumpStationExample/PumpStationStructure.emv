@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package pumpStationExample;
+
+view PumpStationStructure {
+
+  component PumpStation {
+
+   component Environment {}
+   instance Environment environment;
+   component PumpingSystem {}
+   instance PumpingSystem pumpingSystem;
+
+  }
+}

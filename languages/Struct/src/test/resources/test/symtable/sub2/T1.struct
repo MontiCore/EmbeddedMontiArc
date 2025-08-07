@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.symtable.sub2;
+
+struct T1 {
+  B f1;
+  Q f2;
+  T2 f3;
+}

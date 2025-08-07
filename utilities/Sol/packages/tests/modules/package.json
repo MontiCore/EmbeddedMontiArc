@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "@embeddedmontiarc/sol-tests-modules",
+  "version": "2020.5.5-SNAPSHOT",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "prepare": "yarn run clean && yarn run build",
+    "clean": "rimraf lib",
+    "build": "tsc -p compile.tsconfig.json",
+    "watch": "tsc -p compile.tsconfig.json -w"
+  },
+  "dependencies": {
+    "@embeddedmontiarc/sol-runtime-configurations": "^2020.5.5-SNAPSHOT",
+    "@embeddedmontiarc/sol-runtime-modules": "^2020.5.5-SNAPSHOT",
+    "inversify": "^5.0.1",
+    "fs-extra": "^8.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/modules-frontend-module",
+      "backend": "lib/node/modules-backend-module"
+    }
+  ]
+}

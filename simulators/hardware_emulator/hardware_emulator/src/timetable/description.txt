@@ -1,0 +1,17 @@
+====
+    (c) https://github.com/MontiCore/monticore
+====
+
+amd_full_table_with_hardcoded_values.table
+- contains all the mnemonics supported by Zydis
+- mnemonics, whose latency values are specified in AMD developer documents, have valid(?) latency.
+- other mnemonics have latency cycle "-1", which indicates an "undefined" value
+- the latency of endbr64 and jmp-related instructions are hardcoded according to the references on internet
+
+amd_full_table_with_undefined_values.table
+- same as the "amd_full_table_with_hardcoded_values.table", but no undefined values are hardcoded
+
+amd_table_not_full.table
+- first table created
+- using this table will result in wrong time estimation from hardware emulator since:
+    - this table includes a lot less instruction then the Zydis supports, so the indexes are not correct

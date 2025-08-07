@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+sim Scenario2 {
+    sim_duration 4h;
+    
+    time 12:00;
+
+    map_name Aachen.osm;
+    map_overlap 20;
+    map_sector_width 100;
+    map_sector_height 100;
+	max_sector_users 1234;
+
+    car1(6.0490709,50.7754934,0.0)->(6.0494884,50.7758541,0.0);
+	car2(6.0479487,50.7748415,0.0)->(6.0502999,50.7767543,0.0);
+	car3(6.0477218,50.7747157,0.0)->(6.0501623,50.7765402,0.0);
+	car4(6.0475892,50.7745915,0.0)->(6.0499201,50.7762467,0.0);
+}

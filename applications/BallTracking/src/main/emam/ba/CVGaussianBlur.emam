@@ -1,0 +1,15 @@
+package ba;
+
+component CVGaussianBlur<N n=960,N m=720> {
+    port
+        in Q^{n,m,3} src,
+        in Z sizeX,
+        in Z sizeY,
+        in Q sigmaX,
+        in Q sigmaY,
+        out Q^{n,m,3} dst;
+
+    implementation Math {
+        dst = gaussianBlur(src, sizeX, sizeY, sigmaX, sigmaY);
+    }
+}

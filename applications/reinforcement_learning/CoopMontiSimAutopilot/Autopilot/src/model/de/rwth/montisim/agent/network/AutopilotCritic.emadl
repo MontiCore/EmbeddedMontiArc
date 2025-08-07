@@ -1,0 +1,19 @@
+package de.rwth.montisim.agent.network;
+
+component AutopilotCritic {
+    ports
+        in Q^{50} state,
+        in Q(-1:1)^{3} action,
+        out Q(-oo:oo)^{1} qvalues;
+
+    implementation CNN {
+        ( state | action )->
+        Concatenate() ->
+        FullyConnected(units=512) ->
+        Relu() ->
+        FullyConnected(units=768) ->
+        Relu() ->
+        FullyConnected(units=1) ->
+        qvalues;
+    }
+}

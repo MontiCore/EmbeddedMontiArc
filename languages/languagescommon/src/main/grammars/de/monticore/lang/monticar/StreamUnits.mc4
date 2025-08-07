@@ -1,0 +1,43 @@
+/* (c) https://github.com/MontiCore/monticore */
+
+package de.monticore.lang.monticar;
+
+/**
+ * Grammar for common elements that should be imported from somewhere else in future.
+ */
+grammar StreamUnits extends de.monticore.NumberUnit, de.monticore.literals.Literals, de.monticore.common.Common{
+
+  StreamUnitsCompilationUnit =
+    ("package" package:(Name& || ".")+ ";")?
+    ComponentStreamUnits;
+
+  symbol scope ComponentStreamUnits = "stream" Name "for" componentName:Name /*typeParams:TypeParameters?*/  "{"
+    NamedStreamUnits+
+  "}";
+  //Name enforcement
+  symbol scope NamedStreamUnits = Name ("." fieldQualifier:Name)* ":" Stream ";" ;
+
+  Stream = (StreamInstruction | "tick" )+;
+
+  StreamInstruction = StreamValue | StreamCompare | StreamArrayValues | FilePath;
+
+    StreamValue = Name | PrecisionNumber | SignedLiteral | DontCare | ValueAtTick;
+    ValueAtTick = Name "(" (value:NumberWithUnit|lowerBound:NumberWithUnit ":" upperBound:NumberWithUnit ) ")";
+    FilePath = ( "(" elementTolerance:DoubleLiteral "," generalTolerance:DoubleLiteral ")" "~")? "file::" StringLiteral;
+    DontCare = "-";
+    StreamArrayValues = ( "(" elementTolerance:DoubleLiteral "," generalTolerance:DoubleLiteral ")" "~")? "[" (ValuePair | MatrixPair | CubePair)"]" ;
+    ValuePair = (StreamValue | ",")+;
+    MatrixPair = ValuePair (";" ValuePair)+ ;
+    CubePair = ("[" MatrixPair "]")+;
+    ast StreamCompare = method public ASTStreamValue getLeft(){}
+                        method public ASTStreamValue getRight(){}
+                        method public String getOperator(){};
+    interface StreamCompare;
+    StreamCompareBigger implements StreamCompare = left:StreamValue operator:">" right:StreamValue ;
+    StreamCompareSmaller implements StreamCompare = left:StreamValue operator:"<" right:StreamValue;
+    StreamCompareSmallerEqual implements StreamCompare = left:StreamValue operator:"<=" right:StreamValue;
+    StreamCompareBiggerEqual implements StreamCompare = left:StreamValue operator:">=" right:StreamValue;
+
+    PrecisionNumber = NumberWithUnit (Precision)?;
+    Precision = "+" "/" "-" NumberWithUnit;
+}

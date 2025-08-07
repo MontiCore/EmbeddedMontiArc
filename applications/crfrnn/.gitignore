@@ -1,0 +1,8 @@
+src/src/cpp/DigitCalculator.cpp
+*.pyc
+mnistsmallseg/test_img_segmented.png
+python-scripts/fashion_mnist_smallseg
+*pred.png
+*.log
+python-scripts/pix2pix_datasets/datasets/
+pix2pix_test/

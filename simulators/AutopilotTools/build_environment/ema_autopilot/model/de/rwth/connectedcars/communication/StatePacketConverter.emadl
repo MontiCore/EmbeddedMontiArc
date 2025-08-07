@@ -1,0 +1,21 @@
+package de.rwth.connectedcars.communication;
+
+import de.rwth.connectedcars.communication.packets.StatePacket;
+
+component StatePacketConverter {
+    ports
+        in Q(-oo m : 0.01 m : oo m)^2 position,
+        in Q(0.0 m/s : 0.01 m/s : oo m/s) velocity,
+        in Q(-oo : 0.001 : oo) heading,
+        
+        out StatePacket state,
+        out B constTrue;
+
+    implementation Math {
+        state.positionX = position(1);
+        state.positionY = position(2);
+        state.heading = heading;
+        state.velocity = velocity;
+        constTrue = true;
+    }
+}

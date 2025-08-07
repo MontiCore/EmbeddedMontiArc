@@ -1,0 +1,39 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.intersectionService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messagematch.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+
+dynamic component Currenttakesameexit{
+  ports
+     dynamic in Platoonmessage      plat_msg[0:32],
+     in  Z               near_platoonid,
+     in  Q               width,
+     in  Q               length,
+     in  Z               trajectory_length,
+     in  Q^{1,100}       trajectory_x,
+     in  Q^{1,100}       trajectory_y,
+
+     out Z currentinsameexit;
+
+
+     instance  Idmatchplatoonmessage   idplatoon;
+     instance  Collisionpoint_platoon  coll_plat;
+
+     @ near_platoonid::value(0){
+       connect 0 -> currentinsameexit;
+     }
+     @ near_platoonid::value(!= 0)&& plat_msg::connect{
+       connect plat_msg[?] -> idplatoon.plat_msg[?];
+     }
+     @ near_platoonid::value(!= 0){
+       connect near_platoonid -> idplatoon.near_platoonid;
+       connect idplatoon.match_plat_msg -> coll_plat.plat_message;
+       connect width -> coll_plat.car1_width;
+       connect length -> coll_plat.car1_length;
+       connect trajectory_length -> coll_plat.trajectory_length_car1;
+       connect trajectory_x -> coll_plat.trajectory_x_car1;
+       connect trajectory_y -> coll_plat.trajectory_y_car1;
+       connect coll_plat.iscollision -> currentinsameexit;
+      }
+}

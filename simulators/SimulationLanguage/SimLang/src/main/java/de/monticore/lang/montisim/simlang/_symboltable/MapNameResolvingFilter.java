@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.montisim.simlang._symboltable;
+
+import de.monticore.symboltable.resolving.CommonResolvingFilter;
+
+public class MapNameResolvingFilter extends CommonResolvingFilter<MapNameSymbol> {
+  public MapNameResolvingFilter() {
+    super(MapNameSymbol.KIND);
+  }
+}

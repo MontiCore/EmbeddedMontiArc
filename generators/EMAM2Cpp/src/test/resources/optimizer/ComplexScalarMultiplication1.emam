@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package optimizer;
+
+component ComplexScalarMultiplication1{
+    ports in Q(-oo:oo)^{400,200} mat1,
+          in Q(-oo:oo)^{200,100} mat2,
+          in Q(-oo:oo) factor,
+          out Q(-oo:oo)^{10,200} matOut;
+
+
+    implementation Math{
+        Q^{400, 200} a = mat1;
+        Q^{200, 100} b = mat2;
+
+        matOut = a*b*factor;
+    }
+
+}

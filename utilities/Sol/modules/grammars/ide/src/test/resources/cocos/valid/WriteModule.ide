@@ -1,0 +1,9 @@
+package valid
+
+typedef module WriteModule {
+    label "Some Label"
+
+    module someModule: CommonModule
+
+    write someModule to "."
+}

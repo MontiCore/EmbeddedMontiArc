@@ -1,0 +1,21 @@
+#!/bin/bash
+
+### the default Claix-2018 section
+#SBATCH --partition=c18m
+
+### clean environment
+#SBATCH --export=NONE,DISPLAY
+
+### time limit
+#SBATCH --time 00:20:00
+
+### memory per node
+#SBATCH --mem-per-cpu=1G
+
+### number of processes and nodes
+#SBATCH --ntasks=48
+#SBATCH --nodes=2
+
+cd $WORKING_DIR
+
+singularity exec /rwthfs/rz/SW/UTIL.common/singularity/dglqd_rlcontainercpu rl/execute.sh

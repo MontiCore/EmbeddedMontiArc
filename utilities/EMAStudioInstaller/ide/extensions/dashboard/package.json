@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@elysium/dashboard",
+  "version": "0.1.1",
+  "description": "Extension for the Implementation of a Dashboard.",
+  "keywords": [
+    "Elysium IDE"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/Elysium.git"
+  },
+  "dependencies": {
+    "github-api": "^3.0.0"
+  },
+  "devDependencies": {
+    "@theia/core": "latest",
+    "@elysium/core": "^0.1.0",
+    "@theia/filesystem": "latest",
+    "@elysium/downloader": "^0.1.0"
+  },
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/demos/demos-dashboard-frontend-module"
+    },
+    {
+      "frontend": "lib/browser/filesystem/filesystem-dashboard-frontend-module",
+      "frontendElectron": "lib/electron-browser/filesystem/filesystem-dashboard-frontend-module"
+    }
+  ]
+}

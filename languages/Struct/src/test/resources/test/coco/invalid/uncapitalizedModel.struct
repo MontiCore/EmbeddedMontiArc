@@ -1,0 +1,7 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.coco.invalid;
+
+struct uncapitalizedModel {
+  Z f1;
+  Q f2;
+}

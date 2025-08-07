@@ -1,0 +1,10 @@
+/* (c) https://github.com/MontiCore/monticore */
+package wrapper.structures;
+import wrapper.structures.*;
+
+struct Vehicle_Status{
+	Q velocity;
+	Q acceleration;
+	Quaternion orientation;
+	Ego_Vehicle control;
+}

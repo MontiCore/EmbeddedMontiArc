@@ -1,0 +1,9 @@
+package de.rwth.connectedcars.communication;
+
+stream DistanceCalculatorTest for DistanceCalculator {
+    position1X: 30 m;
+    position1Y: 7 m;
+    position2X: 26 m;
+    position2Y: 10 m;
+    distance: 5 m;
+}

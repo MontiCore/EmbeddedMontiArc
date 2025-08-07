@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+import SpectralClusterer;
+
+component ObjectDetector1{
+    ports in Q(0:255)^{2500, 3} imgFront,
+          out Q(-oo:oo)^{2500, 1} clusters;
+
+    instance SpectralClusterer<2500, 4, 4> spectralClusterer;
+
+    connect  imgFront -> spectralClusterer.imgMatrix;
+    connect spectralClusterer.clusters -> clusters;
+
+
+}

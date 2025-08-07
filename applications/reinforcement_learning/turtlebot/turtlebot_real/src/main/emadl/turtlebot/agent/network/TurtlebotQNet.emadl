@@ -1,0 +1,19 @@
+package turtlebot.agent.network;
+
+component TurtlebotQNet {
+    ports
+        in Q(-oo:oo)^{31} state,
+        out Q(-oo:oo)^{5} qvalues;
+
+
+    implementation CNN {
+        state ->
+        FullyConnected(units=300) ->
+        Relu() ->
+        FullyConnected(units=600) ->
+        Relu() ->
+        Dropout()->
+        FullyConnected(units=5) ->
+        qvalues;
+    }
+}

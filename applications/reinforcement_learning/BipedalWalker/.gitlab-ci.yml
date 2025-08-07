@@ -1,0 +1,13 @@
+# (c) https://github.com/MontiCore/monticore
+
+stages:
+- linux
+
+TestBuildAndTrain:
+  stage: linux
+  image: registry.git.rwth-aachen.de/monticore/embeddedmontiarc/applications/reinforcement_learning/cartpole/rl-fix-new2:latest
+  script:
+    - chmod +x install.sh
+    - chmod +x run_training.sh
+    - ./install.sh
+    - ./run_training.sh

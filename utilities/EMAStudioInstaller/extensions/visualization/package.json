@@ -1,0 +1,35 @@
+{
+  "private": true,
+  "name": "@emastudio/visualization",
+  "version": "0.1.0",
+  "description": "EmbeddedMontiArcStudio Visualization Extension.",
+  "keywords": [
+    "EmbeddedMontiArcStudio"
+  ],
+  "homepage": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller",
+  "bugs": {
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller/issues"
+  },
+  "license": "???",
+  "author": "SE RWTH",
+  "contributors": [],
+  "repository": {
+    "type": "git",
+    "url": "https://git.rwth-aachen.de/monticore/EmbeddedMontiArc/utilities/EMAStudioInstaller.git"
+  },
+  "dependencies": {
+    "@theia/core": "latest",
+    "@theia/filesystem": "latest",
+    "@theia/workspace": "latest",
+    "@emastudio/core": "^0.1.0",
+    "@emastudio/paths": "^0.1.0",
+    "@emastudio/scripts": "^0.1.0"
+  },
+  "devDependencies": {},
+  "theiaExtensions": [
+    {
+      "frontend": "lib/browser/visualization-frontend-module",
+      "backend": "lib/node/visualization-backend-module"
+    }
+  ]
+}

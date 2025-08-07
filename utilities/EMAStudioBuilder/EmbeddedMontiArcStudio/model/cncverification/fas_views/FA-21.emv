@@ -1,0 +1,34 @@
+/* (c) https://github.com/MontiCore/monticore */
+package fas_views;
+
+view FA-21 {
+  component FAS {
+    ports
+	  in ? CruiseControl_b,
+	  in ? V_Vehicle_kmh,
+	  out ? CC_active_b;
+	  
+	  component Tempomat {
+	    ports
+		  in ? CruiseControl_b,
+	      in ? V_Vehicle_kmh,
+	      out ? CC_active_b,
+	      out ? V_CC_delta_kmh;
+	  
+	  }
+	  instance Tempomat tempo;
+	  
+	  component VelocityControl {
+	    port
+		  in ? V_CC_delta_kmh;
+	  }
+	  instance VelocityControl veloCont;
+	  
+	  effect tempo.V_Vehicle_kmh -> tempo.V_CC_delta_kmh;
+	  
+	  connect tempo.V_CC_delta_kmh -> veloCont.V_CC_delta_kmh;
+	  connect CruiseControl_b -> tempo.CruiseControl_b;
+	  connect tempo.CC_active_b -> CC_active_b;
+	  connect V_Vehicle_kmh -> tempo.V_Vehicle_kmh;
+  }
+}

@@ -1,0 +1,23 @@
+stages:
+  - linux
+
+masterLinux:
+  stage: linux
+  image: maven:latest
+  script:
+    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
+  only:
+    - master
+  except:
+    changes:
+    - .gitlab-ci.yml
+    - .gitignore
+    - README.md
+
+branchLinux:
+  stage: linux
+  image: maven:latest
+  script:
+    - mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B install --settings settings.xml -U
+  except:
+    - master

@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package a;
+
+component StructUse_TestWrapper{
+    port
+        in Q in1X,
+        in Q in1Y,
+        out Q out1;
+
+    component XYMapper {
+        ports
+            in Q x,
+            in Q y,
+            out XY out1;
+        implementation Math {
+            out1.x = x;
+            out1.y = y;
+        }
+    }
+    instance XYMapper xym;
+
+    instance StructUse toTest;
+
+    connect in1X -> xym.x;
+    connect in1Y -> xym.y;
+    connect xym.out1 -> toTest.in1;
+    connect toTest.out1 -> out1;
+}

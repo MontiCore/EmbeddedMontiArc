@@ -1,0 +1,27 @@
+(init (sees player1 (hand player1 ass)))
+(init (sees player1 (hand player1 bube)))
+(init (sees player1 (hand player1 neun)))
+
+(init (sees player2 (hand player2 zehn)))
+(init (sees player2 (hand player2 dame)))
+(init (sees player2 (hand player2 acht)))
+
+(init (gespielt none))
+
+
+(<= (legal ?player (play ?card))
+    (true (sees ?player (hand ?player ?card)))
+)
+
+(<= (next (gespielt ?x))
+    (true (gespielt ?x))
+)
+(<= (next (gespielt ?card))
+    (does ?player (play ?card))
+)
+(<= (next (sees ?player (hand ?player ?card)))
+    (does ?playerX (play ?cardX))
+    (true (sees ?player (hand ?player ?card)))
+    (distinct ?card ?cardX)
+)
+

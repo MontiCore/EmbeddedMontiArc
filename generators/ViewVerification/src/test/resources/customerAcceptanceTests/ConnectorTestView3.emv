@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package customerAcceptanceTests;
+
+view ConnectorTestView3 {
+component ConnectorTestModel {
+    component FirstComponent { }
+    instance FirstComponent fc;
+    
+    component SecondComponent { }
+    instance SecondComponent sc;
+    
+    connect fc -> sc;
+}
+}

@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package example;
+
+view ExampleTextualAnonymousPorts {
+    component AComp {	
+	    component BComp {
+		    ports
+			    out Boolean $port1,
+				out Boolean $port2;
+		}
+		instance BComp bcomp;
+		
+		component DComp {
+		    ports
+			    in Boolean $port1;
+		}
+		instance DComp dcomp;
+		
+		component EComp {
+		    ports
+			    in Boolean $port1;
+		}
+		instance EComp ecomp;
+		
+		connect bcomp.$port1 -> dcomp.$port1;
+		connect bcomp.$port2 -> ecomp.$port1;
+	}
+}

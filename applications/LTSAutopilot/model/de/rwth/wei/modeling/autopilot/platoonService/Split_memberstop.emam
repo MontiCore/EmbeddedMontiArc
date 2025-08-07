@@ -1,0 +1,40 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+
+dynamic component Split_memberstop{
+  ports
+  dynamic in  Trajectorymessage        traj_msg[0:32],
+
+  in  Z^{1,100}       platoonlist,
+  in  Z               platoon_member_num,
+
+  out  Z                if_split,
+  // out  Q^{1,32}          new_platoonlist,
+  // out  Z                 new_platoon_member_num,
+  out Trajectorymessage  tmsg;
+
+  @ traj_msg::connect{}
+
+  implementation Math{
+    if_split = 0;
+    Z firstbreak = 0;
+    if platoon_member_num >= 0
+       for i = 1 : platoon_member_num
+           for j = 1:32
+               if is_connected(traj_msg,j)
+                  tmsg = traj_msg(j);
+                  if tmsg.vehicleid == platoonlist(1,i) && tmsg.trajectory_length <= 3 && firstbreak == 0
+                     if_split = 1;
+                     firstbreak = 1;
+                    //  for k = 1:platoon_member_num
+                    //     new_platoonlist(1,k) = 0.0;
+                    //  end
+                    //  new_platoon_member_num = 0;
+                  end
+               end
+           end
+       end
+    end
+  }
+}

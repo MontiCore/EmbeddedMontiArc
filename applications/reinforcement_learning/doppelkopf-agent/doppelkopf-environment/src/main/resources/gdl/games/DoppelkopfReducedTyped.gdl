@@ -1,0 +1,2783 @@
+// -----------------------
+// -------- ROLES --------
+// -----------------------
+
+(role random)
+(role player1)
+(role player2)
+(role player3)
+(role player4)
+
+// -----------------------
+// -------- TYPES --------
+// -----------------------
+
+(type player player1)
+(type player player2)
+(type player player3)
+(type player player4)
+
+(type fkarte kreuz_ass_1)
+(type fkarte kreuz_zehn_1)
+(type fkarte kreuz_koenig_1)
+(type fkarte kreuz_dame_1)
+(type fkarte kreuz_bube_1)
+(type fkarte kreuz_neun_1)
+(type fkarte pik_ass_1)
+(type fkarte pik_zehn_1)
+(type fkarte pik_koenig_1)
+(type fkarte pik_dame_1)
+(type fkarte pik_bube_1)
+(type fkarte pik_neun_1)
+(type fkarte herz_ass_1)
+(type fkarte herz_zehn_1)
+(type fkarte herz_koenig_1)
+(type fkarte herz_dame_1)
+(type fkarte herz_bube_1)
+(type fkarte herz_neun_1)
+(type fkarte karo_ass_1)
+(type fkarte karo_zehn_1)
+(type fkarte karo_koenig_1)
+(type fkarte karo_dame_1)
+(type fkarte karo_bube_1)
+(type fkarte karo_neun_1)
+
+(type fkarte kreuz_ass_2)
+(type fkarte kreuz_zehn_2)
+(type fkarte kreuz_koenig_2)
+(type fkarte kreuz_dame_2)
+(type fkarte kreuz_bube_2)
+(type fkarte kreuz_neun_2)
+(type fkarte pik_ass_2)
+(type fkarte pik_zehn_2)
+(type fkarte pik_koenig_2)
+(type fkarte pik_dame_2)
+(type fkarte pik_bube_2)
+(type fkarte pik_neun_2)
+(type fkarte herz_ass_2)
+(type fkarte herz_zehn_2)
+(type fkarte herz_koenig_2)
+(type fkarte herz_dame_2)
+(type fkarte herz_bube_2)
+(type fkarte herz_neun_2)
+(type fkarte karo_ass_2)
+(type fkarte karo_zehn_2)
+(type fkarte karo_koenig_2)
+(type fkarte karo_dame_2)
+(type fkarte karo_bube_2)
+(type fkarte karo_neun_2)
+
+(type vorbehalt solo_damen)
+(type vorbehalt solo_buben)
+(type vorbehalt solo_trumpf_kreuz)
+(type vorbehalt solo_trumpf_pik)
+(type vorbehalt solo_trumpf_herz)
+(type vorbehalt solo_trumpf_karo)
+(type vorbehalt solo_trumpf_ass)
+(type vorbehalt hochzeit)
+
+(typecombine anabsage team absage)
+
+(type team re)
+(type team kontra)
+
+(type absage 90)
+(type absage 60)
+(type absage 30)
+(type absage schwarz)
+
+
+(<= (typemap punkte far_behind ?x)
+    (less ?x -50)
+)
+(<= (typemap punkte behind ?x)
+    (greater ?x -51)
+    (less ?x -20)
+)
+(<= (typemap punkte eq ?x)
+    (greater ?x -21)
+    (less ?x 21)
+)
+(<= (typemap punkte ahead ?x)
+    (greater ?x 20)
+    (less ?x 51)
+)
+(<= (typemap punkte far_ahead ?x)
+    (greater ?x 50)
+)
+
+
+
+// -----------------------
+// -------- INIT ---------
+// -----------------------
+
+// punktetabelle
+(init (punkte player1 punkte:0))
+(init (punkte player2 punkte:0))
+(init (punkte player3 punkte:0))
+(init (punkte player4 punkte:0))
+
+// aktuelles Spiel
+(init (spiel 1))
+
+// Spielablauf
+(init (ablauf geben))
+(init (zug player1))
+(init (start_player player1))
+
+// Sonderpunkt (Fuchs, Doppelkopf, Karlchen)
+(init (sees none (sonderpunkte re 0)))
+(init (sees none (sonderpunkte kontra 0)))
+
+
+// -----------------------
+// -------- NEXT ---------
+// -----------------------
+
+// Startspieler
+(<= (next (start_player player:?player))
+    (true (start_player ?player))
+    (not (true (ablauf auswertung)))
+)
+(<= (next (start_player player:?player))
+    (true (ablauf auswertung))
+    (next_start_player ?player)
+)
+(<= (next (start_player player:?player))
+    (true (ablauf auswertung))
+    (next_start_player ?player)
+)
+(<= (next (zug player:?player))
+    (true (ablauf auswertung))
+    (next_start_player ?player)
+)
+
+(<= (next_start_player ?player)
+    (true (spielart ?normal))
+    (true (start_player ?current_player))
+    (next_player ?current_player ?player)
+)
+(<= (next_start_player ?player)
+    (not (true (spielart ?normal)))
+    (true (start_player ?player))
+)
+
+// Nur Pflichtsolo
+// (<= (next (zug ?player))
+//     (true (ablauf vorbehalt))
+//     (alle_gesund)
+//     (true (start_player ?player))
+// )
+// (<= (next (zug ?player))
+//     (true (ablauf vorbehalt))
+//     (not (alle_gesund))
+//     (solo_vor_hochzeit_short ?art ?player)
+// )
+
+// Sonst
+(<= (next (zug player:?player))
+    (true (ablauf vorbehalt))
+    (does ?current_player (vorbehalt ?x))
+    (next_player ?current_player ?player)
+)
+
+// Spiele
+// ------
+
+(<= (next (spiel [1,25]:?x))
+    (true (spiel ?x))
+
+    (not (true (ablauf auswertung)))
+)
+(<= (next (spiel [1,25]:?y))
+    (true (ablauf auswertung))
+
+    (true (spiel ?x))
+    (succ ?x ?y)
+)
+
+// -- Punkte --
+// ------------
+
+(<= (next (punkte player:?player punkte:?p))
+    (true (punkte ?player ?p))
+    (not (true (ablauf auswertung)))
+)
+
+// -- Geben --
+// -----------
+
+// geben solange nicht 12 Karten pro Spieler
+(<= (next (ablauf geben))
+    (true (ablauf geben))
+    (not (all_players_12_cards))
+)
+
+// sonst in vorbehalt wechseln
+(<= (next (ablauf vorbehalt))
+    (does random (deal_finish))
+)
+
+// Karte auf Hand behalten
+(<= (next (sees ?player (hand player:?player fkarte:?karte)))
+    (true (ablauf geben))
+    (true (sees ?player (hand ?player ?karte)))
+)
+// Neue Karte auf Hand nehmen
+(<= (next (sees ?player (hand player:?player fkarte:?karte)))
+    (true (ablauf geben))
+    (does random (deal ?player ?karte))
+)
+
+// Zug bleibt erhalten
+(<= (next (zug player:?player))
+    (true (ablauf geben))
+    (true (zug ?player))
+)
+
+// Sonderpunkte bleiben erhalten
+(<= (next (sees none (sonderpunkte team:?team punkte:?pt)))
+    (true (ablauf geben))
+    (true (sees none (sonderpunkte ?team ?pt)))
+)
+
+// Anzahl Karten pro Spieler
+(<= (next (anzahl_karten player:?player [1,12]:?n))
+    (type player ?player)
+    (not (does ?player (spielen ?karte)))
+    (player_card_count ?n ?player)
+)
+(<= (next (anzahl_karten player:?player [1,12]:?n))
+    (type player ?player)
+    (does ?player (spielen ?karte))
+    (player_card_count ?nn ?player)
+    (succ ?n ?nn)
+)
+
+// -- Vorbehalte --
+// ----------------
+
+// Karten behalten
+(<= (next (sees ?player (hand player:?player fkarte:?karte)))
+    (true (ablauf vorbehalt))
+    (true (sees ?player (hand ?player ?karte)))
+)
+
+// immer Zug weitergeben
+(<= (next (zug player:?next_player))
+    (true (ablauf vorbehalt))
+    (does ?current_player (vorbehalt ?vorbehalt))
+    (next_player ?current_player ?next_player)
+
+    (count ?n (true (vorbehalt ?x ?y)))
+    (less ?n 3)
+)
+(<= (next (zug player:?next_player))
+    (true (ablauf vorbehalt))
+    (does ?current_player (vorbehalt ?vorbehalt))
+    (next_player ?current_player ?next_player)
+
+    (not (true (vorbehalt ?x ?y)))
+)
+
+// Sonderpunkte bleiben erhalten
+(<= (next (sees none (sonderpunkte ?team ?pt)))
+    (true (ablauf vorbehalt))
+    (true (sees none (sonderpunkte ?team ?pt)))
+)
+
+// Vorbehalt nicht letzter Spieler speichern
+(<= (next (vorbehalt player:?player vorbehalt:?vorbehalt))
+    (true (ablauf vorbehalt))
+    (does ?player (vorbehalt ?vorbehalt))
+    (count ?n (true (vorbehalt ?p ?v)))
+    (less ?n 3)
+)
+(<= (next (vorbehalt player:?player vorbehalt:?vorbehalt))
+    (true (ablauf vorbehalt))
+    (does ?player (vorbehalt ?vorbehalt))
+    (not (true (vorbehalt ?p ?v)))
+)
+(<= (next (vorbehalt player:?player vorbehalt:?vorbehalt))
+    (true (ablauf vorbehalt))
+    (true (vorbehalt ?player ?vorbehalt))
+    (does ?current (vorbehalt ?vb))
+    (count ?n (true (vorbehalt ?p ?v)))
+    (less ?n 3)
+)
+
+// Ablauf bleibt
+(<= (next (ablauf vorbehalt))
+    (does ?any (vorbehalt ?vorbehalt))
+    (count ?n (true (vorbehalt ?x ?y)))
+    (less ?n 3)
+)
+(<= (next (ablauf vorbehalt))
+    (does ?any (vorbehalt ?vorbehalt))
+    (not (true (vorbehalt ?x ?y)))
+)
+// ... außer Vorbehalt letzter Spieler
+(<= (next (ablauf stich 1 1))
+    (does ?any (vorbehalt ?vorbehalt))
+    (count 3 (true (vorbehalt ?x ?y)))
+)
+
+// Spielart festlegen
+
+// alle gesund = Normal (öffentlich)
+(<= (next (spielart normal none))
+    (alle_gesund)
+)
+// alle gesund aber Hochzeit = Stille Hochzeit
+(<= (next (sees ?player_hochzeit (hidden_spielart hochzeit player:?player_hochzeit)))
+    (alle_gesund)
+
+    (has_hochzeit_hand ?player_hochzeit)
+)
+// sonst Normal
+(<= (next (sees none (hidden_spielart normal none)))
+    (alle_gesund)
+
+    (type player ?player)
+    (not (has_hochzeit_hand ?player))
+)
+
+// Vorbehalte vorhanden = Solo vor Hochzeit
+(<= (next (spielart vorbehalt:?art player:?player))
+    (not (alle_gesund))
+
+    (solo_vor_hochzeit_short ?art ?player)
+)
+(<= (next (sees none (hidden_spielart ?art ?player)))
+    (not (alle_gesund))
+
+    (solo_vor_hochzeit_short ?art ?player)
+)
+
+// Teams festlegen
+// ----- ---------
+
+(<= (last_vorbehalt)
+    (count 3 (true (vorbehalt ?x ?y)))
+    (does ?any (vorbehalt ?v))
+)
+
+// Normal
+// Jeder Spieler sieht nur seine eigene Rolle (zu Spielbeginn)
+(<= (next (sees ?player (team player:?player re)))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (type player ?any_player)
+    (not (has_hochzeit_hand ?any_player))
+
+    (type player ?player)
+    (true (sees ?player (hand ?player ?kreuz_dame)))
+    (karte kreuz_dame ?kreuz_dame)
+)
+(<= (next (sees ?player (team player:?player kontra)))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (type player ?any_player)
+    (not (has_hochzeit_hand ?any_player))
+
+    (type player ?player)
+    (not (true (sees ?player (hand ?player kreuz_dame_1))))
+    (not (true (sees ?player (hand ?player kreuz_dame_2))))
+)
+// Klärung = Erster Stich
+(<= (next (klaerung 1))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (type player ?any_player)
+    (not (has_hochzeit_hand ?any_player))
+)
+
+// Solo (keine Hochzeit)
+// Alle Spieler kennen bereits alle Teams
+(<= (next (sees ?any_player (team player:?player re)))
+    (type player ?any_player)
+    (not (alle_gesund))
+
+    (solo_vor_hochzeit_short ?art ?player)
+    (distinct ?art hochzeit)
+)
+(<= (next (sees ?any_player (team player:?k_player kontra)))
+    (type player ?any_player)
+    (not (alle_gesund))
+
+    (solo_vor_hochzeit_short ?art ?player)
+
+    (type player ?k_player)
+
+    (distinct ?art hochzeit)
+    (distinct ?k_player ?player)
+)
+// Klärung = Erster Stich
+(<= (next (klaerung 1))
+    (not (alle_gesund))
+
+    (solo_vor_hochzeit_short ?art ?player)
+    (distinct ?art hochzeit)
+)
+
+// Stille Hochzeit
+// Der Spieler mit der Hochzeit kennt von Anfang an alle Teams, die Anderen jeweils nur ihre eigene Rolle
+(<= (next (sees ?player_hochzeit (team player:?player_hochzeit re)))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (has_hochzeit_hand ?player_hochzeit)
+)
+(<= (next (sees ?player_hochzeit (team player:?player_kontra kontra)))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (has_hochzeit_hand ?player_hochzeit)
+    (type player ?player_kontra)
+    (distinct ?player_hochzeit ?player_kontra)
+)
+(<= (next (sees ?player_kontra (team player:?player_kontra kontra)))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (has_hochzeit_hand ?player_hochzeit)
+    (type player ?player_kontra)
+    (distinct ?player_hochzeit ?player_kontra)
+)
+// Klärung = Erster Stich
+(<= (next (klaerung 1))
+    (last_vorbehalt)
+
+    (alle_gesund)
+    (has_hochzeit_hand ?player_hochzeit)
+)
+
+// Echte Hochzeit
+// Teams werden erst im Klärungsstich zugewiesen
+(<= (next (sees ?all_players (team player:?winner re)))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich ?a 4))
+    // (leq ?a 3)
+    (less ?a 4)
+    
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+
+    (distinct ?h_player ?winner)
+)
+(<= (next (sees ?all_players (team player:?h_player re)))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich ?a 4))
+    // (leq ?a 3)
+    (less ?a 4)
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+
+    (distinct ?h_player ?winner)
+)
+(<= (next (sees ?all_players (team player:?k_player kontra)))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich ?a 4))
+    // (leq ?a 3)
+    (less ?a 4)
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+
+    (type player ?k_player)
+    (distinct ?h_player ?winner)
+
+    (distinct ?k_player ?h_player)
+    (distinct ?k_player ?winner)
+)
+// Klärung = Xter Stich
+(<= (next (klaerung [0,3]:?a))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich ?a 4))
+    // (leq ?a 3)
+    (less ?a 4)
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner hochzeit ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+
+    (distinct ?h_player ?winner)
+)
+// Wenn 3. Klärungsstich Gewinner = Hochzeitsspieler, dann Solo
+(<= (next (sees ?all_players (team player:?h_player re)))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich 3 4))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner hochzeit ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?h_player)
+)
+(<= (next (sees ?all_players (team player:?k_player kontra)))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich 3 4))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner hochzeit ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?h_player)
+    (type player ?k_player)
+    (distinct ?k_player ?h_player)
+)
+// Klärung = 3ter Stich
+(<= (next (klaerung 3))
+    (true (spielart hochzeit ?h_player))
+    (not (true (sees ?x (team ?y ?z))))
+    (type player ?all_players)
+
+    (true (ablauf stich 3 4))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner hochzeit ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?h_player)
+)
+
+// -- Spielen --
+// -------------
+
+// immer Spielart behalten
+(<= (next (spielart vorbehalt:?spielart player:?player))
+    (true (ablauf stich ?x ?y))
+    (true (spielart ?spielart ?player))
+    (not (true (ablauf auswertung)))
+)
+(<= (next (sees ?vis (hidden_spielart vorbehalt:?spielart player:?player)))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?vis (hidden_spielart ?spielart ?player)))
+)
+
+// Zug weitergeben, wenn Karte gespielt
+(<= (next (zug player:?next_player))
+    (does ?current_player (spielen ?any_karte))
+
+    (true (ablauf stich ?x ?y))
+    (distinct ?y 4)
+    (true (zug ?current_player))
+    (next_player ?current_player ?next_player)
+)
+// sonst Zug behalten (Ansage / Absage)
+(<= (next (zug player:?current_player))
+    (does ?any_player (ansagen ?any))
+
+    (true (ablauf stich ?x ?y))
+    (true (zug ?current_player))
+)
+(<= (next (zug player:?current_player))
+    (does ?any_player (absagen ?any))
+
+    (true (ablauf stich ?x ?y))
+    (true (zug ?current_player))
+)
+// Am ende des Zuges bekommt der Stichgewinner den Zug
+(<= (next (zug player:?player))
+    (does ?current_player (spielen ?any_karte))
+    (true (ablauf stich ?x 4))
+    (stich_winner_short ?player)
+)
+
+// Sonderpunkte bleiben erhalten
+(<= (next (sees none (sonderpunkte ?team ?pt)))
+    (true (ablauf stich ?x ?y))
+    (true (sees none (sonderpunkte ?team ?pt)))
+    (distinct ?y 4)
+)
+(<= (next (sees none (sonderpunkte ?team ?pt)))
+    (true (ablauf stich ?x 4))
+    (true (sees none (sonderpunkte ?team ?pt)))
+    (does ?player (ansagen ?any))
+)
+(<= (next (sees none (sonderpunkte ?team ?pt)))
+    (true (ablauf stich ?x 4))
+    (true (sees none (sonderpunkte ?team ?pt)))
+    (does ?player (absagen ?any))
+)
+
+// Hochzeit Klärung noch nicht geschehen = noch keine Teams = Sonderpunkte behalten
+(<= (next (sees none (sonderpunkte ?team ?pt)))
+    (true (ablauf stich ?x 4))
+    (true (spielart hochzeit ?pany))
+    (not (true (klaerung ?kany)))
+    (true (sees none (sonderpunkte ?team ?pt)))
+)
+
+// Sonderpunkte Check am Ende vom Stich
+(<= (next (sees none (sonderpunkte ?team ?next_pt)))
+    (true (ablauf stich ?x 4))
+
+    (stich_winner_short ?player)
+    (true (sees ?player (team ?player ?team)))
+
+    (true (sees none (sonderpunkte ?team ?current_pt)))
+
+    (sonderpunkte_im_stich ?team ?stich_pt)
+
+    (add ?current_pt ?stich_pt ?next_pt)
+)
+// behalten, wenn Stich verloren
+(<= (next (sees none (sonderpunkte ?team ?pt)))
+    (true (ablauf stich ?x 4))
+    (stich_winner_short ?player)
+    (true (sees ?player (team ?player ?gegner_team)))
+    (gegner_team ?team ?gegner_team)
+    (does ?any_player (spielen ?fkarte))
+    (true (sees none (sonderpunkte ?team ?pt)))
+)
+
+(<= (sonderpunkte_im_stich ?team ?pt)
+    (fuchs_gefangen ?team ?fuchs)
+    (doppelkopf_stich ?doppelkopf)
+    (karlchen_stich ?karlchen)
+    
+    (add ?fuchs ?doppelkopf ?l1)
+    (add ?l1 ?karlchen ?pt)
+)
+
+(<= (fuchs_gefangen ?team ?amount)
+    (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (fuchs_punkt ?team player1 ?fkarte1 ?pt1)
+    (fuchs_punkt ?team player2 ?fkarte2 ?pt2)
+    (fuchs_punkt ?team player3 ?fkarte3 ?pt3)
+    (fuchs_punkt ?team player4 ?fkarte4 ?pt4)
+
+    (add ?pt1 ?pt2 ?x1)
+    (add ?x1 ?pt3 ?x2)
+    (add ?x2 ?pt4 ?amount)
+)
+
+(<= (fuchs_punkt ?team ?player ?fkarte 0)
+    (not (fuchs_punkt ?team ?player ?fkarte 1))
+)
+
+(<= (fuchs_punkt ?team ?player ?fkarte 1)
+    (true (sees ?player (team ?player ?player_team)))
+    (gegner_team ?team ?player_team)
+    (karte karo_ass ?fkarte)
+)
+
+
+(<= (doppelkopf_stich 0)
+    (not (doppelkopf_stich 1))
+)
+(<= (doppelkopf_stich 1)
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (karte ?k1 ?fkarte1)
+    (karte ?k2 ?fkarte2)
+    (karte ?k3 ?fkarte3)
+    (karte ?k4 ?fkarte4)
+
+    (kartenwert ?k1 ?wert1)
+    (kartenwert ?k2 ?wert2)
+    (kartenwert ?k3 ?wert3)
+    (kartenwert ?k4 ?wert4)
+
+    (add ?wert1 ?wert2 ?l1)
+    (add ?l1 ?wert3 ?l2)
+    (add ?l2 ?wert4 ?summe)
+
+    (greater ?summe 39)
+)
+
+(<= (karlchen_stich 0)
+    (not (karlchen_stich 1))
+)
+(<= (karlchen_stich 1)
+    (true (ablauf stich 12 4))
+    (stich_winner_short player1)
+    (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (karte kreuz_bube ?fkarte1)
+)
+(<= (karlchen_stich 1)
+    (true (ablauf stich 12 4))
+    (stich_winner_short player2)
+    (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (karte kreuz_bube ?fkarte2)
+)
+(<= (karlchen_stich 1)
+    (true (ablauf stich 12 4))
+    (stich_winner_short player3)
+    (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (karte kreuz_bube ?fkarte3)
+)
+(<= (karlchen_stich 1)
+    (true (ablauf stich 12 4))
+    (stich_winner_short player4)
+    (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (karte kreuz_bube ?fkarte4)
+)
+
+
+// immer Teams behalten
+(<= (next (sees ?x (team player:?y team:?z)))
+    (not (true (ablauf auswertung)))
+
+    (true (ablauf stich ?a ?b))
+    (true (sees ?x (team ?y ?z)))
+)
+
+// immer Klärung behalten
+(<= (next (klaerung [0,3]:?x))
+    (true (ablauf stich ?a ?b))
+    (true (klaerung ?x))
+    (not (true (ablauf auswertung)))
+)
+
+// Ablauf Stich erhöhen wenn letzte Karte des Stichs (Wenn Karte gespielt)
+(<= (next (ablauf stich [1,12]:?xx 1))
+    (does ?any_player (spielen ?any_karte))
+    (true (ablauf stich ?x 4))
+    (distinct ?x 12)
+    (succ ?x ?xx)
+)
+// Sonst Karte Stich erhöhen (Wenn Karte gespielt)
+(<= (next (ablauf stich [1,12]:?x [1,4]:?yy))
+    (does ?any_player (spielen ?any_karte))
+    (true (ablauf stich ?x ?y))
+    (distinct ?y 4)
+    (succ ?y ?yy)
+)
+// Keine Karte gespielt => Ablauf Stich bleibt
+(<= (next (ablauf stich [1,12]:?x [1,4]:?y))
+    (not (does ?any_player (spielen ?any_karte)))
+    (true (ablauf stich ?x ?y))
+)
+
+// Nicht gespielte Karten behalten
+(<= (next (sees ?player (hand player:?player fkarte:?karte)))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?player (hand ?player ?karte)))
+    (not (does ?player (spielen ?karte)))
+)
+
+// Gespielte Karte auf den Stich
+(<= (next (stich [1,12]:?x [1,4]:?y fkarte:?karte))
+    (true (ablauf stich ?x ?y))
+    (does ?player (spielen ?karte))
+    (distinct ?y 4)
+)
+// Der Rest des Stichs bleibt
+(<= (next (stich [1,12]:?x [1,4]:?y fkarte:?karte))
+    (true (stich ?x ?y ?karte))
+    (true (ablauf stich ?x ?ab_y))
+    (does ?player (spielen ?any_karte))
+    (distinct ?ab_y 4)
+)
+
+// Ansage / Absage: Stich übernehmen
+(<= (next (stich [1,12]:?x [1,4]:?y fkarte:?karte))
+    (true (stich ?x ?y ?karte))
+    (does ?player (ansagen ?any))
+)
+(<= (next (stich [1,12]:?x [1,4]:?y fkarte:?karte))
+    (true (stich ?x ?y ?karte))
+    (does ?player (absagen ?any))
+)
+
+// Letzte Karte Stich
+// Stich nehmen
+(<= (next (sees ?winner (stich [1,12]:?x [1,4]:?y fkarte:?fkarte)))
+    (true (ablauf stich ?x 4))
+    (not (true (ablauf auswertung)))
+
+    (does ?player (spielen ?any_karte))
+    (true (stich ?x ?y ?fkarte))
+
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+)
+(<= (next (sees ?winner (stich [1,12]:?x 4 fkarte:?fkarte)))
+    (true (ablauf stich ?x 4))
+    (not (true (ablauf auswertung)))
+
+    (does ?player (spielen ?fkarte))
+
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+)
+
+// Andere Spieler sehen nur, dass der Stich gewonnen wurde
+(<= (next (sees ?not_winner (stich [1,12]:?x player:?winner)))
+    (true (ablauf stich ?x 4))
+    (not (true (ablauf auswertung)))
+
+    (does ?player (spielen ?fkarte))
+
+    (type player ?not_winner)
+    
+    (true (spielart ?spieltyp ?any))
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+    (distinct ?not_winner ?winner)
+)
+
+// Stiche behalten
+(<= (next (sees ?player (stich [1,12]:?x [1,4]:?y fkarte:?fkarte)))
+    (true (sees ?player (stich ?x ?y ?fkarte)))
+    (not (true (ablauf auswertung)))
+)
+(<= (next (sees ?player (stich [1,2]:?x player:?winner)))
+    (true (sees ?player (stich ?x ?winner)))
+    (not (true (ablauf auswertung)))
+)
+
+// Gespielte Kreuz Dame gibt Informationen über Teams (Normalspiel & Hochzeit)
+(<= (next (sees ?all_players (team player:?player re)))
+    (not (true (ablauf 12 4)))
+
+    (type player ?all_players)
+    (true (spielart normal ?any))
+    (does ?player (spielen ?fkarte))
+    (karte kreuz_dame ?fkarte)
+)
+// 2te Kreuzdame = alle Teams werden aufgedeckt
+(<= (next (sees ?all_players (team player:?y team:?team)))
+    (not (true (ablauf 12 4)))
+
+    (type player ?all_players)
+    (true (spielart normal ?any))
+    (does ?player (spielen ?fkarte))
+    (karte kreuz_dame ?fkarte)
+
+    (true (sees ?any_player (stich ?any_stich ?any_id ?fkarte2)))
+    (karte kreuz_dame ?fkarte2)
+    (distinct ?fkarte ?fkarte2)
+
+    (true (sees ?x (team ?y ?team)))
+)
+
+// Allerletzte Karte
+(<= (next (ablauf auswertung))
+    (true (ablauf stich 12 4))
+)
+
+
+// Ansagen
+// -------
+
+// Ansagen mitführen
+(<= (next (ansage team:?x anabsage:?y [1,12]:?stich))
+    (not (true (ablauf auswertung)))
+
+    (true (ansage ?x ?y ?stich))
+    (not (does ?any_player (absagen ?any)))
+)
+(<= (next (ansage team:?x anabsage:?y [1,12]:?stich))
+    (not (true (ablauf auswertung)))
+
+    (true (ansage ?x ?y ?stich))
+    (does ?any_player (absagen ?any))
+    (not (true (sees ?any_player (team ?any_player ?x))))
+)
+
+// Ansagen aktualisieren
+(<= (next (ansage team:?y anabsage:?y [1,12]:?stich))
+    (does ?player (ansagen ?y))
+    (true (ablauf stich ?stich ?any))
+)
+(<= (next (ansage team:?x anabsage:?y [1,12]:?stich))
+    (does ?player (absagen ?y))
+    (true (sees ?player (team ?player ?x)))
+    (true (ablauf stich ?stich ?any))
+)
+
+// Alle Spieler kennen nun die Zugehörigkeit des Spielers
+(<= (next (sees ?any_player (team player:?ansage_player team:?x)))
+    (does ?ansage_player (ansagen ?x))
+    (type player ?any_player)
+)
+(<= (next (sees ?any_player (team player:?ansage_player team:?x)))
+    (does ?ansage_player (absagen ?y))
+    (true (sees ?ansage_player (team ?ansage_player ?x)))
+    (type player ?any_player)
+)
+
+// Wenn beide Re bekannt, dann sind alle Teams bekannt
+(<= (next (sees ?all_players (team player:?any_player team:?team)))
+    (type player ?all_players)
+    (true (sees ?x (team ?any_player ?team)))
+
+    (does ?ansage_player (ansagen re))
+    (true (sees ?k_player (team ?re_player re)))
+    (distinct ?ansage_player ?k_player)
+    (distinct ?ansage_player ?re_player)
+    (distinct ?k_player ?re_player)
+)
+
+(<= (next (sees ?all_players (team player:?any_player team:?team)))
+    (type player ?all_players)
+    (true (sees ?x (team ?any_player ?team)))
+
+    (does ?ansage_player (absagen ?any))
+    (true (sees ?ansage_player (team ?ansage_player re)))
+    (true (sees ?k_player (team ?re_player re)))
+    (distinct ?ansage_player ?k_player)
+    (distinct ?ansage_player ?re_player)
+    (distinct ?k_player ?re_player)
+)
+
+// Auswertung
+// ----------
+
+// Punkte berechnen
+
+// Spieler hat gewonnen => Spielwert addieren
+(<= (next (punkte player:?player punkte:?summe))
+    (does ?any (auswerten))
+
+    (true (punkte ?player ?x))
+
+    (true (sees ?player (team ?player ?team)))
+    (not (unentschieden))
+    (gewinner_team ?team)
+
+    (spielwert ?y)
+
+    (solospiel_mult ?player ?m)
+    (mult ?m ?y ?plus)
+
+    (add ?x ?plus ?summe)
+)
+
+// Spieler hat verloren => Spielwert subtrahieren
+(<= (next (punkte player:?player punkte:?summe))
+    (does ?any (auswerten))
+
+    (true (punkte ?player ?x))
+
+    (true (sees ?player (team ?player ?team)))
+    (gegner_team ?team ?gegner_team)
+    (not (unentschieden))
+    (gewinner_team ?gegner_team)
+
+    (spielwert ?y)
+
+    (solospiel_mult ?player ?m)
+    (mult ?m ?y ?plus)
+
+    (sub ?x ?plus ?summe)
+)
+
+// Unentschieden und Spielerteam = re: Punkte addieren
+(<= (next (punkte player:?player punkte:?summe))
+    (does ?any (auswerten))
+
+    (true (punkte ?player ?x))
+
+    (true (sees ?player (team ?player re)))
+    (unentschieden)
+
+    (spielwert ?y)
+
+    (solospiel_mult ?player ?m)
+    (mult ?m ?y ?plus)
+
+    (add ?x ?plus ?summe)
+)
+
+// Unentschieden und Spielerteam = kontra: Punkte subtrahieren
+(<= (next (punkte player:?player punkte:?summe))
+    (does ?any (auswerten))
+
+    (true (punkte ?player ?x))
+
+    (true (sees ?player (team ?player kontra)))
+    (unentschieden)
+
+    (spielwert ?y)
+
+    (solospiel_mult ?player ?m)
+    (mult ?m ?y ?plus)
+
+    (sub ?x ?plus ?summe)
+)
+
+// Kein Solospiel
+(<= (solospiel_mult ?player 1)
+    (type player ?player)
+    (count 2 (true (sees ?p (team ?p re))))
+)
+
+// Solospiel und Re
+(<= (solospiel_mult ?player 3)
+    (type player ?player)
+    (count 1 (true (sees ?p (team ?p re))))
+    (true (sees ?player (team ?player re)))
+)
+// Solospiel und Kontra
+(<= (solospiel_mult ?player 1)
+    (type player ?player)
+    (count 1 (true (sees ?p (team ?p re))))
+    (true (sees ?player (team ?player kontra)))
+)
+
+// Danach geben
+(<= (next (ablauf geben))
+    (does ?any (auswerten))
+)
+
+// -----------------------
+// -------- LEGAL --------
+// -----------------------
+
+// Geben
+// -----
+
+(<= (legal random (deal ?player ?karte))
+    (true (ablauf geben))
+    (type player ?player)
+    (karte ?any ?karte)
+    (not (any_player_has_card ?karte))
+    (not (player_card_count 12 ?player))
+)
+(<= (legal random (deal_finish))
+    (true (ablauf geben))
+    (all_players_12_cards)
+)
+
+// Vorbehalt
+// ---------
+
+(<= (legal ?player (vorbehalt gesund))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt solo_damen))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_buben))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt solo_trumpf_kreuz))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_trumpf_pik))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_trumpf_herz))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+(<= (legal ?player (vorbehalt solo_trumpf_karo))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt solo_trumpf_ass))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+)
+
+(<= (legal ?player (vorbehalt hochzeit))
+    (true (zug ?player))
+    (true (ablauf vorbehalt))
+
+    (has_hochzeit_hand ?player)
+)
+
+// Ansagen
+// -------
+
+// Alternative: do nothing
+(<= (legal ?player (noop))
+    (legal ?player (ansagen ?ansage))
+    (not (true (zug ?player)))
+)
+(<= (legal ?player (noop))
+    (legal ?player (absagen ?absage))
+    (not (true (zug ?player)))
+)
+
+// Kontra/Re
+(<= (legal ?player (ansagen team:?ansage))
+    (true (ablauf stich ?x ?y))
+
+    (true (sees ?player (team ?player ?ansage)))
+
+    (not (true (ansage ?ansage ?any ?stich)))
+
+    (true (klaerung ?k))
+    (count ?n (true (sees ?player (hand ?player ?karte))))
+    (sub 12 ?k ?n_max)
+    // geq
+    (succ ?n ?nn)
+    (greater ?nn ?n_max)
+)
+
+// Absagen
+// -------
+
+(<= (legal ?player (absagen absage:?absage))
+    (true (ablauf stich ?x ?y))
+    // Erst, nachdem bereits eine Ansage des Teams getätigt wurde
+    (true (sees ?player (team ?player ?team)))
+    (true (ansage ?team ?an_absage ?stich))
+    // Der Wert kann nur erhöht werden
+    (absage_more_value ?absage ?an_absage)
+    // Nur, wenn der Zeitpunkt rechtzeitig ist
+    (absage_rechtzeitig ?absage ?player ?an_absage)
+)
+
+// Wenn an_absage der direkte Vorgänger ist
+(<= (absage_rechtzeitig ?absage ?player ?an_absage)
+    (absage_succ ?an_absage ?absage)
+
+    (true (klaerung ?k))
+    (count ?n (true (sees ?player (hand ?player ?karte))))
+
+    (absagezeitpunkt ?absage ?t)
+    (sub ?t ?k ?n_max)
+    // geq
+    (succ ?n ?nn)
+    (greater ?nn ?n_max)
+)
+
+// Wenn an_absage nicht der direkte Vorgänger ist
+(<= (absage_rechtzeitig ?absage ?player ?an_absage)
+    (not (absage_succ ?an_absage ?absage))
+    (absage_succ ?prev ?absage)
+
+    // Legal, wenn der Vorgänger auch legal wäre
+    (absage_rechtzeitig ?prev ?player ?an_absage)
+)
+
+// Erwiderung
+// ----------
+
+// TODO (6.4.4)
+
+// Spielen
+// -------
+
+// karte spielen (erste karte stich muss nicht bedienen)
+(<= (legal ?player (spielen fkarte:?karte))
+    (true (zug ?player))
+    (true (ablauf stich ?x 1))
+    (true (sees ?player (hand ?player ?karte)))
+)
+// karte spielen (bedienpflicht)
+// jede karte wenn nicht bedienen muss
+(<= (legal ?player (spielen fkarte:?fkarte))
+    (true (zug ?player))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?player (hand ?player ?fkarte)))
+    // Stichfarbe bestimmen
+    (true (stich ?x 1 ?fkarte1))
+    (karte ?karte1 ?fkarte1)
+    (true (spielart ?spieltyp ?any))
+    (farbe ?spieltyp ?stichfarbe ?karte1)
+    // farben unterscheiden sich
+    (karte ?karte ?fkarte)
+    (farbe ?spieltyp ?farbe ?karte)
+    (distinct ?stichfarbe ?farbe)
+    // Spieler hat die Farbe nicht
+    (not (player_has_farbe ?player ?stichfarbe))
+)
+
+// nur stichfarbe wenn bedienen muss
+(<= (legal ?player (spielen fkarte:?fkarte))
+    (true (zug ?player))
+    (true (ablauf stich ?x ?y))
+    (true (sees ?player (hand ?player ?fkarte)))
+    // Stichfarbe bestimmen
+    (true (stich ?x 1 ?fkarte1))
+    (karte ?karte1 ?fkarte1)
+    (true (spielart ?spieltyp ?any))
+    (farbe ?spieltyp ?stichfarbe ?karte1)
+    // Farbe muss Stichfarbe sein
+    (karte ?karte ?fkarte)
+    (farbe ?spieltyp ?stichfarbe ?karte)
+)
+
+// Auswertung
+// ----------
+
+(<= (legal random (auswerten))
+    (true (ablauf auswertung))
+)
+
+// (<= (legal player1 (auswerten))
+//     (true (ablauf auswertung))
+// )
+
+
+// -----------------------
+// ------ FUNCTIONS ------
+// -----------------------
+
+(<= (any_player_has_card ?card)
+    (true (sees player1 (hand player1 ?card)))
+)
+(<= (any_player_has_card ?card)
+    (true (sees player2 (hand player2 ?card)))
+)
+(<= (any_player_has_card ?card)
+    (true (sees player3 (hand player3 ?card)))
+)
+(<= (any_player_has_card ?card)
+    (true (sees player4 (hand player4 ?card)))
+)
+
+(<= (all_players_12_cards)
+    (player_card_count 12 player1)
+    (player_card_count 12 player2)
+    (player_card_count 12 player3)
+    (player_card_count 12 player4)
+)
+
+(<= (player_card_count ?n ?player)
+    (count ?n (true (sees ?player (hand ?player ?karte))))
+)
+
+// Bestimmt vor dem ersten Stich ob jemand eine Hochzeit auf der Hand hat
+(<= (has_hochzeit_hand ?player)
+    (true (sees ?player (hand ?player kreuz_dame_1)))
+    (true (sees ?player (hand ?player kreuz_dame_2)))
+)
+
+// Bestimmt den höchstwertigsten Vorbehalt ausgehend von Spieler ?player
+(<= (solo_vor_hochzeit_short ?art ?player)
+    (does ?player4 (vorbehalt ?vorbehalt_4))
+    (next_player ?player4 ?player1)
+    (next_player ?player1 ?player2)
+    (next_player ?player2 ?player3)
+    (true (vorbehalt ?player1 ?vorbehalt_1))
+    (true (vorbehalt ?player2 ?vorbehalt_2))
+    (true (vorbehalt ?player3 ?vorbehalt_3))
+    (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?art ?player)
+)
+
+(<= (solo_vor_hochzeit_long gesund gesund gesund gesund ?player1 ?player2 ?player3 ?player4 normal ?player1))
+
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_1 ?player1)
+    (vorbehalt_typ solo ?vorbehalt_1)
+)
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_2 ?player2)
+    (vorbehalt_typ solo ?vorbehalt_2)
+    (not (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_1 ?player1))
+)
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_3 ?player3)
+    (vorbehalt_typ solo ?vorbehalt_3)
+    (not (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_1 ?player1))
+    (not (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_2 ?player2))
+)
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_4 ?player4)
+    (vorbehalt_typ solo ?vorbehalt_4)
+    (not (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_1 ?player1))
+    (not (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_2 ?player2))
+    (not (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 ?vorbehalt_3 ?player3))
+)
+
+(<= (solo_vor_hochzeit_long hochzeit ?vorbehalt_2 ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 hochzeit ?player1)
+    (not (vorbehalt_typ solo ?vorbehalt_2))
+    (not (vorbehalt_typ solo ?vorbehalt_3))
+    (not (vorbehalt_typ solo ?vorbehalt_4))
+)
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 hochzeit ?vorbehalt_3 ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 hochzeit ?player2)
+    (not (vorbehalt_typ solo ?vorbehalt_1))
+    (not (vorbehalt_typ solo ?vorbehalt_3))
+    (not (vorbehalt_typ solo ?vorbehalt_4))
+)
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 hochzeit ?vorbehalt_4 ?player1 ?player2 ?player3 ?player4 hochzeit ?player3)
+    (not (vorbehalt_typ solo ?vorbehalt_1))
+    (not (vorbehalt_typ solo ?vorbehalt_2))
+    (not (vorbehalt_typ solo ?vorbehalt_4))
+)
+(<= (solo_vor_hochzeit_long ?vorbehalt_1 ?vorbehalt_2 ?vorbehalt_3 hochzeit ?player1 ?player2 ?player3 ?player4 hochzeit ?player4)
+    (not (vorbehalt_typ solo ?vorbehalt_1))
+    (not (vorbehalt_typ solo ?vorbehalt_2))
+    (not (vorbehalt_typ solo ?vorbehalt_3))
+)
+
+(<= (stich_winner
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+        ?player
+    )
+    (true (zug ?player4))
+    (next_player ?player4 ?player1)
+    (next_player ?player1 ?player2)
+    (next_player ?player2 ?player3)
+
+    (stich_winner_long
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+            ?player1
+            ?player2
+            ?player3
+            ?player4
+        ?player
+    )    
+)
+
+// Höchste Karte im Stich über Trumpfregeln bestimmen
+// Karte 1 gewinnt:
+(<= (stich_winner_long
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+            ?player1
+            ?player2
+            ?player3
+            ?player4
+        ?player1
+    )
+    (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (farbe ?spieltyp ?farbe ?karte1)
+
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte2)
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte3)
+    (all_trumpf ?spieltyp ?farbe ?karte1 ?karte4)
+)
+// Karte 2 gewinnt:
+(<= (stich_winner_long
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+            ?player1
+            ?player2
+            ?player3
+            ?player4
+        ?player2
+    )
+    (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (farbe ?spieltyp ?farbe ?karte1)
+
+    (all_trumpf ?spieltyp ?farbe ?karte2 ?karte3)
+    (all_trumpf ?spieltyp ?farbe ?karte2 ?karte4)
+    (not (stich_winner_long ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?player1 ?player2 ?player3 ?player4 ?player1))
+)
+// Karte 3 gewinnt:
+(<= (stich_winner_long
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+            ?player1
+            ?player2
+            ?player3
+            ?player4
+        ?player3
+    )
+    (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (farbe ?spieltyp ?farbe ?karte1)
+
+    (all_trumpf ?spieltyp ?farbe ?karte3 ?karte4)
+    (not (stich_winner_long ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?player1 ?player2 ?player3 ?player4 ?player1))
+    (not (stich_winner_long ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?player1 ?player2 ?player3 ?player4 ?player2))
+)
+// Karte 4 gewinnt:
+(<= (stich_winner_long
+        ?spieltyp
+            ?fkarte1
+            ?fkarte2
+            ?fkarte3
+            ?fkarte4
+            ?player1
+            ?player2
+            ?player3
+            ?player4
+        ?player4
+    )
+    (not (stich_winner_long ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?player1 ?player2 ?player3 ?player4 ?player1))
+    (not (stich_winner_long ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?player1 ?player2 ?player3 ?player4 ?player2))
+    (not (stich_winner_long ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?player1 ?player2 ?player3 ?player4 ?player3))
+)
+
+// Trumpf
+// ------
+
+// Trumpf bestimmen
+// karten gleich => gewinnt
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte1)
+    (karte_trumpf ?spieltyp ?karte1 ?any)
+)
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte1)
+    (karte_trumpf ?spieltyp ?any ?karte1)
+)
+
+// bessere farbe gewinnt
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte2)
+    (farbe ?spieltyp ?farbe1 ?karte1)
+    (farbe ?spieltyp ?farbe2 ?karte2)
+    (farb_trumpf ?spieltyp ?farbe ?farbe1 ?farbe2)
+)
+
+// sonst: bessere karte gewinnt
+(<= (all_trumpf ?spieltyp ?farbe ?karte1 ?karte2)
+    (rekur_karte_trumpf ?spieltyp ?karte1 ?karte2)
+)
+
+// Trumpf über Karte (rekursiv weil transitiv)
+(<= (rekur_karte_trumpf ?spieltyp ?karte1 ?karte2)
+    (karte_trumpf ?spieltyp ?karte1 ?karte2)
+)
+(<= (rekur_karte_trumpf ?spieltyp ?karte1 ?karte2)
+    (karte_trumpf ?spieltyp ?karte1 ?karteX)
+    (rekur_karte_trumpf ?spieltyp ?karteX ?karte2)
+)
+
+
+// Hilfsfunktionen
+// ---------------
+
+(<= (alle_gesund)
+    (does ?player4 (vorbehalt gesund))
+    (next_player ?player4 ?player1)
+    (next_player ?player1 ?player2)
+    (next_player ?player2 ?player3)
+
+    (true (vorbehalt ?player1 gesund))
+    (true (vorbehalt ?player2 gesund))
+    (true (vorbehalt ?player3 gesund))
+)
+
+// Abkürzung stich_winner
+(<= (stich_winner_short ?winner)
+    (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (spielart ?spieltyp ?any))
+    (stich_winner ?spieltyp ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4 ?winner)
+)
+
+// Karten des aktuellen Stiches
+(<= (stich_karten ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (ablauf stich ?x ?y))
+
+    (true (stich ?x 1 ?fkarte1))
+    (true (stich ?x 2 ?fkarte2))
+    (true (stich ?x 3 ?fkarte3))
+    (does ?any (spielen ?fkarte4))
+)
+
+// Karten des aktuellen Stiches nach Spieler sortiert
+(<= (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (ablauf stich ?x 4))
+    (does player1 (spielen ?fkarte1))
+
+    (true (stich ?x 1 ?fkarte2))
+    (true (stich ?x 2 ?fkarte3))
+    (true (stich ?x 3 ?fkarte4))
+)
+(<= (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (ablauf stich ?x 4))
+    (does player2 (spielen ?fkarte2))
+
+    (true (stich ?x 1 ?fkarte3))
+    (true (stich ?x 2 ?fkarte4))
+    (true (stich ?x 3 ?fkarte1))
+)
+(<= (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (ablauf stich ?x 4))
+    (does player3 (spielen ?fkarte3))
+
+    (true (stich ?x 1 ?fkarte4))
+    (true (stich ?x 2 ?fkarte1))
+    (true (stich ?x 3 ?fkarte2))
+)
+(<= (stich_karten_by_player ?fkarte1 ?fkarte2 ?fkarte3 ?fkarte4)
+    (true (ablauf stich ?x 4))
+    (does player4 (spielen ?fkarte4))
+
+    (true (stich ?x 1 ?fkarte1))
+    (true (stich ?x 2 ?fkarte2))
+    (true (stich ?x 3 ?fkarte3))
+)
+
+// Karten mappen
+(<= (map_all_cards
+        ?karte1 ?fkarte1
+        ?karte2 ?fkarte2
+        ?karte3 ?fkarte3
+        ?karte4 ?fkarte4
+    )
+    (karte ?karte1 ?fkarte1)
+    (karte ?karte2 ?fkarte2)
+    (karte ?karte3 ?fkarte3)
+    (karte ?karte4 ?fkarte4)
+)
+
+(<= (player_has_farbe ?player ?farbe)
+    (true (sees ?player (hand ?player ?fkarte)))
+    (true (spielart ?spieltyp ?any))
+    (karte ?karte ?fkarte)
+    (farbe ?spieltyp ?farbe ?karte)
+)
+
+// Gewinner der Runde
+// -------- --- -----
+
+// Unentschieden, wenn kein Team sein Ziel erreicht hat (beide Teams ihr Ziel erreicht haben)
+(<= (unentschieden)
+    (not (gewinner_team kontra))
+    (not (gewinner_team re))
+)
+(<= (unentschieden)
+    (gewinner_team kontra)
+    (gewinner_team re)
+)
+
+
+// 7.1.2 (Gewinner Re)
+// 1.
+(<= (gewinner_team re)
+    // Keine Ansagen/Absagen
+    (not (true (ansage kontra ?x ?y1)))
+    (not (true (ansage re ?x ?y2)))
+    // Mit dem 121. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 120)
+)
+
+// 2.
+(<= (gewinner_team re)
+    // Nur re
+    (not (true (ansage kontra ?x ?y1)))
+    (true (ansage re re ?y2))
+    // Mit dem 121. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 120)
+)
+
+// 3.
+(<= (gewinner_team re)
+    // Re und Kontra
+    (true (ansage kontra kontra ?y1))
+    (true (ansage re re ?y2))
+    // Mit dem 121. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 120)
+)
+
+// 4.
+(<= (gewinner_team re)
+    // Nur Kontra
+    (true (ansage kontra kontra ?y1))
+    (not (true (ansage re ?x ?y2)))
+    // Mit dem 120. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 119)
+)
+
+// 5.
+// 90
+(<= (gewinner_team re)
+    (true (ansage re 90 ?y1))
+    // Mit dem 151. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 150)
+)
+// 60
+(<= (gewinner_team re)
+    (true (ansage re 60 ?y2))
+    // Mit dem 181. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 180)
+)
+// 30
+(<= (gewinner_team re)
+    (true (ansage re 30 ?y1))
+    // Mit dem 211. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 210)
+)
+
+// 6.
+(<= (gewinner_team re)
+    (true (ansage re schwarz ?y1))
+    // Wenn re alle Stiche bekommen hat
+    (anzahl_stiche re 12)
+)
+
+// 7.
+// 90
+(<= (gewinner_team re)
+    (true (ansage kontra 90 ?y1))
+    // Mit dem 90. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 89)
+)
+// 60
+(<= (gewinner_team re)
+    (true (ansage kontra 60 ?y1))
+    // Mit dem 60. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 59)
+)
+// 30
+(<= (gewinner_team re)
+    (true (ansage kontra 30 ?y1))
+    // Mit dem 30. Auge
+    (summe_karten_team re ?summe)
+    (greater ?summe 29)
+)
+
+// 8.
+(<= (gewinner_team re)
+    (true (ansage kontra schwarz ?y1))
+    // Wenn re mindestens einen Stich bekommen hat
+    (anzahl_stiche re ?x)
+    (greater ?x 0)
+)
+
+
+// 7.1.3 (Gewinner Kontra)
+// 1.
+(<= (gewinner_team kontra)
+    // Keine Ansagen/Absagen
+    (not (true (ansage kontra ?x ?y1)))
+    (not (true (ansage re ?x ?y2)))
+    // Mit dem 120. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 119)
+)
+
+// 2.
+(<= (gewinner_team kontra)
+    // Nur re
+    (not (true (ansage kontra ?x ?y1)))
+    (true (ansage re re ?y2))
+    // Mit dem 120. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 120)
+)
+
+// 3.
+(<= (gewinner_team kontra)
+    // Re und Kontra
+    (true (ansage kontra kontra ?y1))
+    (true (ansage re re ?y2))
+    // Mit dem 120. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 119)
+)
+
+// 4.
+(<= (gewinner_team kontra)
+    // Nur Kontra
+    (true (ansage kontra kontra ?y1))
+    (not (true (ansage re ?x ?y2)))
+    // Mit dem 121. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 120)
+)
+
+// 5.
+// 90
+(<= (gewinner_team kontra)
+    (true (ansage kontra 90 ?y1))
+    // Mit dem 151. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 150)
+)
+// 60
+(<= (gewinner_team kontra)
+    (true (ansage kontra 60 ?y1))
+    // Mit dem 181. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 180)
+)
+// 30
+(<= (gewinner_team kontra)
+    (true (ansage kontra 30 ?y1))
+    // Mit dem 211. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 210)
+)
+
+// 6.
+(<= (gewinner_team kontra)
+    (true (ansage kontra schwarz ?y1))
+    // Wenn kontra alle Stiche bekommen hat
+    (anzahl_stiche kontra 12)
+)
+
+// 7.
+// 90
+(<= (gewinner_team kontra)
+    (true (ansage re 90 ?y1))
+    // Mit dem 90. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 89)
+)
+// 60
+(<= (gewinner_team kontra)
+    (true (ansage re 60 ?y1))
+    // Mit dem 60. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 59)
+)
+// 30
+(<= (gewinner_team kontra)
+    (true (ansage re 30 ?y1))
+    // Mit dem 30. Auge
+    (summe_karten_team kontra ?summe)
+    (greater ?summe 29)
+)
+
+// 8.
+(<= (gewinner_team kontra)
+    (true (ansage re schwarz ?y1))
+    // Wenn kontra mindestens einen Stich bekommen hat
+    (anzahl_stiche kontra ?x)
+    (greater ?x 0)
+)
+
+(<= (anzahl_stiche ?team 0)
+    (team ?team)
+    (not (count ?x (true (sees ?player (stich ?anyx ?anyy ?karte))) (true (sees ?player (team ?player ?team)))))
+)
+
+(<= (anzahl_stiche ?team ?anzahl)
+    (team ?team)
+    (count ?x (true (sees ?player (stich ?anyx ?anyy ?karte))) (true (sees ?player (team ?player ?team))))
+    (div ?x 4 ?anzahl)
+)
+
+
+// Augen berechnen
+// ----- ---------
+
+
+// Pro Team
+(<= (summe_karten_team ?team ?summe)
+    (team ?team)
+    (spieler_wert_fuer_team player1 ?team ?wert1)
+    (spieler_wert_fuer_team player2 ?team ?wert2)
+    (spieler_wert_fuer_team player3 ?team ?wert3)
+    (spieler_wert_fuer_team player4 ?team ?wert4)
+
+    (add ?wert1 ?wert2 ?x)
+    (add ?x ?wert3 ?y)
+    (add ?y ?wert4 ?summe)
+)
+
+
+(<= (spieler_wert_fuer_team ?player ?team 0)
+    (not (true (sees ?player (team ?player ?team))))
+)
+
+(<= (spieler_wert_fuer_team ?player ?team ?wert)
+    (true (sees ?player (team ?player ?team)))
+    (spieler_stiche_wert ?player ?wert)
+)
+
+
+// Pro Spieler
+(<= (spieler_stiche_wert ?player ?wert)
+    (type player ?player)
+    (spieler_karte_wert_rekur ?player kreuz_dame_1 ?wert)
+)
+
+// recursive (start with kreuz_dame_1)
+(<= (spieler_karte_wert_rekur ?player karo_neun_2 ?wert)
+    (spieler_karte_wert ?player karo_neun_2 ?wert)
+)
+(<= (spieler_karte_wert_rekur ?player ?fkarte ?wert)
+    (next_karte ?fkarte ?next_fkarte)
+    (spieler_karte_wert_rekur ?player ?next_fkarte ?y_wert)
+    (spieler_karte_wert ?player ?fkarte ?x_wert)
+    (add ?x_wert ?y_wert ?wert)
+)
+
+// single card
+(<= (spieler_karte_wert ?player ?fkarte 0)
+    (type player ?player)
+    (not (true (sees ?player (stich ?a ?b ?fkarte))))
+)
+(<= (spieler_karte_wert ?player ?fkarte ?wert)
+    (type player ?player)
+    (karte ?karte ?fkarte)
+    (true (sees ?player (stich ?a ?b ?fkarte)))
+    (kartenwert ?karte ?wert)
+)
+
+
+(kartenwert kreuz_dame 3)
+(kartenwert kreuz_bube 2)
+(kartenwert kreuz_ass 11)
+(kartenwert kreuz_zehn 10)
+(kartenwert kreuz_koenig 4)
+(kartenwert kreuz_neun 0)
+
+(kartenwert pik_dame 3)
+(kartenwert pik_bube 2)
+(kartenwert pik_ass 11)
+(kartenwert pik_zehn 10)
+(kartenwert pik_koenig 4)
+(kartenwert pik_neun 0)
+
+(kartenwert herz_dame 3)
+(kartenwert herz_bube 2)
+(kartenwert herz_ass 11)
+(kartenwert herz_zehn 10)
+(kartenwert herz_koenig 4)
+(kartenwert herz_neun 0)
+
+(kartenwert karo_dame 3)
+(kartenwert karo_bube 2)
+(kartenwert karo_ass 11)
+(kartenwert karo_zehn 10)
+(kartenwert karo_koenig 4)
+(kartenwert karo_neun 0)
+
+
+// recursive list of cards
+(next_karte kreuz_dame_1 kreuz_dame_2)
+(next_karte kreuz_dame_2 kreuz_bube_1)
+(next_karte kreuz_bube_1 kreuz_bube_2)
+(next_karte kreuz_bube_2 kreuz_ass_1)
+(next_karte kreuz_ass_1 kreuz_ass_2)
+(next_karte kreuz_ass_2 kreuz_zehn_1)
+(next_karte kreuz_zehn_1 kreuz_zehn_2)
+(next_karte kreuz_zehn_2 kreuz_koenig_1)
+(next_karte kreuz_koenig_1 kreuz_koenig_2)
+(next_karte kreuz_koenig_2 kreuz_neun_1)
+(next_karte kreuz_neun_1 kreuz_neun_2)
+(next_karte kreuz_neun_2 pik_dame_1)
+(next_karte pik_dame_1 pik_dame_2)
+(next_karte pik_dame_2 pik_bube_1)
+(next_karte pik_bube_1 pik_bube_2)
+(next_karte pik_bube_2 pik_ass_1)
+(next_karte pik_ass_1 pik_ass_2)
+(next_karte pik_ass_2 pik_zehn_1)
+(next_karte pik_zehn_1 pik_zehn_2)
+(next_karte pik_zehn_2 pik_koenig_1)
+(next_karte pik_koenig_1 pik_koenig_2)
+(next_karte pik_koenig_2 pik_neun_1)
+(next_karte pik_neun_1 pik_neun_2)
+(next_karte pik_neun_2 herz_dame_1)
+(next_karte herz_dame_1 herz_dame_2)
+(next_karte herz_dame_2 herz_bube_1)
+(next_karte herz_bube_1 herz_bube_2)
+(next_karte herz_bube_2 herz_ass_1)
+(next_karte herz_ass_1 herz_ass_2)
+(next_karte herz_ass_2 herz_zehn_1)
+(next_karte herz_zehn_1 herz_zehn_2)
+(next_karte herz_zehn_2 herz_koenig_1)
+(next_karte herz_koenig_1 herz_koenig_2)
+(next_karte herz_koenig_2 herz_neun_1)
+(next_karte herz_neun_1 herz_neun_2)
+(next_karte herz_neun_2 karo_dame_1)
+(next_karte karo_dame_1 karo_dame_2)
+(next_karte karo_dame_2 karo_bube_1)
+(next_karte karo_bube_1 karo_bube_2)
+(next_karte karo_bube_2 karo_ass_1)
+(next_karte karo_ass_1 karo_ass_2)
+(next_karte karo_ass_2 karo_zehn_1)
+(next_karte karo_zehn_1 karo_zehn_2)
+(next_karte karo_zehn_2 karo_koenig_1)
+(next_karte karo_koenig_1 karo_koenig_2)
+(next_karte karo_koenig_2 karo_neun_1)
+(next_karte karo_neun_1 karo_neun_2)
+
+// Auswerten
+// ---------
+
+(<= (spielwert ?wert)
+    (not (unentschieden))
+
+    (gewinner_team ?winner)
+    (gegner_team ?winner ?looser)
+
+    (auswertung_a ?winner ?a)
+    (auswertung_b ?b)
+    (auswertung_c ?c)
+    (auswertung_d ?d)
+    (auswertung_e ?e)
+    (auswertung_f ?f)
+    (sonderpunkte ?winner ?sw)
+    (sonderpunkte ?looser ?sl)
+
+    (add 1 ?a ?w1)
+    (add ?w1 ?b ?w2)
+    (add ?w2 ?c ?w3)
+    (add ?w3 ?d ?w4)
+    (add ?w4 ?e ?w5)
+    (add ?w5 ?f ?w6)
+    (add ?w6 ?sw ?w7)
+    (sub ?w7 ?sl ?wert)
+)
+
+// 7.2.2
+// a) (ohne "Gewonnen")
+
+(<= (auswertung_a ?winner 0)
+    (not (auswertung_a ?winner 1))
+    (not (auswertung_a ?winner 2))
+    (not (auswertung_a ?winner 3))
+    (not (auswertung_a ?winner 4))
+)
+(<= (auswertung_a ?winner 1)
+    (summe_karten_team ?winner ?x)
+    (greater ?x 150)
+    (not (auswertung_a ?winner 2))
+    (not (auswertung_a ?winner 3))
+    (not (auswertung_a ?winner 4))
+)
+(<= (auswertung_a ?winner 2)
+    (summe_karten_team ?winner ?x)
+    (greater ?x 180)
+    (not (auswertung_a ?winner 3))
+    (not (auswertung_a ?winner 4))
+)
+(<= (auswertung_a ?winner 3)
+    (summe_karten_team ?winner ?x)
+    (greater ?x 210)
+    (not (auswertung_a ?winner 4))
+)
+(<= (auswertung_a ?winner 4)
+    (gegner_team ?winner ?looser)
+    (anzahl_stiche ?looser 0)
+)
+
+// b)
+(<= (auswertung_b 0)
+    (not (true (ansage re ?rx ?ry)))
+    (not (true (ansage kontra ?kx ?ky)))
+)
+(<= (auswertung_b 2)
+    (true (ansage re ?rx ?ry))
+    (not (true (ansage kontra ?kx ?ky)))
+)
+(<= (auswertung_b 2)
+    (not (true (ansage re ?rx ?ry)))
+    (true (ansage kontra ?kx ?ky))
+)
+(<= (auswertung_b 4)
+    (true (ansage re ?rx ?ry))
+    (true (ansage kontra ?kx ?ky))
+)
+
+// c)
+(<= (auswertung_c 0)
+    (not (true (ansage re ?x ?y)))
+)
+(<= (auswertung_c 0)
+    (true (ansage re re ?y))
+)
+(<= (auswertung_c 1)
+    (true (ansage re 90 ?y))
+)
+(<= (auswertung_c 2)
+    (true (ansage re 60 ?y))
+)
+(<= (auswertung_c 3)
+    (true (ansage re 30 ?y))
+)
+(<= (auswertung_c 4)
+    (true (ansage re schwarz ?y))
+)
+
+// d)
+(<= (auswertung_d 0)
+    (not (true (ansage kontra ?x ?y)))
+)
+(<= (auswertung_d 0)
+    (true (ansage kontra kontra ?y))
+)
+(<= (auswertung_d 1)
+    (true (ansage kontra 90 ?y))
+)
+(<= (auswertung_d 2)
+    (true (ansage kontra 60 ?y))
+)
+(<= (auswertung_d 3)
+    (true (ansage kontra 30 ?y))
+)
+(<= (auswertung_d 4)
+    (true (ansage kontra schwarz ?y))
+)
+
+// e)
+(<= (auswertung_e 0)
+    (not (auswertung_e 1))
+    (not (auswertung_e 2))
+    (not (auswertung_e 3))
+    (not (auswertung_e 4))
+)
+(<= (auswertung_e 1)
+    (true (ansage kontra 90 ?y))
+    (summe_karten_team re ?x)
+    (greater ?x 119)
+)
+(<= (auswertung_e 2)
+    (true (ansage kontra 60 ?y))
+    (summe_karten_team re ?x)
+    (greater ?x 89)
+)
+(<= (auswertung_e 3)
+    (true (ansage kontra 30 ?y))
+    (summe_karten_team re ?x)
+    (greater ?x 59)
+)
+(<= (auswertung_e 4)
+    (true (ansage kontra schwarz ?y))
+    (summe_karten_team re ?x)
+    (greater ?x 29)
+)
+
+// f)
+(<= (auswertung_f 0)
+    (not (auswertung_f 1))
+    (not (auswertung_f 2))
+    (not (auswertung_f 3))
+    (not (auswertung_f 4))
+)
+(<= (auswertung_f 1)
+    (true (ansage re 90 ?y))
+    (summe_karten_team kontra ?x)
+    (greater ?x 119)
+)
+(<= (auswertung_f 2)
+    (true (ansage re 60 ?y))
+    (summe_karten_team kontra ?x)
+    (greater ?x 89)
+)
+(<= (auswertung_f 3)
+    (true (ansage re 30 ?y))
+    (summe_karten_team kontra ?x)
+    (greater ?x 59)
+)
+(<= (auswertung_f 4)
+    (true (ansage re schwarz ?y))
+    (summe_karten_team kontra ?x)
+    (greater ?x 29)
+)
+
+// 7.2.3 (Sonderpunkte)
+(<= (sonderpunkte ?team 0)
+    (true (spielart ?x ?y))
+    (distinct ?x normal)
+    (distinct ?x hochzeit)
+    (team ?team)
+)
+
+(<= (sonderpunkte ?winner ?wert)
+    (true (spielart normal none))
+    (gewinner_team ?winner)
+    (sonderpunkte_gegen_die_alten ?winner ?gegen)
+    (true (sees none (sonderpunkte ?winner ?sonder)))
+
+    (add ?gegen ?sonder ?wert)
+)
+
+(<= (sonderpunkte ?looser ?wert)
+    (true (spielart normal none))
+    (gewinner_team ?winner)
+    (gegner_team ?winner ?looser)
+    (true (sees none (sonderpunkte ?looser ?wert)))
+)
+
+(<= (sonderpunkte ?winner ?wert)
+    (true (spielart hochzeit ?any))
+    (gewinner_team ?winner)
+    (sonderpunkte_gegen_die_alten ?winner ?gegen)
+    (true (sees none (sonderpunkte ?winner ?sonder)))
+
+    (add ?gegen ?sonder ?wert)
+)
+
+(<= (sonderpunkte ?looser ?wert)
+    (true (spielart hochzeit ?any))
+    (gewinner_team ?winner)
+    (gegner_team ?winner ?looser)
+    (true (sees none (sonderpunkte ?looser ?wert)))
+)
+
+(sonderpunkte_gegen_die_alten re 0)
+(sonderpunkte_gegen_die_alten kontra 1)
+
+
+// 7.1.4 Sonderregel unentschieden
+// Alle Re-Punkte addieren, alle Kontra-Punkte subtrahieren
+(<= (spielwert ?wert)
+    (unentschieden)
+
+    // für re
+    (auswertung_a re ?a_re)
+    (auswertung_e ?e)
+    (sonderpunkte re ?s_re)
+
+    (add ?a_re ?e ?x1)
+    (add ?x1 ?s_re ?re)
+
+    // für kontra
+    (auswertung_a kontra ?a_kontra)
+    (auswertung_f ?f)
+    (sonderpunkte kontra ?s_kontra)
+
+    (add ?a_kontra ?f ?y1)
+    (add ?y1 ?s_kontra ?kontra)
+
+    (sub ?re ?kontra ?wert)
+)
+
+
+// -----------------------
+// ------ CONSTANTS ------
+// -----------------------
+
+// Teams
+(team re)
+(team kontra)
+
+(gegner_team re kontra)
+(gegner_team kontra re)
+
+// alle karten (kommen doppelt vor)
+(karte kreuz_dame kreuz_dame_1)
+(karte kreuz_dame kreuz_dame_2)
+(karte kreuz_bube kreuz_bube_1)
+(karte kreuz_bube kreuz_bube_2)
+(karte kreuz_ass kreuz_ass_1)
+(karte kreuz_ass kreuz_ass_2)
+(karte kreuz_zehn kreuz_zehn_1)
+(karte kreuz_zehn kreuz_zehn_2)
+(karte kreuz_koenig kreuz_koenig_1)
+(karte kreuz_koenig kreuz_koenig_2)
+(karte kreuz_neun kreuz_neun_1)
+(karte kreuz_neun kreuz_neun_2)
+
+(karte pik_dame pik_dame_1)
+(karte pik_dame pik_dame_2)
+(karte pik_bube pik_bube_1)
+(karte pik_bube pik_bube_2)
+(karte pik_ass pik_ass_1)
+(karte pik_ass pik_ass_2)
+(karte pik_zehn pik_zehn_1)
+(karte pik_zehn pik_zehn_2)
+(karte pik_koenig pik_koenig_1)
+(karte pik_koenig pik_koenig_2)
+(karte pik_neun pik_neun_1)
+(karte pik_neun pik_neun_2)
+
+(karte herz_dame herz_dame_1)
+(karte herz_dame herz_dame_2)
+(karte herz_bube herz_bube_1)
+(karte herz_bube herz_bube_2)
+(karte herz_ass herz_ass_1)
+(karte herz_ass herz_ass_2)
+(karte herz_zehn herz_zehn_1)
+(karte herz_zehn herz_zehn_2)
+(karte herz_koenig herz_koenig_1)
+(karte herz_koenig herz_koenig_2)
+(karte herz_neun herz_neun_1)
+(karte herz_neun herz_neun_2)
+
+(karte karo_dame karo_dame_1)
+(karte karo_dame karo_dame_2)
+(karte karo_bube karo_bube_1)
+(karte karo_bube karo_bube_2)
+(karte karo_ass karo_ass_1)
+(karte karo_ass karo_ass_2)
+(karte karo_zehn karo_zehn_1)
+(karte karo_zehn karo_zehn_2)
+(karte karo_koenig karo_koenig_1)
+(karte karo_koenig karo_koenig_2)
+(karte karo_neun karo_neun_1)
+(karte karo_neun karo_neun_2)
+
+// Sitzreihenfolge
+(next_player player1 player2)
+(next_player player2 player3)
+(next_player player3 player4)
+(next_player player4 player1)
+
+// vorbehalt typ
+(vorbehalt_typ solo solo_damen)
+(vorbehalt_typ solo solo_buben)
+(vorbehalt_typ solo solo_trumpf_kreuz)
+(vorbehalt_typ solo solo_trumpf_pik)
+(vorbehalt_typ solo solo_trumpf_herz)
+(vorbehalt_typ solo solo_trumpf_karo)
+(vorbehalt_typ solo solo_trumpf_ass)
+(vorbehalt_typ hochzeit hochzeit)
+
+// Absage Zeitpunkt
+(absagezeitpunkt 90 11) // Mindestens 10 = 11 - 1 (Klärungsstich)
+(absagezeitpunkt 60 10)
+(absagezeitpunkt 30 9)
+(absagezeitpunkt schwarz 8)
+
+(absage_succ re 90)
+(absage_succ kontra 90)
+(absage_succ 90 60)
+(absage_succ 60 30)
+(absage_succ 30 schwarz)
+
+// Absage Wert
+(absage_more_value 90 kontra)
+(absage_more_value 60 kontra)
+(absage_more_value 30 kontra)
+(absage_more_value schwarz kontra)
+
+(absage_more_value 90 re)
+(absage_more_value 60 re)
+(absage_more_value 30 re)
+(absage_more_value schwarz re)
+
+(absage_more_value 60 90)
+(absage_more_value 30 90)
+(absage_more_value schwarz 90)
+
+(absage_more_value 30 60)
+(absage_more_value schwarz 60)
+
+(absage_more_value schwarz 30)
+
+// -----------------------------
+// ------ Goal & Terminal ------
+// -----------------------------
+
+(<= (goal ?player ?punkte)
+    (true (punkte ?player ?punkte))
+)
+
+
+// Ende nach 1 Spiel
+(<= terminal
+    (true (spiel ?x))
+    (greater ?x 1)
+)
+
+
+// ---------------------
+// --- Trumpf Regeln ---
+// ---------------------
+
+// Normal
+(farbe normal trumpf herz_zehn)
+(farbe normal trumpf kreuz_dame)
+(farbe normal trumpf pik_dame)
+(farbe normal trumpf herz_dame)
+(farbe normal trumpf karo_dame)
+(farbe normal trumpf kreuz_bube)
+(farbe normal trumpf pik_bube)
+(farbe normal trumpf herz_bube)
+(farbe normal trumpf karo_bube)
+(farbe normal trumpf karo_ass)
+(farbe normal trumpf karo_zehn)
+(farbe normal trumpf karo_koenig)
+(farbe normal trumpf karo_neun)
+
+(farbe normal kreuz kreuz_ass)
+(farbe normal kreuz kreuz_zehn)
+(farbe normal kreuz kreuz_koenig)
+(farbe normal kreuz kreuz_neun)
+
+(farbe normal pik pik_ass)
+(farbe normal pik pik_zehn)
+(farbe normal pik pik_koenig)
+(farbe normal pik pik_neun)
+
+(farbe normal herz herz_ass)
+(farbe normal herz herz_koenig)
+(farbe normal herz herz_neun)
+
+
+(karte_trumpf normal herz_zehn kreuz_dame)
+(karte_trumpf normal kreuz_dame pik_dame)
+(karte_trumpf normal pik_dame herz_dame)
+(karte_trumpf normal herz_dame karo_dame)
+(karte_trumpf normal karo_dame kreuz_bube)
+(karte_trumpf normal kreuz_bube pik_bube)
+(karte_trumpf normal pik_bube herz_bube)
+(karte_trumpf normal herz_bube karo_bube)
+(karte_trumpf normal karo_bube karo_ass)
+(karte_trumpf normal karo_ass karo_zehn)
+(karte_trumpf normal karo_zehn karo_koenig)
+(karte_trumpf normal karo_koenig karo_neun)
+
+(karte_trumpf normal kreuz_ass kreuz_zehn)
+(karte_trumpf normal kreuz_zehn kreuz_koenig)
+(karte_trumpf normal kreuz_koenig kreuz_neun)
+
+(karte_trumpf normal pik_ass pik_zehn)
+(karte_trumpf normal pik_zehn pik_koenig)
+(karte_trumpf normal pik_koenig pik_neun)
+
+(karte_trumpf normal herz_ass herz_koenig)
+(karte_trumpf normal herz_koenig herz_neun)
+
+
+(<= (farb_trumpf normal ?any trumpf kreuz))
+(<= (farb_trumpf normal ?any trumpf pik))
+(<= (farb_trumpf normal ?any trumpf herz))
+
+
+(<= (farb_trumpf normal ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+    (distinct ?x ?y)
+)
+
+// Hochzeit (= normal)
+(<= (farbe hochzeit ?x ?y)
+    (farbe normal ?x ?y)
+)
+(<= (karte_trumpf hochzeit ?x ?y)
+    (karte_trumpf normal ?x ?y)
+)
+(<= (farb_trumpf hochzeit ?x ?y ?z)
+    (farb_trumpf normal ?x ?y ?z)
+)
+
+
+// solo damen = nur damen trumpf
+(farbe solo_damen trumpf kreuz_dame)
+(farbe solo_damen trumpf pik_dame)
+(farbe solo_damen trumpf herz_dame)
+(farbe solo_damen trumpf karo_dame)
+
+(farbe solo_damen kreuz kreuz_ass)
+(farbe solo_damen kreuz kreuz_zehn)
+(farbe solo_damen kreuz kreuz_koenig)
+(farbe solo_damen kreuz kreuz_bube)
+(farbe solo_damen kreuz kreuz_neun)
+
+(farbe solo_damen pik pik_ass)
+(farbe solo_damen pik pik_zehn)
+(farbe solo_damen pik pik_koenig)
+(farbe solo_damen pik pik_bube)
+(farbe solo_damen pik pik_neun)
+
+(farbe solo_damen herz herz_ass)
+(farbe solo_damen herz herz_zehn)
+(farbe solo_damen herz herz_koenig)
+(farbe solo_damen herz herz_bube)
+(farbe solo_damen herz herz_neun)
+
+(farbe solo_damen karo karo_ass)
+(farbe solo_damen karo karo_zehn)
+(farbe solo_damen karo karo_koenig)
+(farbe solo_damen karo karo_bube)
+(farbe solo_damen karo karo_neun)
+
+
+(karte_trumpf solo_damen kreuz_dame pik_dame)
+(karte_trumpf solo_damen pik_dame herz_dame)
+(karte_trumpf solo_damen herz_dame karo_dame)
+
+(karte_trumpf solo_damen kreuz_ass kreuz_zehn)
+(karte_trumpf solo_damen kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_damen kreuz_koenig kreuz_bube)
+(karte_trumpf solo_damen kreuz_bube kreuz_neun)
+
+(karte_trumpf solo_damen pik_ass pik_zehn)
+(karte_trumpf solo_damen pik_zehn pik_koenig)
+(karte_trumpf solo_damen pik_koenig pik_bube)
+(karte_trumpf solo_damen pik_bube pik_neun)
+
+(karte_trumpf solo_damen herz_ass herz_zehn)
+(karte_trumpf solo_damen herz_zehn herz_koenig)
+(karte_trumpf solo_damen herz_koenig herz_bube)
+(karte_trumpf solo_damen herz_bube herz_neun)
+
+(karte_trumpf solo_damen karo_ass karo_zehn)
+(karte_trumpf solo_damen karo_zehn karo_koenig)
+(karte_trumpf solo_damen karo_koenig karo_bube)
+(karte_trumpf solo_damen karo_bube karo_neun)
+
+
+(<= (farb_trumpf solo_damen ?any trumpf kreuz))
+(<= (farb_trumpf solo_damen ?any trumpf pik))
+(<= (farb_trumpf solo_damen ?any trumpf herz))
+(<= (farb_trumpf solo_damen ?any trumpf karo))
+
+
+(<= (farb_trumpf solo_damen ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+    (distinct ?x ?y)
+)
+
+
+// solo buben = nur buben trumpf
+(farbe solo_buben trumpf kreuz_bube)
+(farbe solo_buben trumpf pik_bube)
+(farbe solo_buben trumpf herz_bube)
+(farbe solo_buben trumpf karo_bube)
+
+(farbe solo_buben kreuz kreuz_ass)
+(farbe solo_buben kreuz kreuz_zehn)
+(farbe solo_buben kreuz kreuz_koenig)
+(farbe solo_buben kreuz kreuz_dame)
+(farbe solo_buben kreuz kreuz_neun)
+
+(farbe solo_buben pik pik_ass)
+(farbe solo_buben pik pik_zehn)
+(farbe solo_buben pik pik_koenig)
+(farbe solo_buben pik pik_dame)
+(farbe solo_buben pik pik_neun)
+
+(farbe solo_buben herz herz_ass)
+(farbe solo_buben herz herz_zehn)
+(farbe solo_buben herz herz_koenig)
+(farbe solo_buben herz herz_dame)
+(farbe solo_buben herz herz_neun)
+
+(farbe solo_buben karo karo_ass)
+(farbe solo_buben karo karo_zehn)
+(farbe solo_buben karo karo_koenig)
+(farbe solo_buben karo karo_dame)
+(farbe solo_buben karo karo_neun)
+
+
+(karte_trumpf solo_buben kreuz_bube pik_bube)
+(karte_trumpf solo_buben pik_bube herz_bube)
+(karte_trumpf solo_buben herz_bube karo_bube)
+
+(karte_trumpf solo_buben kreuz_ass kreuz_zehn)
+(karte_trumpf solo_buben kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_buben kreuz_koenig kreuz_dame)
+(karte_trumpf solo_buben kreuz_dame kreuz_neun)
+
+(karte_trumpf solo_buben pik_ass pik_zehn)
+(karte_trumpf solo_buben pik_zehn pik_koenig)
+(karte_trumpf solo_buben pik_koenig pik_dame)
+(karte_trumpf solo_buben pik_dame pik_neun)
+
+(karte_trumpf solo_buben herz_ass herz_zehn)
+(karte_trumpf solo_buben herz_zehn herz_koenig)
+(karte_trumpf solo_buben herz_koenig herz_dame)
+(karte_trumpf solo_buben herz_dame herz_neun)
+
+(karte_trumpf solo_buben karo_ass karo_zehn)
+(karte_trumpf solo_buben karo_zehn karo_koenig)
+(karte_trumpf solo_buben karo_koenig karo_dame)
+(karte_trumpf solo_buben karo_dame karo_neun)
+
+
+(<= (farb_trumpf solo_buben ?any trumpf kreuz))
+(<= (farb_trumpf solo_buben ?any trumpf pik))
+(<= (farb_trumpf solo_buben ?any trumpf herz))
+(<= (farb_trumpf solo_buben ?any trumpf karo))
+
+
+(<= (farb_trumpf solo_buben ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+    (distinct ?x ?y)
+)
+
+// solo trumpf kreuz = karo durch kreuz austauschen
+(farbe solo_trumpf_kreuz trumpf herz_zehn)
+(farbe solo_trumpf_kreuz trumpf kreuz_dame)
+(farbe solo_trumpf_kreuz trumpf pik_dame)
+(farbe solo_trumpf_kreuz trumpf herz_dame)
+(farbe solo_trumpf_kreuz trumpf karo_dame)
+(farbe solo_trumpf_kreuz trumpf kreuz_bube)
+(farbe solo_trumpf_kreuz trumpf pik_bube)
+(farbe solo_trumpf_kreuz trumpf herz_bube)
+(farbe solo_trumpf_kreuz trumpf karo_bube)
+(farbe solo_trumpf_kreuz trumpf kreuz_ass)
+(farbe solo_trumpf_kreuz trumpf kreuz_zehn)
+(farbe solo_trumpf_kreuz trumpf kreuz_koenig)
+(farbe solo_trumpf_kreuz trumpf kreuz_neun)
+
+(farbe solo_trumpf_kreuz pik pik_ass)
+(farbe solo_trumpf_kreuz pik pik_zehn)
+(farbe solo_trumpf_kreuz pik pik_koenig)
+(farbe solo_trumpf_kreuz pik pik_neun)
+
+(farbe solo_trumpf_kreuz herz herz_ass)
+(farbe solo_trumpf_kreuz herz herz_koenig)
+(farbe solo_trumpf_kreuz herz herz_neun)
+
+(farbe solo_trumpf_kreuz karo karo_ass)
+(farbe solo_trumpf_kreuz karo karo_zehn)
+(farbe solo_trumpf_kreuz karo karo_koenig)
+(farbe solo_trumpf_kreuz karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_kreuz herz_zehn kreuz_dame)
+(karte_trumpf solo_trumpf_kreuz kreuz_dame pik_dame)
+(karte_trumpf solo_trumpf_kreuz pik_dame herz_dame)
+(karte_trumpf solo_trumpf_kreuz herz_dame karo_dame)
+(karte_trumpf solo_trumpf_kreuz karo_dame kreuz_bube)
+(karte_trumpf solo_trumpf_kreuz kreuz_bube pik_bube)
+(karte_trumpf solo_trumpf_kreuz pik_bube herz_bube)
+(karte_trumpf solo_trumpf_kreuz herz_bube karo_bube)
+(karte_trumpf solo_trumpf_kreuz karo_bube kreuz_ass)
+(karte_trumpf solo_trumpf_kreuz kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_kreuz kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_kreuz kreuz_koenig kreuz_neun)
+
+(karte_trumpf solo_trumpf_kreuz pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_kreuz pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_kreuz pik_koenig pik_neun)
+
+(karte_trumpf solo_trumpf_kreuz herz_ass herz_koenig)
+(karte_trumpf solo_trumpf_kreuz herz_koenig herz_neun)
+
+(karte_trumpf solo_trumpf_kreuz karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_kreuz karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_kreuz karo_koenig karo_neun)
+
+
+(<= (farb_trumpf solo_trumpf_kreuz ?any trumpf pik))
+(<= (farb_trumpf solo_trumpf_kreuz ?any trumpf herz))
+(<= (farb_trumpf solo_trumpf_kreuz ?any trumpf karo))
+
+
+(<= (farb_trumpf solo_trumpf_kreuz ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+    (distinct ?x ?y)
+)
+
+
+// solo trumpf pik = karo durch pik austauschen
+(farbe solo_trumpf_pik trumpf herz_zehn)
+(farbe solo_trumpf_pik trumpf kreuz_dame)
+(farbe solo_trumpf_pik trumpf pik_dame)
+(farbe solo_trumpf_pik trumpf herz_dame)
+(farbe solo_trumpf_pik trumpf karo_dame)
+(farbe solo_trumpf_pik trumpf kreuz_bube)
+(farbe solo_trumpf_pik trumpf pik_bube)
+(farbe solo_trumpf_pik trumpf herz_bube)
+(farbe solo_trumpf_pik trumpf karo_bube)
+(farbe solo_trumpf_pik trumpf pik_ass)
+(farbe solo_trumpf_pik trumpf pik_zehn)
+(farbe solo_trumpf_pik trumpf pik_koenig)
+(farbe solo_trumpf_pik trumpf pik_neun)
+
+(farbe solo_trumpf_pik kreuz kreuz_ass)
+(farbe solo_trumpf_pik kreuz kreuz_zehn)
+(farbe solo_trumpf_pik kreuz kreuz_koenig)
+(farbe solo_trumpf_pik kreuz kreuz_neun)
+
+(farbe solo_trumpf_pik herz herz_ass)
+(farbe solo_trumpf_pik herz herz_koenig)
+(farbe solo_trumpf_pik herz herz_neun)
+
+(farbe solo_trumpf_pik karo karo_ass)
+(farbe solo_trumpf_pik karo karo_zehn)
+(farbe solo_trumpf_pik karo karo_koenig)
+(farbe solo_trumpf_pik karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_pik herz_zehn kreuz_dame)
+(karte_trumpf solo_trumpf_pik kreuz_dame pik_dame)
+(karte_trumpf solo_trumpf_pik pik_dame herz_dame)
+(karte_trumpf solo_trumpf_pik herz_dame karo_dame)
+(karte_trumpf solo_trumpf_pik karo_dame kreuz_bube)
+(karte_trumpf solo_trumpf_pik kreuz_bube pik_bube)
+(karte_trumpf solo_trumpf_pik pik_bube herz_bube)
+(karte_trumpf solo_trumpf_pik herz_bube karo_bube)
+(karte_trumpf solo_trumpf_pik karo_bube pik_ass)
+(karte_trumpf solo_trumpf_pik pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_pik pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_pik pik_koenig pik_neun)
+
+(karte_trumpf solo_trumpf_pik kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_pik kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_pik kreuz_koenig kreuz_neun)
+
+(karte_trumpf solo_trumpf_pik herz_ass herz_koenig)
+(karte_trumpf solo_trumpf_pik herz_koenig herz_neun)
+
+(karte_trumpf solo_trumpf_pik karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_pik karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_pik karo_koenig karo_neun)
+
+
+(<= (farb_trumpf solo_trumpf_pik ?any trumpf kreuz))
+(<= (farb_trumpf solo_trumpf_pik ?any trumpf herz))
+(<= (farb_trumpf solo_trumpf_pik ?any trumpf karo))
+
+
+(<= (farb_trumpf solo_trumpf_pik ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+    (distinct ?x ?y)
+)
+
+// solo trumpf herz = karo durch herz austauschen (achtung mit herz_zehn)
+(farbe solo_trumpf_herz trumpf herz_zehn)
+(farbe solo_trumpf_herz trumpf kreuz_dame)
+(farbe solo_trumpf_herz trumpf pik_dame)
+(farbe solo_trumpf_herz trumpf herz_dame)
+(farbe solo_trumpf_herz trumpf karo_dame)
+(farbe solo_trumpf_herz trumpf kreuz_bube)
+(farbe solo_trumpf_herz trumpf pik_bube)
+(farbe solo_trumpf_herz trumpf herz_bube)
+(farbe solo_trumpf_herz trumpf karo_bube)
+(farbe solo_trumpf_herz trumpf herz_ass)
+(farbe solo_trumpf_herz trumpf herz_koenig)
+(farbe solo_trumpf_herz trumpf herz_neun)
+
+(farbe solo_trumpf_herz kreuz kreuz_ass)
+(farbe solo_trumpf_herz kreuz kreuz_zehn)
+(farbe solo_trumpf_herz kreuz kreuz_koenig)
+(farbe solo_trumpf_herz kreuz kreuz_neun)
+
+(farbe solo_trumpf_herz pik pik_ass)
+(farbe solo_trumpf_herz pik pik_zehn)
+(farbe solo_trumpf_herz pik pik_koenig)
+(farbe solo_trumpf_herz pik pik_neun)
+
+(farbe solo_trumpf_herz karo karo_ass)
+(farbe solo_trumpf_herz karo karo_zehn)
+(farbe solo_trumpf_herz karo karo_koenig)
+(farbe solo_trumpf_herz karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_herz herz_zehn kreuz_dame)
+(karte_trumpf solo_trumpf_herz kreuz_dame pik_dame)
+(karte_trumpf solo_trumpf_herz pik_dame herz_dame)
+(karte_trumpf solo_trumpf_herz herz_dame karo_dame)
+(karte_trumpf solo_trumpf_herz karo_dame kreuz_bube)
+(karte_trumpf solo_trumpf_herz kreuz_bube pik_bube)
+(karte_trumpf solo_trumpf_herz pik_bube herz_bube)
+(karte_trumpf solo_trumpf_herz herz_bube karo_bube)
+(karte_trumpf solo_trumpf_herz karo_bube herz_ass)
+(karte_trumpf solo_trumpf_herz herz_ass herz_koenig)
+(karte_trumpf solo_trumpf_herz herz_koenig herz_neun)
+
+(karte_trumpf solo_trumpf_herz kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_herz kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_herz kreuz_koenig kreuz_neun)
+
+(karte_trumpf solo_trumpf_herz pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_herz pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_herz pik_koenig pik_neun)
+
+(karte_trumpf solo_trumpf_herz karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_herz karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_herz karo_koenig karo_neun)
+
+
+(<= (farb_trumpf solo_trumpf_herz ?any trumpf kreuz))
+(<= (farb_trumpf solo_trumpf_herz ?any trumpf pik))
+(<= (farb_trumpf solo_trumpf_herz ?any trumpf karo))
+
+
+(<= (farb_trumpf solo_trumpf_herz ?x ?x ?y)
+    (distinct ?x trumpf)
+    (distinct ?y trumpf)
+    (distinct ?x ?y)
+)
+
+// solo trumpf karo (= normal)
+(<= (farbe solo_trumpf_karo ?x ?y)
+    (farbe normal ?x ?y)
+)
+(<= (karte_trumpf solo_trumpf_karo ?x ?y)
+    (karte_trumpf normal ?x ?y)
+)
+
+(<= (farb_trumpf solo_trumpf_karo ?x ?y ?z)
+    (farb_trumpf normal ?x ?y ?z)
+)
+
+
+// solo trumpf ass (fleischlos) = kein trumpf
+(farbe solo_trumpf_ass kreuz kreuz_ass)
+(farbe solo_trumpf_ass kreuz kreuz_zehn)
+(farbe solo_trumpf_ass kreuz kreuz_koenig)
+(farbe solo_trumpf_ass kreuz kreuz_dame)
+(farbe solo_trumpf_ass kreuz kreuz_bube)
+(farbe solo_trumpf_ass kreuz kreuz_neun)
+
+(farbe solo_trumpf_ass pik pik_ass)
+(farbe solo_trumpf_ass pik pik_zehn)
+(farbe solo_trumpf_ass pik pik_koenig)
+(farbe solo_trumpf_ass pik pik_dame)
+(farbe solo_trumpf_ass pik pik_bube)
+(farbe solo_trumpf_ass pik pik_neun)
+
+(farbe solo_trumpf_ass herz herz_ass)
+(farbe solo_trumpf_ass herz herz_zehn)
+(farbe solo_trumpf_ass herz herz_koenig)
+(farbe solo_trumpf_ass herz herz_dame)
+(farbe solo_trumpf_ass herz herz_bube)
+(farbe solo_trumpf_ass herz herz_neun)
+
+(farbe solo_trumpf_ass karo karo_ass)
+(farbe solo_trumpf_ass karo karo_zehn)
+(farbe solo_trumpf_ass karo karo_koenig)
+(farbe solo_trumpf_ass karo karo_dame)
+(farbe solo_trumpf_ass karo karo_bube)
+(farbe solo_trumpf_ass karo karo_neun)
+
+
+(karte_trumpf solo_trumpf_ass kreuz_ass kreuz_zehn)
+(karte_trumpf solo_trumpf_ass kreuz_zehn kreuz_koenig)
+(karte_trumpf solo_trumpf_ass kreuz_koenig kreuz_dame)
+(karte_trumpf solo_trumpf_ass kreuz_dame kreuz_bube)
+(karte_trumpf solo_trumpf_ass kreuz_bube kreuz_neun)
+
+(karte_trumpf solo_trumpf_ass pik_ass pik_zehn)
+(karte_trumpf solo_trumpf_ass pik_zehn pik_koenig)
+(karte_trumpf solo_trumpf_ass pik_koenig pik_dame)
+(karte_trumpf solo_trumpf_ass pik_dame pik_bube)
+(karte_trumpf solo_trumpf_ass pik_bube pik_neun)
+
+(karte_trumpf solo_trumpf_ass herz_ass herz_zehn)
+(karte_trumpf solo_trumpf_ass herz_zehn herz_koenig)
+(karte_trumpf solo_trumpf_ass herz_koenig herz_dame)
+(karte_trumpf solo_trumpf_ass herz_dame herz_bube)
+(karte_trumpf solo_trumpf_ass herz_bube herz_neun)
+
+(karte_trumpf solo_trumpf_ass karo_ass karo_zehn)
+(karte_trumpf solo_trumpf_ass karo_zehn karo_koenig)
+(karte_trumpf solo_trumpf_ass karo_koenig karo_dame)
+(karte_trumpf solo_trumpf_ass karo_dame karo_bube)
+(karte_trumpf solo_trumpf_ass karo_bube karo_neun)
+
+
+(<= (farb_trumpf solo_trumpf_ass ?x ?x ?y)
+    (distinct ?x ?y)
+)

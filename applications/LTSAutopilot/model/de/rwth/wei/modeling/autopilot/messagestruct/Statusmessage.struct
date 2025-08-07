@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.messagestruct;
+
+struct Statusmessage{
+     Z  vehicleid;
+     Z  timestamp;
+     Q  position_x;
+     Q  position_y;
+     Q  compass;
+     Z  platoon_headid;
+     Q  length;
+     Q  width;
+     Q  engine;
+     Q  brakes;
+     Q  steering;
+     Q  velocity;
+}

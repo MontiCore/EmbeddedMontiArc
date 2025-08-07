@@ -1,0 +1,21 @@
+/* (c) https://github.com/MontiCore/monticore */
+architecture Discriminator {
+    def input Q(-1:1)^{1,64,64} data
+    def output Q(0:1)^{1} dis
+
+    data ->
+    Convolution(kernel=(4,4),channels=64, stride=(2,2)) ->
+    LeakyRelu(alpha=0.2) ->
+    Convolution(kernel=(4,4),channels=128, stride=(2,2)) ->
+    BatchNorm() ->
+    LeakyRelu(alpha=0.2) ->
+    Convolution(kernel=(4,4),channels=256, stride=(2,2)) ->
+    BatchNorm() ->
+    LeakyRelu(alpha=0.2) ->
+    Convolution(kernel=(4,4),channels=512, stride=(2,2)) ->
+    BatchNorm() ->
+    LeakyRelu(alpha=0.2) ->
+    Convolution(kernel=(4,4),channels=1, stride=(1,1)) ->
+    Sigmoid() ->
+    dis;
+}

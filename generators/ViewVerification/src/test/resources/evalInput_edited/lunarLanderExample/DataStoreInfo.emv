@@ -1,0 +1,17 @@
+/* (c) https://github.com/MontiCore/monticore */
+package lunarLanderExample;
+
+// The job of the data store component is to store
+// and allow other components access to the height,
+// velocity, and fuel of the lander...
+
+view DataStoreInfo {
+
+  component DataStore {
+    port
+      out ? height,
+      out ? velocity,
+      out ? fuel;
+  }
+  instance DataStore dataStore;
+}

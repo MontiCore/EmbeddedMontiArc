@@ -1,0 +1,6 @@
+PACKAGE invalid
+
+DOCKERFILE ValidatePort
+
+EXPOSE 0
+EXPOSE 70000

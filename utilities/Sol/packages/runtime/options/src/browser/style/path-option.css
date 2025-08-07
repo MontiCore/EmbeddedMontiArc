@@ -1,0 +1,15 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+.sol-runtime-options.path-option {
+    display:flex;
+    flex-direction:column;
+}
+
+.sol-runtime-options.path-option button {
+    min-width:20px;
+}
+
+.sol-runtime-options.path-option input {
+    flex:1;
+}

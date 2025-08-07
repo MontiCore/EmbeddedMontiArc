@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tagDef.caseStudy;
+
+import tagDef.CnCExt;
+import tagDef.NFPExt;
+
+ocl rule1_InstPower {
+    context Cmp cmp inv:
+            let
+                selectedVals = cmp.CType;
+                aggregatedValue = max(cmp.compPower, 0W);
+            in
+                aggregatedValue < min(selectedVals.compTypePower, +oo W);
+}

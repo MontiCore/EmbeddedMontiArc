@@ -1,0 +1,16 @@
+(<= (legal test (do))
+    (a 1)
+)
+
+(<= (legal test (do_not))
+    (a 2)
+)
+
+(<= (next (success))
+    (does test (do))
+)
+(<= (next (failure))
+    (does test (do_not))
+)
+
+(a 1)

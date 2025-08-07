@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+import CMTCar;
+import cars.CMTCar2;
+
+sim CarModelTest {
+  sim_duration 4h;
+
+  time 12:00;
+
+  map_name Basics.osm;
+
+  vehicle car1(-22.0,-34.0,90.0)->(-1.0,0.0,10.0) : CMTCar;
+  vehicle car2(0,0,0)->(1,1,1) : CMTCar2;
+  vehicle car3(1,1,1)->(2,2,2) : CMTCar;
+
+}

@@ -1,0 +1,37 @@
+/* (c) https://github.com/MontiCore/monticore */
+package avionicsSystemExample;
+
+// inspired by the flow defined for Flight_System.impl
+
+view ControlFlowInSystem {
+component Flight_System {
+   // Display
+  component Pilot_Display {}
+  instance Pilot_Display pilot_Display;
+  
+  // Display_Manager
+  component Pilot_DM {}
+  instance Pilot_DM pilot_DM;
+  
+  // Page_Content_Manager
+  component PCM {}
+  instance PCM pCM;
+  
+  // Flight_Manager
+  component FM {}
+  instance FM fM;
+  
+  // Flight_Director
+  component FD {}
+  instance FD fD;
+  
+  connect pilot_Display -> pilot_DM;
+  connect pilot_DM -> pCM;
+  connect pCM -> fM;
+  connect fM -> fD;
+  connect fD -> fM;
+  connect fM -> pCM;
+  connect pCM -> pilot_DM;
+  connect pilot_DM -> pilot_Display;
+  }
+}

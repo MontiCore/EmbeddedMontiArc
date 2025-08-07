@@ -1,0 +1,36 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+import SpectralClusterer;
+
+component ObjectDetector{
+ports in Q(0:255)^{50, 50} red1,
+          in Q(0:255)^{50, 50} green1,
+          in Q(0:255)^{50, 50} blue1,
+          in Q(0:255)^{50, 50} red2,
+          in Q(0:255)^{50, 50} green2,
+          in Q(0:255)^{50, 50} blue2,
+          in Q(0:255)^{50, 50} red3,
+          in Q(0:255)^{50, 50} green3,
+          in Q(0:255)^{50, 50} blue3,
+          in Q(0:255)^{50, 50} red4,
+          in Q(0:255)^{50, 50} green4,
+          in Q(0:255)^{50, 50} blue4,
+          out Q(-oo:oo)^{2500, 1} clusters[4];
+
+    instance SpectralClusterer<50, 2500, 4, 1> spectralClusterer[4];
+
+    connect  red1 -> spectralClusterer[1].red;
+    connect  green1 -> spectralClusterer[1].green;
+    connect  blue1 -> spectralClusterer[1].blue;
+    connect  red2 -> spectralClusterer[2].red;
+    connect  green2 -> spectralClusterer[2].green;
+    connect  blue2 -> spectralClusterer[2].blue;
+    connect  red3 -> spectralClusterer[3].red;
+    connect  green3 -> spectralClusterer[3].green;
+    connect  blue3 -> spectralClusterer[3].blue;
+    connect  red4 -> spectralClusterer[4].red;
+    connect  green4 -> spectralClusterer[4].green;
+    connect  blue4 -> spectralClusterer[4].blue;
+    connect spectralClusterer[:].clusters -> clusters[:];
+
+}

@@ -1,0 +1,14 @@
+/* (c) https://github.com/MontiCore/monticore */
+package test.math;
+
+component FindContoursCommandTest{
+    port
+        in Q^{n,m} image,
+        in Z mode,
+        in Z method,
+        out Q contours;
+
+    implementation Math {
+        contours = findContours(image, mode, method);
+    }
+}

@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests;
+
+import tests.structs.Trajectory;
+//import tests.filter.TrajectoryFilter;
+import tests.misc.CompareTrajectory;
+
+
+component Controller{
+//    port in Q(0:100) cutoffPosition;
+//    port in Q(0:10) cutoffTime;
+
+    //instance TrajectoryFilter<5> filter;
+
+    //connect constCutoffPosition.out1 -> filter.cutoffPosition;
+    //connect constCutoffTime.out1 -> filter.cutoffTime;
+    //connect filter.trajectoryIn[:] -> filter.trajectoryIn[:];
+
+    port in Trajectory trajectoryIn[5];
+
+    instance CompareTrajectory compareTrajectory;
+
+    connect trajectoryIn[:] -> trajectoryIn[:];
+
+
+}

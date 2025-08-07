@@ -1,0 +1,66 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+ 
+
+component Similarity<N1 n = 50> {
+
+    ports in Q(-oo:oo)^{n,n} red,
+
+          in Q(-oo:oo)^{n,n} green,
+
+          in Q(-oo:oo)^{n,n} blue,
+
+          out Q(-oo:oo)^{n*n,n*n} similarity,
+
+          out Q(-oo:oo)^{n*n,n*n} degree;
+
+ 
+
+    implementation Math{
+
+        Z counter2 = 1;
+
+        for j = 1:size(red,1)
+
+            for i = 1:size(red,1)
+
+                Z counter1 = 1;
+
+                for j2= 1:size(red,1)
+
+                    for i2 = 1:size(red,1)
+
+                        Q dist = sqrt((red(i,j) - red(i2,j2))*(red(i,j) - red(i2,j2)) +
+
+                         (green(i,j) - green(i2,j2))*(green(i,j) - green(i2,j2)) +
+
+                         (blue(i,j) - blue(i2,j2))*(blue(i,j) - blue(i2,j2)));
+
+                        similarity(counter2,counter1) = exp(-dist/(2));
+
+                        counter1 = counter1 + 1;
+
+                    end
+
+                end
+
+                counter2 = counter2 + 1;
+
+            end
+
+        end
+
+ 
+
+        //calculate degree matrix
+
+        for k=1:size(similarity,1)
+
+            degree(k,k) = sum(similarity(k,:));
+
+        end
+
+    }
+
+}

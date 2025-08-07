@@ -1,0 +1,26 @@
+/* (c) https://github.com/MontiCore/monticore */
+#menu-panel {
+    display:none;
+    top:40px;
+    left:430px;
+    width:150px;
+    height:150px;
+}
+
+#menu-panel ul {
+    margin:0;
+    list-style:none;
+    padding:0;
+}
+
+#menu-panel li {
+    text-align:center;
+    width:calc(100% - 20px);
+    padding:10px 10px 10px 10px;
+    margin:0px 0px 5px 0px;
+}
+
+#menu-panel li:hover {
+    background-color:grey;
+    cursor:pointer;
+}

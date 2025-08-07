@@ -1,0 +1,8 @@
+/* (c) https://github.com/MontiCore/monticore */
+package models;
+
+component ColumnVector_NoRangeNoUnit {
+  ports
+    in Q^{3,1} inNoRangeNoUnit,
+    out Q^{3,1} outNoRangeNoUnit;
+}

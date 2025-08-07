@@ -1,0 +1,261 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messagegenerate.*;
+import  de.rwth.wei.modeling.autopilot.messageparsing.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+import  de.rwth.wei.modeling.autopilot.messagematch.*;
+import  de.rwth.wei.modeling.autopilot.platoonService.*;
+import  de.rwth.wei.modeling.autopilot.intersectionService.*;
+import  de.rwth.wei.modeling.autopilot.collisionavoidanceService.*;
+import  de.rwth.wei.modeling.autopilot.common.*;
+import  de.rwth.wei.modeling.autopilot.behavior.*;
+import  de.rwth.wei.modeling.autopilot.motion.*;
+
+
+dynamic component Autopilot{
+  ports
+  dynamic in Statusmessage        status_msg[0:32],
+  dynamic in Platoonmessage       plat_msg[0:32],
+  dynamic in Platoonjointmessage  platj_msg[0:32],
+  dynamic in Trajectorymessage    traj_msg[0:32],
+  dynamic in Collisionmessage     coll_msg[0:32],
+
+  in  Z             vehicleid,
+  in  Z             timestamp,
+  in  Q             timeIncrement,
+  in  Q             velocity,
+  in  Q             position_x,
+  in  Q             position_y,
+  in  Q             compass,
+  in  Q             currentEngine,
+  in  Q             currentSteering,
+  in  Q             currentBrakes,
+  in  Z             status,
+  in  Z             if_willsplit
+  in  Z             isplatoonheader,
+  in  Z             platoonheadid,
+  in  Z^{1,100}     platoonlist,
+  in  Z             platoon_member_num,
+
+  in  Z              trajectory_length,
+  in  Q^{1,100}      trajectory_x,
+  in  Q^{1,100}      trajectory_y,
+  in  Z^{1,100}      isintersection,
+
+  // output actuation commands
+  out Q                 engine,
+  out Q                 steering,
+  out Q                 brakes,
+  out Z                 current_status,
+  out Z                 currentplatoonheadid,
+  out Z                 ifcurrentplatoonheader,
+  out Z                 ifcurrentwillsplit,
+  out Z                 current_platnum,
+  out Z^{1,100}         currentplatoonlist,
+
+  dynamic out Statusmessage        out_status_msg[0:32],
+  dynamic out Platoonmessage       out_plat_msg[0:32],
+  dynamic out Platoonjointmessage  out_platj_msg[0:32],
+  dynamic out Trajectorymessage    out_traj_msg[0:32],
+  dynamic out Collisionmessage     out_coll_msg[0:32];
+
+  instance Trimpath                            trimpath;
+  instance Nextintersection                    nextinter;
+  instance Desiredvelocity                     dvelocity;
+  instance Statusduplicate                     s_dup;
+  instance Trajduplicate                       t_dup;
+  instance Platoonduplicate                    p_dup;
+
+  instance CollisionavoidanceService           collservice;
+  instance IntersectionService                 interservice;
+  instance PlatoonService                      platservice;
+  instance Compass2CurrentDirection            c2cd;
+  instance BehaviorGeneration                  behaviorGeneration;
+  instance MotionPlanning                      motionPlanning;
+  instance AcutatorSelect                      acutator;
+  instance Stopfix                             stop;
+
+
+  connect position_x -> trimpath.currentPositionX;
+  connect position_y -> trimpath.currentPositionX;
+  connect trajectory_length -> trimpath.plannedTrajectoryLength;
+  connect trajectory_x -> trimpath.plannedTrajectoryX;
+  connect trajectory_y -> trimpath.plannedTrajectoryY;
+  connect isintersection -> trimpath.plannedIsintersection;
+
+
+
+  connect trimpath.trimmedTrajectoryLength -> nextinter.trajectory_length;
+  connect trimpath.trimmedTrajectoryX -> nextinter.trajectory_x;
+  connect trimpath.trimmedTrajectoryY -> nextinter.trajectory_y;
+  connect trimpath.trimmedIsintersection -> nextinter.isintersection;
+
+  @ status_msg::connect{
+    connect status_msg[?] -> s_dup.status_msg[?];
+  }
+  @ traj_msg::connect{
+    connect traj_msg[?] -> t_dup.traj_msg[?];
+  }
+  @ plat_msg::connect{
+    connect plat_msg[?] -> p_dup.plat_msg[?];
+  }
+
+  @ s_dup.status_msg1::connect{
+    connect s_dup.status_msg1[?] -> collservice.status_msg[?];
+  }
+  connect position_x -> collservice.position_x;
+  connect position_y -> collservice.position_y;
+  connect trimpath.trimmedTrajectoryLength -> collservice.trajectorylength;
+  connect trimpath.trimmedTrajectoryX -> collservice.trajectory_x;
+  connect trimpath.trimmedTrajectoryY -> collservice.trajectory_y;
+  connect compass -> collservice.compass;
+  connect isplatoonheader -> collservice.isplatoonheader;
+  connect status -> collservice.status;
+  connect length -> collservice.length;
+  connect width -> collservice.width;
+  connect velocity -> collservice.velocity;
+
+  connect collservice.maximalallowedvelocity -> dvelocity.velocity1;
+
+
+
+
+  @ s_dup.status_msg2::connect{
+    connect s_dup.status_msg2[?] -> interService.status_msg[?];
+  }
+
+  @ t_dup.traj_msg1::connect{
+    connect t_dup.traj_msg1[?] -> interservice.traj_msg[?];
+  }
+
+  @ p_dup.plat_msg1::connect{
+    connect p_dup.plat_msg1[?] -> interservice.plat_msg[?];
+  }
+
+  @ coll_msg::connect{
+    connect coll_msg[?] -> interservice.coll_msg[?];
+  }
+
+  connect status -> interservice.status;
+  connect isplatoonheader -> interservice.isplatoonheader;
+  connect ifcurrentsplit -> interservice.ifcurrentsplit;
+  connect platoon_length -> interservice.platoon_length;
+  connect timestamp -> interservice.timestamp;
+  connect vehicleid -> interservice.vehicleid;
+  connect velocity -> interservice.velocity;
+  connect length -> interservice.length;
+  connect width -> interservice.width;
+  connect nextinter.isnextintersection -> interservice.isnextintersection;
+  connect nextinter.nextintersection_x -> interservice.nextintersection_x;
+  connect nextinter.nextintersection_y -> interservice.nextintersection_y;
+  connect nextinter.dis2intersection -> interservice.dis2intersection;
+  connect trimpath.trimmedTrajectoryLength -> interservice.trajectory_length;
+  connect trimpath.trimmedTrajectoryX -> interservice.trajectory_x;
+  connect trimpath.trimmedTrajectoryY -> interservice.trajectory_y;
+
+  connect interservice.maximalallowedvelocity -> dvelocity.velocity2;
+
+  @ interservice.coll_message::connect{
+    connect interservice.coll_message[?] -> out_coll_msg[?];
+  }
+
+
+  @ s_dup.status_msg3::connect{
+    connect s_dup.status_msg3[?] -> platservice.status_msg[?];
+  }
+
+  @ t_dup.traj_msg2::connect{
+    connect t_dup.traj_msg2[?] -> platservice.traj_msg[?];
+  }
+
+  @ p_dup.plat_msg2::connect{
+    connect p_dup.plat_msg2[?] -> platservice.plat_msg[?];
+  }
+
+  @ platj_msg::connect{
+    connect platj_msg[?] -> platservice.plat_joint_msg[?];
+  }
+
+  connect trimpath.trimmedTrajectoryLength -> platservice.trajectory_length;
+  connect trimpath.trimmedTrajectoryX -> platservice.trajectory_x;
+  connect trimpath.trimmedTrajectoryY -> platservice.trajectory_y;
+  connect nextinter.plat_isnextintersection -> platservice.isnextintersection;
+  connect nextinter.plat_nextintersection_x -> platservice.nextintersection_x;
+  connect nextinter.plat_nextintersection_y -> platservice.nextintersection_y;
+  connect status -> platservice.status;
+  connect if_willsplit -> platservice.if_willsplit;
+  connect isplatoonheader -> platservice.isplatoonheader;
+  connect platoonheadid -> platservice.platoonheadid;
+  connect platoonlist -> platservice.platoonlist;
+  connect platoon_member_num -> platservice.platoon_member_num;
+  connect timestamp -> platservice.timestamp;
+  connect position_x -> platservice.position_x;
+  connect position_y -> platservice.position_y;
+  connect vehicleid -> platservice.vehicleid;
+  connect compass -> platservice.compass;
+  connect length -> platservice.length;
+  connect width -> platservice.width;
+  connect currentEngine -> platservice.engine;
+  connect currentBrakes -> platservice.brake;
+  connect currentSteering -> platservice.steering;
+  connect velocity -> platservice.velocity;
+
+  connect platservice.current_status -> current_status;
+  connect platservice.currentplatoonheadid -> currentplatoonheadid;
+  connect platservice.ifcurrentplatoonheader -> ifcurrentplatoonheader;
+  connect platservice.ifcurrentwillsplit -> ifcurrentwillsplit;
+  connect platservice.current_platnum -> current_platnum;
+  connect platservice.currentplatoonlist -> currentplatoonlist;
+
+  @ platservice.out_status_msg::connect{
+    connect platservice.out_status_msg[?] -> out_status_msg[?];
+  }
+
+  @ platservice.out_plat_msg::connect{
+    connect platservice.out_plat_msg[?] -> out_plat_msg[?];
+  }
+
+  @ platservice.out_plat_joint_msg::connect{
+    connect platservice.out_plat_joint_msg[?] -> out_traj_msg[?];
+  }
+
+
+  connect compass                                          ->      c2cd.compass;
+
+  connect position_x                                       ->      behaviorGeneration.currentPositionX;
+  connect position_y                                       ->      behaviorGeneration.currentPositionY;
+  connect trajectory_length                                ->      behaviorGeneration.plannedTrajectoryLength;
+  connect trajectory_x                                     ->      behaviorGeneration.plannedTrajectoryX;
+  connect trajectory_y                                     ->      behaviorGeneration.plannedTrajectoryY;
+  connect c2cd.currentDirectionX                           ->      behaviorGeneration.currentDirectionX;
+  connect c2cd.currentDirectionY                           ->      behaviorGeneration.currentDirectionY;
+
+  connect currentVelocity                                  ->      motionPlanning.currentVelocity;
+  connect c2cd.currentDirectionX                           ->      motionPlanning.currentDirectionX;
+  connect c2cd.currentDirectionY                           ->      motionPlanning.currentDirectionY;
+  connect behaviorGeneration.desiredVelocity               ->      dvelocity.velocity3;
+  connect dvelocity.maximalallowedvelocity                 ->      motionPlanning.desiredVelocity;
+  connect behaviorGeneration.desiredDirectionX             ->      motionPlanning.desiredDirectionX;
+  connect behaviorGeneration.desiredDirectionY             ->      motionPlanning.desiredDirectionY;
+  connect behaviorGeneration.signedDistanceToTrajectory    ->      motionPlanning.signedDistanceToTrajectory;
+
+
+
+  connect motionPlanning.engine                            ->      acutator.engine;
+  connect motionPlanning.brakes                            ->      acutator.brakes;
+  connect platservice.out_engine                           ->      acutator.platengine;
+  connect platservice.out_brake                            ->      acutator.platbrakes;
+  connect platservice.if_take                              ->      acutator.if_take;
+
+
+  connect behaviorGeneration.length                        ->      stop.length;
+  connect motionPlanning.steering                          ->      stop.steering;
+  connect acutator.out_engine                              ->      stop.engine;
+  connect acutator.out_brakes                              ->      stop.brakes;
+
+  connect stop.steering1 -> steering;
+  connect stop.engine1 -> engine;
+  connect stop.brakes1 -> brakes;
+
+ }

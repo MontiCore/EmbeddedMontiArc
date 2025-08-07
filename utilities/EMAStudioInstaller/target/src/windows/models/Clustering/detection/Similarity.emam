@@ -1,0 +1,24 @@
+package detection;
+//only computes similarity for matrix element distances <=3
+component Similarity<N1 n = 1>{
+    ports in Q(-oo:oo)^{n,3} data,
+          out Q(-oo:oo)^{n,n} similarity,
+          out Q(-oo:oo)^{n,n} degree;
+
+    implementation Math{
+
+    //calculate similarity matrix
+        for i=1:size(data,1)
+            for j=1:size(data,1)
+                Q dist = sqrt((data(i,1) - data(j,1))*(data(i,1) - data(j,1)) + (data(i,2) - data(j,2))*(data(i,2) - data(j,2))
+                 + (data(i,3) - data(j,3))*(data(i,3) - data(j,3)));
+                similarity(i,j) = exp((0-dist)/(2));
+            end
+        end
+
+        //calculate degree matrix
+        for k=1:size(similarity,1)
+            degree(k,k) = sum(similarity(k,:));
+        end
+    }
+}

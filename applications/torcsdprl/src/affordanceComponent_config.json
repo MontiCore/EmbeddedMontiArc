@@ -1,0 +1,8 @@
+{
+    "modelsDir": "src/",
+    "outputDir": "target/affordanceComponent",
+    "rootModel":"cv.affordanceComponent",
+    "generators": ["emadlcpp", "roscpp"],
+    "emadlBackend": "GLUON"
+}
+

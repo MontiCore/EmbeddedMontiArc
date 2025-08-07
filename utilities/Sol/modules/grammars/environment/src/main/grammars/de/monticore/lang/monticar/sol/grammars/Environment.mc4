@@ -1,0 +1,299 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package de.monticore.lang.monticar.sol.grammars;
+
+/**
+ * Environment is a language which can be considered a distributed Dockerfile where each model contributes to the
+ * overall Dockerfile which acts as environment for the services launched by the IDE.
+ */
+grammar Environment extends de.monticore.MCBasics, de.monticore.MCLiterals {
+    // =========================================
+    // INTERFACE DEFINITIONS
+    // =========================================
+
+    /**
+     * ASTInstruction is the interface for a subset of Dockerfile and a few new instructions.
+     */
+    interface Instruction;
+
+    // =========================================
+    // PARSER RULES
+    // =========================================
+
+    /**
+     * EnvironmentCompilationUnit is the root parser rule which acts as container for the instructions.
+     */
+    EnvironmentCompilationUnit =
+        "PACKAGE" package:(Name || ".")+
+        Import*
+        main:Dockerfile
+    ;
+
+    start EnvironmentCompilationUnit;
+
+    /**
+     * A rule which enables the import of Component Dockerfiles.
+     */
+    Import =
+        "IMPORT" import:(Name || ".")+
+    ;
+
+    /**
+     * A rule which specifies a Dockerfile including whether it is a component or not.
+     */
+    symbol Dockerfile =
+        component:["COMPONENT"]? "DOCKERFILE" Name
+        instruction:Instruction*
+    ;
+
+    // -----------------------------------------
+    // COMPONENT INSTRUCTIONS
+    // -----------------------------------------
+
+    /**
+     * Label acts as peer to "LABEL" of a Dockerfile.
+     */
+    Label implements Instruction =
+        "LABEL" key:StringLiteral "=" value:StringLiteral
+    ;
+
+    /**
+     * Install is a new instruction which acts as replacement for "RUN apt-get install".
+     */
+    Install implements Instruction =
+        "INSTALL" package:(StringLiteral || ",")+
+    ;
+
+    /**
+     * Run acts as peer to "RUN" of a Dockerfile.
+     */
+    Run implements Instruction =
+        "RUN" argument:CommandOrSplitCommand
+    ;
+
+    /**
+     * Env acts as peer to "ENV" of a Dockerfile.
+     */
+    Env implements Instruction =
+        "ENV" key:StringLiteral "="? value:StringLiteral
+    ;
+
+    /**
+     * Expose acts as peer to "EXPOSE" of a Dockerfile.
+     */
+    Expose implements Instruction =
+        "EXPOSE" port:NatLiteral
+    ;
+
+    /**
+     * Volume acts as peer to "VOLUME" of a Dockerfile.
+     */
+    Volume implements Instruction =
+        "VOLUME" (
+            ("[" volume:(StringLiteral || ",")+ "]") |
+            volume:StringLiteral+
+        )
+    ;
+
+    /**
+     * WorkDir acts as peer to "WORKDIR" of a Dockerfile.
+     */
+    WorkDir implements Instruction =
+        "WORKDIR" directory:StringLiteral
+    ;
+
+    /**
+     * Arg acts as peer to "ARG" of a Dockerfile.
+     */
+    Arg implements Instruction =
+        "ARG" name:StringLiteral ("=" defaultValue:StringLiteral)?
+    ;
+
+    /**
+     * Shell acts as peer to "SHELL" of a Dockerfile.
+     */
+    Shell implements Instruction =
+        "SHELL" argument:SplitCommand
+    ;
+
+    // -----------------------------------------
+    // NON-COMPONENT INSTRUCTIONS
+    // -----------------------------------------
+
+    /**
+     * From acts as peer to "FROM" of a Dockerfile.
+     */
+    From implements Instruction =
+        "FROM" image:StringLiteral // ("AS" name:StringLiteral)? // Multi-Stage builds are not supported.
+    ;
+
+    /**
+     * CMD acts as peer to "CMD" of a Dockerfile.
+     */
+    CMD implements Instruction =
+        "CMD" (argument:CommandOrSplitCommand |  ("[" parameter:(StringLiteral || ",")+ "]"))
+    ;
+
+    /**
+     * Add acts as peer to "Add" of a Dockerfile.
+     */
+    Add implements Instruction =
+        "ADD" operation:AddOrCopyOperation
+    ;
+
+    /**
+     * Copy acts as peer to "Copy" of a Dockerfile.
+     */
+    Copy implements Instruction =
+        "COPY" option:InstructionOption? operation:AddOrCopyOperation
+    ;
+
+    /**
+     * EntryPoint acts as peer to "EntryPoint" of a Dockerfile.
+     */
+    EntryPoint implements Instruction =
+        "ENTRYPOINT" argument:CommandOrSplitCommand
+    ;
+
+    /**
+     * User acts as peer to "User" of a Dockerfile.
+     */
+    User implements Instruction =
+        "USER" owner:UserGroup
+    ;
+
+    /**
+     * OnBuild acts as peer to "OnBuild" of a Dockerfile.
+     */
+    OnBuild implements Instruction =
+        "ONBUILD" Instruction
+    ;
+
+    /**
+     * StopSignal acts as peer to "StopSignal" of a Dockerfile.
+     */
+    StopSignal implements Instruction =
+        "STOPSIGNAL" signal:Literal
+    ;
+
+    /**
+     * HealthCheck acts as peer to "HealthCheck" of a Dockerfile.
+     */
+    HealthCheck implements Instruction =
+        "HEALTHCHECK" (
+            (option:InstructionOption* "CMD" command:StringLiteral) |
+            "NONE"
+        )
+    ;
+
+    // -----------------------------------------
+    // COMMON PRODUCTIONS
+    // -----------------------------------------
+
+    /**
+     * UserGroup is pair of user (and group) used for ownership options.
+     */
+    UserGroup =
+        user:Literal (":" group:Literal)?
+    ;
+
+    /**
+     * Grouped elements for Add and Copy.
+     */
+    AddOrCopyOperation =
+        ( "--chown" "=" owner:UserGroup )? (
+            (source:StringLiteral+ destination:StringLiteral) |
+            ("[" source:(StringLiteral || ",")+ "," destination:StringLiteral "]")
+        )
+    ;
+
+    /**
+     * Represents an option for some of the instructions.
+     */
+    InstructionOption =
+        option:Option "=" value:Literal
+    ;
+
+    /**
+     * Represents a command in the format [executable, param1, param2].
+     */
+    SplitCommand =
+        "[" executable:StringLiteral ( "," parameter:(StringLiteral || ",")+ )? "]"
+    ;
+
+    /**
+     * Represents a command as string or as split command.
+     */
+    CommandOrSplitCommand =
+         command:StringLiteral | split:SplitCommand
+    ;
+
+    // =========================================
+    // LEXER RULES
+    // =========================================
+
+    /*token Value = // Tokenizer will usually choose this token as it is in most cases the first longest match.
+        ( ~( ' ' | '\\' | '\r' | '\n' )+ ( '\\' ( '\r' | '\n' | '\r' '\n' )+ (' ')* )? )+
+    :{
+        java.lang.String[] lines = getText().split("\\\\");
+
+        for (int i = 0; i < lines.length; i++) {
+            lines[i] = lines[i].trim();
+        }
+
+        setText(java.lang.String.join(" ", lines));
+    };*/
+
+    /*
+     * Used to match options of instructions.
+     */
+    token Option =
+        '-' '-' ('-' | 'a' .. 'z')+
+    ;
+
+    // =========================================
+    // AST DEFINITIONS
+    // =========================================
+
+    ast Instruction = method String getType() {};
+
+
+    ast Label = method String getType() { return "LABEL"; };
+
+    ast Install = method String getType() { return "INSTALL"; };
+
+    ast Run = method String getType() { return "RUN"; };
+
+    ast Env = method String getType() { return "ENV"; };
+
+    ast Expose = method String getType() { return "EXPOSE"; };
+
+    ast Volume = method String getType() { return "VOLUME"; };
+
+    ast WorkDir = method String getType() { return "WORKDIR"; };
+
+    ast Arg = method String getType() { return "ARG"; };
+
+    ast Shell = method String getType() { return "SHELL"; };
+
+
+    ast From = method String getType() { return "FROM"; };
+
+    ast CMD = method String getType() { return "CMD"; };
+
+    ast Add = method String getType() { return "ADD"; };
+
+    ast Copy = method String getType() { return "COPY"; };
+
+    ast EntryPoint = method String getType() { return "ENTRYPOINT"; };
+
+    ast User = method String getType() { return "USER"; };
+
+    ast OnBuild = method String getType() { return "ONBUILD"; };
+
+    ast StopSignal = method String getType() { return "STOPSIGNAL"; };
+
+    ast HealthCheck = method String getType() { return "HEALTHCHECK"; };
+
+}

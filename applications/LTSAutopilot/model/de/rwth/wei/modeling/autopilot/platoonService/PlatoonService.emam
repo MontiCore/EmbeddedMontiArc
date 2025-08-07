@@ -1,0 +1,365 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.rwth.wei.modeling.autopilot.platoonService;
+import  de.rwth.wei.modeling.autopilot.messagestruct.*;
+import  de.rwth.wei.modeling.autopilot.messageduplicate.*;
+
+dynamic component PlatoonService{
+  dynamic in  Statusmessage            status_msg[0:32],
+  dynamic in  Trajectorymessage        traj_msg[0:32],
+  dynamic in  Platoonmessage           plat_msg[0:32],
+  dynamic in  Platoonjointmessage      plat_joint_msg[0:32],
+
+  in  Z                  trajectory_length,
+  in  Q^{1,100}          trajectory_x,
+  in  Q^{1,100}          trajectory_y,
+  in  Z                  isnextintersection,
+  in  Q                  nextintersection_x,
+  in  Q                  nextintersection_y,
+  in  Z                  status,
+  in  Z                  if_willsplit
+  in  Z                  isplatoonheader,
+  in  Z                  platoonheadid,
+  in  Z^{1,100}          platoonlist,
+  in  Z                  platoon_member_num,
+
+  in   Z                 timestamp,
+  in   Q                 position_x,
+  in   Q                 position_y,
+  in   Z                 vehicleid,
+  in   Q                 compass,
+  in   Q                 length,
+  in   Q                 width,
+  in   Q                 engine,
+  in   Q                 brake,
+  in   Q                 steering,
+  in   Q                 velocity,
+
+
+
+  out Q                 out_engine,
+  out Q                 out_brake,
+  out Z                 if_take,
+
+  out Z                 current_status,
+  out Z                 currentplatoonheadid,
+  out Z                 ifcurrentplatoonheader,
+  out Z                 ifcurrentwillsplit,
+  out Z                 current_platnum,
+  out Z^{1,100}         currentplatoonlist,
+
+  dynamic out   Statusmessage            out_status_msg[0:32],
+  dynamic out   Platoonmessage           out_plat_msg[0:32],
+  dynamic out   Platoonjointmessage      out_plat_joint_msg[0:32];
+
+
+  instance Statusduplicate                   s_dup;
+  instance Trajduplicate                     t_dup;
+  instance Platduplicate                     p_dup;
+  instance Ifplatoon_split                   if_split;
+  instance Platoonmessagegenerator3          plat_generator3;
+  instance Split_type                        s_typ;
+  instance Changestatus_platoonheader        change_plat;
+  instance Changestatus_platoonsplit         change_platsplit;
+  instance Ifplatoon_memebersplit            if_membersplit;
+  instance Statusmessagegenerator            s_generate;
+  instance Changestatus_platoonmemeber       change_platm;
+  instance Changestatus_platoonmemebersplit  change_platmsplit;
+  instance Changestatus_single               change_single;
+  instance PlatoonServicesort                plat_sort;
+
+  // plat_sort
+
+
+ @ status_msg::connect{
+   connect status_msg[?] -> s_dup.status_msg[?];
+ }
+ @ traj_msg::connect{
+   connect traj_msg[?] -> t_dup.traj_msg[?];
+ }
+ @ plat_msg::connect{
+   connect plat_msg[?] -> p_dup.plat_msg[?];
+ }
+
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(0) && t_dup.traj_msg1::connect{
+   connect t_dup.traj_msg1[?] -> if_split.traj_msg[?];
+ }
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(0){
+   // if needs to be put in the outer layer
+   connect platoonlist -> if_split.platoonlist;
+   connect platoon_member_num -> if_split.platoon_member_num;
+   connect trajectory_length -> if_split.trajectory_length;
+   connect trajectory_x -> if_split.trajectory_x;
+   connect trajectory_y -> if_split.trajectory_y;
+   //connect isnextintersection -> if_split.isnextintersection;
+   connect nextintersection_x -> if_split.nextintersection_x;
+   connect nextintersection_y -> if_split.nextintersection_y;
+   // generate the split platoonmessage and change the status
+   connect if_split.if_member_split -> plat_generator3.if_split_me;
+   connect if_split.if_inter_split -> plat_generator3.if_split_in;
+   connect if_split.split_next_x -> plat_generator3.split_next_x;
+   connect if_split.split_next_y -> plat_generator3.split_next_y;
+   connect timestamp -> plat_generator3.timestamp;
+   connect position_x -> plat_generator3.position_x;
+   connect position_y -> plat_generator3.position_y;
+   connect vehicleid -> plat_generator3.vehicleid;
+   connect compass -> plat_generator3.compass;
+   connect length -> plat_generator3.length;
+   connect width -> plat_generator3.width;
+   connect engine -> plat_generator3.engine;
+   connect brake -> plat_generator3.brake;
+   connect steering -> plat_generator3.steering;
+   connect velocity -> plat_generator3.velocity;
+   connect platoonlist -> plat_generator3.platoonlist;
+   connect platoon_member_num -> plat_generator3.platoon_member_num;
+   connect plat_generator3.if_splitnow -> change_plat.if_splitnow;
+   connect plat_generator3.if_willsplit -> change_plat.if_willsplit;
+ }
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(0) && plat_generator3.plat_msg::connect{
+   connect plat_generator3.plat_msg[?] -> out_plat_msg[?];
+ }
+
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(0) && p_dup.plat_msg1::connect{
+   connect p_dup.plat_msg1[?] -> change_plat.plat_msg[?];
+ }
+
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(0) && {
+   //if joint in a platoon
+   connect platoonlist -> change_plat.platoonlist;
+   connect platoon_member_num -> change_plat.platoon_member_num;
+   connect vehicleid -> change_plat.vehicleid;
+
+   connect change_plat.current_status -> current_status;
+   connect change_plat.new_platoonheadid -> currentplatoonheadid;
+   connect change_plat.new_isplatoonheader -> ifcurrentplatoonheader;
+   connect change_plat.new_if_willsplit -> ifcurrentwillsplit;
+   connect change_plat.new_platoonlist -> currentplatoonlist;
+   connect change_plat.new_platoon_member_num -> current_platnum;
+
+   // plat_sort
+   connect 0 -> plat_sort.if_currentsinglebemerged;
+   connect change_plat.if_currentplatoonsplit -> plat_sort.if_currentplatoonsplit;
+   connect change_plat.if_currentplatoonbemerged -> plat_sort.if_currentplatoonbemerged;
+ }
+
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(1) && s_dup.status_msg1::connect{
+    // just send the split message unitl it get the message from the tail vehicle
+    connect s_dup.status_msg1[?] -> change_platsplit.status_msg[?];
+ }
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(1){
+    connect vehicleid -> change_platsplit.vehicleid;
+    connect timestamp -> change_platsplit.timestamp;
+    connect position_x -> change_platsplit.position_x;
+    connect position_y -> change_platsplit.position_y;
+    connect vehicleid -> change_platsplit.vehicleid;
+    connect compass -> change_platsplit.compass;
+    connect length -> change_platsplit.length;
+    connect width -> change_platsplit.width;
+    connect engine -> change_platsplit.engine;
+    connect brake -> change_platsplit.brake;
+    connect steering -> change_platsplit.steering;
+    connect velocity -> change_platsplit.velocity;
+    connect nextintersection_x -> change_platsplit.nextintersection_x;
+    connect nextintersection_y -> change_platsplit.nextintersection_y;
+    connect platoonheadid -> change_platsplit.platoonheadid;
+    connect platoonlist -> change_platsplit.platoonlist;
+    connect platoon_member_num -> change_platsplit.platoon_member_num;
+
+    connect change_platsplit.current_status -> current_status;
+    connect change_platsplit.ifwillsplit -> ifcurrentwillsplit;
+    connect change_platsplit.isplatoonheader -> ifcurrentplatoonheader;
+    connect change_platsplit.current_platoonheadid -> currentplatoonheadid;
+    connect change_platsplit.currentplatoonlist -> currentplatoonlist;
+    connect change_platsplit.current_platnum -> current_platnum;
+
+    connect change_platsplit.if_currentplatoonsplit -> plat_sort.if_currentplatoonsplit;
+    connect 0 -> plat_sort.if_currentplatoonbemerged;
+    connect 0 -> plat_sort.if_currentsinglebemerged;
+ }
+ @ status::value(1) && isplatoonheader::value(1) && if_willsplit::value(1) && change_platsplit.plat_msg::connect{
+   connect change_platsplit.plat_msg[?] -> out_plat_msg[?];
+ }
+
+
+
+ @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(0) && p_dup.plat_msg2::connect{
+  // just send the statusmessage until the split base on position
+   connect p_dup.plat_msg2[?] -> if_membersplit.plat_msg[?];
+ }
+ @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(0){
+   connect vehicleid -> if_membersplit.vehicleid;
+   connect platoonheadid -> if_membersplit.platoonheadid;
+   connect if_membersplit.ifwillsplit -> s_generate.ifwillsplit;
+   connect if_membersplit.ifsplitnow -> s_generate.ifsplitnow;
+   connect platoonheadid -> s_generate.platoonheadid;
+   connect vehicleid -> s_generate.vehicleid;
+   connect timestamp -> s_generate.timestamp;
+   connect position_x -> s_generate.position_x;
+   connect position_y -> s_generate.position_y;
+   connect compass -> s_generate.compass;
+   connect length -> s_generate.length;
+   connect width -> s_generate.width;
+   connect engine -> s_generate.engine;
+   connect brakes -> s_generate.brakes;
+   connect steering -> s_generate.steering;
+   connect velocity -> s_generate.velocity;
+
+ }
+ @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(0) && s_generate.status_msg::connect{
+   connect s_generate.status_msg[?] -> out_status_msg[?];
+ }
+ @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(0) && p_dup.plat_msg3::connect{
+   connect p_dup.plat_msg3[?] -> change_platm.plat_msg[?];
+ }
+ @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(0){
+   connect s_generate.if_split -> change_platm.if_split;
+   connect s_generate.if_willsplit -> change_platm.if_willsplit;
+   connect vehicleid -> change_platm.vehicleid;
+   connect platoonheadid -> change_platm.platoonheadid;
+   connect platoonlist -> change_platm.platoonlist;
+   connect platoon_member_num -> change_platm.platoon_member_num;
+
+   connect change_platm.current_status -> current_status;
+   connect change_platm.ifcurrentwillsplit -> ifcurrentwillsplit;
+   connect change_platm.currentplatoonheadid -> currentplatoonheadid;
+   connect change_platm.current_platnum -> current_platnum;
+   connect change_platm.currentplatoonlist -> currentplatoonlist;
+   connect isplatoonheader -> ifcurrentplatoonheader;
+
+   connect 0 -> plat_sort.if_currentsinglebemerged;
+   connect 0 -> plat_sort.if_currentplatoonbemerged;
+   connect 0 -> plat_sort.if_currentplatoonsplit;
+ }
+
+
+
+  @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(1) && p_dup.plat_msg4::connect{
+   // just send the statusmessage until the split base on position
+    connect p_dup.plat_msg4[?] -> change_platmsplit.plat_msg[?];
+  }
+
+  @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(1){
+   // just send the statusmessage until the split base on position
+    connect platoonheadid -> change_platmsplit.platoonheadid;
+    connect platoonlist -> change_platmsplit.platoonlist;
+    connect platoon_member_num -> change_platmsplit.platoon_member_num;
+    connect timestamp -> change_platmsplit.timestamp;
+    connect position_x -> change_platmsplit.position_x;
+    connect position_y -> change_platmsplit.position_y;
+    connect vehicleid -> change_platmsplit.vehicleid;
+    connect compass -> change_platmsplit.compass;
+    connect width -> change_platmsplit.width;
+    connect engine -> change_platmsplit.engine;
+    connect brake -> change_platmsplit.brake;
+    connect steering -> change_platmsplit.steering;
+    connect velocity -> change_platmsplit.velocity;
+    connect nextintersection_x -> change_platmsplit.nextintersection_x;
+    connect nextintersection_y -> change_platmsplit.nextintersection_y;
+    connect change_platmsplit.current_status -> current_status;
+    connect change_platmsplit.currentplatoonheadid -> currentplatoonheadid;
+    connect change_platmsplit.ifcurrentwillsplit -> ifcurrentwillsplit;
+    connect change_platmsplit.current_platnum -> current_platnum;
+    connect change_platmsplit.currentplatoonlist -> currentplatoonlist;
+    connect isplatoonheader -> ifcurrentplatoonheader;
+
+    connect 0 -> plat_sort.if_currentsinglebemerged;
+    connect 0 -> plat_sort.if_currentplatoonbemerged;
+    connect 0 -> plat_sort.if_currentplatoonsplit;
+  }
+  @ status::value(1) && isplatoonheader::value(0) && if_willsplit::value(1) && change_platmsplit.status_msg::connect {
+    connect change_platmsplit.status_msg[?] -> out_status_msg[?];
+  }
+
+  @ status::value(0) && p_dup.plat_msg5::connect{
+    connect p_dup.plat_msg5[?] -> change_single.plat_msg[?];
+  }
+  @ status::value(0){
+    // if needs to be merged into the platoon, change the status
+    // if not still send the statusmessage
+    connect vehicleid -> change_single.vehicleid;
+    connect timestamp -> change_single.timestamp;
+    connect position_x -> change_single.position_x;
+    connect position_y -> change_single.position_y;
+    connect compass -> change_single.compass;
+    connect length -> change_single.length;
+    connect width -> change_single.width;
+    connect engine -> change_single.engine;
+    connect brakes -> change_single.brakes;
+    connect steering -> change_single.steering;
+    connect velocity -> change_single.velocity;
+
+    connect change_single.current_status -> current_status;
+    connect change_single.currentplatoonheadid -> currentplatoonheadid;
+    connect change_single.current_platnum -> current_platnum;
+    connect change_single.currentplatoonlist -> currentplatoonlist;
+    connect 0 -> ifcurrentplatoonheader;
+    connect 0 -> ifcurrentwillsplit
+
+    connect change_single.if_currentsinglebemerged -> plat_sort.if_currentsinglebemerged;
+    connect 0 -> plat_sort.if_currentplatoonbemerged;
+    connect 0 -> plat_sort.if_currentplatoonsplit;
+  }
+  @ status::value(0) && change_single.status_msg::connect{
+    connect change_single.status_msg[?] -> out_status_msg[?];
+  }
+
+  @ p_dup.plat_msg6::connect{
+    connect p_dup.plat_msg6[?] -> plat_sort.plat_msg[?];
+  }
+
+  @ t_dup.traj_msg2::connect{
+    connect t_dup.traj_msg2[?] -> plat_sort.traj_msg[?];
+  }
+
+  @ s_dup.status_msg2:connect{
+    connect s_dup.status_msg2[?] -> plat_sort.status_msg[?];
+  }
+
+  @ plat_joint_msg::connect{
+    connect plat_joint_msg[?] -> plat_sort.plat_joint_msg[?];
+  }
+
+
+   connect status -> plat_sort.status;
+   connect isplatoonheader -> plat_sort.isplatoonheader;
+   connect platoonheadid -> plat_sort.platoonheadid;
+   connect trajectory_length -> plat_sort.trajectory_length;
+   connect trajectory_x -> plat_sort.trajectory_x;
+   connect trajectory_y -> plat_sort.trajectory_y;
+   connect isnextintersection -> plat_sort.isnextintersection;
+   connect nextintersection_x -> plat_sort.nextintersection_x;
+   connect nextintersection_y -> plat_sort.nextintersection_y;
+   connect timestamp -> plat_sort.currenttimestamp;
+   connect platoonlist -> plat_sort.platoonlist;
+   connect platoon_member_num -> plat_sort.platoon_member_num;
+   connect length -> plat_sort.length;
+   connect width -> plat_sort.width;
+   connect velocity -> plat_sort.velocity;
+   connect position_x -> plat_sort.position_x;
+   connect position_y -> plat_sort.position_y;
+
+
+
+   @ plat_sort.out_plat_msg::connect{
+     connect plat_sort.out_plat_msg[?] -> out_plat_msg[?];
+     connect plat_sort.current_status -> current_status;
+     connect plat_sort.currentplatoonheadid -> currentplatoonheadid;
+     connect plat_sort.ifcurrentplatoonheader -> ifcurrentplatoonheader;
+     connect plat_sort.ifcurrentwillsplit -> ifcurrentwillsplit;
+     connect plat_sort.current_platnum -> current_platnum;
+     connect plat_sort.currentplatoonlist -> currentplatoonlist;
+   }
+   @ plat_sort.out_plat_joint_msg::connect{
+     connect plat_sort.out_plat_joint_msg[?] -> out_plat_joint_msg[?];
+   }
+   connect plat_sort.new_engine -> out_engine;
+   connect plat_sort.new_brake -> out_brake;
+   connect plat_sort.if_take -> if_take;
+
+   @ s_dup.status_msg3::connect{}
+   @ s_dup.status_msg4::connect{}
+   @ s_dup.status_msg5::connect{}
+   @ t_dup.traj_msg3::connect{}
+   @ t_dup.traj_msg4::connect{}
+   @ t_dup.traj_msg5::connect{}
+
+}

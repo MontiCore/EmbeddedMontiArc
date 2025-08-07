@@ -1,0 +1,15 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tagDef.caseStudy;
+
+import tagDef.CnCExt;
+import tagDef.NFPExt;
+
+ocl rule3_WCET_SingleCore {
+    context Cmp cmp inv:
+            let
+                selectedVals = cmp.CSubs;
+                aggregatedTags = List{max(s.compWCET, 0 s) | s in selectedVals};
+                aggregatedValue = sum(aggregatedTags, "s");
+            in
+                aggregatedValue < min(cmp.compWCET, +oo s);
+}

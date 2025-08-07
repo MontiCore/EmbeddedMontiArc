@@ -1,0 +1,20 @@
+# Editors
+/.idea/
+
+# Build
+node_modules/
+
+/target/dist/
+/target/downloads/
+/target/cache/
+/target/src-gen/
+/target/lib/
+/target/webpack.config.js
+
+/packages/**/lib/
+/extensions/**/lib/
+/packages/**/docs/
+/extensions/**/docs/
+
+yarn-error.log
+lerna-debug.log

@@ -1,0 +1,11 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.structs;
+
+component ArrayHandlingComp{
+    ports in Q^{3,1} in1,
+          in B^{4,4} in2,
+          in Q^{1,10} in3,
+          in Q^{1,7} in4,
+          out B^{2,3} out1,
+          out Z^{2,4} out2; 
+}

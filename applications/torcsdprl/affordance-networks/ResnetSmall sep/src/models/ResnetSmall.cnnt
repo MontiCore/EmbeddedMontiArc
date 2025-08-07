@@ -1,0 +1,18 @@
+configuration ResnetSmall{
+     load_checkpoint : true
+     num_epoch : 10
+     batch_size : 64
+     context : cpu
+     normalize : false
+     loss : log_cosh
+     shuffle_data : true
+     eval_metric : rmse
+     log_period : 1
+     checkpoint_period : 1
+     optimizer : adam{
+          learning_rate : 0.001
+          beta1 : 0.9
+          beta2 : 0.999
+          epsilon : 1.0E-6
+     }
+}

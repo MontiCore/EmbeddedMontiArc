@@ -1,0 +1,101 @@
+<!--
+  ~ (c) https://github.com/MontiCore/monticore
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- == PROJECT COORDINATES =============================================== -->
+
+    <parent>
+        <groupId>de.monticore.lang.monticar.sol</groupId>
+        <artifactId>sol</artifactId>
+        <version>2020.5.5-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>tests-environment</artifactId>
+
+    <!-- == PROJECT PROPERTIES ================================================ -->
+
+    <properties>
+
+        <!-- .. Libraries ..................................................... -->
+
+        <!-- .. Plugins ....................................................... -->
+
+        <!-- .. Classifiers ................................................... -->
+
+        <!-- .. Misc .......................................................... -->
+
+        <!-- .. Resources ..................................................... -->
+
+    </properties>
+
+    <!-- == PROJECT METAINFORMATION =========================================== -->
+
+    <name>Sol - Tests - Environment</name>
+
+    <!-- == PROJECT DEPENDENCIES ============================================== -->
+
+    <dependencies>
+
+        <!-- .. Modules ................................................... -->
+
+        <!-- .. Libraries ................................................. -->
+
+        <!-- .. Language .................................................. -->
+
+        <!-- .. Test Libraries ............................................ -->
+
+    </dependencies>
+
+    <!-- == PROJECT BUILD SETTINGS ============================================ -->
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>de.monticore.lang.monticar.sol</groupId>
+                <artifactId>plugin-environment</artifactId>
+                <version>${project.version}</version>
+                <executions>
+                    <execution>
+                        <id>Generation</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <rootModel>de.monticore.lang.monticar.sol.tests.environment.Main</rootModel>
+                            <outputPath>${project.build.directory}/generated-sources/environment</outputPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Deployment -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
+    <!-- == PROJECT REPORTING ================================================= -->
+
+    <reporting>
+        <plugins>
+
+        </plugins>
+    </reporting>
+
+    <!-- == PROJECT DISTRIBUTION ============================================== -->
+
+</project>

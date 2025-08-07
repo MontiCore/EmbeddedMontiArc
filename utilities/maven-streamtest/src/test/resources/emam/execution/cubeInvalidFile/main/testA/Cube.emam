@@ -1,0 +1,11 @@
+package testA;
+
+component Cube {
+	port
+		in Z^{1,28,28} data,
+		out Z^{1,28,28} out1;
+
+    implementation Math {
+    	    out1 = data;
+    }
+}

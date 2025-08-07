@@ -1,0 +1,4 @@
+Alexnet data/Alexnet
+VGG16 data/VGG16
+ThreeInputCNN_M14 data/ThreeInputCNN_M14
+ResNeXt50 data/ResNeXt50

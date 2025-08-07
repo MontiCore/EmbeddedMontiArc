@@ -1,0 +1,28 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.filter;
+
+import tests.structs.PositionWithDeltaTime;
+
+component PosTimeFilter<N1 m>{
+    port in Q(0:100) cutoffPosition;
+    port in Q(0:10) cutoffTime;
+
+    port in PositionWithDeltaTime posTimeIn[m];
+    port out PositionWithDeltaTime posTimeOut[m];
+
+    implementation Math{
+        //TODO: better error value
+        Q errorValue = 0;
+        //TODO 1 or 0 based?
+        for i = 1:1:m
+            Q compPos = (posTimeIn[i].position.xPosition * posTimeIn[i].position.xPosition) + (posTimeIn[i].position.yPosition * posTimeIn[i].position.yPosition);
+            if posTimeIn[i].deltaTime > cutoffTime{
+                posTimeOut[i] = errorValue;
+            }elseif  compPos > cutoffPosition * cutoffPosition{
+                posTimeOut[i] = errorValue;
+            }else{
+                posTimeOut[i] = posTimeIn[i];
+            }
+        end
+    }
+}

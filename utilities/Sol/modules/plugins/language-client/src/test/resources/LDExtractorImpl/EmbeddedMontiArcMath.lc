@@ -1,0 +1,8 @@
+/*
+ * (c) https://github.com/MontiCore/monticore
+ */
+package LDExtractorImpl
+
+language EmbeddedMontiArcMath extends EmbeddedMontiArc {
+    exclude template emaComponent
+}
