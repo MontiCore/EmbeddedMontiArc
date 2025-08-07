@@ -38,8 +38,8 @@ jobs:
             pip install numpy==1.19.1
             mkdir dev
             cd dev
-            cp ../../../simulators/basic-simulator .
-            cp ../../../simulators/simulation .
+            cp -r ../../../../simulators/basic-simulator .
+            cp -r ../../../../simulators/simulation .
             cd simulation
             cd ROSInterface
             ./install.sh
@@ -47,7 +47,7 @@ jobs:
             cd ../../basic-simulator
             mvn clean install -s settings.xml -DskipTests
             cd ../..
-            cp ../../../generators/EMAM2Middleware
+            cp -r ../../../../../generators/EMAM2Middleware .
             cd EMAM2Middleware
             mvn clean install -s settings.xml -DskipTests
             cd target
@@ -80,4 +80,3 @@ jobs:
             ./install.sh
             cd ..
         run: docker exec build-container bash -c "set -e; $SCRIPT"
-
