@@ -35,5 +35,5 @@ jobs:
             chmod +x build.sh
             ./build.sh
             build/src/cpp/ShowAttendTell resources/training_data/plane.jpg resources/training_data/dict.txt
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

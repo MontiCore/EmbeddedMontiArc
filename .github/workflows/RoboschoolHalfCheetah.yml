@@ -34,5 +34,5 @@ jobs:
             cd applications/reinforcement_learning/RoboschoolHalfCheetah
             chmod +x install.sh
             ./install.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

@@ -35,5 +35,5 @@ jobs:
             chmod +x build.sh
             ./build.sh
             build/src/cpp/Translator resources/vocabularies/vocab.en resources/vocabularies/vocab.vi 'I am fine .'
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

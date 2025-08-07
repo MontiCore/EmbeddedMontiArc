@@ -59,7 +59,7 @@ jobs:
             cd /workspace
             cd languages/ConfLang
             mvn $MAVEN_CLI_OPTS clean install -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Reporting
         uses: dorny/test-reporter@v2
         continue-on-error: true
@@ -90,5 +90,5 @@ jobs:
             cd /workspace
             cd languages/ConfLang
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean deploy --settings settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

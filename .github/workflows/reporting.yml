@@ -56,5 +56,5 @@ jobs:
             java -jar target/reporting-0.9.8-jar-with-dependencies.jar "EmbeddedMontiArc" "-testCoCos" "-timeout" "3" "-cTimeout" "2" "-testTests" "-grammar"
             python scripts/emaProjectPipelines.py report/data/dataProjectPipelines.json ${{ secrets.GITLABTOKEN }}
             ./scripts/deploy.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

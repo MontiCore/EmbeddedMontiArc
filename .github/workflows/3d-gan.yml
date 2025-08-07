@@ -114,7 +114,7 @@ jobs:
             cd Training
             export PYTHONPATH="/builds/monticore/EmbeddedMontiArc/applications/gans/3d-gan/Training/target/tmp/cpp/threedgan.Connector/gan/"
             mvn dependency:resolve emadl:train -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-pretrained:
     needs: jar_phase
@@ -138,7 +138,7 @@ jobs:
             cd applications/gans/3d-gan
             cd Pre-Trained
             mvn dependency:resolve emadl:deploy-pretrained -s ./settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-pretrained:
     needs: jar_phase
@@ -162,7 +162,7 @@ jobs:
             cd applications/gans/3d-gan
             cd Pre-Trained
             mvn dependency:resolve emadl:install-pretrained -s ./settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestWithJar:
     needs: docker_phase
@@ -189,5 +189,5 @@ jobs:
             cd Gluon/.test
             chmod +x build.sh
             ./build.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

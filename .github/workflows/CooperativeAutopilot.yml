@@ -37,5 +37,5 @@ jobs:
             mvn streamtest:streamtest-generator -s settings.xml
             temp-build.sh
             mvn emadl:simulate -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

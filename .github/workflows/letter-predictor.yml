@@ -37,5 +37,5 @@ jobs:
             python3 -m pip install -U pip
             python3 -m pip install scikit-image opencv-python
             mvn dependency:resolve emadl:train -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

@@ -52,7 +52,7 @@ jobs:
             ./build.sh
             cd target
             ../build/target/mnist_mnistClassifier ../src/main/resources/test_img/2.jpg
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestAutoML:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
             mv src/main/resources/experiments/training_data src/main/resources/experiments/data
             echo "Execute AutoML pipeline"
             mvn exec:java -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -118,5 +118,5 @@ jobs:
             export Torch_DIR=$(python3 -m pip show torch | grep -E Location:| awk '{print $2}')/torch
             echo $Torch_DIR
             mvn dependency:resolve emadl:train -s settings.xml -U -e
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

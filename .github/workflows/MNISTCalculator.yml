@@ -77,7 +77,7 @@ jobs:
             ./build.sh
             RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
             if [[ $RES != *"SUM: 579"* ]]; then echo "Wrong result:" $RES; exit 1; fi;
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestMavenStreamtestPlugin:
     needs: prebuild_phase
@@ -105,7 +105,7 @@ jobs:
             python3 -m pip install opencv-python
             cd mnist-calculator
             mvn -Dmaven.wagon.rto=1800000000 streamtest:streamtest-build -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestEMADLMavenPlugin:
     needs: prebuild_phase
@@ -134,7 +134,7 @@ jobs:
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -172,7 +172,7 @@ jobs:
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -216,7 +216,7 @@ jobs:
             ./runDecomposition.sh
             STATUS=$?
             if [[ $STATUS -eq 1 ]]; then echo "Error during decomposition." $RES; exit 1; fi;
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -261,7 +261,7 @@ jobs:
             ln -fs /usr/bin/python3 /usr/bin/python
             cd mnist-modular/DecompositionResNet
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestTransfer:
     needs: test_phase
@@ -292,7 +292,7 @@ jobs:
             cd transfer
             chmod +x runTransfer.sh
             ./runTransfer.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestMnistWithAdaNet:
     needs: prebuild_phase
@@ -317,7 +317,7 @@ jobs:
             mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
             cd AdaNet
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestMNISTwithCustomLayer:
     needs: prebuild_phase
@@ -356,7 +356,7 @@ jobs:
             mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
             cd mnist-custom-layer
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TrainTensorflowONNX:
     needs: prebuild_phase
@@ -381,7 +381,7 @@ jobs:
             cd applications/MNISTCalculator
             cd onnx/tensorflow-pretrained
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
@@ -436,7 +436,7 @@ jobs:
             ./build.sh
             RES=$(./build/src/cpp/DigitCalculator resources/images/1.png resources/images/2.png resources/images/3.png resources/images/4.png resources/images/5.png resources/images/6.png)
             if [[ $RES != *"SUM: 579"* ]]; then echo "Wrong result:" $RES; exit 1; fi;
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   DeployMnistCalcArtifact:
     runs-on: ubuntu-latest
@@ -457,7 +457,7 @@ jobs:
             cd applications/MNISTCalculator
             cd "emadl-maven_hexadecimal_calculator/trained_mnist_calc"
             mvn -Dmaven.wagon.rto=1800000000 deploy -s ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   DeployDecompositionResNetArtifact:
     needs: [ TestEMADLMavenPlugin, prebuild_phase ]
@@ -496,7 +496,7 @@ jobs:
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve -s settings.xml -U -f pom_build.xml
             mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml -U -f pom_build.xml
             mvn -Dmaven.wagon.rto=1800000000 deploy -s settings.xml -U -f pom_deploy.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TrainHexadecimal_MnistCalculator:
     needs: prebuild_phase
@@ -528,7 +528,7 @@ jobs:
             ls
             cd ../../../..
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TrainHexadecimal_MnistCalculatorTL:
     needs: prebuild_phase
@@ -560,7 +560,7 @@ jobs:
             mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TrainOperator_MnistCalculator:
     needs: prebuild_phase
@@ -590,7 +590,7 @@ jobs:
             mvn -Dmaven.wagon.rto=1800000000 dependency:resolve emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TrainOperator_MnistCalculatorTL:
     needs: prebuild_phase
@@ -622,7 +622,7 @@ jobs:
             mvn -Dmaven.wagon.rto=1800000000 emadl:train -s settings.xml -U
             mkdir output
             python3 calculator.py
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   rerun-failed-jobs:
     runs-on: ubuntu-latest

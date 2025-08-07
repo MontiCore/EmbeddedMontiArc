@@ -40,5 +40,5 @@ jobs:
             cp /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
             mvn versions:use-latest-versions -s ./settings.xml
             mvn dependency:resolve emadl:train -B -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

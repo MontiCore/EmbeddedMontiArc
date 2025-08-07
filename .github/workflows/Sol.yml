@@ -51,7 +51,7 @@ jobs:
             apt-get update && apt-get install -y build-essential
             yarn install --ignore-scripts
             mvn -B clean install --settings configs/settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Reporting
         uses: dorny/test-reporter@v2
         continue-on-error: true
@@ -86,7 +86,7 @@ jobs:
             yarn install --ignore-scripts
             mvn -B clean install --settings configs/settings.xml
             mvn -B deploy sonar:sonar -DskipTests -Dmaven.install.skip=true --settings configs/settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()

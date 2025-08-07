@@ -34,7 +34,7 @@ jobs:
             cd utilities/monticore-vscode-commons
             npm install
             npm run compile
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   buildMaster:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
@@ -58,5 +58,5 @@ jobs:
             npm install
             npm run compile
             npm publish
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

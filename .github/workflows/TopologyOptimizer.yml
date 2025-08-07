@@ -42,5 +42,5 @@ jobs:
             cd ../../topologyoptimizer/cluster/rl/
             chmod +x install.sh
             ./install.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
