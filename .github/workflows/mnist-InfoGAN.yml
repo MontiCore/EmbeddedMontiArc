@@ -71,5 +71,5 @@ jobs:
             cd .test/
             chmod +x build.sh
             ./build.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

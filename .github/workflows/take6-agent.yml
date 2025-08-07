@@ -112,7 +112,7 @@ jobs:
             cd 6nimmt-agent
             chmod 777 *.sh
             ./install.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -176,5 +176,5 @@ jobs:
             cd ../6nimmt-agent
             chmod 777 *.sh
             ./run_training.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

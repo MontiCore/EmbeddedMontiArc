@@ -36,5 +36,5 @@ jobs:
             yarn run compile
             yarn run build
             yarn run package
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

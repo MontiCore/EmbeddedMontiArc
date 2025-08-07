@@ -35,7 +35,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-dataset:
     runs-on: ubuntu-latest
@@ -56,7 +56,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-base-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
@@ -78,7 +78,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_base
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-base-dataset:
     runs-on: ubuntu-latest
@@ -99,7 +99,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_base
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-extension-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
@@ -121,7 +121,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_extension
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-extension-dataset:
     runs-on: ubuntu-latest
@@ -142,7 +142,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_extension
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-separated-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' }}
@@ -164,7 +164,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_separated
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-separated-dataset:
     runs-on: ubuntu-latest
@@ -185,7 +185,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_separated
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-vae-mnist-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master'  && false }}
@@ -207,7 +207,7 @@ jobs:
             cd applications/Datasets
             cd datasets/vae/vae-mnist
             mvn emadl:deploy-dataset -s ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-vae-mnist-dataset:
     if: ${{ github.ref_name != 'master' }}
@@ -229,7 +229,7 @@ jobs:
             cd applications/Datasets
             cd datasets/vae/vae-mnist
             mvn emadl:install-dataset -s ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-letter-dataset:
     runs-on: ubuntu-latest
@@ -250,7 +250,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_letters
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-letter-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master'  && false }}
@@ -272,7 +272,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_letters
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-cifar-10-dataset:
     runs-on: ubuntu-latest
@@ -294,7 +294,7 @@ jobs:
             cd applications/Datasets
             cd datasets/cifar_10
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-cifar-10-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master'  && false }}
@@ -317,7 +317,7 @@ jobs:
             cd applications/Datasets
             cd datasets/cifar_10
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-operator-dataset:
     runs-on: ubuntu-latest
@@ -338,7 +338,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_operators
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-operator-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' && false }}
@@ -360,7 +360,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_operators
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-operator-reduced-dataset:
     runs-on: ubuntu-latest
@@ -381,7 +381,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_operators_reduced
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-operator-reduced-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master'  && false }}
@@ -403,7 +403,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_operators_reduced
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   install-mnist-hexadecimal-dataset:
     runs-on: ubuntu-latest
@@ -424,7 +424,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_hexadecimal
             mvn emadl:install-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy-mnist-hexadecimal-dataset:
     if: ${{ !cancelled() && github.ref_name == 'master' && false }}
@@ -446,7 +446,7 @@ jobs:
             cd applications/Datasets
             cd datasets/mnist_hexadecimal
             mvn emadl:deploy-dataset -s ../ci_settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   rerun-failed-jobs:
     runs-on: ubuntu-latest

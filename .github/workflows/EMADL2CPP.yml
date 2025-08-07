@@ -210,7 +210,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean deploy --settings settings.xml -DskipTests
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   integrationMXNetJobLinux:
     needs: docker_phase
@@ -235,7 +235,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean install --settings settings.xml -Dtest=IntegrationMXNetTest
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   integrationCaffe2JobLinux:
     needs: docker_phase
@@ -258,7 +258,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  -U clean install --settings settings.xml -Dtest=IntegrationCaffe2Test
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   integrationGluonJobLinux:
     needs: docker_phase
@@ -285,7 +285,7 @@ jobs:
             python -m pip install scikit-image
             python -m pip install opencv-python
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest=IntegrationGluonTest
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
@@ -316,7 +316,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest=IntegrationTensorflowTest
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   integrationPyTorchJobLinux:
     needs: docker_phase
@@ -339,7 +339,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest="MontiAnnaGeneratorTest#testPyTorchBackendArtefactsGenerationWithEMADLGenerator,ConfigurationTest,PersistentLoggingDataTest,TrackingTest"
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   integrationPythonWrapperTest:
     needs: docker_phase
@@ -362,7 +362,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U  clean install --settings settings.xml -Dtest=IntegrationPythonWrapperTest
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
@@ -400,7 +400,7 @@ jobs:
             python -m pip install -U pip
             python -m pip install scikit-image
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest=ModularBasicTest
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   UnitTestJobLinux:
     needs: docker_phase
@@ -423,7 +423,7 @@ jobs:
             cd /workspace
             cd generators/EMADL2CPP
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean install --settings settings.xml -Dtest="GenerationTest,SymtabTest*"
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()

@@ -37,5 +37,5 @@ jobs:
             apt-get update
             apt-get install -y swi-prolog
             gradle test --info
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

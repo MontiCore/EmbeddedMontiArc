@@ -106,7 +106,7 @@ jobs:
             cd /workspace
             cd utilities/emadl-maven-plugin
             mvn -B  clean install -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   MasterDeployJobLinux:
     needs: FileChanges
@@ -128,7 +128,7 @@ jobs:
             cd /workspace
             cd utilities/emadl-maven-plugin
             mvn -s settings.xml -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B clean deploy
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   trigger-mnistcalc:
     needs: page_phase
@@ -644,7 +644,7 @@ jobs:
             cd utilities/emadl-maven-plugin
             mvn clean site -s settings.xml
             mv target/site/ public/
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload Pages
         uses: actions/upload-pages-artifact@v3
         with:

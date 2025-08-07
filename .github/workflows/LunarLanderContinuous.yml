@@ -36,5 +36,5 @@ jobs:
             chmod +x run_training.sh
             ./install.sh
             ./run_training.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

@@ -52,7 +52,7 @@ jobs:
             yarn install --ignore-scripts
             cd common
             yarn prepare
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   deploy:
     needs: install_phase
@@ -83,5 +83,5 @@ jobs:
             echo "always-auth=true" >> .npmrc
             echo "_auth=\${cibuildb64}" >> .npmrc
             yarn publish
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

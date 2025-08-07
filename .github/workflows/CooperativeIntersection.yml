@@ -45,7 +45,7 @@ jobs:
             cd applications/CooperativeIntersection
             chmod 700 generate.sh
             ./generate.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -83,5 +83,5 @@ jobs:
             cd applications/CooperativeIntersection
             chmod 700 compile.sh
             ./compile.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

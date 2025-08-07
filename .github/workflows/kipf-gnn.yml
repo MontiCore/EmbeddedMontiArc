@@ -40,7 +40,7 @@ jobs:
             mv /mxnet/build/libmxnet.so /mxnet/build/libmxnet.a /usr/lib/
             cd cora-custom-gnn
             mvn dependency:resolve emadl:train -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestCoraDglNetwork:
     runs-on: ubuntu-latest
@@ -68,7 +68,7 @@ jobs:
             export DGLBACKEND=mxnet
             cd cora-dgl-gnn
             mvn dependency:resolve emadl:train -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   TestCuboidDglNetwork:
     runs-on: ubuntu-latest
@@ -96,5 +96,5 @@ jobs:
             export DGLBACKEND=mxnet
             cd cuboid-dgl-gnn
             mvn dependency:resolve emadl:train -s settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

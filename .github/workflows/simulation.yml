@@ -59,7 +59,7 @@ jobs:
             cd /workspace
             cd simulators/simulation
             mvn -B -U clean deploy -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   BranchJobLinux:
     needs: windows_phase
@@ -81,5 +81,5 @@ jobs:
             cd /workspace
             cd simulators/simulation
             mvn -B -U clean install -s settings.xml
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

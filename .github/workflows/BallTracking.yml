@@ -80,5 +80,5 @@ jobs:
             echo "Building BallTracking.."
             cmake ..
             make
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

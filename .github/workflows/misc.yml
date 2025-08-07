@@ -46,5 +46,5 @@ jobs:
             cd /workspace
             cd utilities/misc
             echo "hello world123"
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

@@ -149,7 +149,7 @@ jobs:
             cd generators/CNNArch2Gluon
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U clean deploy --settings settings.xml
             cat target/site/jacoco/index.html
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   BranchJobLinux:
     needs: FileChanges
@@ -172,7 +172,7 @@ jobs:
             cd generators/CNNArch2Gluon
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B -U  clean install --settings settings.xml
             cat target/site/jacoco/index.html
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   trigger-emadl:
     needs: linux_phase

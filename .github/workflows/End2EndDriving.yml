@@ -35,5 +35,5 @@ jobs:
             cd tensorflow
             ./build.sh
             python3 v-tool/cli.py -i resources/training_data/test.h5 -p
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 

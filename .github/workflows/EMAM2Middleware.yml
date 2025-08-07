@@ -57,7 +57,7 @@ jobs:
             cd /workspace
             cd generators/EMAM2Middleware
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B  clean install --settings settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
@@ -93,7 +93,7 @@ jobs:
             cd /workspace
             cd generators/EMAM2Middleware
             mvn -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -B deploy --settings settings.xml -U
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   MqttIntegrationJob:
     needs: [ CompileJobLinux, linuxCompile_phase ]
@@ -123,7 +123,7 @@ jobs:
             cd generators/EMAM2Middleware
             chmod 770 ./src/test/bash/integrationTestMqtt.sh
             ./src/test/bash/integrationTestMqtt.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   RosIntegrationJob:
     needs: [ CompileJobLinux, linuxCompile_phase ]
@@ -152,7 +152,7 @@ jobs:
             cd /workspace
             cd generators/EMAM2Middleware
             ./src/test/bash/integrationTestRos.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   SomeIPIntegrationJob:
     needs: [ CompileJobLinux, linuxCompile_phase ]
@@ -182,7 +182,7 @@ jobs:
             cd generators/EMAM2Middleware
             chmod 770 ./src/test/bash/integrationTestSomeIP.sh
             ./src/test/bash/integrationTestSomeIP.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
   Ros2IntegrationJob:
     needs: [ CompileJobLinux, linuxCompile_phase ]
@@ -211,5 +211,5 @@ jobs:
             cd /workspace
             cd generators/EMAM2Middleware
             ./src/test/bash/integrationTestRos2.sh
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 
