@@ -1,3 +1,7 @@
+#Deployment of most datasets is currently disablled by adding && false in the if condition.
+#This is necessary as the datasets would otherwise be incompletltey deployed.
+#Due to the 100mb file size limit of GitHub most train.h5 files were removed and therefore not part of the artifact.
+
 name: Datasets
 on:
   push:
