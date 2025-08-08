@@ -66,6 +66,7 @@ jobs:
           fetch-depth: 1
       - name: Script
         shell: bash
+        #Disabled due to broken Dockerfile
         continue-on-error: true
         run: |
           cd applications/torcsdprl
