@@ -48,12 +48,13 @@ def GitlabToGithub(architecture: Architecture, config: Config, rebuild=False) ->
     for repoID in config.repoIDS:
       repo = architecture.get_repo_by_ID(repoID)
       github_file_path = os.path.join(os.getcwd(), "repos", repo.name)
+      repo_git = git.Repo(github_file_path)
       file_path_base = os.path.join(github_file_path, ".github", "workflows")
 
       # Converts the maven files to be compatible with the private token and commit changes
       GithubActionConverter.process_settings_files(github_file_path)
-      repo.get_repo().git.add(all=True)
-      repo.get_repo().index.commit(f"Changed maven settings to private token")
+      repo_git.git.add(all=True)
+      repo_git.index.commit(f"Changed maven settings to private token")
 
       # Create Github action folder
       if not os.path.exists(file_path_base):
@@ -86,8 +87,8 @@ def GitlabToGithub(architecture: Architecture, config: Config, rebuild=False) ->
         summary[repo.name][branch] = ":white_check_mark:"
         # Write and commit action
         writeStringToFile(file_path, convertedPipeline)
-        repo.get_repo().git.add(all=True)
-        repo.get_repo().index.commit(f"Migrated pipeline of {repo.name} and branch {branch} from Gitlab to Github")
+        repo_git.git.add(all=True)
+        repo_git.index.commit(f"Migrated pipeline of {repo.name} and branch {branch} from Gitlab to Github")
         progress.update(task, advance=1)
   docker_migration.write_images_being_migrated()
   print()
