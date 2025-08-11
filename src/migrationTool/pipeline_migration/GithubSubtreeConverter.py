@@ -1,10 +1,7 @@
-import re
-
 from typing_extensions import overload
 
 from migrationTool.migration_types import Architecture
 from migrationTool.pipeline_migration.GithubConverter import GithubActionConverter
-from migrationTool.pipeline_migration.Job import Job
 from migrationTool.pipeline_migration.Pipeline import Pipeline
 
 
@@ -25,58 +22,10 @@ class GithubSubTreeConverter(GithubActionConverter):
   def parse_pipeline(self, repoID) -> str:
     """
     Parses the pipeline of a subtree Repo and returns it in the converted form as a string.
-    :param name: Name of the pipeline
-    :param secrets: Secrets to be used in the pipeline
+    :param repoID: ID of the repository
     :return: String of the pipeline
     """
-    repo = self.architecture.get_repo_by_ID(repoID)
-    secrets = repo.secrets
-    self.file_change_job_needed = False
-    pipelineString = ""
-    pipelineString += f"name: {repo.name}\n"
-    pipelineString += "on:\n"
-    pipelineString += "\tpush:\n"
-    pipelineString += "\t\tpaths:\n"
-    pipelineString += "\t\t\t- '" + self.repoPath + "/**'\n"
-    pipelineString += "\tworkflow_dispatch:\n"
-    pipelineString += "\tpull_request:\n"
-    pipelineString += "env:\n"
-    pipelineString += f"\tCI_PROJECT_ID : {repoID}\n"
-    if secrets:
-      for secret in secrets:
-        if type(secret) == tuple:
-          if secret[0] != "CI_PROJECT_ID":
-            pipelineString += f"\t{secret[0]} : " + f"{secret[1]}\n"
-        else:
-          if secret != "CI_PROJECT_ID":
-            pipelineString += (f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n")
-    if self.pipeline.variables:
-      for var_name, var_value in self.pipeline.variables.items():
-        pipelineString += f"\t{var_name} : " + f"{var_value}\n"
-
-    pipelineString += "jobs:\n"
-    for _, job in self.pipeline.jobs.items():
-      # Check whether a job is only run if a file changes
-      file_changes = (job.only and type(job.only) == dict and "changes" in job.only) or (
-          job.exc and type(job.exc) == dict and "changes" in job.exc)
-      if job.rules:
-        for rule in job.rules:
-          if "changes" in rule:
-            file_changes = True
-            break
-      if file_changes:
-        # If yes, add job to check
-        self.file_change_job_needed = True
-        pipelineString += self.create_file_change_job()
-        break
-
-    # Create jobs for the stages
-    pipelineString += self.create_stage_jobs()
-    # Parse all the normal jobs
-    for job in self.pipeline.jobs:
-      pipelineString += self.parse_job(self.pipeline.jobs[job], secrets)
-      pipelineString += "\n"
-    return self.set_indentation_to_two_spaces(pipelineString)
+    return super().parse_pipeline(repoID, self.repoPath)
 
   def __adapt_model(self):
     """

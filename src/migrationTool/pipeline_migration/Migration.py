@@ -22,44 +22,91 @@ def writeStringToFile(file_path, content):
 logger = logging.getLogger(__name__)
 
 
-# ToDo: Test
-def GitlabToGithub(repoID: str, architecture: Architecture, config: Config, name: str = "") -> None:
+def GitlabToGithub(architecture: Architecture, config: Config, rebuild=False) -> None:
   """
-  This function migrates a Pipeline from GitLab to GitHub.
-  :param repoID: The ID of the repository to be migrated.
-  :param architecture: The architecture object
-  :param config: The configuration object.
-  :param name: The name of the pipeline.
+    Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits
+    the changes.
+    :param architecture: Architecture object
+    :param config: Config object
   """
-  repo = architecture.get_repo_by_ID(repoID)
-  # Open the Gitlab CI file and parse it
-  file = open(os.path.join(repo.path, "/.gitlab-ci.yml"), "r")
-  pipeline = GitlabCIImporter().get_pipeline(file)
-  file.close()
+  console = Console()
+  branches_to_be_migrated = {}
+  iterations = 0
+  table = Table("Repository name", "Branch")
+  for repoID in config.repoIDS:
+    repo = architecture.get_repo_by_ID(repoID)
+    branches_to_be_migrated[repoID] = repo.get_branches_to_be_migrated()
+    for branch in branches_to_be_migrated[repoID]:
+      table.add_row(repo.name, branch)
+    iterations += len(branches_to_be_migrated[repoID])
+  console.print(table)
+  docker_migration = DockerMigration(architecture, config, "docker_images.txt")
+  summary = {}
+  dependencies = set()
+  with Progress() as progress:
+    task = progress.add_task("Migrating", total=iterations)
+    for repoID in config.repoIDS:
+      repo = architecture.get_repo_by_ID(repoID)
+      github_file_path = os.path.join(os.getcwd(), "repos", repo.name)
+      file_path_base = os.path.join(github_file_path, ".github", "workflows")
 
-  # Change the image names in the pipeline to the migrated registry ones if necessary
-  pipeline = changeToUpdatedImages(pipeline, architecture, config, repoID)
+      # Converts the maven files to be compatible with the private token and commit changes
+      GithubActionConverter.process_settings_files(github_file_path)
+      repo.get_repo().git.add(all=True)
+      repo.get_repo().index.commit(f"Changed maven settings to private token")
 
-  # Open the git repository
-  repo_git = repo.get_repo()
-  # Converts the maven files to be compatible with the private token and commit changes
-  GithubActionConverter.process_settings_files(repo.path)
-  repo_git.git.add(all=True)
-  repo_git.index.commit("Changed maven settings to private token")
+      # Create Github action folder
+      if not os.path.exists(file_path_base):
+        os.makedirs(file_path_base)
+        logger.info(f"Ordner '{file_path_base}' wurde erstellt.")
 
-  # Convert the pipeline to Github Actions format
-  pipelineConverter = GithubActionConverter(pipeline)
-  convertedPipeline = pipelineConverter.parse_pipeline(name, repo.secrets)
-  file_path = os.path.join(repo.path, f"./.github/workflows/{name}.yml")
-  folder_path = os.path.dirname(file_path)
-  # Ordner erstellen, falls sie nicht existieren
-  if not os.path.exists(folder_path):
-    os.makedirs(folder_path)
-    print(f"Ordner '{folder_path}' wurde erstellt.")
-  writeStringToFile(file_path, convertedPipeline)
-  # Commit the new action
-  repo.git.add(all=True)
-  repo.index.commit("Migrated pipeline from Gitlab to Github")
+      summary[repo.name] = {}
+      # Iterate over all migrated branches
+      for branch in branches_to_be_migrated[str(repoID)]:
+        # Import gitlab pipeline
+        try:
+          file = open(os.path.join(github_file_path, ".gitlab-ci.yml"), "r")
+        except FileNotFoundError:
+          logger.warning(f"No .gitlab-ci.yml found for repo {repo.name} in branch {branch} under {path}. Skipping.")
+          print(f"[red] No pipeline found for repo {repo.name} in branch {branch}. Skipping.[/red]")
+          summary[repo.name][branch] = ":x:"
+          progress.update(task, advance=1)
+          continue
+        pipeline = GitlabCIImporter().get_pipeline(file)
+        file.close()
+
+        new_dependencies, pipeline = changeToUpdatedImages(progress, docker_migration, pipeline)
+        dependencies = dependencies.union(new_dependencies)
+        # Convert the pipeline to Github Actions format, depending on the number of branches
+        pipelineConverter = GithubActionConverter(architecture, pipeline, compatibleImages=docker_migration.nativeImage,
+                                                  rebuild=rebuild, )
+        convertedPipeline = pipelineConverter.parse_pipeline(repoID)
+        file_path = os.path.join(file_path_base, repo.name + ".yml")
+        print(f"[green]Converted pipeline of {repo.name} and branch {branch}")
+        summary[repo.name][branch] = ":white_check_mark:"
+        # Write and commit action
+        writeStringToFile(file_path, convertedPipeline)
+        repo.get_repo().git.add(all=True)
+        repo.get_repo().index.commit(f"Migrated pipeline of {repo.name} and branch {branch} from Gitlab to Github")
+        progress.update(task, advance=1)
+  docker_migration.write_images_being_migrated()
+  print()
+  print("[bold]Summary of migration:")
+  table = Table("Repository name", "Branch", "Migration successful")
+  for repoID in config.repoIDS:
+    repo = architecture.get_repo_by_ID(repoID)
+    for branch in branches_to_be_migrated[repoID]:
+      if branch in summary[repo.name]:
+        table.add_row(repo.name, branch, summary[repo.name][branch])
+      else:
+        table.add_row(repo.name, branch, ":x:")
+  console.print(table)
+  if dependencies:
+    print()
+    print("[yellow]During the pipeline migration, dependencies with images from the following repos were detected:")
+    for repo in dependencies:
+      print(repo)
+    print("[yellow]Please migrate them to the new registry as well, before running the actions.")
 
 
 def changeToUpdatedImages(progress, docker_migration, pipeline):
@@ -151,7 +198,8 @@ def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=Fa
         pipeline = GitlabCIImporter().get_pipeline(file)
         file.close()
 
-        """ Only for multiple branches
+        """ Can be used to delete jobs, that should not be run for this branch.
+        Might be necessary, as the dev branch might accidentally be triggered on main.
         jobs_to_delete = []
         for job in pipeline.jobs.values():
           if job.only:

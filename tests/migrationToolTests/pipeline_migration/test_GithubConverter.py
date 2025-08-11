@@ -40,8 +40,9 @@ class TestGithubActionConverter(TestCase):
     self.assertIn("on:\n", pipeline)
     # Test that it contains the correct variables
     self.assertIn(
-      "env:\n  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4\n  GITLABTOKEN : ${{ secrets.GITLABTOKEN }}\n  TEST "
-      ": test", pipeline)
+      "env:\n  CI_PROJECT_ID : 1\n  CI_API_V4_URL : https://git.rwth-aachen.de/api/v4\n  GITLABTOKEN : ${{ "
+      "secrets.GITLABTOKEN }}\n  TEST : test",
+      pipeline)
     # Test that it contains the correct jobs
     self.assertIn("FileChanges", pipeline)
     self.assertIn("test_phase", pipeline)

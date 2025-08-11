@@ -6,8 +6,8 @@ import requests
 from git import RemoteProgress, GitCommandError
 from github import Auth, GithubException, Github
 from rich import print
-from rich.console import Console, Prompt
-from rich.prompt import Confirm
+from rich.console import Console
+from rich.prompt import Confirm, Prompt
 from rich.table import Table
 from tqdm import tqdm
 
@@ -110,6 +110,8 @@ class GithubUploader(Git, Uploader):
       if e.status == 404:
         print(f"[yellow]Repository '{name}' does not exist on GitHub.[/yellow]")
         logger.info(f"Repository '{name}' does not exist.")
+        if "/" in name:
+          name = name.split("/")[-1]
         if Confirm.ask("Create new public repo? Otherwise it will be private "):
           repo = self.create_public_repo(name)
         else:
@@ -155,43 +157,68 @@ class GithubUploader(Git, Uploader):
     repos = self.g.get_user().get_repos(public=True)
     return [repo.name for repo in repos if repo.private]
 
-  # ToDo: Rework to current design
-  def upload_repo(self, repoID: str, disable_scanning: bool = False):
+  def upload_repos(self, disable_scanning: bool = False):
     """
     Upload a repository to the target Git instance.
     :param repoID: RepositoryID to be uploaded
     :param disable_scanning: Whether to disable push protection in this repo
     """
-    logger = logging.getLogger(__name__)
-    print(logger.handlers)
-    repo = self.architecture.get_repo_by_ID(repoID)
-    repo_git = repo.get_repo()
-    logger.info(f"Uploading {repo.name} to the target Git instance...")
-    # self.set_upstream_for_branches(repo)
-    github_repo = self.get_or_create_remote_repo(repo.name)
-    if disable_scanning or True:
-      self.deactivate_push_protection(github_repo.url)
-    self.create_secrets(github_repo, repo.secrets)
+    for repoID in self.config.repoIDS:
+      try:
+        repo = self.architecture.get_repo_by_ID(repoID)
+        path = os.path.join(os.getcwd(), "repos", repo.name)
+        local_repo = git.Repo(path)
+        logger.info(f"Local repo path: {path}")
+        print(f"Local repo path: {path}")
+      except git.exc.InvalidGitRepositoryError:
+        logger.error(f" Repo '{repo.name}' does not exist.")
+        exit(1)
+      # Get Object for remote repo
+      logger.info(f"Uploading {repo.name}...")
+      github_repo = self.get_or_create_remote_repo(self.config.targetUser + "/" + repo.name)
+      if disable_scanning:
+        self.deactivate_push_protection(github_repo.url)
+      self.create_secrets(github_repo, self.get_repo_secrets(repoID))
+      # Create autehnticated target URL for pushing
+      remote_url = github_repo.clone_url.replace("https://", f"https://{self.config.targetToken}@")
+      self.reset_remote_origin(local_repo, remote_url)
+      summary = {}
+      existing_branches = [b.name for b in github_repo.get_branches()]
+      for branch in repo.get_branches_to_be_migrated():
+        if branch in existing_branches:
+          logger.info(f"Branch {branch} already exists in the target repository.")
+          print(f"[red]Branch {branch} already exists in the target repository.[/red]")
+          if not Confirm.ask("Still try to upload? This will override the existing history: "):
+            print("[red]Skipping branch upload...[/red]")
+            logger.info(f"Skipping branch {branch}.")
+            continue
+          else:
+            logger.warning(f"Forcing update of branch {branch}...")
+            print(f"[yellow]Forcing update of branch {branch}...[/yellow]")
+        print(f"Pushing branch {branch}...")
+        try:
+          while os.path.isfile(os.path.join(local_repo.working_tree_dir, ".git", "index.lock")):
+            logger.warning("index.lock encounted, waiting for it to be released...")
+          local_repo.git.checkout(branch)
+        except git.exc.GitCommandError as e:
+          logger.error(f"Branch {branch} could not be checked out, skipping" + str(e))
+          print(f"[red]Branch {branch} could not be checked out, skipping[/red]")
+          continue
+        summary[branch] = self.push_branch_wise(branch, local_repo)
+        if branch == "master":
+          github_repo.edit(default_branch="master")
+          logger.info(f"master branch set as default branch.")
 
-    existing_branches = [b.name for b in github_repo.get_branches()]
-    remote_url = github_repo.clone_url.replace("https://", f"https://{self.config.targetToken}@")
-    self.reset_remote_origin(repo_git, remote_url)
-    for branch in repo.get_branches_to_be_migrated():
-      if branch in existing_branches and branch != "master":
-        logger.info(f"Branch {branch} already exists in the target repository.")
-      else:
-        logger.info(f"Uploading {branch} branch...")
-        with PushProgress() as progress:
-          a = repo_git.remote(name="origin").push(refspec=f"{branch}:{branch}", force=True, progress=progress)
-          if a:
-            print(a[0].summary)
-            print(a[0].flags)
-            print(a[0].remote_ref_string)
-            print()
-        logger.info(f"Branch {branch} uploaded successfully.")
-    if disable_scanning or True:
-      self.activate_push_protection(github_repo.url)
-    github_repo.edit(default_branch="master")
+      if disable_scanning:
+        self.activate_push_protection(github_repo.url)
+
+    # Print summary of the upload
+    print()
+    console = Console()
+    table = Table("Branch", "Push status")
+    for branch, status in summary.items():
+      table.add_row(branch, status)
+    console.print(table)
 
   def get_monorepo_secrets(self):
     """
@@ -206,6 +233,21 @@ class GithubUploader(Git, Uploader):
           secrets[name] = value
         elif secrets[name] != value:
           logger.warning(f"Secret {name} defined multiple times with different values in architecture.yaml.")
+    return secrets
+
+  def get_repo_secrets(self, repoID):
+    """
+    Get secrets top be created for a specific repository.
+    :param repoID: repoID of the repository
+    :return: Secrets
+    """
+    secrets = {}
+    repo = self.architecture.get_repo_by_ID(repoID)
+    for name, value in repo.secrets_to_create:
+      if name not in secrets.keys():
+        secrets[name] = value
+      elif secrets[name] != value:
+        logger.warning(f"Secret {name} defined multiple times with different values in architecture.yaml.")
     return secrets
 
   def upload_mono_repo(self, disable_scanning: bool = False):
@@ -321,27 +363,31 @@ class GithubUploader(Git, Uploader):
     print(f"[green]Sucessfully pushed {branch.name} branch[/green]")
     return ":white_check_mark:"
 
-  def push_branch_wise(self, existingBranches, localRepo):
+  def push_branch_wise(self, branch, local_repo: git.Repo):
     """
     Push whole branches one after another
     :param existingBranches: Branches already existing in github repo, are skipped
     :param localRepo: local repository object
     """
-    for branch in localRepo.branches:
-      if branch.name in existingBranches:
-        logger.info(f"Branch {branch.name} already exists in the target repository.")
-      else:
-        logger.info(f"Uploading {branch.name} branch...")
-        with PushProgress() as progress:
-          a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True,
-                                                   progress=progress, )
-          if a:
-            # If an error occurs, it is caught and logged
-            print(a[0].summary)
-            print(a[0].flags)
-            print(a[0].remote_ref_string)
-            print()
-        logger.info(f"Branch {branch.name} uploaded successfully.")
+    logger.info(f"Uploading {branch} branch...")
+    with PushProgress() as progress:
+      try:
+        a = local_repo.remote(name="origin").push(refspec=f"{branch}:{branch}", progress=progress, force=True, )
+      except GitCommandError as e:
+        logger.error(f"Error pushing {branch}" + str(e))
+        print(f"[red]Error pushing {branch}[/red]")
+        return ":x:"
+      if a and a[0].flags != 2 and a[0].flags != 512:
+        # If an error occurs, it is caught and logged
+        print(f"[red]Error pushing {branch}[/red]")
+        logger.error(f"Error pushing {branch}")
+        logger.error(a[0].summary)
+        logger.error(a[0].flags)
+        logger.error(a[0].remote_ref_string)
+        return ":x:"
+    logger.info(f"Branch {branch} uploaded successfully.")
+    print(f"[green]Sucessfully pushed {branch} branch[/green]")
+    return ":white_check_mark:"
 
   def push_commit_wise(self, existingBranches: list[str], localRepo: git.Repo):
     """

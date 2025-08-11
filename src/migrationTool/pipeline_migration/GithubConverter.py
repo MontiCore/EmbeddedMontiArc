@@ -1,5 +1,7 @@
 import logging
 import re
+from typing import overload
+
 from rich import print
 
 from migrationTool.migration_types import Architecture
@@ -38,57 +40,62 @@ class GithubActionConverter(Converter):
           self.migrated_docker_images[repo.name].append(image)
     self.file_change_job_needed = False
 
-  def parse_pipeline(self, repoID) -> str:
+  def parse_pipeline(self, repoID, push_path="") -> str:
     """
     Converts the pipeline object into a Github Action string
     :param repoID: Repo ID whose pipeline is converted
+    :param pus_path: Optional path to be used into filter push event. If empty unused
     :return: String of the converted pipeline
     """
     repo = self.architecture.get_repo_by_ID(repoID)
-    self.file_change_job_needed = False  # Whether some jobs are only run if some files changed
-    pipeline_string = ""
-    pipeline_string += f"name: {repo.name}\n"
-    pipeline_string += "on:\n"
-    pipeline_string += "\tpush:\n"
-    pipeline_string += "\tworkflow_dispatch:\n"
-    pipeline_string += "\tpull_request:\n"
-    pipeline_string += "env:\n"
-    if repo.secrets:
-      for secret in repo.secrets:
+    secrets = repo.secrets
+    self.file_change_job_needed = False
+    pipelineString = ""
+    pipelineString += f"name: {repo.name}\n"
+    pipelineString += "on:\n"
+    pipelineString += "\tpush:\n"
+    if push_path:
+      pipelineString += "\t\tpaths:\n"
+      pipelineString += "\t\t\t- '" + push_path + "/**'\n"
+    pipelineString += "\tworkflow_dispatch:\n"
+    pipelineString += "\tpull_request:\n"
+    pipelineString += "env:\n"
+    pipelineString += f"\tCI_PROJECT_ID : {repoID}\n"
+    if secrets:
+      for secret in secrets:
         if type(secret) == tuple:
-          pipeline_string += f"\t{secret[0]} : " + f"{secret[1]}\n"
+          if secret[0] != "CI_PROJECT_ID":
+            pipelineString += f"\t{secret[0]} : " + f"{secret[1]}\n"
         else:
-          pipeline_string += f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n"
+          if secret != "CI_PROJECT_ID":
+            pipelineString += (f"\t{secret} : " + "${{ secrets." + f"{secret}" + " }}\n")
     if self.pipeline.variables:
       for var_name, var_value in self.pipeline.variables.items():
-        pipeline_string += f"\t{var_name} : " + f"{var_value}\n"
-    pipeline_string += f"\tCI_PROJECT_ID: {repoID}\n"
+        pipelineString += f"\t{var_name} : " + f"{var_value}\n"
 
-    pipeline_string += "jobs:\n"
-    # Creates the file change job if necessary
+    pipelineString += "jobs:\n"
     for _, job in self.pipeline.jobs.items():
       # Check whether a job is only run if a file changes
-      needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
+      file_changes = (job.only and type(job.only) == dict and "changes" in job.only) or (
           job.exc and type(job.exc) == dict and "changes" in job.exc)
-      # Check if a job uses rules
       if job.rules:
         for rule in job.rules:
           if "changes" in rule:
-            needed = True
+            file_changes = True
             break
-      if needed:
-        pipeline_string += self.create_file_change_job()
+      if file_changes:
+        # If yes, add job to check
         self.file_change_job_needed = True
+        pipelineString += self.create_file_change_job()
         break
 
-    # Create jobs representing each stage
-    pipeline_string += self.create_stage_jobs()
-
-    # Parse each regular job of the pipeline
+    # Create jobs for the stages
+    pipelineString += self.create_stage_jobs()
+    # Parse all the normal jobs
     for job in self.pipeline.jobs:
-      pipeline_string += self.parse_job(self.pipeline.jobs[job], repo.secrets)
-      pipeline_string += "\n"
-    return self.set_indentation_to_two_spaces(pipeline_string)
+      pipelineString += self.parse_job(self.pipeline.jobs[job], secrets)
+      pipelineString += "\n"
+    return self.set_indentation_to_two_spaces(pipelineString)
 
   def parse_job(self, job: Job, secrets: list[str] = []) -> str:
     """
