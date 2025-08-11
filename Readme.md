@@ -8,7 +8,8 @@ pipx install PATH_TO_WHEEL
 
 # Usage:
 
-This only explains the default workflow. For information about eventual flags use the `--help` flag of the command.
+This only explains the default workflow. For more information about eventual flags use the `--help` flag of the command
+and each subcommands.
 Currently te tool supports the repository-wise or monorepository migration from GitLab to GitHub.
 
 1. Create a configuration file by running
