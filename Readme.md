@@ -108,5 +108,7 @@ The tool is structured into thee submodules:
 Please note that the class diagrams are not complete and only show the classes. Several parts are only implemented in
 functions and therefore not shown here.
 
+A selection of helful script is available in the `scripts/` folder. These can be, for example, used to delete
+unnecessary GHA runs from the overview, or stop all pending ones. 
 
 
