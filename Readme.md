@@ -9,6 +9,7 @@ pipx install PATH_TO_WHEEL
 # Current workflow:
 
 This only explains the default workflow. For information about eventual flags use the `--help` flag of the command.
+Currently te tool supports the repository-wise or monorepository migration from GitLab to GitHub.
 
 1. Create a configuration file by running
 
@@ -64,9 +65,10 @@ This converts the pipelines in the currently checked out branch to GitHub action
 maven files in the repo are changed to be compatible with Private Access Tokens. During the migration for each pipeline,
 the excluded branches are checked so that only intended Jobs are kept. As this feature is inherently incompatible with
 the monorepo design. To rebuild the stage-like architecture a job named `STAGENAME_phase` is created. Additionally, a
-job
-named `FileChanges` is created. This job is used to check file changes and trigger the corresponding jobs. As this is
-not natively supported in GitHub actions.
+job named `FileChanges` is created. This job is used to check file changes and trigger the corresponding jobs. As this
+is
+not natively supported in GitHub actions. Per default the necessary changed for monorepos are implemented. Otherwise a
+falg must be added.
 
 6. Upload the monorepo to GitHub by running
 
@@ -83,3 +85,5 @@ in case of failure. This is done automatically for each new branch; for each bra
 the user can choose whether to override it. At this point one has to be very carefull as this would be done with
 `force pushes`. A master branch is only created if it is not present in the current repo. If it is pushed, it is also
 set as the default branch.
+
+Additionally, the separate repositories can be pushed. For this a flag must be added.
