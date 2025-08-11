@@ -2,9 +2,9 @@ import os
 import shutil
 from unittest import TestCase
 
-from migrationTool.pipelineMigration import GitlabCIImporter
-from migrationTool.pipelineMigration.Job import Job
-from migrationTool.pipelineMigration.Pipeline import Pipeline
+from migrationTool.pipeline_migration import GitlabCIImporter
+from migrationTool.pipeline_migration.Job import Job
+from migrationTool.pipeline_migration.Pipeline import Pipeline
 
 
 class TestGitlabCIImporter(TestCase):
@@ -19,7 +19,7 @@ class TestGitlabCIImporter(TestCase):
   def test_get_pipeline(self):
     importer = GitlabCIImporter.GitlabCIImporter()
     with open(os.path.join(os.getcwd(), "TEST", ".gitlab-ci.yml")) as file:
-      pipeline = importer.getPipeline(file)
+      pipeline = importer.get_pipeline(file)
 
     self.assertIsNotNone(pipeline)
     self.assertIsInstance(pipeline, Pipeline)

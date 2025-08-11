@@ -8,19 +8,19 @@ from rich.console import Console
 from rich.progress import Progress, track
 from rich.table import Table
 
-from migrationTool.gitMigration import GithubUploader
-from migrationTool.gitMigration.Git import Git
-from migrationTool.gitMigration.GitlabDownloader import GitlabDownloader
-from migrationTool.gitMigration.largeFiles import run_git_filter_repo
-from migrationTool.gitMigration.repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
+from migrationTool.git_migration import GithubUploader
+from migrationTool.git_migration.Git import Git
+from migrationTool.git_migration.GitlabDownloader import GitlabDownloader
+from migrationTool.git_migration.largeFiles import run_git_filter_repo
+from migrationTool.git_migration.repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
 from migrationTool.migration_types import Architecture, Config
-from migrationTool.pipelineMigration import GitlabToGithubSubtree
+from migrationTool.pipeline_migration import GitlabToGithubSubtree
 
 app = typer.Typer(
   help="Migration tool for Git repositories from GitLab to GitHub. Curently only supports GitHub as target and "
        "migration as a monorepo. However more feature (like repo-wise migration) will be added in the future.")
 
-# Logger konfigurieren, only log to file
+# Configure logger, only log to file
 file_handler = logging.FileHandler("output.log")
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S'))

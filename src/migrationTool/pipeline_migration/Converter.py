@@ -3,7 +3,7 @@ import re
 import shutil
 from abc import ABC, abstractmethod
 
-from migrationTool.pipelineMigration.Pipeline import Pipeline
+from migrationTool.pipeline_migration.Pipeline import Pipeline
 
 
 class Converter(ABC):
@@ -12,8 +12,14 @@ class Converter(ABC):
   """
 
   @abstractmethod
-  def __init__(self, pipeline: Pipeline):
+  def __init__(self, pipeline: Pipeline, architecture=None):
+    """
+    Initializes the Converter class.
+    :param pipeline: Pipeline model to be converted
+    :param architecture: Architecture for the status oif migrated repositories
+    """
     self.pipeline = pipeline
+    self.architecture = architecture
 
   @abstractmethod
   def parse_pipeline(self, **kwargs) -> str:

@@ -10,7 +10,16 @@ logger = logging.getLogger(__name__)
 
 
 class Architecture:
+  """
+  One of the main data classes of the migration tool. Used store the data of the current and previous migrations
+  """
+
   def __init__(self, filepath: str, repos: dict[str, Repo] = None):
+    """
+    Initializes the Architecture object.
+    :param filepath: Path to the yaml file where the architecture should be saved
+    :param repos: Repo objects in the architecture, indexed by their IDs
+    """
     if repos is None:
       repos = {}
     self.filepath = filepath
@@ -26,7 +35,7 @@ class Architecture:
 
   def dump_yaml(self, verbose: bool = False):
     """
-    Dumps the architecture to a yaml file
+    Dumps the current object to a yaml file
     :return: None
     """
     data = {}

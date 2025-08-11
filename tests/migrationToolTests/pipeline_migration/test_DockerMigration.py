@@ -5,7 +5,7 @@ from rich.progress import Progress
 from unittest.mock import MagicMock, patch
 
 from migrationTool.migration_types import Architecture, Config
-from migrationTool.pipelineMigration import DockerMigration
+from migrationTool.pipeline_migration import DockerMigration
 
 
 class TestDockerMigration(TestCase):

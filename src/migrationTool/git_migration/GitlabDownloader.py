@@ -13,9 +13,9 @@ from rich.progress import track
 from rich.table import Table
 from tqdm import tqdm
 
-from migrationTool.gitMigration.Downloader import Downloader
-from migrationTool.gitMigration.Git import Git
-from migrationTool.gitMigration.mavenSecrets import find_env_vars_in_repo
+from migrationTool.git_migration.Downloader import Downloader
+from migrationTool.git_migration.Git import Git
+from migrationTool.git_migration.mavenSecrets import find_env_vars_in_repo
 from migrationTool.migration_types import Architecture, Config, Repo
 
 logger = logging.getLogger(__name__)
@@ -31,19 +31,19 @@ class GitlabDownloader(Git, Downloader):
   def scan(self, path: str = "architecture.yaml", verbose: bool = False):
     """
     Scans all repositories and create a yaml file with the architecture of the repositories.
+    :param path: Path to the yaml file where the architecture should be saved
+    :param verbose: Whether to show verbose output
     """
     print("[bold]Scanning Repositories...")
     architecture = Architecture(path)
     for repoID in track(self.config.repoIDS, description="Scan"):
       repo = self.getRepo(repoID)
-
       repo_name = repo.name
       repo_namespace = self.getNamespace(repo)
       repo_all_branches = self.getBranches(repo)
       repo_active_branches = []
       repo_stale_branches = self.getStaleBranches(repo)
       repo_path = os.path.join(os.getcwd(), "repos", repo_name)
-
       repo_secrets = {}
       # Get env variables used by maven. Should be recreated in the new repo
       env_variables = find_env_vars_in_repo(repo_path)
@@ -61,12 +61,12 @@ class GitlabDownloader(Git, Downloader):
       for b in repo_all_branches:
         if b not in repo_stale_branches:
           repo_active_branches.append(b)
-
       repo_docker_images = self.getDockerImages(repo)
       repo_obj = Repo(repo_name, repoID, repo_docker_images, repo_path, repo_namespace, repo_active_branches,
                       repo_stale_branches, repo_secrets, )
       architecture.add_repo(repo_obj)
 
+    # Print summary and save architecture to yaml file
     console = Console()
     table = Table("Name", "Status")
     for repoID in self.config.repoIDS:
@@ -76,7 +76,7 @@ class GitlabDownloader(Git, Downloader):
     console.print(table)
     architecture.dump_yaml(verbose)
 
-  def clone(self, absorb_submodules: bool = False):
+  def clone(self):
     """
     Clone repositories from GitLab to the local machine.
     """
@@ -86,7 +86,7 @@ class GitlabDownloader(Git, Downloader):
     table = Table("Repository", "Status")
     for repoID in self.config.repoIDS:
       typer.echo("--------------------------------")
-      repo_name, status = self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"), absorb_submodules)
+      repo_name, status = self.clone_repo(repoID, os.path.join(os.getcwd(), "repos"))
       table.add_row(repo_name, status)
     print()
     console.print(table)
@@ -206,8 +206,6 @@ class GitlabDownloader(Git, Downloader):
       typer.echo("LFS-Objects are being downloaded...")
       process = subprocess.Popen(["git", "lfs", "pull"], cwd=clone_path, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                  text=True, )
-      # for line in process.stdout:
-      #    print(line.strip())
       rc = process.poll()
       logger.info(rc)
 
@@ -223,6 +221,10 @@ class GitlabDownloader(Git, Downloader):
 
 
 class CloneProgress(RemoteProgress):
+  """
+  A progress handler for showing cloning progress using tqdm.
+  """
+
   def __init__(self):
     super().__init__()
     self.pbar = tqdm(desc="Cloning", unit="objects")

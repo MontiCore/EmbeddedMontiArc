@@ -7,7 +7,7 @@ class Pipeline:
     """
     Initializes the pipeline with the given stages, jobs, and their dependencies.
     :param stages: List of stages in the pipeline
-    :param jobs: Dictionary of jobs in the pipeline
+    :param jobs: Dictionary mapping job names to Job objects
     :param stageJobs: Dictionary mapping each stage to its jobs
     :param schedule: List representing the order of stages in the pipeline
     """

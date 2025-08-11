@@ -46,7 +46,6 @@ class Git:
     try:
       if "origin" in repo.remotes:
         origin = repo.remote(name="origin")
-        # repo.delete_remote("origin")
         repo.delete_remote(origin.name)
         logging.info("Remote 'origin' wurde erfolgreich entfernt.")
         typer.echo("Remote 'origin' wurde erfolgreich entfernt.")
@@ -56,7 +55,7 @@ class Git:
 
   def init_repo(self, repo_name: str):
     """
-    Initialize a git repository in the given path and makes init commit.
+    Initialize a git repository in the given path and makes initial commit.
     :param repo_name: Name of the repository
     """
     # Check if the repository already exists
@@ -82,7 +81,8 @@ class Git:
         repo.heads["master"].checkout()
       return repo
 
-  def add_subtree(self, repo: git.Repo, subtree_repo_name: str, subtree_repo_path, prefix:str ="", branch: str ="master"):
+  def add_subtree(self, repo: git.Repo, subtree_repo_name: str, subtree_repo_path, prefix: str = "",
+                  branch: str = "master"):
     """
     Add a subtree to the repository.
     :param repo: Repository object
@@ -115,7 +115,8 @@ class Git:
     print(f"Branch {branch} added as a subtree.")
     return ":white_check_mark: Subtree added"
 
-  def add_subtree_branch(self, repo: git.Repo, subtree_repo_name: str, subtree_repo_path: str, branch: str, prefix: str =""):
+  def add_subtree_branch(self, repo: git.Repo, subtree_repo_name: str, subtree_repo_path: str, branch: str,
+                         prefix: str = ""):
     """
     Adds (multiple) branches of a repo as subtree to the repository.
     :param subtree_repo_name: Name of the repository to be added as a subtree
@@ -148,7 +149,8 @@ class Git:
     print(f"Branch {branch} added as a subtree.")
     return ":white_check_mark: Subtree added"
 
-  def add_repos_as_subtree(self, target_repo_name: str, target_repo_namespace: str, architecture: Architecture, repoIDs: list[str] =[]):
+  def add_repos_as_subtree(self, target_repo_name: str, target_repo_namespace: str, architecture: Architecture,
+                           repoIDs: list[str] = []):
     """
     Adds only master branch as subtree to the target repository.
     :param target_repo_name: Name of the target GitHub repository
@@ -213,11 +215,19 @@ class Git:
       print()
 
   def has_submodules(self, repo_path: str):
-    """Check if the repo has a .gitmodules file"""
+    """
+    Check if the repository has submodules by looking for a .gitmodules file.
+    :param repo_path: Path to the repository
+    :return: 
+    """""
     return os.path.isfile(os.path.join(repo_path, ".gitmodules"))
 
   def get_submodule_paths(self, repo_path: str):
-    """Extract submodule paths from .gitmodules"""
+    """
+    Get the paths of all submodules in the repository by reading the .gitmodules file.
+    :param repo_path: Path to the repository
+    :return: List of paths to the submodules
+    """
     submodule_paths = []
     gitmodules_path = os.path.join(repo_path, ".gitmodules")
     if os.path.isfile(gitmodules_path):
@@ -228,6 +238,12 @@ class Git:
     return submodule_paths
 
   def absorb_submodules(self, repo_path: str):
+    """
+    Absorbs all submodules in the reposiotry using subtrees.
+    :param repo_path: Path to the repository
+    :return: Boolean indicating success or failure
+    """
+
     if not self.has_submodules(repo_path):
       logger.warning(f"Absorb submodules called for {repo_path} but no submodules found.")
       return True
@@ -248,28 +264,32 @@ class Git:
       logger.info(f"Finished absorbing submodule {submodule_path}")
     return True
 
-  def checkout_branches(self, repo: git.Repo, absorb_submodules: bool =False):
+  def checkout_branches(self, repo: git.Repo):
     """
     Checkout all branches available in the remote repository.
     :param repo: repository objec
-    :param absorb_submodules: If True, absorb all submodules after checking out each branch
     """
     console = Console()
     table = Table("Branch", "Status")
     default_branch = repo.active_branch.name
     repo.remotes.origin.fetch()  # Fetch all branches from the remote
     absorb_submodules = False
+    # If submodules are present, ask if they should be absorbed
     if self.has_submodules(repo.working_tree_dir):
-      absorb_submodules = Confirm.ask("Contains a submodule, shallit be absorbed?")
-    for branch in tqdm(repo.remotes.origin.refs, desc="Checking out all branches"):  # Iterate over all remote branches
+      absorb_submodules = Confirm.ask("Contains a submodule, shall it be absorbed?")
+    # Iterate over all remote branches
+    for branch in tqdm(repo.remotes.origin.refs, desc="Checking out all branches"):
       branch_name = branch.name.split("/")[-1]  # Extract branch name
       if branch_name == "HEAD" or branch_name == default_branch:
         continue
       try:
+        # Wait for previous Git operations to finish
         while os.path.isfile(os.path.join(repo.working_tree_dir, ".git", "index.lock")):
           logger.warning("index.lock encounted, waiting for it to be released...")
-        repo.git.checkout("-B", branch_name, branch.name)  # Create and checkout local branch tracking the remote
+        # Create and checkout local branch tracking the remote
+        repo.git.checkout("-B", branch_name, branch.name)
         logging.info(f"Checked out branch {branch_name}.")
+        # If required abosrb submodules only if these are present in the current branch
         if absorb_submodules and self.has_submodules(repo.working_tree_dir):
           logger.info(f"Absorbing submodules {self.get_submodule_paths(repo.working_tree_dir)} in branch {branch_name}")
           repo.git.submodule("update", "--init", "--recursive")

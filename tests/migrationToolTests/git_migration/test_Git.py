@@ -3,7 +3,7 @@ import shutil
 import time
 from unittest import TestCase
 
-from migrationTool.gitMigration import Git
+from migrationTool.git_migration import Git
 from migrationTool.migration_types import Architecture
 from migrationTool.migration_types import Repo
 

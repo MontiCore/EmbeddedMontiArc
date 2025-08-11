@@ -15,6 +15,6 @@ class Downloader(ABC):
 
   def scan(self):
     """
-    Scan all repositories with all branches from the source instance.
+    Scan all repositories from the source instance.
     """
     pass

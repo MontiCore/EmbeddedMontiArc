@@ -127,8 +127,10 @@ class DockerMigration:
           cleaned_image = image.split("/")[1:-1]
           image_repo = self.resolve_image_path_to_repo(cleaned_image)
           if image_repo:
-            print(f"The image is saved in the repo {image_repo.name} and will automatically be migrated in future "
-                  f"migrations.")
+            print(
+              f"The image is saved in the repo [yellow]{image_repo.name}[/yellow] and will automatically be migrated "
+              f"in future "
+              f"migrations.")
             image_name = image.replace(image_repo.container_registry_image_prefix, "")
             image_new = "ghcr.io/" + self.config.targetUser.lower() + "/" + image_repo.name.lower() + image_name
             self.newImages[image] = image_new
@@ -170,15 +172,12 @@ class DockerMigration:
   def dfs_resolve(self, group, remaining_parts, full_path):
     if not remaining_parts:
       return
-
     next_part = remaining_parts[0]
-
     # Check subgroups
     subgroups = group.subgroups.list(all=True)
     for subgroup in subgroups:
       if subgroup.path.lower() == next_part.lower():
         return self.dfs_resolve(self.gl.groups.get(subgroup.id), remaining_parts[1:], full_path)
-
     # Check projects at this group level
     projects = group.projects.list(all=True)
     for project in projects:
@@ -198,15 +197,12 @@ class DockerMigration:
     # Otherwise, search for top-level group
     root_groups = self.gl.groups.list(search=image_path[0])
     root_group = None
-
     for g in root_groups:
       if g.path.lower() == image_path[0].lower():
         root_group = self.gl.groups.get(g.id)
         break
-
     if not root_group:
       logger.warning(f"Could not find root group for image: {image_path}")
       return
-
     project = self.dfs_resolve(root_group, image_path[1:], image_path)
     return project

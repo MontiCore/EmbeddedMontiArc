@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import git
 
 from migrationTool.migration_types import Architecture, Config
-from migrationTool.pipelineMigration import GitlabToGithubSubtree
+from migrationTool.pipeline_migration import GitlabToGithubSubtree
 
 
 class Test(TestCase):

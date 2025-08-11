@@ -58,7 +58,10 @@ def find_large_files_in_repo(repo_path):
 
 
 def findLargeFilesInHistory(repo_path):
-  """Find large files in the Git commit history."""
+  """
+  Find large files in the Git commit history.
+  :param repo_path: Path to the repository
+  """
   try:
     # Get all blob objects in the repo history
     blobs = subprocess.check_output(["git", "-C", repo_path, "rev-list", "--objects", "--all"]).decode()

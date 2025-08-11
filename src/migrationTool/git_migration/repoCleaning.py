@@ -12,8 +12,6 @@ def split_large_files(directory, size="90M", output=False):
   """
   # ToDo: Rewrite for windows, very low priority
   try:
-    # command = f"find {directory} -type f -size +{size} -exec sh -c 'split -b {size} --suffix-length=1 \"$0\"
-    # \"$0.part\"' {{}} \\;"
     command = (f'find {directory} -path {directory}/.git -prune -o -type f -size +{size} -exec sh -c \'split -b {size} '
                f'--suffix-length=1 "$0" "$0.part"\' {{}} \\;')
     result = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, )
@@ -38,7 +36,7 @@ def split_large_files(directory, size="90M", output=False):
 
 def remove_lfs(directory):
   """
-      Removes LFS from the repository and migrates the files to normal git objects.
+  Removes LFS from the repository and migrates the files to normal git objects.
   :param directory: Directory of the repository
   """
   repo = git.Repo(directory)
@@ -48,7 +46,7 @@ def remove_lfs(directory):
 
 def remove_lfs_from_gitattributes(directory):
   """
-      Removes LFS from all .gitattributes files in the repository.
+  Removes LFS from all .gitattributes files in the repository.
   :param directory: Directory of the repository
   """
   changes = False
@@ -71,7 +69,8 @@ def remove_lfs_from_gitattributes(directory):
 
 def concatenate_files(directory):
   """
-      ONLY FOR DEBUGGING.Concatenates all .part files in the directory and removes the original .part files.
+  ONLY FOR DEBUGGING
+  Concatenates all .part files in the directory and removes the original .part files.
   :param directory: Directory of the repository
   """
   try:

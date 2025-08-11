@@ -1,8 +1,8 @@
 import shutil
 from unittest import TestCase
 
-from migrationTool.gitMigration.Git import Git
-from migrationTool.gitMigration.repoCleaning import *
+from migrationTool.git_migration.Git import Git
+from migrationTool.git_migration.repoCleaning import *
 
 
 class Test(TestCase):

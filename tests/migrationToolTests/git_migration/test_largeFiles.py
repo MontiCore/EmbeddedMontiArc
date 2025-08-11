@@ -2,8 +2,8 @@ import os
 import shutil
 from unittest import TestCase
 
-from migrationTool.gitMigration import Git
-from migrationTool.gitMigration.largeFiles import run_git_filter_repo
+from migrationTool.git_migration import Git
+from migrationTool.git_migration.largeFiles import run_git_filter_repo
 
 
 class Test(TestCase):

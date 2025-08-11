@@ -5,7 +5,7 @@ from git.repo.base import Repo as GitRepo
 from unittest import TestCase
 
 from migrationTool.migration_types import Repo
-from migrationTool.gitMigration.Git import Git
+from migrationTool.git_migration.Git import Git
 
 
 class TestRepo(TestCase):

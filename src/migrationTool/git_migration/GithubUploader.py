@@ -6,22 +6,33 @@ import requests
 from git import RemoteProgress, GitCommandError
 from github import Auth, GithubException, Github
 from rich import print
-from rich.console import Console
+from rich.console import Console, Prompt
 from rich.prompt import Confirm
 from rich.table import Table
 from tqdm import tqdm
 
-from migrationTool.gitMigration.Git import Git
-from migrationTool.gitMigration.Uploader import Uploader
+from migrationTool.git_migration.Git import Git
+from migrationTool.git_migration.Uploader import Uploader
 from migrationTool.migration_types import Architecture, Config, Repo
 
 logger = logging.getLogger(__name__)
 
 
 class GithubUploader(Git, Uploader):
+  """
+  Class to upload repositories to GitHub.
+  """
+
   def __init__(self, config: Config, architecture: Architecture, sourceURL="https://api.github.com", ):
+    """
+    Initialize the GithubUploader with the given configuration and architecture.
+    :param config: Config object
+    :param architecture: Architecture object
+    :param sourceURL: URL to the GitHub API
+    """
     super().__init__()
     Uploader.__init__(self, config, architecture)
+    # Create a GitHub API object
     auth = Auth.Token(self.config.targetToken)
     self.g = Github(auth=auth, base_url=sourceURL)
 
@@ -76,7 +87,7 @@ class GithubUploader(Git, Uploader):
   def get_or_create_remote_repo(self, name: str):
     """
     Get or create a repository on the target Git instance.
-    :param name: Name of the repository to be created
+    :param name: Name of the repository to be created. The owner can be specified as 'owner/repo_name'.
     :return: Repository object
     """
     try:
@@ -145,7 +156,7 @@ class GithubUploader(Git, Uploader):
     return [repo.name for repo in repos if repo.private]
 
   # ToDo: Rework to current design
-  def upload_repo(self, repoID: str, disable_scanning: bool=False):
+  def upload_repo(self, repoID: str, disable_scanning: bool = False):
     """
     Upload a repository to the target Git instance.
     :param repoID: RepositoryID to be uploaded
@@ -184,7 +195,7 @@ class GithubUploader(Git, Uploader):
 
   def get_monorepo_secrets(self):
     """
-    Get secrets for the monorepo
+    Get secrets for the monorepo, by merging the secrets of all repositories in the architecture.
     :return: Secrets for the monorepo
     """
     secrets = {}
@@ -197,13 +208,13 @@ class GithubUploader(Git, Uploader):
           logger.warning(f"Secret {name} defined multiple times with different values in architecture.yaml.")
     return secrets
 
-  def upload_mono_repo(self, disable_scanning: bool=False):
+  def upload_mono_repo(self, disable_scanning: bool = False):
     """
-    Upload a monorepo with multiple subtreesa to the target Git instance.
+    Upload a monorepo with multiple subtrees to the target Git instance.
     :param disable_scanning: Whether to disable push protection in this repo
     """
-
     try:
+      # Get local repository object
       if "/" in self.config.monorepoName:
         path = os.path.join(os.getcwd(), "repos", self.config.monorepoName.split("/")[1])
         monorepo_name = self.config.monorepoName.split("/")[1]
@@ -216,16 +227,15 @@ class GithubUploader(Git, Uploader):
     except git.exc.InvalidGitRepositoryError:
       logger.error(f"The monorepo '{self.config.monorepoName}' does not exist.")
       exit(1)
-    # Config needed to push large files
-    # local_repo.git.config('http.postBuffer', '524288000', local=True)
+    # Get Object for remote repo
     logger.info(f"Uploading {monorepo_name} to the {monorepo_name}...")
     github_repo = self.get_or_create_remote_repo(self.config.targetUser + "/" + self.config.monorepoName)
     if disable_scanning:
       self.deactivate_push_protection(github_repo.url)
     self.create_secrets(github_repo, self.get_monorepo_secrets())
+    # Create autehnticated target URL for pushing
     remote_url = github_repo.clone_url.replace("https://", f"https://{self.config.targetToken}@")
     self.reset_remote_origin(local_repo, remote_url)
-
     summary = {}
     existing_branches = [b.name for b in github_repo.get_branches()]
     for branch in local_repo.branches:
@@ -249,7 +259,6 @@ class GithubUploader(Git, Uploader):
         logger.error(f"Branch {branch.name} could not be checked out, skipping" + str(e))
         print(f"[red]Branch {branch.name} could not be checked out, skipping[/red]")
         continue
-
       summary[branch.name] = self.push_subtree_wise(branch, local_repo)
       if branch.name == "master":
         github_repo.edit(default_branch="master")
@@ -261,6 +270,7 @@ class GithubUploader(Git, Uploader):
     if disable_scanning:
       self.activate_push_protection(github_repo.url)
 
+    # Print summary of the upload
     print()
     console = Console()
     table = Table("Branch", "Push status")
@@ -270,7 +280,7 @@ class GithubUploader(Git, Uploader):
 
   def push_subtree_wise(self, branch, local_repo: git.Repo):
     """
-        Upload one subtree after another in chronological order.
+    Upload one subtree after another in chronological order.
     :param branch: Branch to be uploaded
     :param local_repo: local repository object
     """
@@ -295,6 +305,7 @@ class GithubUploader(Git, Uploader):
           print(f"[red]Error pushing {push.hexsha}[/red]")
           return ":x:"
       if a:
+        # If an error occurs, it is caught and logged
         print(f"[red]Error pushing {push.hexsha}[/red]")
         logger.error(f"Error pushing {push.hexsha}")
         logger.error(a[0].summary)
@@ -312,7 +323,7 @@ class GithubUploader(Git, Uploader):
 
   def push_branch_wise(self, existingBranches, localRepo):
     """
-        Push whole branches after one another
+    Push whole branches one after another
     :param existingBranches: Branches already existing in github repo, are skipped
     :param localRepo: local repository object
     """
@@ -325,6 +336,7 @@ class GithubUploader(Git, Uploader):
           a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True,
                                                    progress=progress, )
           if a:
+            # If an error occurs, it is caught and logged
             print(a[0].summary)
             print(a[0].flags)
             print(a[0].remote_ref_string)
@@ -333,7 +345,7 @@ class GithubUploader(Git, Uploader):
 
   def push_commit_wise(self, existingBranches: list[str], localRepo: git.Repo):
     """
-        Push all commits of a branch in chronological order
+    Push all commits of a branch in chronological order
     :param existingBranches: Branches existing in the github repo are skipped
     :param localRepo: local repository object
     """
@@ -351,9 +363,9 @@ class GithubUploader(Git, Uploader):
             a = localRepo.remote(name="origin").push(refspec=f"{branch.name}:{branch.name}", force=True)
             commit_pbar.update(1)
 
-  def deactivate_push_protection(self, url:str):
+  def deactivate_push_protection(self, url: str):
     """
-        Deactivates push protection for the given GitHub repository.
+    Deactivates push protection for the given GitHub repository.
     :param url: URL to Github repository API
     :return:
     """
@@ -372,9 +384,9 @@ class GithubUploader(Git, Uploader):
       print("[red]Push protection deactivation failed. Push might not be possible. Either deactivate manually or push "
             "manually and remove blocked blobs.")
 
-  def activate_push_protection(self, url:str):
+  def activate_push_protection(self, url: str):
     """
-        Activates Push Protection for the given GitHub repository.
+    Activates Push Protection for the given GitHub repository.
     :param url: URL to Github repository API
     """
     headers = {"Accept": "application/vnd.github+json", "Authorization": f"Bearer {self.config.targetToken}",
@@ -449,12 +461,14 @@ def dockerImageMigration(self, architecture, repoID):
     repo.index.commit("Added Docker image migration workflow")
 """
 
-  def docker_image_migration_monorepo(self, repos_to_be_migrated: list[str]=None):
+  def docker_image_migration_monorepo(self, repos_to_be_migrated: list[str] = None):
     """
-        Adds a new GitHub action to migrate Docker images from GitLab to GitHub.
-    :param repos_to_be_migrated: List of repository ids to be migrated. If None, all repositories are migrated.
+    Adds a new GitHub action to migrate Docker images from GitLab to GitHub.
+    :param repos_to_be_migrated: List of repository ids to be migrated. If None, all repositories in the config are
+    migrated.
     :return:
     """
+    docker_adress = Prompt.ask("Please enter the address of the Docker registry: ")
     if repos_to_be_migrated is None:
       repos_to_be_migrated = self.config.repoIDS
     action = "name: Migrate Docker Images\n"
@@ -467,12 +481,10 @@ def dockerImageMigration(self, architecture, repoID):
     action += f'      GITLAB_USERNAME: "{self.config.sourceUser}"\n'
     action += "      GITLABTOKEN: ${{ secrets.GITLABTOKEN }}\n"
     action += "      GHCR_PAT: ${{ secrets.GHCR_PAT }}\n"
-    # action += '      GHCR_REPO_OWNER: "davidblm"\n'
-    # action += "      GHCR_REPO_OWNER: ${{ github.actor | toLowerCase}}\n" #ToDo: Add automatic username
     action += "    steps:\n"
     action += "      - name: Log in to GitLab\n"
     action += "        run: |\n"
-    action += '          docker login registry.git.rwth-aachen.de/ -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
+    action += f'          docker {docker_adress} -u "$GITLAB_USERNAME" -p "$GITLABTOKEN"\n'
     action += "      - name: Log in to GitHub\n"
     action += "        run: |\n"
     action += ('          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" '
@@ -486,11 +498,10 @@ def dockerImageMigration(self, architecture, repoID):
       action += '          LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")\n'
       action += f'          IFS="," read -ra IMAGES <<< "{images}"\n'
       action += '          for IMAGE in "${IMAGES[@]}"; do\n'
-      # action += f'            GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
       action += "            if [[ $IMAGE == :* ]]; then\n"
-      action += f'              GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}$IMAGE"\n'
+      action += f'              GITLAB_IMAGE="{docker_adress}/{gitlab_repo}$IMAGE"\n'
       action += "            else\n"
-      action += f'              GITLAB_IMAGE="registry.git.rwth-aachen.de/{gitlab_repo}/$IMAGE"\n'
+      action += f'              GITLAB_IMAGE="{docker_adress}/{gitlab_repo}/$IMAGE"\n'
       action += "            fi\n"
       action += '            LOWERCASE_IMAGE=$(echo "$IMAGE" | tr "[:upper:]" "[:lower:]")\n'
       action += "            if [[ $IMAGE == :* ]]; then\n"
@@ -513,7 +524,6 @@ def dockerImageMigration(self, architecture, repoID):
     if not os.path.exists(os.path.join(os.getcwd(), "repos", target_repo)):
       logger.error(f"Repository '{target_repo}' nicht gefunden.")
       exit(1)
-
     if not os.path.exists(folder_path):
       os.makedirs(folder_path)
       print(f"Ordner '{folder_path}' wurde erstellt.")
@@ -526,6 +536,10 @@ def dockerImageMigration(self, architecture, repoID):
 
 
 class PushProgress(RemoteProgress):
+  """
+  A progress handler for git push operations that uses tqdm to provide visual feedback.
+  """
+
   def __init__(self):
     super().__init__()
     self.pbar = tqdm(desc="Pushing", unit="objects")

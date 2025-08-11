@@ -8,10 +8,10 @@ from rich.progress import Progress
 from rich.table import Table
 
 from migrationTool.migration_types import Architecture, Config
-from migrationTool.pipelineMigration.DockerMigration import DockerMigration
-from migrationTool.pipelineMigration.GithubConverter import GithubActionConverter
-from migrationTool.pipelineMigration.GithubSubtreeConverter import (GithubSubTreeConverter, )
-from migrationTool.pipelineMigration.GitlabCIImporter import GitlabCIImporter
+from migrationTool.pipeline_migration.DockerMigration import DockerMigration
+from migrationTool.pipeline_migration.GithubConverter import GithubActionConverter
+from migrationTool.pipeline_migration.GithubSubtreeConverter import (GithubSubTreeConverter, )
+from migrationTool.pipeline_migration.GitlabCIImporter import GitlabCIImporter
 
 
 def writeStringToFile(file_path, content):
@@ -34,7 +34,7 @@ def GitlabToGithub(repoID: str, architecture: Architecture, config: Config, name
   repo = architecture.get_repo_by_ID(repoID)
   # Open the Gitlab CI file and parse it
   file = open(os.path.join(repo.path, "/.gitlab-ci.yml"), "r")
-  pipeline = GitlabCIImporter().getPipeline(file)
+  pipeline = GitlabCIImporter().get_pipeline(file)
   file.close()
 
   # Change the image names in the pipeline to the migrated registry ones if necessary
@@ -81,8 +81,8 @@ def changeToUpdatedImages(progress, docker_migration, pipeline):
 
 def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=False):
   """
-      Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits
-      the changes.
+  Converts Gitlab pipelines to Github Actions pipelines for all repositories in the subtree monorepo and commits
+  the changes.
   :param architecture: Architecture object
   :param config: Config object
   """
@@ -148,7 +148,7 @@ def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=Fa
           summary[repo.name][branch] = ":x:"
           progress.update(task, advance=1)
           continue
-        pipeline = GitlabCIImporter().getPipeline(file)
+        pipeline = GitlabCIImporter().get_pipeline(file)
         file.close()
 
         """ Only for multiple branches
@@ -171,15 +171,15 @@ def GitlabToGithubSubtree(architecture: Architecture, config: Config, rebuild=Fa
         dependencies = dependencies.union(new_dependencies)
         # Convert the pipeline to Github Actions format, depending on the number of branches
         if len(branches_to_be_migrated[str(repoID)]) <= 1:
-          pipelineConverter = GithubSubTreeConverter(architecture, pipeline, github_repo_prefix[repo.name], repoID,
+          pipelineConverter = GithubSubTreeConverter(architecture, pipeline, github_repo_prefix[repo.name],
                                                      compatibleImages=docker_migration.nativeImage, rebuild=rebuild, )
-          convertedPipeline = pipelineConverter.parse_pipeline(repo.name, repo.secrets)
+          convertedPipeline = pipelineConverter.parse_pipeline(repoID)
           file_path = os.path.join(file_path_base, repo.name + ".yml")
         else:
           pipelineConverter = GithubSubTreeConverter(architecture, pipeline,
-                                                     github_repo_prefix[repo.name] + "/" + branch, repoID,
+                                                     github_repo_prefix[repo.name] + "/" + branch,
                                                      compatibleImages=docker_migration.nativeImage, rebuild=rebuild, )
-          convertedPipeline = pipelineConverter.parse_pipeline(repo.name + "_" + branch, repo.secrets)
+          convertedPipeline = pipelineConverter.parse_pipeline(repoID)
           file_path = os.path.join(file_path_base, repo.name + "_" + branch + ".yml")
         print(f"[green]Converted pipeline of {repo.name} and branch {branch}")
         summary[repo.name][branch] = ":white_check_mark:"

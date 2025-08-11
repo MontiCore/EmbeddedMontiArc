@@ -3,9 +3,9 @@ import re
 from rich import print
 
 from migrationTool.migration_types import Architecture
-from migrationTool.pipelineMigration.Converter import Converter
-from migrationTool.pipelineMigration.Job import Job
-from migrationTool.pipelineMigration.Pipeline import Pipeline
+from migrationTool.pipeline_migration.Converter import Converter
+from migrationTool.pipeline_migration.Job import Job
+from migrationTool.pipeline_migration.Pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -24,11 +24,9 @@ class GithubActionConverter(Converter):
     :param rebuild: Whether to rebuild splitted large files or not
     container
     """
-
-    self.pipeline = pipeline
+    super().__init__(pipeline, architecture)
     self.rebuild = rebuild
     self.timeout = 120  # Default timeout in minutes
-    self.architecture = architecture
     self.compatible_images = compatibleImages
     self.migrated_docker_images = {}
     for repoID in architecture.repoIDs:
@@ -67,11 +65,12 @@ class GithubActionConverter(Converter):
     pipeline_string += f"\tCI_PROJECT_ID: {repoID}\n"
 
     pipeline_string += "jobs:\n"
-    # Check if job(s) exist that are only run if certain files changed
+    # Creates the file change job if necessary
     for _, job in self.pipeline.jobs.items():
       # Check whether a job is only run if a file changes
       needed = (job.only and type(job.only) == dict and "changes" in job.only) or (
           job.exc and type(job.exc) == dict and "changes" in job.exc)
+      # Check if a job uses rules
       if job.rules:
         for rule in job.rules:
           if "changes" in rule:
@@ -106,7 +105,7 @@ class GithubActionConverter(Converter):
 
     job_string = ""
     job_string += f"\t{job.name.replace("/", "_").replace(" ", "_")}:\n"
-    # Checks the needs of the job and sets the needs of the job accordingly
+    # Handles the needs of the job
     if job.needs:
       # If needs exist add them
       needs_string = ""
@@ -118,6 +117,7 @@ class GithubActionConverter(Converter):
             needs_string += f"{j.replace("/", "_").replace(" ", "_")} "
           else:
             needs_string += f", {j.replace("/", "_").replace(" ", "_")}"
+      # Add the previous stage as need if the job is not in the first stage
       i = self.pipeline.stages.index(job.stage)
       if i > 0:
         needs_string += f", {self.pipeline.schedule[i - 1].replace('/', '_').replace(' ', '_') + "_phase"}"
@@ -156,7 +156,7 @@ class GithubActionConverter(Converter):
         if self.file_change_job_needed:
           job_string += f"\t\tneeds: FileChanges\n"
 
-    # Construct the if condition for whether this job should be run
+    # Construct the if condition of this job
     job_string += self.if_condition(job)
 
     # Add variables if the job has any
@@ -176,8 +176,8 @@ class GithubActionConverter(Converter):
     job_string += f"\t\ttimeout-minutes: {self.timeout}\n"
 
     if job.allowFailure:
-        # If the job is allowed to fail, add the continue-on-error block
-        job_string += f"\t\tcontinue-on-error: true\n"
+      # If the job is allowed to fail, add the continue-on-error flag
+      job_string += f"\t\tcontinue-on-error: true\n"
 
     # If the job publishes to pages it needs special permissions
     if job.artifacts:
@@ -189,7 +189,7 @@ class GithubActionConverter(Converter):
 
     # Add the steps block
     job_string += f"\t\tsteps:\n"
-    # First chekout only latest version of the repo
+    # First checkout only latest version of the repo
     job_string += GithubActionConverter.add_checkout_step()
 
     # If necessary restore the splitted large files
@@ -207,29 +207,7 @@ class GithubActionConverter(Converter):
     if not native:
       job_string += GithubActionConverter.start_docker_container(job.image, secrets)
 
-    if job.trigger:
-      # If the job is a trigger job, add the trigger block
-      if "project" in job.trigger:
-        repo_name = job.trigger["project"].split("/")[-1]
-        triggered_repo = self.architecture.get_repo_by_name(repo_name)
-        if "branch" in job.trigger:
-          branch = job.trigger["branch"]
-        else:
-          branch = triggered_repo.get_branches_to_be_migrated()[0]
-
-
-        if triggered_repo is None:
-          print(f"[red] The repo {repo_name} has not been migrated yet!")
-        elif branch not in triggered_repo.get_branches_to_be_migrated():
-          print(f"[red] The branch {branch} of {repo_name} has not been part of the migration yet!")
-        job_string += GithubActionConverter.trigger(repo_name+".yml",repo_name, branch)
-      elif "include" in job.trigger:
-        workflow_path = job.trigger["include"].split("/")[-1]
-        branch = "${{ github.ref_name }}"
-        repo = "${{ github.repository }}"
-        job_string += GithubActionConverter.trigger(workflow_path, repo_name=repo, branch=branch)
-
-    elif job.script:
+    if job.script:
       # Add the script the job should run
       if native:
         # If native the script can be run directly
@@ -254,15 +232,43 @@ class GithubActionConverter(Converter):
         for command in job.script:
           job_string += f"\t\t\t\t\t\t{command}\n"
         # Run this script in the docker container
-        job_string += f'\t\t\t\trun: docker exec build-container bash -c "$SCRIPT"\n'
+        job_string += f'\t\t\t\trun: docker exec build-container bash -c "set -e; $SCRIPT"\n'
 
-      # Once the script is done and the job was successful, upload the artifacts
+      if job.trigger:
+        # If the job is a trigger job, add the trigger block
+        if "project" in job.trigger:
+          # Job triggers another repo
+          repo_name = job.trigger["project"].split("/")[-1]
+          triggered_repo = self.architecture.get_repo_by_name(repo_name)
+          if "branch" in job.trigger:
+            branch = job.trigger["branch"]
+          else:
+            branch = triggered_repo.get_branches_to_be_migrated()[0]
+          if triggered_repo is None:
+            print(f"[red]The repo {repo_name} has not been migrated yet!")
+          elif branch not in triggered_repo.get_branches_to_be_migrated():
+            print(f"[red]The branch {branch} of {repo_name} has not been part of the migration yet!")
+          job_string += GithubActionConverter.trigger(repo_name + ".yml", repo_name, branch,
+                                                      allow_failure=job.allowFailure)
+        elif "include" in job.trigger:
+          # Job triggers another workflow in the same repo
+          workflow_path = job.trigger["include"].split("/")[-1]
+          triggered_repo = self.architecture.get_repo_by_name(workflow_path.replace(".yml", ""))
+          if triggered_repo is None:
+            print(f"[red]The repo  {workflow_path.replace(".yml", "")} has not been migrated yet!")
+          branch = "${{ github.ref_name }}"
+          repo = "${{ github.repository }}"
+          job_string += GithubActionConverter.trigger(workflow_path, repo_name=repo, branch=branch,
+                                                      allow_failure=job.allowFailure)
+
+      # Once the script is done, upload the artifacts
       if job.artifacts:
         if "paths" in job.artifacts:
           if job.artifacts["paths"][0].split("/")[-1] == "public" and job.name == "pages":
-            # If the job is a pages job, deploy the pages
+            # If the job is a pages job, deploy it
             job_string += GithubActionConverter.deploy_pages(job.artifacts["paths"][0])
           else:
+            # If no expiration time is given, set it to 7 days
             if "expire_in" in job.artifacts:
               retention_time = job.artifacts["expire_in"].replace("days", "")
             else:
@@ -297,7 +303,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def add_checkout_step(repo: str = "", depth: int = 1) -> str:
     """
-        Returns the block for the Github Actions checkout step.
+    Returns the block for the Github Actions checkout step.
     :param repo: Name of the repo to be checked out. If empty, the current repo is checked out
     :param depth: Number of commits to be checked out. Default 1 = only the latest commit
     :return: String of the checkout step
@@ -315,7 +321,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def add_checkout_step_manual(repo: str = "${{ github.repository }}") -> str:
     """
-        Experimental function: Checkout the repo manually using git clone. Should not be used
+    Experimental function: Checkout the repo manually using git clone. Should not be used
     :param repo: Name of the repo to be checked out. If empty, the current repo is checked out
     :return: String of the manual checkout step
     """
@@ -331,7 +337,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def restore_large_files_step() -> str:
     """
-        Returns the block for restoring large files that were split into parts.
+    Returns the block for restoring large files that were split into parts.
     :return: String of the restore step
     """
     restore = ""
@@ -349,7 +355,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def start_docker_container(image: str, secrets: list[str], options: str = "") -> str:
     """
-        Returns the block for starting a separate docker container.
+    Returns the block for starting a separate docker container.
     :param image: URL to Image to be used. If the image is in the ghcr.io registry, the GITHUB_TOKEN is used to
     authenticate
     :param secrets: Secrets to be passed into the container.
@@ -377,7 +383,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def upload_artifacts(paths: list[str], name, when="success()", expiration: int = 7) -> str:
     """
-        Creates the string for the upload artifacts action block.
+    Creates the string for the upload artifacts action block.
     :param paths: Paths to the artifacts to be uploaded
     :param name: Name of the artifact. Must be unique in the workflow
     :param expiration: Optional expiration time in days. Default is 7 days
@@ -398,7 +404,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def reporting(paths: list[str], job_name: str) -> str:
     """
-        Creates the string for the reporting action block.
+    Creates the string for the reporting action block.
     :param paths: Paths to the reports to be uploaded
     :return: String of the reporting block
     """
@@ -411,14 +417,14 @@ class GithubActionConverter(Converter):
     report += f"\t\t\t\t\tname: {job_name}\n"
     report += f"\t\t\t\t\tpath: |\n"
     for path in paths:
-      report += f"\t\t\t\t\t\t- {path}\n"
+      report += f"\t\t\t\t\t\t{path}\n"
     report += "\t\t\t\t\treporter: java-junit\n"
     return report
 
   @staticmethod
   def download_artifacts(paths: list[str], name) -> str:
     """
-        Creates the string for the download artifacts action block.
+    Creates the string for the download artifacts action block.
     :param paths: Paths where the artifacts shall be downloaded to
     :param name: Name of the artifact to be downloaded
     :return: String of the download block
@@ -436,7 +442,7 @@ class GithubActionConverter(Converter):
   @staticmethod
   def deploy_pages(path: str) -> str:
     """
-        Creates the string for the deploy pages action block.
+    Creates the string for the deploy pages action block.
     :param path: Path to the pages to be deployed
     :return: String of the deploy block
     """
@@ -450,9 +456,9 @@ class GithubActionConverter(Converter):
     return deploy
 
   @staticmethod
-  def trigger(workflow_file: str, repo_name: str = "", branch: str = "master") -> str:
+  def trigger(workflow_file: str, repo_name: str = "", branch: str = "master", allow_failure: bool = False) -> str:
     """
-        Creates the trigger for the pipeline.
+    Creates the trigger for the pipeline.
     :param workflow_file: Workflow file to be triggered
     :param repo_name: Name of the repo to be triggered. If empty, the current repo is used
     :param branch: Branch to run on. Default is master
@@ -500,6 +506,8 @@ class GithubActionConverter(Converter):
     trigger += "\t\t\t\t\tGH_TOKEN: ${{github.token}}\n"
     trigger += f"\t\t\t\t\tREPO: {repo_name}\n"
     trigger += "\t\t\t- name: Check Child Workflow result\n"
+    if allow_failure:
+      trigger += "\t\t\t\tcontinue-on-error: true\n"
     trigger += "\t\t\t\trun: |\n"
     trigger += ("\t\t\t\t\tRESULT=$(gh run view \"${{ steps.get_run.outputs.run_id }}\" --repo=$REPO --json conclusion "
                 "--jq '.conclusion')\n")
@@ -596,22 +604,19 @@ class GithubActionConverter(Converter):
 
   def create_stage_jobs(self):
     """
-        Creates a job for each stage in the pipeline.
+    Creates a job for each stage in the pipeline.
     :return: String of the stage jobs
     """
     lastStage = ""
     jobString = ""
     # Create a job for each stage in the pipeline, except the last one
     for stage in self.pipeline.schedule[:-1]:
-
       jobString += f"\t{stage + "_phase:"}\n"
-
       jobString += f"\t\tneeds: ["
       if lastStage:
         # Add the last stage as need
         jobString += f'{lastStage + "_phase, "}'
       lastStage = stage
-
       # Add all jobs of the stage as needs
       for i, job in enumerate(self.pipeline.stageJobs[stage]):
         if i == 0:
@@ -634,7 +639,7 @@ class GithubActionConverter(Converter):
 
   def create_file_change_job(self):
     """
-        Creates a job that checks if certain files changed and sets the output of the job accordingly.
+    Creates a job that checks if certain files changed and sets the output of the job accordingly.
     :return: String of the file change job
     """
     jobString = "\tFileChanges:\n"
@@ -680,13 +685,19 @@ class GithubActionConverter(Converter):
       if job_output_only or job_output_except:
         # Create a step for each job, whose run condition needs to be checked
         jobString += self.__only_except(job, job_output_only, job_output_except)
-
       elif job_output_rules:
         jobString += self.__rules(job)
 
     return jobString
 
   def __only_except(self, job: Job, only: bool, exc: bool):
+    """
+    Creates the string to chekc for only or except step in the file change job.
+    :param job: Job whose run condition needs to be checked
+    :param only: Whether only uses changes
+    :param exc: Whether except uses changes
+    :return: String of the only/except check
+    """
     jobString = ""
     jobString += f"\t\t\t- name: Check {job.name}\n"
     jobString += f"\t\t\t\tid: {job.name.replace('/', '_').replace(' ', '_')}\n"
@@ -734,6 +745,11 @@ class GithubActionConverter(Converter):
     return jobString
 
   def __rules(self, job: Job):
+    """
+    Creates the string to check for rules in the file change job.
+    :param job: Job whose run condition needs to be checked
+    :return: String of the rules check
+    """
     jobString = ""
     jobString += f"\t\t\t- name: Check {job.name}\n"
     jobString += f"\t\t\t\tid: {job.name.replace('/', '_').replace(' ', '_')}\n"
@@ -800,10 +816,11 @@ class GithubActionConverter(Converter):
     if type(script) == str:
       script = [script]
 
+    # Search for docker commands in the script
     login_indices = [i for i, command in enumerate(script) if "docker login" in command]
     build_indices = [i for i, command in enumerate(script) if "docker build" in command]
     push_indices = [i for i, command in enumerate(script) if "docker push" in command]
-
+    # Check if all comands are present and in the correct order to pubish a Docker image
     if login_indices and build_indices and push_indices:
       if login_indices[0] < build_indices[0] < push_indices[0]:
         # If the login command is before the build command, add the login command to the script
@@ -813,6 +830,7 @@ class GithubActionConverter(Converter):
         image_migrated = False
         repo = ""
         image = ""
+        # Check if the image has been migrated
         for repo_it in self.migrated_docker_images:
           for image_it in self.migrated_docker_images[repo_it]:
             if docker_path.endswith(image_it):
@@ -822,8 +840,8 @@ class GithubActionConverter(Converter):
               break
           if image_migrated:
             break
-
         if image_migrated:
+          # Update the docker commands to use the new ghcr.io registry
           script[login_indices[
             0]] = 'echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin'
           build_command = script[build_indices[0]].split(" ")[4:]
@@ -834,9 +852,7 @@ class GithubActionConverter(Converter):
           script.insert(build_indices[0],
                         'LOWERCASE_OWNER=$(echo "${{ github.repository_owner }}" | tr "[:upper:]" "[:lower:]")')
     for i, command in enumerate(script):
-      #if "mvn" in command and False:
-      # command += (" -Dmaven.wagon.http.retryHandler.count=50 -Dmaven.wagon.http.connectionTimeout=6000000 "
-      #              "-Dmaven.wagon.http.readTimeout=600000000")
+      # Replace Model variables with GitHub Actions secrets
       command = command.replace("${CI_JOB_TOKEN}", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$DOCKER_TOKEN", "${{ secrets.GITLABTOKEN }}")
       command = command.replace("$CI_REGISTRY_PASSWORD", "${{ secrets.GITLABTOKEN }}")

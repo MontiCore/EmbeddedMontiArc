@@ -1,7 +1,7 @@
 import os
 from unittest import TestCase
 
-from migrationTool.gitMigration.mavenSecrets import find_env_vars_in_repo
+from migrationTool.git_migration.mavenSecrets import find_env_vars_in_repo
 
 
 class Test(TestCase):

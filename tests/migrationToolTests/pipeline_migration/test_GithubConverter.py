@@ -3,8 +3,8 @@ import shutil
 from unittest import TestCase
 
 from migrationTool.migration_types import Architecture
-from migrationTool.pipelineMigration.GitlabCIImporter import GitlabCIImporter
-from migrationTool.pipelineMigration.GithubConverter import GithubActionConverter
+from migrationTool.pipeline_migration.GitlabCIImporter import GitlabCIImporter
+from migrationTool.pipeline_migration.GithubConverter import GithubActionConverter
 
 """
 DO NOT REFORMAT THIS FILE! OTHERWISE THE TESTS WILL FAIL!
@@ -19,7 +19,7 @@ class TestGithubActionConverter(TestCase):
     self.architecture = Architecture.load_architecture(os.path.join(os.getcwd(), "TEST", "architecture.yaml"))
     with open(os.path.join(os.getcwd(), "TEST", ".gitlab-ci.yml")) as file:
       importer = GitlabCIImporter()
-      self.pipeline = importer.getPipeline(file)
+      self.pipeline = importer.get_pipeline(file)
     compatibleImages = {"ubuntu:latest", "docker:latest"}
     self.github_converter = GithubActionConverter(self.architecture, self.pipeline, compatibleImages)
 
@@ -220,7 +220,7 @@ class TestGithubActionConverter(TestCase):
           SCRIPT: |
             cd /workspace
             echo "Deploying private image..."
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 """
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)
@@ -249,7 +249,7 @@ class TestGithubActionConverter(TestCase):
           SCRIPT: |
             cd /workspace
             echo "Deploying private image..."
-        run: docker exec build-container bash -c "$SCRIPT"
+        run: docker exec build-container bash -c "set -e; $SCRIPT"
 """
     # @formatter:on
     self.assertMultiLineEqual(pipeline, expected)
@@ -481,6 +481,10 @@ class TestGithubActionConverter(TestCase):
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - name: Script
+        shell: bash
+        run: |
+            echo "Triggering another repository..."
       - name: Record trigger time
         id: trigger_time
         run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_OUTPUT
@@ -651,7 +655,7 @@ class TestGithubActionConverter(TestCase):
         with:
           name: report_job
           path: |
-            - reports/test-report.xml
+            reports/test-report.xml
           reporter: java-junit
 """
     self.assertMultiLineEqual(pipeline, expected)

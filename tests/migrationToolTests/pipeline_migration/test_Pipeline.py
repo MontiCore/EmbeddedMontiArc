@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from migrationTool.pipelineMigration import Pipeline, Job
+from migrationTool.pipeline_migration import Pipeline, Job
 
 
 class TestPipeline(TestCase):

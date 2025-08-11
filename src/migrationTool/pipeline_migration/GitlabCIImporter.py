@@ -2,9 +2,9 @@ from typing import TextIO
 
 import yaml
 
-from migrationTool.pipelineMigration.Importer import Importer
-from migrationTool.pipelineMigration.Job import Job
-from migrationTool.pipelineMigration.Pipeline import Pipeline
+from migrationTool.pipeline_migration.Importer import Importer
+from migrationTool.pipeline_migration.Job import Job
+from migrationTool.pipeline_migration.Pipeline import Pipeline
 
 
 class GitlabCIImporter(Importer):
@@ -91,14 +91,13 @@ class GitlabCIImporter(Importer):
             parameter["artifacts"] = {"paths": parameter["pages"]["publish"]}
             job_name = "pages"
 
-
         # Handle dependencies
         if "dependencies" in parameter:
           needs = parameter.get("dependencies", []) + parameter.get("needs", [])
         else:
           needs = parameter.get("needs", [])
         jobs[name] = Job(name=job_name, image=parameter.get("image", general_image), stage=parameter.get("stage", ""),
-                         script=sc, needs=needs,  exc=parameter.get("except", []),
+                         script=sc, needs=needs, exc=parameter.get("except", []),
                          artifacts=parameter.get("artifacts", []), only=parameter.get("only", []),
                          allowFailure=parameter.get("allow_failure", False), rules=parameter.get("rules", []),
                          trigger=parameter.get("trigger", {}), variables=parameter.get("variables", {}))
@@ -153,7 +152,7 @@ class GitlabCIImporter(Importer):
             break
     return stage_schedule
 
-  def getPipeline(self, file: TextIO) -> Pipeline:
+  def get_pipeline(self, file: TextIO) -> Pipeline:
     """
     Imports a pipeline from a GitLab CI YAML file and returns it as a Pipeline object.
     :param file: Path to the YAML file

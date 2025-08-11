@@ -3,8 +3,8 @@ import shutil
 from unittest import TestCase
 
 from migrationTool.migration_types import Architecture
-from migrationTool.pipelineMigration.GithubSubtreeConverter import GithubSubTreeConverter
-from migrationTool.pipelineMigration.GitlabCIImporter import GitlabCIImporter
+from migrationTool.pipeline_migration.GithubSubtreeConverter import GithubSubTreeConverter
+from migrationTool.pipeline_migration.GitlabCIImporter import GitlabCIImporter
 
 """
 DO NOT REFORMAT THIS FILE!
@@ -21,9 +21,9 @@ class TestGithubSubTreeConverter(TestCase):
     self.architecture = Architecture.load_architecture(os.path.join(os.getcwd(), "TEST", "architecture.yaml"))
     with open(os.path.join(os.getcwd(), "TEST", ".gitlab-ci.yml")) as file:
       importer = GitlabCIImporter()
-      self.pipeline = importer.getPipeline(file)
+      self.pipeline = importer.get_pipeline(file)
     compatibleImages = {"ubuntu:latest", "docker:latest"}
-    self.github_converter = GithubSubTreeConverter(self.architecture, self.pipeline, "repoA", "1", compatibleImages)
+    self.github_converter = GithubSubTreeConverter(self.architecture, self.pipeline, "repoA", compatibleImages)
 
   def tearDown(self):
     shutil.rmtree(os.path.join(os.getcwd(), "TEST"))
@@ -32,7 +32,7 @@ class TestGithubSubTreeConverter(TestCase):
     """
      Test that the pipeline is parsed correctly
     """
-    pipeline = self.github_converter.parse_pipeline("RepoA", self.architecture.get_repo_by_ID("1").secrets)
+    pipeline = self.github_converter.parse_pipeline("1")
     self.assertIsNotNone(pipeline)
     self.assertIsInstance(pipeline, str)
 
@@ -100,7 +100,7 @@ class TestGithubSubTreeConverter(TestCase):
     pipeline = self.github_converter.parse_job(self.pipeline.jobs["report_job"],
                                                self.architecture.get_repo_by_ID("1").secrets)
     updated_path = """path: |
-            - repoA/reports/test-report.xml"""
+            repoA/reports/test-report.xml"""
     self.assertIn(updated_path, pipeline)
 
   def test_parse_artifact_job(self):
