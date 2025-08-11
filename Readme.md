@@ -6,7 +6,7 @@ Please install the migration tool using:
 pipx install PATH_TO_WHEEL
 ```
 
-# Current workflow:
+# Usage:
 
 This only explains the default workflow. For information about eventual flags use the `--help` flag of the command.
 Currently te tool supports the repository-wise or monorepository migration from GitLab to GitHub.
@@ -86,4 +86,27 @@ the user can choose whether to override it. At this point one has to be very car
 `force pushes`. A master branch is only created if it is not present in the current repo. If it is pushed, it is also
 set as the default branch.
 
-Additionally, the separate repositories can be pushed. For this a flag must be added.
+If a repository-wise migration is desired, the user can simply run the command with an additoinal fla. In thise case the
+history will be pushed branchwise.
+
+# Example
+
+A sample configuration file of the first batch from the migration of this project is available under `example/`. To test
+it, simply add your user names and token. Afterwards, the migration tool can be invoked there.
+
+# Structure
+
+The tool is structured into thee submodules:
+
+1. `migration_types`: Contains several shared datatypes
+   ![1.png](Documents/class-diagram/1.png)
+2. `git_migration`: Implements the migration of the git repositories and monorepo creation
+   ![2.png](Documents/class-diagram/2.png)
+3. `pipeline_migration`: Implements the migration of the CI/CD pipelines
+   ![3.png](Documents/class-diagram/3.png)
+
+Please note that the class diagrams are not complete and only show the classes. Several parts are only implemented in
+functions and therefore not shown here.
+
+
+
