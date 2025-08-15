@@ -1,0 +1,55 @@
+/* (c) https://github.com/MontiCore/monticore */
+package wrapper;
+import wrapper.structures.*;
+
+component CalculateWrappedValues{
+
+		// ports for CARLA to Autopilot:
+
+	ports
+	    
+		in Vehicle_Status vehicle_status,  
+		in Quaternion orientation,
+
+		out Q (0.0 m/s : 0.01 m/s : oo m/s) velocity,		
+		out Q (0.0 : 0.001 : 2.5) throttle,
+		out Q (-0.785 : 0.001 : 0.785) steer,
+		out Q (0.0 : 0.001 : 3.0) brake,
+		
+		out Q (-oo m : 0.01 m : oo m) pos_x,
+		out Q (-oo m : 0.01 m : oo m) pos_y,
+
+		out Q (-oo : 0.001 : oo) compass,
+
+		out Q (0.0 s : 0.001 s : 1.0 s) timeIncrement;
+
+
+	implementation Math{
+		//Wrapping CARLA output into Autopilot input:	
+
+		Ego_Vehicle tmp_vehicle = vehicle_status.control;
+	
+		//autopilot: engine actuation (0, 2.5)
+		throttle = (tmp_vehicle.throttle * 2.5);
+
+		//autopilot: steering (-0.785, 0.785)
+		steer = (tmp_vehicle.steer * 0.785);
+
+		//autopilot: brakes (0, 3.0)
+		brake = (tmp_vehicle.brake * 3.0);
+
+		velocity = vehicle_status.velocity;
+
+		//carla-ros-bridge's frequency is 100ms
+		timeIncrement = 0.1;
+
+		orientation = vehicle_status.orientation;
+
+		//get the cars current position
+		pos_x = orientation.x;
+		pos_y = orientation.y;	
+
+		//calculate the compass value (relative to the direction the car is facing)
+		compass = asin(orientation.z) * 2; 
+	}
+}
