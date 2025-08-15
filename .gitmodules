@@ -1,3 +1,0 @@
-[submodule "src/main/resources/shared_cpp"]
-	path = src/main/resources/shared_cpp
-	url = ../../simulators/shared_cpp
