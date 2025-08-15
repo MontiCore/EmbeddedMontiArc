@@ -136,17 +136,6 @@
                 </repository>
 
                 <repository>
-                    <id>spring</id>
-                    <url>https://repo.spring.io/libs-release/</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>
-
-                <repository>
                     <id>rosjava_mvn</id>
                     <name>Public Rosjava repository</name>
                     <url>https://github.com/rosjava/rosjava_mvn_repo</url>
@@ -157,13 +146,6 @@
                    <name>icm</name>
                     <url>http://maven.icm.edu.pl/artifactory/repo/</url>
                  </repository>
-        
-
-                <repository>
-                  <id>jena</id>
-                  <name>Uni Jena</name>
-                  <url>https://bio.informatik.uni-jena.de/repository/libs-release-oss</url>
-                </repository>
 
 
             </repositories>
