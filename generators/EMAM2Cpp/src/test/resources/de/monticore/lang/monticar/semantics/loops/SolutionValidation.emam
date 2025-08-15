@@ -1,0 +1,16 @@
+/* (c) https://github.com/MontiCore/monticore */
+package de.monticore.lang.monticar.semantics.loops;
+
+component SolutionValidation {
+    port
+        in Q (-1000 : 1000) input,
+        out Q (-1000 : 1000) output;
+
+    implementation Math {
+        symbolic (-1000 : 1000) x;
+
+        x == input - x;
+
+        output == x;
+    }
+}

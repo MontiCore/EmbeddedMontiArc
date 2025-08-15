@@ -1,0 +1,18 @@
+/* (c) https://github.com/MontiCore/monticore */
+package basicLibrary;
+
+
+component SchmittTrigger {
+
+    ports
+        in Q sigIn,
+        out B sigOut;
+
+    @ sigIn::value( >= 10 ) && sigOut::value( false ) {
+        connect true -> sigOut;
+    }
+
+    @ sigIn::value( <= 5 ) && sigOut::value( true ) {
+        connect true -> sigOut;
+    }
+}

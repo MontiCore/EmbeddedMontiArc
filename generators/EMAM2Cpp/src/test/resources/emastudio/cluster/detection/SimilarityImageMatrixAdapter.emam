@@ -1,0 +1,24 @@
+/* (c) https://github.com/MontiCore/monticore */
+package detection;
+
+component SimilarityImageMatrixAdapter<N1 n = 50, N1 m = 50>{
+    ports in Q(-oo:oo)^{n,m} redPixels,
+          in Q(-oo:oo)^{n,m} greenPixels,
+          in Q(-oo:oo)^{n,m} bluePixels,
+          out Q(-oo:oo)^{n*m,3} imgMatrix;
+
+    implementation Math{
+        Q counter = 1;
+
+        for i=1:n
+            for j=1:m
+                imgMatrix(counter,1) = redPixels(i,j);
+                counter = counter + 1;
+                imgMatrix(counter, 2) = greenPixels(i,j);
+                counter = counter + 1;
+                imgMatrix(counter, 3) = bluePixels(i,j);
+                counter = counter + 1;
+            end
+        end
+    }
+}
