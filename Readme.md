@@ -93,7 +93,31 @@ history will be pushed branchwise.
 # Example
 
 A sample configuration file of the first batch from the migration of this project is available under `example/`. To test
-it, simply add your user names and token. Afterwards, the migration tool can be invoked there.
+it, simply add your user names and token. Afterwards, the migration tool can be invoked there. 
+
+# Pipeline Migration compatibility
+The list below aims to help users asses, whether their pipeline is compatible with the migration tool. 
+Please note that you should still evaluate your pipeline after the migration, even if it should be supported.
+The tool only uses the ubuntu latest runners and automaically adapts docker images in both the down- and upload 
+if they are to be migrated. Finally the tool can also implement the monorepository related changes automatically, if required.
+
+
+| Feature       | Description                                         |
+|---------------|-----------------------------------------------------|
+| Stages        | Supported by creating extra jobs                    |
+| Defaults      | Use default values, if nothing else specified       |
+| Variables     | Maintained at pipeline level                        |
+| except        | Branches handeled in job; changes in fileChange job |
+| only          | Branches handeled in job; changes in fileChange job |
+| rules         | Handeled in fileChannge job                         |
+| needs         | Supported                                           |
+| artifacts     | Supported, but expiration-time may be changed,      |
+| reports       | Supported for jUnit                                 |
+| trigger       | Supported                                           |
+| pages         | Supported                                           |
+| script        | Supported                                           |
+| docker images | Supported, both with and without Node.js 20         |   
+
 
 # Structure
 
