@@ -1,5 +1,0 @@
-find . -type f -name '*.part*' | while read part; do
-  base=$(echo "$part" | sed 's/.part.*//')
-  cat "$part" >> "$base"
-  rm "$part"
-done
