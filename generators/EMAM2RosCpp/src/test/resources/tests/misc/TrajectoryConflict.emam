@@ -1,0 +1,25 @@
+/* (c) https://github.com/MontiCore/monticore */
+package tests.misc;
+
+import tests.structs.Trajectory;
+
+component TrajectoryConflict{
+    port in Trajectory trajectoryA;
+    port in Trajectory trajectoryB;
+    port out boolean conflict;
+
+    implementation Math{
+        for i = 1:1:5
+            for j = 1:1:5
+                Q dX = trajectoryA.positionsWithDeltaTime(i).position.xPosition - trajectoryB.positionsWithDeltaTime[j].position.xPosition;
+                Q dY = trajectoryA.positionsWithDeltaTime[i].position.yPosition - trajectoryB.positionsWithDeltaTime[j].position.yPosition;
+                Q posDeltaSquared = dX * dX + dY * dY;
+                Q timeDelta = abs(trajectoryA.positionsWithTime[i].deltaTime - trajectoryA.positionsWithTime[i].deltaTime);
+
+
+            end
+        end
+
+    }
+
+}
