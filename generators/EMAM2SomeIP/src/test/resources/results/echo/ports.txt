@@ -1,0 +1,15 @@
+
+Component name: tests.a.compA
+
+Ports:
+
+in1 : incoming (someip, serviceID: 11 instanceID: 12 eventgroupID: 13)
+in2 : incoming (someip, serviceID: 21 instanceID: 22 eventgroupID: 23)
+in3 : incoming (someip, serviceID: 31 instanceID: 32 eventgroupID: 33)
+in4 : incoming (someip, serviceID: 41 instanceID: 42 eventgroupID: 43)
+in5 : incoming (someip, serviceID: 51 instanceID: 52 eventgroupID: 53)
+out1 : outgoing (someip, serviceID: 111 instanceID: 112 eventgroupID: 113)
+out2 : outgoing (someip, serviceID: 121 instanceID: 122 eventgroupID: 123)
+out3 : outgoing (someip, serviceID: 131 instanceID: 132 eventgroupID: 133)
+out4 : outgoing (someip, serviceID: 141 instanceID: 142 eventgroupID: 143)
+out5 : outgoing (someip, serviceID: 151 instanceID: 152 eventgroupID: 153)
