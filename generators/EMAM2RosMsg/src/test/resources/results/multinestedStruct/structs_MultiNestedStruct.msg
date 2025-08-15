@@ -1,0 +1,4 @@
+multinested/structs_NestedStruct fieldMultiNested1
+multinested/structs_NestedStruct fieldMultiNested2
+multinested/structs_BasicStruct fieldNested
+float64 fieldQ
