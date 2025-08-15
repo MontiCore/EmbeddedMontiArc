@@ -1,0 +1,6 @@
+package testA;
+
+stream Cube_WrapperTest for Cube {
+    data: file::"/src/test/resources/images/1.png" tick file::"/src/test/resources/images/1.png" tick file::"/src/test/resources/images/1.png";
+    out1: (1.0,1.0)~file::"/src/test/resources/images/2.png" tick (1.0,1.0)~file::"/src/test/resources/images/0.png" tick file::"/src/test/resources/images/1.png";
+}
