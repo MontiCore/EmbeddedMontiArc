@@ -19,3 +19,4 @@ RUN apt-get install -y --no-install-recommends openjdk-8-jdk
 #Install stuff for python and python3
 RUN pip install tensorflow==1.13.1
 RUN pip3 install opencv-python h5py numpy matplotlib scipy Pillow
+
