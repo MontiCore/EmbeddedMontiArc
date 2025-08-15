@@ -5,6 +5,10 @@ from rich import print
 
 
 class Config:
+  """
+  One of the main data classes of the migration tool. Used to store the configuration for the migration
+  """
+
   def __init__(self, path="config.yaml"):
     with open(path, "r") as file:
       data = yaml.safe_load(file)
@@ -20,7 +24,8 @@ class Config:
   @staticmethod
   def create_config_file(path: str = "config.yaml"):
     """
-    Creates a configuration file for the Migration Tool
+    Creates an empty configuration file for the Migration Tool
+    :param path: Path to the configuration file
     """
     if not os.path.exists(path):
       data = {"URL": "Please add the URL of the source Git instance",
@@ -30,7 +35,7 @@ class Config:
               "SourceUser": "Please add the name of the user on the GitLab system",
               "TargetRepoOwner": "Please add the name of the user on GitHub",
               "MonorepoNamespace": "Please add the namespace of the monorepo, this removed from the beginning of the "
-                                   "repo namespaces", }
+                                   "repo namespaces", "MonorepoName": "Please add the name of the monorepo "}
       with open(path, "w") as file:
         yaml.safe_dump(data, file)
       print(f"[green]Config file created at {path}[/green]")

@@ -8,19 +8,19 @@ from rich.console import Console
 from rich.progress import Progress, track
 from rich.table import Table
 
-from migrationTool.gitMigration import GithubUploader
-from migrationTool.gitMigration.Git import Git
-from migrationTool.gitMigration.GitlabDownloader import GitlabDownloader
-from migrationTool.gitMigration.largeFiles import run_git_filter_repo
-from migrationTool.gitMigration.repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
+from migrationTool.git_migration import GithubUploader
+from migrationTool.git_migration.Git import Git
+from migrationTool.git_migration.GitlabDownloader import GitlabDownloader
+from migrationTool.git_migration.largeFiles import run_git_filter_repo
+from migrationTool.git_migration.repoCleaning import remove_lfs, split_large_files, remove_lfs_from_gitattributes
 from migrationTool.migration_types import Architecture, Config
-from migrationTool.pipelineMigration import GitlabToGithubSubtree
+from migrationTool.pipeline_migration import GitlabToGithubSubtree, GitlabToGithub
 
 app = typer.Typer(
   help="Migration tool for Git repositories from GitLab to GitHub. Curently only supports GitHub as target and "
        "migration as a monorepo. However more feature (like repo-wise migration) will be added in the future.")
 
-# Logger konfigurieren, only log to file
+# Configure logger, only log to file
 file_handler = logging.FileHandler("output.log")
 file_handler.setLevel(logging.INFO)
 file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt='%H:%M:%S'))
@@ -158,7 +158,8 @@ def convert_gh_actions(config_path: str = typer.Option("config.yaml", help="Conf
                        architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
                        rebuild_large_files: bool = typer.Option(False,
                                                                 help="Whether to rebuild large files that have been "
-                                                                     "split")):
+                                                                     "split"), monorepo: bool = typer.Option(True,
+                                                                                                             help="Whether to adapt the pipelines to a monorepo structure")):
   """Convert CI to GitHub Actions."""
   logger.info(f"Converting to GitHub Actions using {config_path} and scan file {architecture_path}")
 
@@ -168,17 +169,22 @@ def convert_gh_actions(config_path: str = typer.Option("config.yaml", help="Conf
   logger.info("Scan file loaded")
 
   # Convert pipelines
-  GitlabToGithubSubtree(architecture, config, rebuild=rebuild_large_files)
+  if monorepo:
+    print("Converting pipelines to monorepo structure")
+    GitlabToGithubSubtree(architecture, config, rebuild=rebuild_large_files)
+  else:
+    print("Converting pipelines as is")
+    GitlabToGithub(architecture, config, rebuild=rebuild_large_files)
 
 
 @app.command()
 def upload(config_path: str = typer.Option("config.yaml", help="Config file path"),
            architecture_path: str = typer.Option("architecture.yaml", help="Scan file path"),
            migrate_docker_images: bool = typer.Option(False, help="Whether to move docker images to the monorepo"),
-           disable_scanning: bool = typer.Option(True, help="Whether to disable secret scanning during the push")):
+           disable_scanning: bool = typer.Option(True, help="Whether to disable secret scanning during the push"),
+           monorepo: bool = typer.Option(True, help="Whether to upload a monorepo")):
   """Upload to GitHub."""
 
-  # ToDo: Upload multiple migrations at once
   config = Config(config_path)
   logger.info("Config loaded")
   architecture = Architecture.load_architecture(architecture_path)
@@ -189,7 +195,10 @@ def upload(config_path: str = typer.Option("config.yaml", help="Config file path
   if migrate_docker_images:
     uploader.docker_image_migration_monorepo()
     print("Image migration workflow added")
-  uploader.upload_mono_repo(disable_scanning)
+  if monorepo:
+    uploader.upload_mono_repo(disable_scanning)
+  else:
+    uploader.upload_repos(disable_scanning)
 
 
 if __name__ == "__main__":

@@ -5,8 +5,24 @@ from git import Repo
 
 
 class Repo:
+  """
+  Represents a repository in the migration tool.
+  """
+
   def __init__(self, name: str, repoID: str, images: list[str], path: str, namespace: str, active_branches: list[str],
                stale_branches: list[str], secrets: list, secrets_to_create: tuple[str, str] = [], ):
+    """
+    Initializes the Repo object.
+    :param name: Name of the repository
+    :param repoID: Unique ID of the repository
+    :param images: Docker images associated with the repository
+    :param path: Local path to the repository
+    :param namespace: Namespace of the repository
+    :param active_branches: Branches with recent activity
+    :param stale_branches: Branches that are considered stale
+    :param secrets: Secrets and variables used in the repository
+    :param secrets_to_create: Secrets that need to be created in the new environment
+    """
     self.name = name
     self.ID = repoID
     self.images = images
@@ -19,6 +35,10 @@ class Repo:
     self.__repo = None
 
   def get_repo(self):
+    """
+    Returns the git repository object for this repo.
+    :return: git.Repo object if it exists, otherwise creates it.
+    """
     if self.__repo is None:
       self.__repo = git.Repo(self.path)
     return self.__repo

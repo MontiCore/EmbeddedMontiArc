@@ -1,0 +1,16 @@
+stages:
+  - test
+  - build
+
+test:
+  stage: test
+  script:
+    - echo "Running tests for RepoA"
+  only:
+    - master
+build:
+  stage: build
+  script:
+    - echo "Building Docker images for RepoA"
+  only:
+    - master

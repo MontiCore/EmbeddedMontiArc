@@ -210,14 +210,14 @@ ToDo
 
 - [x] Add reporting action
 
-- [ ] Get or create Repo in GHuploader should use user name from config
+- [x] Get or create Repo in GHuploader should use user name from config
 
-- [ ] Add second pages trigger
+- [x] Add second pages trigger
 
-- [ ] Recheck maven options
+- [x] Recheck maven options
 
-- [ ] Docker image step only if images contained
+- [x] Docker image step only if images contained
 
 - [ ] Additional login at registry. for Docker migration
 
-- [ ] Remove submodule
+- [x] Remove submodule

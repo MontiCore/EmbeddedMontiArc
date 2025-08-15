@@ -1,0 +1,10 @@
+repoA:
+  DockerImages:
+    - embedded_montiarc:latest
+    - embedded_montiarc:0.1.0
+    - test:latest
+  ID: '1'
+  Namespace: monticore/EmbeddedMontiArc
+  Path: /home/david/repos/RepoA
+  StaleBranches:
+    - master
