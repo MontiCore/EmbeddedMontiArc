@@ -24,3 +24,4 @@ ENV DGLBACKEND=pytorch
 RUN wget https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-1.12.1%2Bcpu.zip -O /usr/lib/libtorch.zip && \
     unzip /usr/lib/libtorch.zip -d /usr/lib && \
     rm /usr/lib/libtorch.zip
+    
