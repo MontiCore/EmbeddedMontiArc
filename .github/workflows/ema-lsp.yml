@@ -8,7 +8,7 @@ on:
 env:
   CI_PROJECT_ID: 36188
   CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  GITLABTOKEN: ${{ secrets.GITLAB_TOKEN }}
   cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

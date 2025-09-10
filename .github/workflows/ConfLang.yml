@@ -8,7 +8,7 @@ on:
 env:
   CI_PROJECT_ID: 55457
   CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  GITLABTOKEN: ${{ secrets.GITLAB_TOKEN }}
   cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
   MAVEN_OPTS: -Xmx4096m -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
   MAVEN_CLI_OPTS: --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true
@@ -52,7 +52,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.5.4-jdk-8-alpine
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.5.4-jdk-8-alpine tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.5.4-jdk-8-alpine tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -83,7 +83,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLAB_TOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |

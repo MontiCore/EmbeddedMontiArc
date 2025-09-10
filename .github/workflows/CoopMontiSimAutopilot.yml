@@ -8,7 +8,7 @@ on:
 env:
   CI_PROJECT_ID: 63620
   CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  GITLABTOKEN: ${{ secrets.GITLAB_TOKEN }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -26,7 +26,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/coopmontisimautopilot:v0.0.2
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} ghcr.io/monticore/coopmontisimautopilot:v0.0.2 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLAB_TOKEN }} ghcr.io/monticore/coopmontisimautopilot:v0.0.2 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
