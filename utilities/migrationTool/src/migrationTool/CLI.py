@@ -193,6 +193,8 @@ def upload(config_path: str = typer.Option("config.yaml", help="Config file path
 
   uploader = GithubUploader(config, architecture)
   if migrate_docker_images:
+    firstID = config.repoIDS[0]
+    config.monorepoName = architecture.get_repo_by_ID(firstID).name
     uploader.docker_image_migration_monorepo()
     print("Image migration workflow added")
   if monorepo:
