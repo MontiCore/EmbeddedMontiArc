@@ -8,7 +8,7 @@ on:
 env:
   CI_PROJECT_ID: 17712
   CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  GITLABTOKEN: ${{ secrets.EMA_GITLAB_TOKEN }}
   cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -203,7 +203,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -227,7 +227,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2cpp/dockerimages/mxnet150:v0.0.5
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet150:v0.0.5 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet150:v0.0.5 tail -f /dev/null
       - name: Script
         continue-on-error: true
         env:
@@ -251,7 +251,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2cpp/integrationtests/caffe2:v0.0.5
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/integrationtests/caffe2:v0.0.5 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/integrationtests/caffe2:v0.0.5 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -274,7 +274,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170:v0.0.1
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/mxnet170:v0.0.1 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -309,7 +309,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2cpp/integrationtests/tensorflow:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/integrationtests/tensorflow:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/integrationtests/tensorflow:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -332,7 +332,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/dockerimages/pytorch:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -355,7 +355,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2pythonwrapper/tests/mvn-swig:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2pythonwrapper/tests/mvn-swig:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2pythonwrapper/tests/mvn-swig:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -386,7 +386,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/emadl2cpp/mxnet/190:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/mxnet/190:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/emadl2cpp/mxnet/190:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -416,7 +416,7 @@ jobs:
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
           docker pull ghcr.io/monticore/mnist-infogan/gans_mxnet:latest
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild ghcr.io/monticore/mnist-infogan/gans_mxnet:latest tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild ghcr.io/monticore/mnist-infogan/gans_mxnet:latest tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -588,7 +588,7 @@ jobs:
           apt-get update -qq && apt-get install -y -qq openjdk-11-jre-headless python3 python3-pip git
           cd extractor
           pip3 install -r requirements.txt
-          python3 extract.py ${{ secrets.GITLABTOKEN }}
+          python3 extract.py ${{ secrets.EMA_GITLAB_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: success()
