@@ -12,7 +12,7 @@ on:
 env:
   CI_PROJECT_ID: 57999
   CI_API_V4_URL: https://git.rwth-aachen.de/api/v4
-  GITLABTOKEN: ${{ secrets.GITLABTOKEN }}
+  GITLABTOKEN: ${{ secrets.EMA_GITLAB_TOKEN }}
   cibuild: ${{ secrets.SE_NEXUS_PASSWORD }}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,7 +31,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -52,7 +52,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -74,7 +74,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -95,7 +95,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -117,7 +117,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -138,7 +138,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -160,7 +160,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -181,7 +181,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -203,7 +203,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -225,7 +225,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -246,7 +246,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -268,7 +268,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -289,7 +289,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         continue-on-error: true
         env:
@@ -312,7 +312,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         continue-on-error: true
         env:
@@ -334,7 +334,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -356,7 +356,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -377,7 +377,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -399,7 +399,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -420,7 +420,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
@@ -442,7 +442,7 @@ jobs:
       - name: Start Docker Container
         run: |
           docker pull maven:3.6-jdk-8
-          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.GITLABTOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
+          docker run --name build-container -d -v $(pwd):/workspace --network=host  -e CI_PROJECT_ID=$CI_PROJECT_ID -e CI_API_V4_URL=$CI_API_V4_URL -e GITLABTOKEN=${{ secrets.EMA_GITLAB_TOKEN }} -e cibuild=$cibuild maven:3.6-jdk-8 tail -f /dev/null
       - name: Script
         env:
           SCRIPT: |
